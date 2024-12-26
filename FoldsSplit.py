@@ -23,9 +23,9 @@ def k_fold_split(k=5, folders_path=""):
     dictionary = {}
     exceptions_list = []
     for (root, _, _) in walk(folders_path):
-        type = root.split("-")
-        if ((len(type) == 3) and (type[1] == "TrainingSet")):
-            vendor_volume = type[2].split("""\\""")
+        train_or_test = root.split("-")
+        if ((len(train_or_test) == 3) and (train_or_test[1] == "TrainingSet")):
+            vendor_volume = train_or_test[2].split("""\\""")
             if len(vendor_volume) == 1:
                 dictionary[vendor_volume[0]] = []
             elif len(vendor_volume) == 2:
@@ -89,10 +89,10 @@ def k_fold_split(k=5, folders_path=""):
         for l in range(len(dictionary.keys())):
             tmp_list_train = tmp_list_train + all_train_folds[l][j].tolist()
             tmp_list_test = tmp_list_test + all_test_folds[l][j].tolist()
+        shuffle(tmp_list_train)
+        shuffle(tmp_list_test)
         train_folds.append(tmp_list_train)
         test_folds.append(tmp_list_test)
-    shuffle(train_folds)
-    shuffle(test_folds)
 
     # Saves the results from the split in a CSV file just for the train
     with open("./outputs/train_splits.csv", "w", newline="") as f:
