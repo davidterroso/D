@@ -65,12 +65,16 @@ def k_fold_split(k=5, folders_path=""):
             if key == "Topcon":
                 if i != 1:
                     train_volumes = np.append(train_volumes, exceptions_list[0])
+                    np.random.shuffle(train_volumes)
                 else:
                     test_volumes = np.append(test_volumes, exceptions_list[0])
+                    np.random.shuffle(test_volumes)
                 if i != 2:
                     train_volumes = np.append(train_volumes, exceptions_list[1])
+                    np.random.shuffle(train_volumes)
                 else:
                     test_volumes = np.append(test_volumes, exceptions_list[1])
+                    np.random.shuffle(test_volumes)
             vendor_train_folds.append(train_volumes)
             vendor_test_folds.append(test_volumes)
         all_train_folds.append(vendor_train_folds)
