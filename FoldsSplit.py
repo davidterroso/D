@@ -21,6 +21,7 @@ def k_fold_split(k=5, folders_path=""):
     # Extracts the volumes available for training and appends
     # it to a dictionary
     dictionary = {}
+    exceptions_list = []
     for (root, _, _) in walk(folders_path):
         type = root.split("-")
         if ((len(type) == 3) and (type[1] == "TrainingSet")):
@@ -30,13 +31,20 @@ def k_fold_split(k=5, folders_path=""):
             elif len(vendor_volume) == 2:
                 vendor = vendor_volume[0]
                 volume = vendor_volume[1][-3:]
-                dictionary[vendor].append(volume)
+                # Restriction implemented to make sure the volumes 056 and 062,
+                # from Topcon, which are not the same size as the others, do not
+                # stay on the same fold, promoting class balancement
+                if (volume != "056") and (volume != "062"):
+                    dictionary[vendor].append(volume)
+                else:
+                    exceptions_list.append(volume)
     
     # Initiates KFold object from sklearn that splits the
     # dataset with provided k value
     kf = KFold(n_splits=k)
     all_train_folds = []
     all_test_folds = []
+    shuffle(exceptions_list)
     for key in dictionary:
         # Shuffles the list of volumes available
         tmp_list = dictionary[key]
@@ -51,6 +59,18 @@ def k_fold_split(k=5, folders_path=""):
             # print("{} Train: {}".format(key, train_volumes))
             test_volumes = np.array(dictionary[key])[test_index]
             # print("{} Test: {}".format(key, test_volumes))
+            # Restriction implemented to make sure the volumes 056 and 062,
+            # from Topcon, which are not the same size as the others, do not
+            # stay on the same fold, promoting class balancement
+            if key == "Topcon":
+                if i != 1:
+                    train_volumes = np.append(train_volumes, exceptions_list[0])
+                else:
+                    test_volumes = np.append(test_volumes, exceptions_list[0])
+                if i != 2:
+                    train_volumes = np.append(train_volumes, exceptions_list[1])
+                else:
+                    test_volumes = np.append(test_volumes, exceptions_list[1])
             vendor_train_folds.append(train_volumes)
             vendor_test_folds.append(test_volumes)
         all_train_folds.append(vendor_train_folds)
