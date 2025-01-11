@@ -4,11 +4,11 @@ from sklearn.model_selection import KFold
 import numpy as np
 from csv import writer
 
-def k_fold_split(k=5, folders_path=""):
+def k_fold_split_segmentation(k=5, folders_path=""):
     """
-    k_fold_split iterates through the directories of the RETOUCH dataset and 
-    extracts the volumes that belong to each vendor and splits in k folds
-    according to k value specified in the arguments
+    k_fold_split iterates through the directories of the RETOUCH training
+    dataset and extracts the volumes that belong to each vendor and splits
+    in k folds according to k value specified in the arguments
 
     Args:
         k (int): number of k folds
@@ -108,5 +108,5 @@ if __name__ == "__main__":
     # Declares the path and the k-value, and calls the function
     RETOUCH_path = "D:\D\RETOUCH"
     k = 5
-    k_fold_split(k=k, folders_path=RETOUCH_path)
+    k_fold_split_segmentation(k=k, folders_path=RETOUCH_path)
     print("EOF.")
