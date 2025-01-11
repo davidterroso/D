@@ -18,8 +18,7 @@ def k_fold_split_segmentation(k=5, folders_path=""):
     Return: 
         None
     """
-    # Extracts the volumes available for training and appends
-    # it to a dictionary
+    # Extracts the volumes available for training and appends it to a dictionary
     dictionary = {}
     exceptions_list = []
     for (root, _, _) in walk(folders_path):
@@ -106,7 +105,7 @@ def k_fold_split_segmentation(k=5, folders_path=""):
 
 if __name__ == "__main__":
     # Declares the path and the k-value, and calls the function
-    RETOUCH_path = "D:\D\RETOUCH"
+    RETOUCH_path = "D:\RETOUCH"
     k = 5
     k_fold_split_segmentation(k=k, folders_path=RETOUCH_path)
     print("EOF.")
