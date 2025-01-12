@@ -102,10 +102,3 @@ def k_fold_split_segmentation(k=5, folders_path=""):
     with open("./outputs/test_splits.csv", "w", newline="") as f:
         write = writer(f)
         write.writerows(test_folds)
-
-if __name__ == "__main__":
-    # Declares the path and the k-value, and calls the function
-    RETOUCH_path = "D:\RETOUCH"
-    k = 5
-    k_fold_split_segmentation(k=k, folders_path=RETOUCH_path)
-    print("EOF.")

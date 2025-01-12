@@ -70,10 +70,11 @@ def load_oct_mask(filename):
 
     return oct_scan, origin, spacing
 
-def save_all_oct_as_tiff(oct_folder, save_folder):
+def save_segmentation_oct_as_tiff(oct_folder, save_folder):
     """
-    Reads all the OCT volumes and saves them as a tiff image in 
-    int32 (that will be used) and int8 (for visualization)
+    Reads all the OCT volumes used in the segmentation task
+    and saves them as a tiff image in int32 (that will be used) 
+    and int8 (for visualization)
     
     Args:
         oct_folder (str): path to the folder where the OCT scans
@@ -84,7 +85,7 @@ def save_all_oct_as_tiff(oct_folder, save_folder):
     Return:
         None
     """
-
+    # In case the folder to save the images does not exist, it is created
     save_name_int8 = save_folder + "\\OCT_images\\segmentation\\int8\\"
     save_name_int32 = save_folder + "\\OCT_images\\segmentation\\int32\\"
     if not (exists(save_name_int32) and exists(save_name_int8)):
@@ -96,8 +97,10 @@ def save_all_oct_as_tiff(oct_folder, save_folder):
         rmtree(save_name_int8)
         makedirs(save_name_int8)
 
+        # Iterates through the folders to read the OCT volumes used in segmentation
+        # and saves them both in int32 for better manipulation and in uint8 for
+        # visualization
         for (root, _, files) in walk(oct_folder):
-            i=0
             train_or_test = root.split("-")
             if ((len(train_or_test) == 3) and (train_or_test[1] == "TrainingSet")):
                 vendor_volume = train_or_test[2].split("""\\""")
@@ -106,27 +109,26 @@ def save_all_oct_as_tiff(oct_folder, save_folder):
                     volume_name = vendor_volume[1]
                     save_name_int8_tmp = save_name_int8 + vendor + "_" + volume_name
                     save_name_int32_tmp = save_name_int32 + vendor + "_" + volume_name
+                    # Iterates through to the subfolders and reads the oct.mhd file to 
+                    # extract the images
                     for filename in files:
                         if filename == "oct.mhd":
                             file_path = root + """\\""" + filename
                             img, _, _ = load_oct_image(file_path)
                             num_slices = img.shape[0]
-
+                            # Iterates through the slices to save each slice with an identifiable name, both in uint8 for visualization
+                            # and int32 for better future manipulation 
                             for slice_num in range(num_slices):
-                                print(slice_num)
                                 im_slice = img[slice_num,:,:]
+                                # Normalizes the image to uint8 so that it can be visualized in the computer
                                 im_slice_int8 = (255 * (im_slice - im_slice.min())/(im_slice.max() - im_slice.min())).astype(np.uint8)
 
+                                # Saves image in int32
                                 image = Image.fromarray(im_slice)
                                 save_name_slice = save_name_int32_tmp + "_" + str(slice_num).zfill(3) + '.tiff'
                                 image.save(save_name_slice)
 
+                                # Saves image in uint8
                                 image = Image.fromarray(im_slice_int8)
                                 save_name_slice = save_name_int8_tmp + "_" + str(slice_num).zfill(3) + '.tiff'
                                 image.save(save_name_slice)
-                                if slice_num == 1:
-                                    return 0
-
-if __name__ == "__main__":
-    save_all_oct_as_tiff(oct_folder="D:\RETOUCH", save_folder="D:\D")
-    print("EOF.")
