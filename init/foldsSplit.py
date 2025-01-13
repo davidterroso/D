@@ -3,11 +3,10 @@ from random import shuffle
 from sklearn.model_selection import KFold
 from pandas import DataFrame, concat
 import numpy as np
-from csv import writer
 
 # Volumes from Topcon T-1000: 
 # Training - 056, 062
-# Testing - 
+# Testing - None
 
 def k_fold_split_segmentation(k=5, folders_path=""):
     """
@@ -95,15 +94,41 @@ def k_fold_split_segmentation(k=5, folders_path=""):
         train_folds.append(tmp_list_train)
         test_folds.append(tmp_list_test)
 
-    # Saves the results from the split in a CSV file just for the train
-    with open("../splits/segmentation_train_splits.csv", "w", newline="") as f:
-        write = writer(f)
-        write.writerows(train_folds)    
-    
-    # Saves the results from the split in a CSV file just for the test
-    with open("../splits/segmentation_test_splits.csv", "w", newline="") as f:
-        write = writer(f)
-        write.writerows(test_folds)
+    # Iterates through the train-test lists and saves each as an individual 
+    # column in a Pandas Dataframe
+    train_df = DataFrame()
+    for l in range(k):
+        tmp_df = DataFrame()
+        tmp_vols = []
+        name_column_vol = f"Fold{l + 1}_Volumes" 
+        for m in range(len(train_folds[l])):
+            tmp_vols.append(train_folds[l][m])
+        if l == 0:
+            train_df[name_column_vol] = tmp_vols
+        else:
+            tmp_df[name_column_vol] = tmp_vols
+        train_df = concat([train_df, tmp_df], axis=1, sort=False)
+
+        # Saves the results from the split in a CSV file just for the train
+        train_df.to_csv(path_or_buf="../splits/segmentation_train_splits.csv", index=False)
+
+    # Iterates through the train-test lists and saves each as an individual 
+    # column in a Pandas Dataframe
+    test_df = DataFrame()
+    for l in range(k):
+        tmp_df = DataFrame()
+        tmp_vols = []
+        name_column_vol = f"Fold{l + 1}_Volumes" 
+        for m in range(len(train_folds[l])):
+            tmp_vols.append(train_folds[l][m])
+        if l == 0:
+            test_df[name_column_vol] = tmp_vols
+        else:
+            tmp_df[name_column_vol] = tmp_vols
+        test_df = concat([test_df, tmp_df], axis=1, sort=False)
+
+        # Saves the results from the split in a CSV file just for the train
+        test_df.to_csv(path_or_buf="../splits/segmentation_test_splits.csv", index=False)
 
 def k_fold_split_generation(k=5, folders_path=""):
     """
@@ -217,6 +242,3 @@ def k_fold_split_generation(k=5, folders_path=""):
 
         # Saves the results from the split in a CSV file just for the test
         test_df.to_csv(path_or_buf="../splits/generation_test_splits.csv", index=False)
-
-if __name__ == "__main__":
-    k_fold_split_generation(k=5, folders_path="D:\RETOUCH")
