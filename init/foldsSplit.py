@@ -4,9 +4,13 @@ from sklearn.model_selection import KFold
 import numpy as np
 from csv import writer
 
+# Volumes from Topcon T-1000: 
+# Training - 056, 062
+# Testing - 
+
 def k_fold_split_segmentation(k=5, folders_path=""):
     """
-    k_fold_split iterates through the directories of the RETOUCH training
+    k_fold_split_segmentation iterates through the directories of the RETOUCH training
     dataset and extracts the volumes that belong to each vendor and splits
     in k folds according to k value specified in the arguments
 
@@ -102,3 +106,18 @@ def k_fold_split_segmentation(k=5, folders_path=""):
     with open("./outputs/segmentation_test_splits.csv", "w", newline="") as f:
         write = writer(f)
         write.writerows(test_folds)
+
+def k_fold_split_generation(k=5, folders_path=""):
+    """
+    k_fold_split_generation iterates through the directories of the RETOUCH 
+    training and testing folders and extracts the volumes that belong to each
+    vendor and splits in k folds according to k value specified in the arguments
+
+    Args:
+        k (int): number of k folds
+        folders_path (string): absolute or relative path to the RETOUCH dataset 
+        location
+
+    Return: 
+        None
+    """
