@@ -1,0 +1,58 @@
+# Repository Documentation <!-- omit in toc -->
+
+## Table of Contents <!-- omit in toc -->
+- [Folder Structure](#folder-structure)
+- [pipeline.ipynb](#pipelineipynb)
+- [RETOUCH Folder Structure](#retouch-folder-structure)
+
+## Folder Structure
+
+```bash
+D
+ ┣ init # Folder that contains the Python files that are used before training the networks, to prepare the data 
+ ┃ ┣ foldsSplit.py # Has functions that perform k-fold-split on the RETOUCH dataset, according to the project needs
+ ┃ ┗ readOCT.py # Reads and saves the OCT's B-scans so that it can be saved in the user's computer
+ ┣ outputs # Will contain all the outputs that are not images
+ ┃ ┣ segmentation_test_splits.csv # Contains the index of the volumes that will be used in the testing of the segmentation models
+ ┃ ┗ segmentation_train_splits.csv # Contains the index of the volumes that will be used in the training of the segmentation models
+ ┣ .gitignore # Declares the files that must not be updated to git
+ ┣ documentation.md # Project documentation
+ ┗ pipeline.ipynb # Project's pipeline code
+ ```
+
+## pipeline.ipynb
+Python notebook that contains the pipeline behind this project, from reading the images and saving, to the training of the networks. When this file is run, it does not need any other changes except some paths and options selected in the beginning. 
+
+## RETOUCH Folder Structure
+Explains the folder structure of the RETOUCH dataset in order to compliment the code used in [foldsSplit.py](./init/foldsSplit.py) and [readOCT.py](./init/readOCT.py), allowing for better understanding and visualization.
+
+```bash
+RETOUCH # Folder of the RETOUCH dataset
+ ┣ RETOUCH-TestSet-Cirrus # Folder that contains OCT images obtained using the Cirrus device 
+ ┃ ┃                      # that compose the testing set of the RETOUCH dataset
+ ┃ ┣ TEST001 # Folder that contains the OCT images of the set 001 used in training
+ ┣ ┃ ...
+ ┃ ┗ TEST014
+ ┃    ┣ oct.mhd # .mhd file that contains the information required to read the .raw OCT file 
+ ┃    ┃         # using the SimpleITK library
+ ┃    ┗ oct.raw # Raw image file of the OCT volume
+ ┣ RETOUCH-TestSet-Spectralis # Folder that contains OCT images obtained using the Spectralis
+ ┃                            # device that compose the testing set of the RETOUCH dataset
+ ┣ RETOUCH-TestSet-Topcon # Folder that contains OCT images obtained using the Topcon device 
+ ┃                        # that compose the testing set of the RETOUCH dataset
+ ┣ RETOUCH-TrainingSet-Cirrus # Folder that contains OCT images obtained using the Cirrus device 
+ ┃                            # that compose the training set of the RETOUCH dataset
+ ┃ ┣ TRAIN001
+ ┣ ┃ ...
+ ┃ ┗ TRAIN024
+ ┃    ┣ oct.mhd # .mhd file that contains the information required to read the .raw OCT file using 
+ ┃    ┃         # the SimpleITK library
+ ┃    ┣ oct.raw # Raw image file of the OCT volume
+ ┃    ┣ reference.mhd # .mhd file that contains the information required to read the .raw OCT fluid
+ ┃    ┃               # masks file using the SimpleITK library
+ ┃    ┗ reference.raw # Raw image file of the OCT fluid (IRF, SRF, and PED) masks
+ ┣ RETOUCH-TrainingSet-Spectralis # Folder that contains OCT images obtained using the Spectralis
+ ┃                                # device that compose the training set of the RETOUCH dataset
+ ┗ RETOUCH-TrainingSet-Topcon # Folder that contains OCT images obtained using the Topcon device that
+                              # compose the training set of the RETOUCH dataset
+ ```

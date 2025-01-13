@@ -94,11 +94,11 @@ def k_fold_split_segmentation(k=5, folders_path=""):
         test_folds.append(tmp_list_test)
 
     # Saves the results from the split in a CSV file just for the train
-    with open("./outputs/train_splits.csv", "w", newline="") as f:
+    with open("./outputs/segmentation_train_splits.csv", "w", newline="") as f:
         write = writer(f)
         write.writerows(train_folds)    
     
     # Saves the results from the split in a CSV file just for the test
-    with open("./outputs/test_splits.csv", "w", newline="") as f:
+    with open("./outputs/segmentation_test_splits.csv", "w", newline="") as f:
         write = writer(f)
         write.writerows(test_folds)
