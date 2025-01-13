@@ -85,7 +85,7 @@ def save_segmentation_oct_as_tiff(oct_folder, save_folder):
     """
     Reads all the OCT volumes used in the segmentation task
     and saves them as a tiff image in int32 (that will be used) 
-    and int8 (for visualization)
+    and uint8 (for visualization)
     
     Args:
         oct_folder (str): path to the folder where the OCT scans
@@ -97,7 +97,7 @@ def save_segmentation_oct_as_tiff(oct_folder, save_folder):
         None
     """
     # In case the folder to save the images does not exist, it is created
-    save_name_int8 = save_folder + "\\OCT_images\\segmentation\\int8\\"
+    save_name_int8 = save_folder + "\\OCT_images\\segmentation\\uint8\\"
     save_name_int32 = save_folder + "\\OCT_images\\segmentation\\int32\\"
     if not (exists(save_name_int32) and exists(save_name_int8)):
         makedirs(save_name_int32)
@@ -148,7 +148,7 @@ def save_generation_oct_as_tiff(oct_folder, save_folder):
     """
     Reads all the OCT volumes used in the generation task
     and saves them as a tiff image in int32 (that will be used) 
-    and int8 (for visualization)
+    and uint8 (for visualization)
     
     Args:
         oct_folder (str): path to the folder where the OCT scans
@@ -160,7 +160,7 @@ def save_generation_oct_as_tiff(oct_folder, save_folder):
         None
     """
     # In case the folder to save the images does not exist, it is created
-    save_name_int8 = save_folder + "\\OCT_images\\generation\\int8\\"
+    save_name_int8 = save_folder + "\\OCT_images\\generation\\uint8\\"
     save_name_int32 = save_folder + "\\OCT_images\\generation\\int32\\"
     if not (exists(save_name_int32) and exists(save_name_int8)):
         makedirs(save_name_int32)
