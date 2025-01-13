@@ -1,6 +1,7 @@
 from os import walk
 from random import shuffle
 from sklearn.model_selection import KFold
+from pandas import DataFrame, concat
 import numpy as np
 from csv import writer
 
@@ -151,7 +152,7 @@ def k_fold_split_generation(k=5, folders_path=""):
         # Splits in train and test according to the number of folds
         vendor_train_folds = []
         vendor_test_folds = []
-        for i, (train_index, test_index) in enumerate(kf.split(dictionary[key])):
+        for (train_index, test_index) in (kf.split(dictionary[key])):
             train_volumes = np.array(dictionary[key])[train_index]
             test_volumes = np.array(dictionary[key])[test_index]
             vendor_train_folds.append(train_volumes)
@@ -173,15 +174,49 @@ def k_fold_split_generation(k=5, folders_path=""):
         train_folds.append(tmp_list_train)
         test_folds.append(tmp_list_test)
 
-    # Saves the results from the split in a CSV file just for the train
-    with open("../splits/generation_train_splits.csv", "w", newline="") as f:
-        write = writer(f)
-        write.writerows(train_folds)    
-    
-    # Saves the results from the split in a CSV file just for the test
-    with open("../splits/generation_test_splits.csv", "w", newline="") as f:
-        write = writer(f)
-        write.writerows(test_folds)
+    # Iterates through the train-test lists and saves each as an individual 
+    # column in a Pandas Dataframe
+    train_df = DataFrame()
+    for l in range(k):
+        tmp_df = DataFrame()
+        tmp_vols = []
+        tmp_ts_sets = []
+        name_column_vol = f"Fold{l + 1}_Volumes" 
+        name_column_sets = f"Fold{l + 1}_Sets"
+        for m in range(len(train_folds[l])):
+            tmp_vols.append(train_folds[l][m][0])
+            tmp_ts_sets.append(train_folds[l][m][1])
+        if l == 0:
+            train_df[name_column_vol] = tmp_vols
+            train_df[name_column_sets] = tmp_ts_sets
+        else:
+            tmp_df[name_column_vol] = tmp_vols
+            tmp_df[name_column_sets] = tmp_ts_sets
+        train_df = concat([train_df, tmp_df], axis=1, sort=False)
+
+        # Saves the results from the split in a CSV file just for the train
+        train_df.to_csv(path_or_buf="../splits/generation_train_splits.csv", index=False)
+
+    test_df = DataFrame()
+    for l in range(k):
+        tmp_df = DataFrame()
+        tmp_vols = []
+        tmp_ts_sets = []
+        name_column_vol = f"Fold{l + 1}_Volumes" 
+        name_column_sets = f"Fold{l + 1}_Sets"
+        for m in range(len(test_folds[l])):
+            tmp_vols.append(test_folds[l][m][0])
+            tmp_ts_sets.append(test_folds[l][m][1])
+        if l == 0:
+            test_df[name_column_vol] = tmp_vols
+            test_df[name_column_sets] = tmp_ts_sets
+        else:
+            tmp_df[name_column_vol] = tmp_vols
+            tmp_df[name_column_sets] = tmp_ts_sets
+        test_df = concat([test_df, tmp_df], axis=1, sort=False)
+
+        # Saves the results from the split in a CSV file just for the test
+        test_df.to_csv(path_or_buf="../splits/generation_test_splits.csv", index=False)
 
 if __name__ == "__main__":
     k_fold_split_generation(k=5, folders_path="D:\RETOUCH")
