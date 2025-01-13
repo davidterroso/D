@@ -57,11 +57,8 @@ def k_fold_split_segmentation(k=5, folders_path=""):
         vendor_train_folds = []
         vendor_test_folds = []
         for i, (train_index, test_index) in enumerate(kf.split(dictionary[key])):
-            # print("Fold:", i + 1)
             train_volumes = np.array(dictionary[key])[train_index]
-            # print("{} Train: {}".format(key, train_volumes))
             test_volumes = np.array(dictionary[key])[test_index]
-            # print("{} Test: {}".format(key, test_volumes))
             # Restriction implemented to make sure the volumes 056 and 062,
             # from Topcon, which are not the same size as the others, do not
             # stay on the same fold, promoting class balancement
@@ -121,3 +118,73 @@ def k_fold_split_generation(k=5, folders_path=""):
     Return: 
         None
     """
+
+    # Extracts the volumes available for the generation task and appends it
+    # to a dictionary
+    dictionary = {}
+    for (root, _, _) in walk(folders_path):
+        train_or_test = root.split("-")
+        if ((train_or_test[1] == "TrainingSet") and (len(train_or_test)==2)):
+            belonging_set = "train"
+        elif (train_or_test[1] == "TestSet" and (len(train_or_test)==2)):
+            belonging_set == "test"
+
+        if (len(train_or_test) == 3):
+            vendor_volume = train_or_test[2].split("""\\""")
+            if len(vendor_volume) == 1:
+                dictionary[vendor_volume[0]] = []
+            elif len(vendor_volume) == 2:
+                vendor = vendor_volume[0]
+                volume = vendor_volume[1][-3:]
+                volume_set = (volume, belonging_set)
+                print(volume_set)
+                dictionary[vendor].append(volume_set)
+    print(dictionary)
+    """
+    # Initiates KFold object from sklearn that splits the
+    # dataset with provided k value
+    kf = KFold(n_splits=k)
+    all_train_folds = []
+    all_test_folds = []
+    for key in dictionary:
+        # Shuffles the list of volumes available
+        tmp_list = dictionary[key]
+        shuffle(tmp_list)
+        dictionary[key] = tmp_list
+        # Splits in train and test according to the number of folds
+        vendor_train_folds = []
+        vendor_test_folds = []
+        for i, (train_index, test_index) in enumerate(kf.split(dictionary[key])):
+            train_volumes = np.array(dictionary[key])[train_index]
+            test_volumes = np.array(dictionary[key])[test_index]
+            vendor_train_folds.append(train_volumes)
+            vendor_test_folds.append(test_volumes)
+        all_train_folds.append(vendor_train_folds)
+        all_test_folds.append(vendor_test_folds)
+
+    # Joins all the volumes from the same fold of different vendors in one list
+    train_folds = []
+    test_folds = []
+    for j in range(k):
+        tmp_list_train = []
+        tmp_list_test = []
+        for l in range(len(dictionary.keys())):
+            tmp_list_train = tmp_list_train + all_train_folds[l][j].tolist()
+            tmp_list_test = tmp_list_test + all_test_folds[l][j].tolist()
+        shuffle(tmp_list_train)
+        shuffle(tmp_list_test)
+        train_folds.append(tmp_list_train)
+        test_folds.append(tmp_list_test)
+
+    # Saves the results from the split in a CSV file just for the train
+    with open("./outputs/generation_train_splits.csv", "w", newline="") as f:
+        write = writer(f)
+        write.writerows(train_folds)    
+    
+    # Saves the results from the split in a CSV file just for the test
+    with open("./outputs/generation_test_splits.csv", "w", newline="") as f:
+        write = writer(f)
+        write.writerows(test_folds)
+    """
+if __name__ == "__main__":
+    k_fold_split_generation(k=5, folders_path="D:\RETOUCH")
