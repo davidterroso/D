@@ -12,7 +12,7 @@ D
  ┣ init # Folder that contains the Python files that are used before training the networks, to prepare the data 
  ┃ ┣ foldsSplit.py # Has functions that perform k-fold-split on the RETOUCH dataset, according to the project needs
  ┃ ┗ readOCT.py # Reads and saves the OCT's B-scans so that it can be saved in the user's computer
- ┣ outputs # Will contain all the outputs that are not images
+ ┣ splits # Will contain all the train-test splits
  ┃ ┣ segmentation_test_splits.csv # Contains the index of the volumes that will be used in the testing of the segmentation models
  ┃ ┗ segmentation_train_splits.csv # Contains the index of the volumes that will be used in the training of the segmentation models
  ┣ .gitignore # Declares the files that must not be updated to git
