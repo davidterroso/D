@@ -29,7 +29,7 @@ def k_fold_split_segmentation(k=5, folders_path=""):
         train_or_test = root.split("-")
         if ((len(train_or_test) == 3) and (train_or_test[1] == "TrainingSet")):
             vendor_volume = train_or_test[2].split("""\\""")
-            if len(vendor_volume) == 1:
+            if ((len(vendor_volume) == 1) and (vendor_volume[0] not in dictionary)):
                 dictionary[vendor_volume[0]] = []
             elif len(vendor_volume) == 2:
                 vendor = vendor_volume[0]
@@ -95,12 +95,12 @@ def k_fold_split_segmentation(k=5, folders_path=""):
         test_folds.append(tmp_list_test)
 
     # Saves the results from the split in a CSV file just for the train
-    with open("./outputs/segmentation_train_splits.csv", "w", newline="") as f:
+    with open("../outputs/segmentation_train_splits.csv", "w", newline="") as f:
         write = writer(f)
         write.writerows(train_folds)    
     
     # Saves the results from the split in a CSV file just for the test
-    with open("./outputs/segmentation_test_splits.csv", "w", newline="") as f:
+    with open("../outputs/segmentation_test_splits.csv", "w", newline="") as f:
         write = writer(f)
         write.writerows(test_folds)
 
@@ -124,23 +124,20 @@ def k_fold_split_generation(k=5, folders_path=""):
     dictionary = {}
     for (root, _, _) in walk(folders_path):
         train_or_test = root.split("-")
-        if ((train_or_test[1] == "TrainingSet") and (len(train_or_test)==2)):
-            belonging_set = "train"
-        elif (train_or_test[1] == "TestSet" and (len(train_or_test)==2)):
-            belonging_set == "test"
-
         if (len(train_or_test) == 3):
+            if (train_or_test[1] == "TrainingSet"):
+                belonging_set = "train"
+            elif (train_or_test[1] == "TestSet"):
+                belonging_set = "test"
             vendor_volume = train_or_test[2].split("""\\""")
-            if len(vendor_volume) == 1:
+            if ((len(vendor_volume) == 1) and (vendor_volume[0] not in dictionary)):
                 dictionary[vendor_volume[0]] = []
             elif len(vendor_volume) == 2:
                 vendor = vendor_volume[0]
                 volume = vendor_volume[1][-3:]
                 volume_set = (volume, belonging_set)
-                print(volume_set)
                 dictionary[vendor].append(volume_set)
-    print(dictionary)
-    """
+    
     # Initiates KFold object from sklearn that splits the
     # dataset with provided k value
     kf = KFold(n_splits=k)
@@ -177,14 +174,14 @@ def k_fold_split_generation(k=5, folders_path=""):
         test_folds.append(tmp_list_test)
 
     # Saves the results from the split in a CSV file just for the train
-    with open("./outputs/generation_train_splits.csv", "w", newline="") as f:
+    with open("../outputs/generation_train_splits.csv", "w", newline="") as f:
         write = writer(f)
         write.writerows(train_folds)    
     
     # Saves the results from the split in a CSV file just for the test
-    with open("./outputs/generation_test_splits.csv", "w", newline="") as f:
+    with open("../outputs/generation_test_splits.csv", "w", newline="") as f:
         write = writer(f)
         write.writerows(test_folds)
-    """
+
 if __name__ == "__main__":
     k_fold_split_generation(k=5, folders_path="D:\RETOUCH")
