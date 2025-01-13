@@ -5,6 +5,17 @@ from os.path import exists
 from shutil import rmtree
 from PIL import Image
 
+def int32_to_uint8(image):
+    """
+    Receives an int32 Numpy array that represents an image and transforms it into 
+    uint8 so that it can be visualized by the PC image viewer
+    Args:
+        image (Numpy int32 array): slice of an OCT scan
+    Return:
+        (Numpy uint8 array): slice of an OCT scan
+    """
+    return (255 * (image - image.min())/(image.max() - image.min())).astype(np.uint8)
+
 # Inspired on utils/mhd.py file from Tennakoon et al., 2018 work
 
 def load_oct_image(filename):
@@ -121,7 +132,7 @@ def save_segmentation_oct_as_tiff(oct_folder, save_folder):
                             for slice_num in range(num_slices):
                                 im_slice = img[slice_num,:,:]
                                 # Normalizes the image to uint8 so that it can be visualized in the computer
-                                im_slice_int8 = (255 * (im_slice - im_slice.min())/(im_slice.max() - im_slice.min())).astype(np.uint8)
+                                im_slice_int8 = int32_to_uint8(im_slice)
 
                                 # Saves image in int32
                                 image = Image.fromarray(im_slice)
