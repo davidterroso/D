@@ -147,7 +147,7 @@ def save_segmentation_oct_as_tiff(oct_folder, save_folder):
 def save_segmentation_mask_as_tiff(oct_folder, save_folder):
     """
     Reads all the OCT segmentation masks used in the segmentation 
-    task and saves them as a tiff image in int32 (that will be 
+    task and saves them as a tiff image in int8 (that will be 
     used) and uint8 (for visualization)
     
     Args:
