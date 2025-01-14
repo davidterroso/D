@@ -77,3 +77,21 @@ def extractROIMasks(oct_path, folder_path, threshold):
                     slice_num += 1
                     slice_path = volume_path + "_" + str(slice_num).zfill(3) + ".tiff"
                     mask_path = volume_masks_path + "_" + str(slice_num).zfill(3) + ".tiff"
+
+def extractPatches(folder_path):
+    images_path = folder_path + "\\OCT_images\\segmentation\\slices\\int32\\"
+    masks_path = folder_path + "\\OCT_images\\segmentation\\masks\\int8\\"
+    ROI_path = folder_path + "\\OCT_images\\segmentation\\roi\\int8\\"
+    save_patches_path_int32 = folder_path + "\\OCT_images\\segmentation\\patches\\slices\\int32\\"
+    save_patches_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\slices\\uint8\\"
+    save_patches_masks_path_int8 = folder_path + "\\OCT_images\\segmentation\\patches\\masks\\int8\\"
+    save_patches_masks_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\masks\\uint8\\"
+
+    for (root, _, files) in walk(images_path):
+        for slice in files:
+            slice = imread(root + slice)
+            roi = imread(ROI_path + slice)
+            mask = imread(masks_path + slice)
+
+if __name__ == "__main__":
+    extractPatches("D:\D")
