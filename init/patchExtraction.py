@@ -6,7 +6,7 @@ from skimage.io import imread
 from skimage.util import img_as_float
 from skimage.morphology import disk, binary_closing
 from skimage.filters.rank import entropy
-from readOCT import int32_to_uint8
+from .readOCT import int32_to_uint8
 import nutsml.imageutil as ni
 import numpy as np
 
