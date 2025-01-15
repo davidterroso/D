@@ -6,6 +6,7 @@ from skimage.io import imread
 from skimage.util import img_as_float
 from skimage.morphology import disk, binary_closing
 from skimage.filters.rank import entropy
+import nutsml.imageutil as ni
 import numpy as np
 
 def createROIMask(slice, mask, threshold, save_location, save_location_to_view):
@@ -204,9 +205,11 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
 
             img_height = slice.shape[0]
             npshape = (int(patch_shape[0] * SHAPE_MULT[img_height]), patch_shape[1])
-            patch_center = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos, pos=pos, neg=neg)
-
-            
+            patch_centers = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos, pos=pos, neg=neg)
+            it1 = ni.sample_patch_centers(roi, pshape=patch_shape, npos=int(float(n_pos)*.2), nneg=0, pos=pos, neg=neg)
+            for r, c, l in it1:
+                patch_centers.append([r, c])
+            print(patch_centers)
 
 
 
