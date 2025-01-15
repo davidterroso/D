@@ -105,6 +105,53 @@ def extractROIMasks(oct_path, folder_path, threshold):
                     slice_path = volume_path + "_" + str(slice_num).zfill(3) + ".tiff"
                     mask_path = volume_masks_path + "_" + str(slice_num).zfill(3) + ".tiff"
 
+def extractPatchCenters_(roi_mask, patch_shape, npos, pos, neg):
+    """
+    Extract positive patch centers from the ROI mask, inspired by multiple
+    functions in nutsml.imageutil
+
+    Args:
+        roi_mask (np.array int8): image that contains the ROI
+        patch_shape: shape of the resulting patch
+        npos: number of positive patches that are going to be
+        extracted
+        pos: intensity value corresponding to the values that 
+        are inside the ROI mask
+        neg: intensity value corresponding to the values that 
+        are outside the ROI mask
+
+    Returns:
+        list[list]: list of possible centers
+    """
+    # Begins by considering all the positive points as possible 
+    # centers. Transpose is used for easier manipulation
+    possible_centers = np.transpose(np.where(roi_mask == pos))
+    # Extracts the image dimensions
+    h, w = roi_mask.shape[:2]
+    # Calculates what are the limits for which the patches 
+    # can be extracted
+    h2, w2 = patch_shape[0] // 2, patch_shape[1] // 2
+    minr, maxr, minc, maxc = h2 - 1, h - h2, w2 - 1, w - w2
+    # Conditions the number of centers to those within the
+    # possible values
+    rs, cs = possible_centers[:, 0], possible_centers[:, 1]
+    possible_centers = possible_centers [np.all([rs > minr, rs < maxr, cs > minc, cs < maxc], axis=0)]
+    # In case there are not enough points, it 
+    # extracts as many centers as possible
+    npos = min(npos, possible_centers.shape[0])
+    possible_centers = possible_centers[np.random.choice(possible_centers.shape[0], npos, replace=False), :]
+    # In case the negative patches are obtained, the label is changed to 0
+    if neg > pos:
+        label = 0
+    # In case the positive patches are obtained, the label is changed to 1
+    elif pos > neg:
+        label = 1
+    # Labels are created
+    labels = np.full((possible_centers.shape[0], 1), label, dtype=np.uint8)
+    # Labels are added to the output
+    possible_centers = np.hstack((possible_centers, labels))
+    return possible_centers
+
 def extractPatchCenters(roi_mask, patch_shape, npos, pos, neg):
     """
     Extracts the center of the patches from the B-scan and the 
@@ -158,7 +205,8 @@ def extractPatchCenters(roi_mask, patch_shape, npos, pos, neg):
             elif (y + patch_shape[PYINX] / 2) >= h:
                 y = h - int(patch_shape[PYINX] / 2) - 1
             # Results are appended to the list of centers
-            c_hold.append([y, x])
+            # The last 1 means that the patches are positive
+            c_hold.append([y, x, 1])
 
             # After all the number of patches extracted from the image corresponds to 
             # the determined number, no more patches are extracted
@@ -183,6 +231,8 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
         None
     """
 
+    # Declares the multiplication factor to obtain the correct patch height 
+    # for each device, identified by the height of the image
     SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
 
     images_path = folder_path + "\\OCT_images\\segmentation\\slices\\int32\\"
@@ -194,22 +244,34 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
     save_patches_masks_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\masks\\uint8\\"
 
     i = 0
+    # Iterates through the saved ROI masks
     for (root, _, files) in walk(images_path):
         for slice in files:
+            # Reads the masks, the slices, 
+            # and the fluid masks 
             slice_path = root + slice
             ROI_mask_path = ROI_path + slice
             mask_path = ROI_path + slice 
             slice = imread(slice_path)
             roi = imread(ROI_mask_path)
             mask = imread(mask_path)
-
+            # Adjusts the height of the mask 
+            # to the one device used to obtain the OCT
             img_height = slice.shape[0]
             npshape = (int(patch_shape[0] * SHAPE_MULT[img_height]), patch_shape[1])
+            # Extracts positive patch centers through two different functions
             patch_centers = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos, pos=pos, neg=neg)
-            it1 = ni.sample_patch_centers(roi, pshape=patch_shape, npos=int(float(n_pos)*.2), nneg=0, pos=pos, neg=neg)
-            for r, c, l in it1:
-                patch_centers.append([r, c])
-            print(patch_centers)
+            patch_centers_ = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=int(float(n_pos)*.2), pos=pos, neg=neg)
+            # Appends the second patch centers to the first
+            for r, c, l in patch_centers_:
+                patch_centers.append([r, c, l])
+
+            # Extracts negative patch centers
+            if n_neg > 0:
+                negative_patch_centers = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=n_neg, pos=neg, neg=pos)
+                for r, c, l in negative_patch_centers:
+                    # Appends the negative patch centers to the others
+                    patch_centers.append([r, c, l])
 
 
 
