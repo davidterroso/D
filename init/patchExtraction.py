@@ -104,6 +104,68 @@ def extractROIMasks(oct_path, folder_path, threshold):
                     slice_path = volume_path + "_" + str(slice_num).zfill(3) + ".tiff"
                     mask_path = volume_masks_path + "_" + str(slice_num).zfill(3) + ".tiff"
 
+def extractPatchCenters(roi_mask, patch_shape, npos, pos, neg):
+    """
+    Extracts the center of the patches from the B-scan and the 
+    respective ROI mask
+
+    Args: 
+        roi_mask (np.array int8): the region of interst mask
+        patch_shape: shape of the resulting patch
+        npos: number of positive patches that are going to be
+        extracted
+        pos: intensity value corresponding to the values that 
+        are inside the ROI mask
+        neg: intensity value corresponding to the values that 
+        are outside the ROI mask
+
+    Return:
+        (list[list]): List that contains all the centers of 
+        the positive patches that are going to be extracted
+    """
+
+    PYINX = 0
+    PXINX = 1
+    h, w = roi_mask.shape
+
+    # The x coordinates will be separated by 10 along the x axis,
+    # between the points from which it is possible to extract patches 
+    x = range(int(patch_shape[PXINX] / 2), w - int(patch_shape[PXINX] / 2), 10)
+    # The selected x are shuffled
+    x_samples = np.random.choice(x, npos * 2, replace=False)
+    np.random.shuffle(x_samples)
+    c_hold = []
+    # Iterates through the possible x index
+    for x in x_samples:
+        nz = np.nonzero(roi_mask[:, x] == pos)[0]
+        # In case there are pixels belonging to the ROI
+        if len(nz) > 0:
+            # The y coordinate is calculated to be near the medial 
+            # position of the mask in that value of x, with a variance of 10
+            y = int(float(np.min(nz)) + (
+                (float(np.max(nz)) - float(np.min(nz))) / 2.) + np.random.uniform()) + np.random.randint(-10, 10)
+            # In case the y value is located below the medial point of the patch and
+            # it is impossible to extract patches due to the boundaries of the image, 
+            # it is relocated to the minimum possible value where it is still possible
+            # to extract patches
+            if (y - patch_shape[PYINX] / 2) < 1:
+                y = int(patch_shape[PYINX] / 2) + 1
+            # In case the y value is located above the medial point of the patch and
+            # it is impossible to extract patches due to the boundaries of the image, 
+            # it is relocated to the maximum possible value where it is still possible
+            # to extract patches
+            elif (y + patch_shape[PYINX] / 2) >= h:
+                y = h - int(patch_shape[PYINX] / 2) - 1
+            # Results are appended to the list of centers
+            c_hold.append([y, x])
+
+            # After all the number of patches extracted from the image corresponds to 
+            # the determined number, no more patches are extracted
+        if len(c_hold) >= npos:
+            break
+
+    return c_hold
+
 def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
     """
     Extract the patches from the OCT scans
@@ -119,6 +181,8 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
     Return:
         None
     """
+
+    SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
 
     images_path = folder_path + "\\OCT_images\\segmentation\\slices\\int32\\"
     masks_path = folder_path + "\\OCT_images\\segmentation\\masks\\int8\\"
@@ -139,13 +203,20 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
             mask = imread(mask_path)
 
             img_height = slice.shape[0]
-            print(roi.min())
+            npshape = (int(patch_shape[0] * SHAPE_MULT[img_height]), patch_shape[1])
+            patch_center = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos, pos=pos, neg=neg)
 
-            i += 1
+            
+
+
+
+
+
 
             # Escape of the for loop since the number of images, masks, 
             # and ROI is different due to computational power
-            if i == 7:
+            i += 1
+            if i == 1:
                 return 0
 
 
