@@ -104,7 +104,7 @@ def extractROIMasks(oct_path, folder_path, threshold):
                     slice_path = volume_path + "_" + str(slice_num).zfill(3) + ".tiff"
                     mask_path = volume_masks_path + "_" + str(slice_num).zfill(3) + ".tiff"
 
-def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos):
+def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
     """
     Extract the patches from the OCT scans
 
@@ -114,6 +114,7 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos):
         n_pos (int): Number of patches from the ROI to extract
         n_neg (int): Number of patches outside the ROI to extract
         pos (int): Intensity indicating a positive region on the ROI mask
+        neg (int): Intensity indicating a negative region on the ROI mask
 
     Return:
         None
@@ -138,7 +139,7 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos):
             mask = imread(mask_path)
 
             img_height = slice.shape[0]
-            print(roi.max())
+            print(roi.min())
 
             i += 1
 
@@ -149,4 +150,4 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos):
 
 
 if __name__ == "__main__":
-    extractPatches(folder_path="D:\D", patch_shape=(256,128), n_pos=12, n_neg=2, pos=1)
+    extractPatches(folder_path="D:\D", patch_shape=(256,128), n_pos=12, n_neg=2, pos=1, neg=0)
