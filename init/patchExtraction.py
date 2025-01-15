@@ -9,6 +9,21 @@ from skimage.filters.rank import entropy
 import numpy as np
 
 def createROIMask(slice, mask, threshold, save_location, save_location_to_view):
+    """
+    Creates and saves the ROI mask
+
+    Args:
+        slice (np.array): contains the B-scan from where the ROI is going to 
+        be extracted
+        mask (np.array): contains the fluid mask of the corresponding B-scan
+        threshold (float): threshold of entropy after which the region is kept
+        save_location (str): path to where the image is going to be saved in int8
+        save_location_to_view (str): path to where the image is going to be saved 
+        in uint8 for visualization
+    
+    Return:
+        None
+    """
     slice = entropy(slice, disk(15))
     slice = slice / (np.max(slice) + 1e-16)
     slice = np.asarray(slice > threshold, dtype=np.int8)
@@ -35,6 +50,17 @@ def createROIMask(slice, mask, threshold, save_location, save_location_to_view):
     slice_to_view.save(save_location_to_view)
 
 def extractROIMasks(oct_path, folder_path, threshold):
+    """
+    Responsible for iterating through the folders and extracting the ROI patches
+
+    Args:
+        oct_path (str): path to where the RETOUCH dataset is stored
+        folder_path (str): path to where the images are being saved
+        threshold (float): threshold of entropy after which the region is kept
+
+    Return:
+        None
+    """
     images_path = folder_path + "\\OCT_images\\segmentation\\slices\\int32\\"
     masks_path = folder_path + "\\OCT_images\\segmentation\\masks\\int8\\"
     save_folder_int8 = folder_path + "\\OCT_images\\segmentation\\roi\\int8\\"
@@ -78,7 +104,21 @@ def extractROIMasks(oct_path, folder_path, threshold):
                     slice_path = volume_path + "_" + str(slice_num).zfill(3) + ".tiff"
                     mask_path = volume_masks_path + "_" + str(slice_num).zfill(3) + ".tiff"
 
-def extractPatches(folder_path):
+def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos):
+    """
+    Extract the patches from the OCT scans
+
+    Args:
+        folders_path (str): Path indicating where the images are stored
+        patch_shape (tuple): Shape of the patches to extract (height, width)
+        n_pos (int): Number of patches from the ROI to extract
+        n_neg (int): Number of patches outside the ROI to extract
+        pos (int): Intensity indicating a positive region on the ROI mask
+
+    Return:
+        None
+    """
+
     images_path = folder_path + "\\OCT_images\\segmentation\\slices\\int32\\"
     masks_path = folder_path + "\\OCT_images\\segmentation\\masks\\int8\\"
     ROI_path = folder_path + "\\OCT_images\\segmentation\\roi\\int8\\"
@@ -87,11 +127,26 @@ def extractPatches(folder_path):
     save_patches_masks_path_int8 = folder_path + "\\OCT_images\\segmentation\\patches\\masks\\int8\\"
     save_patches_masks_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\masks\\uint8\\"
 
+    i = 0
     for (root, _, files) in walk(images_path):
         for slice in files:
-            slice = imread(root + slice)
-            roi = imread(ROI_path + slice)
-            mask = imread(masks_path + slice)
+            slice_path = root + slice
+            ROI_mask_path = ROI_path + slice
+            mask_path = ROI_path + slice 
+            slice = imread(slice_path)
+            roi = imread(ROI_mask_path)
+            mask = imread(mask_path)
+
+            img_height = slice.shape[0]
+            print(roi.max())
+
+            i += 1
+
+            # Escape of the for loop since the number of images, masks, 
+            # and ROI is different due to computational power
+            if i == 7:
+                return 0
+
 
 if __name__ == "__main__":
-    extractPatches("D:\D")
+    extractPatches(folder_path="D:\D", patch_shape=(256,128), n_pos=12, n_neg=2, pos=1)
