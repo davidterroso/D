@@ -127,11 +127,13 @@ def save_segmentation_oct_as_tiff(oct_folder, save_folder):
                         file_path = root + """\\""" + filename
                         img, _, _ = load_oct_image(file_path)
                         num_slices = img.shape[0]
-                        # Iterates through the slices to save each slice with an identifiable name, both in uint8 for visualization
+                        # Iterates through the slices to save each slice with 
+                        # an identifiable name, both in uint8 for visualization
                         # and int32 for better future manipulation 
                         for slice_num in range(num_slices):
                             im_slice = img[slice_num,:,:]
-                            # Normalizes the image to uint8 so that it can be visualized in the computer
+                            # Normalizes the image to uint8 so that it can be 
+                            # visualized in the computer
                             im_slice_uint8 = int32_to_uint8(im_slice)
 
                             # Saves image in int32
@@ -193,8 +195,8 @@ def save_segmentation_mask_as_tiff(oct_folder, save_folder):
                         img, _, _ = load_oct_mask(file_path)
                         num_slices = img.shape[0]
 
-                        # Iterates through the slices to save each slice with an identifiable name, both in uint8 for visualization
-                        # and int32 for better future manipulation 
+                        # Iterates through the slices to save each slice with an identifiable name,
+                        # both in uint8 for visualization and int32 for better future manipulation 
                         for slice_num in range(num_slices):
                             im_slice = img[slice_num,:,:]
 
