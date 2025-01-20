@@ -7,7 +7,7 @@ from skimage.util import img_as_float
 from skimage.morphology import disk, binary_closing
 from skimage.filters.rank import entropy
 from skimage.transform import resize
-from readOCT import int32_to_uint8
+from .readOCT import int32_to_uint8
 import numpy as np
 
 def createROIMask(slice, mask, threshold, save_location, save_location_to_view):
@@ -460,8 +460,6 @@ def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg):
                 tmp_roi = rois_subvolumes[r:r + h, c:c + w]
                 tmp_mask = masks_subvolumes[r:r + h, c:c + w]
 
-                print(tmp_slice.shape)
-                """
                 # Attributes a number to each patch
                 # considering their label
                 if l == 1:
@@ -475,35 +473,49 @@ def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg):
 
                 # Indicates the name of the patches
                 vol_name = slice_path.split("\\")[-1][:-5]
+                before_patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + "_before.tiff"
                 patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + ".tiff"
+                after_patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + "_after.tiff"
 
                 # Indicates the name of the slice patch
+                slice_before_patch_name_uint8 = save_patches_path_uint8 + before_patch_name
                 slice_patch_name_uint8 = save_patches_path_uint8 + patch_name
+                slice_after_patch_name_uint8 = save_patches_path_uint8 + after_patch_name
 
                 # Indicates the name of the mask patch
+                mask_before_patch_name_uint8 = save_patches_masks_path_uint8 + before_patch_name
                 mask_patch_name_uint8 = save_patches_masks_path_uint8 + patch_name
+                mask_after_patch_name_uint8 = save_patches_masks_path_uint8 + after_patch_name
 
                 # Indicates the name of the ROI patch
+                roi_before_patch_name_uint8 = save_patches_rois_path_uint8 + before_patch_name
                 roi_patch_name_uint8 = save_patches_rois_path_uint8 + patch_name
+                roi_after_patch_name_uint8 = save_patches_rois_path_uint8 + after_patch_name
                 
                 # Saves each slice patch as uint8
                 tmp_slice = resize(tmp_slice.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                slice_uint8 = Image.fromarray(int32_to_uint8(tmp_slice))
+                print(tmp_slice.shape)
+                slice_before_uint8 = Image.fromarray(int32_to_uint8(tmp_slice[:,:,0]))
+                slice_before_uint8.save(slice_before_patch_name_uint8)
+                slice_uint8 = Image.fromarray(int32_to_uint8(tmp_slice[:,:,1]))
                 slice_uint8.save(slice_patch_name_uint8)
+                slice_after_uint8 = Image.fromarray(int32_to_uint8(tmp_slice[:,:,2]))
+                slice_after_uint8.save(slice_after_patch_name_uint8)
 
                 # Saves each mask patch as uint8
                 tmp_mask = resize(tmp_mask.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                mask_uint8 = Image.fromarray((np.round(255 * (tmp_mask / 3))).astype(np.uint8))
+                mask_before_uint8 = Image.fromarray((np.round(255 * (tmp_mask[:,:,0] / 3))).astype(np.uint8))
+                mask_before_uint8.save(mask_before_patch_name_uint8)
+                mask_uint8 = Image.fromarray((np.round(255 * (tmp_mask[:,:,1] / 3))).astype(np.uint8))
                 mask_uint8.save(mask_patch_name_uint8)
+                mask_after_uint8 = Image.fromarray((np.round(255 * (tmp_mask[:,:,2] / 3))).astype(np.uint8))
+                mask_after_uint8.save(mask_after_patch_name_uint8)
 
                 # Saves each ROI patch as uint8
                 tmp_roi = resize(tmp_roi.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                roi_uint8 = Image.fromarray((tmp_roi * 255).astype(np.uint8))
+                roi_before_uint8 = Image.fromarray((tmp_roi[:,:,0] * 255).astype(np.uint8))
+                roi_before_uint8.save(roi_before_patch_name_uint8)
+                roi_uint8 = Image.fromarray((tmp_roi[:,:,1] * 255).astype(np.uint8))
                 roi_uint8.save(roi_patch_name_uint8)
-                """
-                i += 1
-                if i == 1:
-                    return 0
-
-if __name__ == "__main__":
-    extractPatches25D(folder_path="D:\D", patch_shape=(256,128), n_pos=12, n_neg=2, pos=1, neg=0)
+                roi_after_uint8 = Image.fromarray((tmp_roi[:,:,2] * 255).astype(np.uint8))
+                roi_after_uint8.save(roi_after_patch_name_uint8)
