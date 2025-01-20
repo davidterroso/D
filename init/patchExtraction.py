@@ -340,7 +340,7 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
 
 def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg):
     """
-    Extract the patches from the OCT scans
+    Extract the subvolumes of patches from the OCT scans
 
     Args:
         folders_path (str): Path indicating where the images are stored
