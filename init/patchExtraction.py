@@ -6,6 +6,7 @@ from skimage.io import imread
 from skimage.util import img_as_float
 from skimage.morphology import disk, binary_closing
 from skimage.filters.rank import entropy
+from skimage.transform import resize
 from .readOCT import int32_to_uint8
 import numpy as np
 
@@ -238,38 +239,25 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
     images_path = folder_path + "\\OCT_images\\segmentation\\slices\\int32\\"
     masks_path = folder_path + "\\OCT_images\\segmentation\\masks\\int8\\"
     ROI_path = folder_path + "\\OCT_images\\segmentation\\roi\\int8\\"
-    save_patches_path_int32 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\slices\\int32\\"
-    save_patches_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\slices\\uint8\\"
-    save_patches_masks_path_int8 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\masks\\int8\\"
-    save_patches_masks_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\masks\\uint8\\"
-    save_patches_rois_path_int8 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\roi\\int8\\"
-    save_patches_rois_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\roi\\uint8\\"
+    save_patches_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\slices\\"
+    save_patches_masks_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\masks\\"
+    save_patches_rois_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\roi\\"
 
     # In case the folder to save the images does not exist, it is created
-    if not (exists(save_patches_path_int32) and exists(save_patches_path_uint8) 
-            and exists(save_patches_masks_path_int8) and exists(save_patches_masks_path_uint8) 
-            and exists(save_patches_rois_path_int8) and exists(save_patches_rois_path_uint8)):
-        makedirs(save_patches_path_int32)
+    if not (exists(save_patches_path_uint8) 
+            and exists(save_patches_masks_path_uint8) 
+            and exists(save_patches_rois_path_uint8)):
         makedirs(save_patches_path_uint8)
-        makedirs(save_patches_masks_path_int8)
         makedirs(save_patches_masks_path_uint8)
-        makedirs(save_patches_rois_path_int8)
         makedirs(save_patches_rois_path_uint8)
     else:
-        rmtree(save_patches_path_int32)
-        makedirs(save_patches_path_int32)
         rmtree(save_patches_path_uint8)
         makedirs(save_patches_path_uint8)
-        rmtree(save_patches_masks_path_int8)
-        makedirs(save_patches_masks_path_int8)
         rmtree(save_patches_masks_path_uint8)
         makedirs(save_patches_masks_path_uint8)
-        rmtree(save_patches_rois_path_int8)
-        makedirs(save_patches_rois_path_int8)
         rmtree(save_patches_rois_path_uint8)
         makedirs(save_patches_rois_path_uint8)
 
-    i = 0
     # Iterates through the saved ROI masks
     for (root, _, files) in walk(images_path):
         for slice in files:
@@ -327,41 +315,25 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
                 patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + ".tiff"
 
                 # Indicates the name of the slice patch
-                slice_patch_name_int32 = save_patches_path_int32 + patch_name
                 slice_patch_name_uint8 = save_patches_path_uint8 + patch_name
 
                 # Indicates the name of the mask patch
-                mask_patch_name_int8 = save_patches_masks_path_int8 + patch_name
                 mask_patch_name_uint8 = save_patches_masks_path_uint8 + patch_name
 
-                # Indicates the name of the roi patch
-                roi_patch_name_int8 = save_patches_rois_path_int8 + patch_name
+                # Indicates the name of the ROI patch
                 roi_patch_name_uint8 = save_patches_rois_path_uint8 + patch_name
                 
-                # Saves each slice patch as int32 and uinit8
-                slice_int32 = Image.fromarray(tmp_slice)
+                # Saves each slice patch as uint8
+                tmp_slice = resize(tmp_slice.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
                 slice_uint8 = Image.fromarray(int32_to_uint8(tmp_slice))
-                slice_int32.save(slice_patch_name_int32)
                 slice_uint8.save(slice_patch_name_uint8)
 
-                # Saves each mask patch as int8 and uinit8
-                mask_int8 = Image.fromarray(tmp_mask)
+                # Saves each mask patch as uint8
+                tmp_mask = resize(tmp_mask.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
                 mask_uint8 = Image.fromarray((np.round(255 * (tmp_mask / 3))).astype(np.uint8))
-                mask_int8.save(mask_patch_name_int8)
                 mask_uint8.save(mask_patch_name_uint8)
 
-                # Saves each ROI patch as int8 and uinit8
-                roi_int8 = Image.fromarray(tmp_roi)
+                # Saves each ROI patch as uint8
+                tmp_roi = resize(tmp_roi.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
                 roi_uint8 = Image.fromarray((tmp_roi * 255).astype(np.uint8))
-                roi_int8.save(roi_patch_name_int8)
                 roi_uint8.save(roi_patch_name_uint8)
-
-            # Escape of the for loop since the number of images, masks, 
-            # and ROI is different due to computational power
-            i += 1
-            if i == 1:
-                return 0
-
-
-if __name__ == "__main__":
-    extractPatches(folder_path="D:\D", patch_shape=(256,128), n_pos=12, n_neg=2, pos=1, neg=0)
