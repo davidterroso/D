@@ -7,7 +7,7 @@ from skimage.util import img_as_float
 from skimage.morphology import disk, binary_closing
 from skimage.filters.rank import entropy
 from skimage.transform import resize
-from .readOCT import int32_to_uint8
+from readOCT import int32_to_uint8
 import numpy as np
 
 def createROIMask(slice, mask, threshold, save_location, save_location_to_view):
@@ -337,3 +337,173 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
                 tmp_roi = resize(tmp_roi.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
                 roi_uint8 = Image.fromarray((tmp_roi * 255).astype(np.uint8))
                 roi_uint8.save(roi_patch_name_uint8)
+
+def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg):
+    """
+    Extract the patches from the OCT scans
+
+    Args:
+        folders_path (str): Path indicating where the images are stored
+        patch_shape (tuple): Shape of the patches to extract (height, width)
+        n_pos (int): Number of patches from the ROI to extract
+        n_neg (int): Number of patches outside the ROI to extract
+        pos (int): Intensity indicating a positive region on the ROI mask
+        neg (int): Intensity indicating a negative region on the ROI mask
+
+    Return:
+        None
+    """
+
+    # Declares the multiplication factor to obtain the correct patch height 
+    # for each device, identified by the height of the image
+    SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
+
+    images_path = folder_path + "\\OCT_images\\segmentation\\slices\\int32\\"
+    masks_path = folder_path + "\\OCT_images\\segmentation\\masks\\int8\\"
+    ROI_path = folder_path + "\\OCT_images\\segmentation\\roi\\int8\\"
+    save_patches_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2.5D\\slices\\"
+    save_patches_masks_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2.5D\\masks\\"
+    save_patches_rois_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2.5D\\roi\\"
+
+    # In case the folder to save the images 
+    # does not exist, it is created
+    if not (exists(save_patches_path_uint8) 
+            and exists(save_patches_masks_path_uint8) 
+            and exists(save_patches_rois_path_uint8)):
+        makedirs(save_patches_path_uint8)
+        makedirs(save_patches_masks_path_uint8)
+        makedirs(save_patches_rois_path_uint8)
+    else:
+        rmtree(save_patches_path_uint8)
+        makedirs(save_patches_path_uint8)
+        rmtree(save_patches_masks_path_uint8)
+        makedirs(save_patches_masks_path_uint8)
+        rmtree(save_patches_rois_path_uint8)
+        makedirs(save_patches_rois_path_uint8)
+
+    # Iterates through the saved ROI masks
+    i = 0
+    for (root, _, files) in walk(images_path):
+        for slice in files:
+            # Reads the masks, the slices, 
+            # and the fluid masks 
+            slice_path = root + slice
+            ROI_mask_path = ROI_path + slice
+            mask_path = masks_path + slice 
+            slice_number = int(slice_path[-8:-5])
+            # In case it is the first slice of the volume, the first
+            # and middle slice of the subvolume are the same
+            if slice_number == 0:
+                slice_before_path = slice_path
+                roi_before_path = ROI_mask_path
+                mask_before_path = mask_path
+            else:
+                slice_before_path = slice_path[:-8] + str(slice_number - 1).zfill(3) + ".tiff"
+                roi_before_path = ROI_mask_path[:-8] + str(slice_number - 1).zfill(3) + ".tiff"
+                mask_before_path = mask_path[:-8] + str(slice_number - 1).zfill(3) + ".tiff"
+
+            slice_after_path = slice_path[:-8] + str(slice_number + 1).zfill(3) + ".tiff"
+            roi_after_path = ROI_mask_path[:-8] + str(slice_number + 1).zfill(3) + ".tiff"
+            mask_after_path = mask_path[:-8] + str(slice_number + 1).zfill(3) + ".tiff"
+
+            # In case it is the last slice of the volume, the middle
+            # and last slice of the subvolume are the same
+            if not isfile(slice_after_path):
+                slice_after_path = slice_path
+                roi_after_path = ROI_mask_path
+                mask_after_path = mask_path
+
+            # Subvolumes containing the previous, current, and 
+            # following slices are created
+            slice_before = imread(slice_before_path)
+            slice = imread(slice_path)
+            slice_after = imread(slice_after_path)
+            slices_subvolumes = np.stack([slice_before, slice, slice_after], axis=-1)
+
+            roi_before = imread(roi_before_path)
+            roi = imread(ROI_mask_path)
+            roi_after = imread(roi_after_path)
+            rois_subvolumes = np.stack([roi_before, roi, roi_after], axis=-1)
+
+            mask_before = imread(mask_before_path)
+            mask = imread(mask_path)
+            mask_after = imread(mask_after_path)
+            masks_subvolumes = np.stack([mask_before, mask, mask_after], axis=-1)
+
+            # Adjusts the height of the mask 
+            # to the one device used to obtain the OCT
+            img_height = slice.shape[0]
+            npshape = (int(patch_shape[0] * SHAPE_MULT[img_height]), patch_shape[1])
+            # Extracts positive patch centers through two different functions
+            patch_centers = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos, pos=pos, neg=neg)
+            patch_centers_ = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=int(float(n_pos)*.2), pos=pos, neg=neg)
+            # Appends the second patch centers to the first
+            for r, c, l in patch_centers_:
+                patch_centers.append([r, c, l])
+
+            # Extracts negative patch centers
+            if n_neg > 0:
+                negative_patch_centers = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=n_neg, pos=neg, neg=pos)
+                for r, c, l in negative_patch_centers:
+                    # Appends the negative patch centers to the others
+                    patch_centers.append([r, c, l])
+
+            # Iterates through the calculated centers
+            # and extracts the patches
+            pos_patch_counter = 0
+            neg_patch_counter = 0
+            for r, c, l in patch_centers:
+                # Calculates the patchesfor the B-scan, ROI, and fluid masks
+                h, w = patch_shape[0], patch_shape[1]
+                r, c = int(r - h // 2), int(c - w // 2)
+                tmp_slice = slices_subvolumes[r:r + h, c:c + w]
+                tmp_roi = rois_subvolumes[r:r + h, c:c + w]
+                tmp_mask = masks_subvolumes[r:r + h, c:c + w]
+
+                print(tmp_slice.shape)
+                """
+                # Attributes a number to each patch
+                # considering their label
+                if l == 1:
+                    label = "pos"
+                    patch_counter = pos_patch_counter
+                    pos_patch_counter += 1
+                elif l == 0:
+                    label = "neg"
+                    patch_counter = neg_patch_counter
+                    neg_patch_counter += 1
+
+                # Indicates the name of the patches
+                vol_name = slice_path.split("\\")[-1][:-5]
+                patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + ".tiff"
+
+                # Indicates the name of the slice patch
+                slice_patch_name_uint8 = save_patches_path_uint8 + patch_name
+
+                # Indicates the name of the mask patch
+                mask_patch_name_uint8 = save_patches_masks_path_uint8 + patch_name
+
+                # Indicates the name of the ROI patch
+                roi_patch_name_uint8 = save_patches_rois_path_uint8 + patch_name
+                
+                # Saves each slice patch as uint8
+                tmp_slice = resize(tmp_slice.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
+                slice_uint8 = Image.fromarray(int32_to_uint8(tmp_slice))
+                slice_uint8.save(slice_patch_name_uint8)
+
+                # Saves each mask patch as uint8
+                tmp_mask = resize(tmp_mask.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
+                mask_uint8 = Image.fromarray((np.round(255 * (tmp_mask / 3))).astype(np.uint8))
+                mask_uint8.save(mask_patch_name_uint8)
+
+                # Saves each ROI patch as uint8
+                tmp_roi = resize(tmp_roi.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
+                roi_uint8 = Image.fromarray((tmp_roi * 255).astype(np.uint8))
+                roi_uint8.save(roi_patch_name_uint8)
+                """
+                i += 1
+                if i == 1:
+                    return 0
+
+if __name__ == "__main__":
+    extractPatches25D(folder_path="D:\D", patch_shape=(256,128), n_pos=12, n_neg=2, pos=1, neg=0)
