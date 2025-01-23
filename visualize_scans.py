@@ -54,7 +54,7 @@ def showImages(vendor, volume, slice_num):
 
     # Display B-Scan with fluid masks
     ax_array[0, 1].imshow(original_slice, cmap=plt.cm.gray)
-    img = ax_array[0, 1].imshow(mask, alpha=0.7, cmap=cmap, norm=norm)
+    img = ax_array[0, 1].imshow(mask, alpha=0.3, cmap=cmap, norm=norm)
     ax_array[0, 1].set_title("B-Scan with Fluid Masks")
     ax_array[0, 1].axis("off")
 
@@ -72,7 +72,7 @@ def showImages(vendor, volume, slice_num):
 
     # Display B-Scan with entropy mask
     ax_array[1, 0].imshow(original_slice, cmap=plt.cm.gray)
-    img = ax_array[1, 0].imshow(entropy_mask, alpha=0.7, cmap=cmap)
+    img = ax_array[1, 0].imshow(entropy_mask, alpha=0.3, cmap=cmap)
     ax_array[1, 0].set_title("B-Scan with Entropy Mask")
     ax_array[1, 0].axis("off")
 
@@ -81,13 +81,22 @@ def showImages(vendor, volume, slice_num):
     cbar.ax.set_yticklabels(entropy_label)  # Assign labels to each value
     cbar.set_label("Entropy > 1e-2")
 
+    colors = ["cyan"]  # Black for background, red, green, blue for fluids
+    cmap = mcolors.ListedColormap(colors)
+    bounds = [0,1]
+    norm = mcolors.BoundaryNorm(bounds, cmap.N)
+    entropy_label = ["Entropy"]
+
     # Display B-Scan with ROI mask
     ax_array[1, 1].imshow(original_slice, cmap=plt.cm.gray)
-    ax_array[1, 1].imshow(roi, alpha=0.7, cmap=plt.cm.summer)
+    img = ax_array[1, 1].imshow(roi, alpha=0.3, cmap=cmap)
     ax_array[1, 1].set_title("B-Scan with ROI Mask")
     ax_array[1, 1].axis("off")
 
-    plt.tight_layout()
+    # Add color bar for fluid masks
+    cbar = fig.colorbar(img, ax=ax_array[1, 1], ticks=[0.5])
+    cbar.set_label("ROI Mask")
+
     plt.show()
 
 class VendorInputApp:
