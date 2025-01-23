@@ -3,10 +3,11 @@
 ## Table of Contents <!-- omit in toc -->
 - [Folder Structure](#folder-structure)
 - [pipeline.ipynb](#pipelineipynb)
+- [README.md](#readmemd)
+- [visualize\_scans.py](#visualize_scanspy)
 - [RETOUCH Folder Structure](#retouch-folder-structure)
 
 ## Folder Structure
-
 ```bash
 D
  ┣ environment # Contains the environment and requirements for this project
@@ -24,11 +25,19 @@ D
  ┃ ┗ segmentation_train_splits.csv # Contains the index of the volumes that will be used in the training of the segmentation models
  ┣ .gitignore # Declares the files that must not be updated to git
  ┣ documentation.md # Project documentation
- ┗ pipeline.ipynb # Project's pipeline code
+ ┣ pipeline.ipynb # Project's pipeline code
+ ┣ README.md # Front page of the project, used to orient the user
+ ┗ visualize_scans.py # Simple UI for the user to visualize what is happening to the images in the processing
  ```
 
 ## pipeline.ipynb
 Python notebook that contains the pipeline behind this project, from reading the images and saving, to the training of the networks. When this file is run, it does not need any other changes except some paths and options selected in the beginning. 
+
+## README.md
+Markdown file that introduces and orients the user in this project, introducing where to navigate to better understand it
+
+## visualize_scans.py
+File that, when ran, shows an UI that allows the user to select B-scans from the volumes in the training set of the RETOUCH dataset to visualize, showcasing the unaltered slice, the fluid masks, the entropy mask, and the ROI mask. 
 
 ## RETOUCH Folder Structure
 Explains the folder structure of the RETOUCH dataset in order to compliment the code used in [foldsSplit.py](./init/foldsSplit.py) and [readOCT.py](./init/readOCT.py), allowing for better understanding and visualization.
