@@ -11,7 +11,6 @@ from skimage.morphology import disk
 from paths import IMAGES_PATH
 
 def showImages(vendor, volume, slice_num):
-    print("Here")
     vendor = vendor.lower().capitalize()
     volume = str(volume).zfill(3)
     slice_num = str(slice_num).zfill(3)
@@ -22,7 +21,9 @@ def showImages(vendor, volume, slice_num):
 
     original_slice = imread(slice_path)
     mask = imread(masks_path)
+    mask = mask * 3 / 255
     roi = imread(roi_path)
+    roi = roi / 255
 
     mask = np.array(mask, dtype=np.float32)
     mask[mask == 0] = np.nan
@@ -62,12 +63,23 @@ def showImages(vendor, volume, slice_num):
     cbar.ax.set_yticklabels(fluids)  # Assign labels to each value
     cbar.set_label("Fluid Types")
 
+    # Define colormap and normalization for mask
+    colors = ["purple"]  # Black for background, red, green, blue for fluids
+    cmap = mcolors.ListedColormap(colors)
+    bounds = [0,1]
+    norm = mcolors.BoundaryNorm(bounds, cmap.N)
+    entropy_label = ["Entropy"]
+
     # Display B-Scan with entropy mask
     ax_array[1, 0].imshow(original_slice, cmap=plt.cm.gray)
-    ax_array[1, 0].imshow(mask, alpha=0.7, cmap=cmap, norm=norm)
-    ax_array[1, 0].imshow(entropy_mask, alpha=0.7, cmap=plt.cm.viridis)
+    img = ax_array[1, 0].imshow(entropy_mask, alpha=0.7, cmap=cmap)
     ax_array[1, 0].set_title("B-Scan with Entropy Mask")
     ax_array[1, 0].axis("off")
+
+    # Add color bar for fluid masks
+    cbar = fig.colorbar(img, ax=ax_array[1, 0], ticks=[0.5])
+    cbar.ax.set_yticklabels(entropy_label)  # Assign labels to each value
+    cbar.set_label("Entropy > 1e-2")
 
     # Display B-Scan with ROI mask
     ax_array[1, 1].imshow(original_slice, cmap=plt.cm.gray)
@@ -111,10 +123,6 @@ class VendorInputApp:
             vendor = self.vendor_entry.get()
             volume = int(self.volume_entry.get())
             slice_val = int(self.slice_entry.get())
-
-            print(vendor)
-            print(volume)
-            print(slice_val)
 
             # Validate inputs
             if not vendor:
