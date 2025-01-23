@@ -38,18 +38,11 @@ for x in range(0, w):
         rnge.append(int((float(y_max) - y_min)/h*100.))
         slice[y_min:y_max, x] = 1
 
-slice_to_view = (slice * 255).astype(np.uint8)
-
+slice_to_view_arr = (slice * 255).astype(np.uint8)
 entropy_mask = (slice_ * 255).astype(np.uint8)
-entropy_mask =  Image.fromarray(entropy_mask, mode='L')
-entropy_mask.save(str(save_path + "EntropyMask.tiff"))
-
 mask = (original_mask * 255 / 3).astype(np.uint8)
-mask =  Image.fromarray(mask, mode='L')
-mask.save(str(save_path + "FluidMask.tiff"))
 
-slice_to_view = Image.fromarray(slice_to_view, mode='L')
-slice_to_view.save(str(save_path + "CombinedMasks.tiff"))
+slice_to_view = Image.fromarray(slice_to_view_arr, mode='L')
 
 original_mask = np.array(original_mask, dtype=np.float32)
 original_mask[original_mask==0] = np.nan
@@ -57,9 +50,31 @@ original_mask[original_mask==0] = np.nan
 entropy_mask = np.array(slice_, dtype=np.float32)
 entropy_mask[entropy_mask==0] = np.nan
 
+slice_to_view_arr = np.array(slice_to_view_arr, dtype=np.float32)
+slice_to_view_arr[slice_to_view_arr==0] = np.nan
 
-plt.figure()
+fig = plt.figure(frameon=False)
+plt.imshow(original_slice, cmap=plt.cm.gray)
+plt.imshow(original_mask, alpha=0.7, cmap=plt.cm.jet)
+plt.axis("off")
+fig.savefig(str(save_path + "FluidMasks.png"), bbox_inches="tight", pad_inches=0)
+
+fig = plt.figure(frameon=False)
+plt.imshow(original_slice, cmap=plt.cm.gray)
+plt.imshow(entropy_mask, alpha=0.7, cmap=plt.cm.viridis)
+plt.axis("off")
+fig.savefig(str(save_path + "EntropyMasks.png"), bbox_inches="tight", pad_inches=0)
+
+fig = plt.figure(frameon=False)
 plt.imshow(original_slice, cmap=plt.cm.gray)
 plt.imshow(original_mask, alpha=0.7, cmap=plt.cm.jet)
 plt.imshow(entropy_mask, alpha=0.7, cmap=plt.cm.viridis)
-plt.show()
+plt.axis("off")
+fig.savefig(str(save_path + "AllMasks.png"), bbox_inches="tight", pad_inches=0)
+
+fig = plt.figure(frameon=False)
+plt.imshow(original_slice, cmap=plt.cm.gray)
+plt.imshow(slice_to_view_arr, alpha=0.7, cmap=plt.cm.summer)
+plt.axis("off")
+
+fig.savefig(str(save_path + "FinalMask.png"), bbox_inches="tight", pad_inches=0)
