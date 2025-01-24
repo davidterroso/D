@@ -1,2 +1,3 @@
 # Do not commit the following files/folders
 __pycache__/
+paths.py
