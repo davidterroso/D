@@ -49,8 +49,9 @@ class DoubleConvolution(nn.Module):
             self (DoubleConvolution object): the 
             DoubleConvolution object which is going
             to be performed on input x
-            x (PyTorch tensor): network input or result 
-            of the downsample operation before
+            x (PyTorch tensor): result operation
+            before, which can be a downsample of a
+            upsample operation
 
         Return:
             (PyTorch tensor): result of the double 
@@ -87,7 +88,7 @@ class DownSample(nn.Module):
 
     def forward(self, x):
         """
-        Forward step of the down sample, returning
+        Forward step of the downsample, returning
         its result when applied to an input x
 
         Args: 
@@ -98,8 +99,8 @@ class DownSample(nn.Module):
             double convolution
 
         Return:
-            (PyTorch tensor): result of the down 
-            sampling operation on the input x
+            (PyTorch tensor): result of the 
+            downsampling operation on the input x
             (PyTorch tensor): result of the max 
             pooling operation on the input x
         """
@@ -113,4 +114,66 @@ class DownSample(nn.Module):
         # Returns the result of the downsampling 
         # and max pooling operation
         return down, pool
+
+class UpSample(nn.Module):
+    """
+    PyTorch Module that upsamples the input. 
+    This module consists of a de-convolution
+    followed by a concatenation with a cropped
+    output of a previous double convolution.
+    """
+    def __init__(self, in_channels, out_channels):
+        """
+        Initiates the UpSample object, which is composed of a de-convolution 
+        and a concatenation with a cropped output of a previous double convolution.
+        
+        Args:
+            in_channels (int): Number of channels that are input in this module
+            out_channels (int): Number of channels that are output of this module
+        
+        Return:
+            None
+        """
+        # Calls nn.Module class
+        super().__init__()
+        # Initiates the de-convolution function
+        # Shape (input): (h x w x in_channels)
+        # Shape (output): (h x w x in_channels // 2)
+        self.up = nn.ConvTranspose2d(in_channels, in_channels // 2, kernel_size=2, stride=2)
+        # Initiates the double convolution function
+        # Shape (input): (2*h x 2*w x in_channels // 2)
+        # Shape (output): ((2*h - 2 - 2) x (2*w - 2 - 2) x in_channels // 2)
+        self.conv = DoubleConvolution(in_channels, out_channels)
+
+    def forward(self, x1, x2):
+        """
+        Forward step of the upsample, returning
+        its result when applied to an input x1,
+        that results from the downsampling step, 
+        and x2
+
+        Args: 
+            self (DownSample object): the 
+            DownSample object which is going
+            to be performed on input x
+            x1 (PyTorch tensor): result of the
+            previous step
+            x2 (PyTorch tensor): result of the
+            downsampling step
+
+        Return:
+            (PyTorch tensor): result of the upsample, 
+            concatenation, and convolution
+        """
+        # Calculates the up convolution applied 
+        # to the x1 input
+        x1 = self.up(x1)
+        # Concatenates the results of the
+        # upconvolution with those obtained in 
+        # the downsampling step 
+        x = torch.cat([x1, x2], 1)
+        # Returns the result of the convolution
+        # applied to the result of the concatenation 
+        # step
+        return self.conv(x)
     
