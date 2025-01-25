@@ -44,7 +44,7 @@ D
 Python notebook that contains the pipeline behind this project, from reading the images and saving, to the training of the networks. When this file is run, it does not need any other changes except some paths and options selected in the beginning. 
 
 ## README.md
-Markdown file that introduces and orients the user in this project, introducing where to navigate to better understand it
+Markdown file that introduces and orients the user in this project, introducing where to navigate to better understand it.
 
 ## visualize_scans.py
 File that, when ran, shows an UI that allows the user to select B-scans from the volumes in the training set of the RETOUCH dataset to visualize, showcasing the unaltered slice, the fluid masks, the entropy mask, and the ROI mask. 
