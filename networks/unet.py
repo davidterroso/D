@@ -214,3 +214,42 @@ class UNet(nn.Module):
 
         # Last convolution to obtain the segmentation masks
         self.out = nn.Conv2d(in_channels=64, out_channels=num_classes, kernel_size=1) # ((h - 4) / 2, (w - 4) / 2, 64) -> (h, w, num_classes)
+
+    def forward(self, x):
+        """
+        Forward step of the U-Net, returning
+        the segmented masks.
+
+        Args: 
+            self (UNet object): the 
+            UNet object that contains the layers
+            x (PyTorch tensor): input image
+
+        Return:
+            (PyTorch tensor): image with the masks 
+            as other channels
+        """
+        # Performs the steps in the encoding path of the 
+        # network
+        down_1, pool_1 = self.down_convolution_1(x)
+        down_2, pool_2 = self.down_convolution_2(pool_1)
+        down_3, pool_3 = self.down_convolution_3(pool_2)
+        down_4, pool_4 = self.down_convolution_4(pool_3)
+
+        # Calculates the last convolution before 
+        # upsampling without max pooling
+        b = self.bottle_neck(pool_4)
+
+        # Performs the steps in the decoding path 
+        # of the network
+        up_1 = self.up_convolution_1(b, down_4)
+        up_2 = self.up_convolution_2(up_1, down_3)
+        up_3 = self.up_convolution_3(up_2, down_2)
+        up_4 = self.up_convolution_4(up_3, down_1)
+
+        # Performs the final convolution that outputs
+        # the image with its respective masks in 
+        # different channels, which is then returned
+        out = self.out(up_4)
+
+        return out
