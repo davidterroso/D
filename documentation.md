@@ -11,10 +11,17 @@
 ```bash
 D
  ┣ environment # Contains the environment and requirements for this project
- ┃ ┣ environment.yml # File that contains the conda environment created
- ┃ ┣ requirements_full.txt # File with the complete requirements, that include 
- ┃ ┃                       # both the packages and the packages installed because of those packages
- ┃ ┗ requirements.txt # Contains the necessary packages for this project and their respective versions
+ ┃ ┣ environment_tf.yml # File that contains the conda environment created used when Tensorflow was used 
+ ┃ ┣ environment_torch.yml # File that contains the conda environment created used when PyTorch was used 
+ ┃ ┣ requirements_full_tf.txt # File with the complete requirements, that include 
+ ┃ ┃                          # both the packages and the packages installed because of those packages,
+ ┃ ┃                          # including Tensorflow
+ ┃ ┣ requirements_full_torch.txt # File with the complete requirements, that include 
+ ┃ ┃                          # both the packages and the packages installed because of those packages,
+ ┃ ┃                          # including PyTorch
+ ┃ ┗ requirements.txt # Contains the necessary packages for this project and their respective versions, 
+ ┃                    # without including PyTorch or Tensorflow packages, which are installed manually 
+ ┃                    # as described in the README.md file
  ┣ init # Folder that contains the Python files that are used before training the networks, to prepare the data
  ┃ ┣ __init__.py # Despite not having code in it, marks the folder as a possible library and allows its use in Jupyter
  ┃ ┣ foldsSplit.py # Has functions that perform k-fold-split on the RETOUCH dataset, according to the project needs
