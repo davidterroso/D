@@ -1,7 +1,7 @@
-import torch
-import torch.nn as nn
+from torch import cat
+from torch.nn import Module, Sequential, Conv2d, ConvTranspose2d, ReLU, MaxPool2d
 
-class DoubleConvolution(nn.Module):
+class DoubleConvolution(Module):
     """
     PyTorch Module that performs a double convolution on the input. 
     This module consists of a convolution followed by a rectified 
@@ -22,21 +22,21 @@ class DoubleConvolution(nn.Module):
         # Calls nn.Module class
         super.__init__()
         # Defines the double convolution
-        self.conv_op = nn.Sequential(
+        self.conv_op = Sequential(
             # Two dimensional convolution with kernel of size three 
             # and padding one. 
             # Shape (input): (h x w x in_channels)
             # Shape (output): ((h - 2) x (w - 2) x out_channels)
-            nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
+            Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
             # Rectified Linear Activation function. Does not change the 
             # input shape. 
             # inplace argument declares a change directly on the input, 
             # without producing an output
-            nn.ReLU(inplace=True),
+            ReLU(inplace=True),
             # Shape (input): ((h - 2) x (w - 2) x out_channels)
             # Shape (output): ((h - 2 - 2) x (w - 2 - 2) x out_channels)
-            nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True)
+            Conv2d(out_channels, out_channels, kernel_size=3, padding=1),
+            ReLU(inplace=True)
         )
 
     def forward(self, x):
@@ -58,7 +58,7 @@ class DoubleConvolution(nn.Module):
         """
         return self.conv_op(x)
 
-class DownSample(nn.Module):
+class DownSample(Module):
     """
     PyTorch Module that downsamples the input. 
     This module consists of a double convolution
@@ -83,7 +83,7 @@ class DownSample(nn.Module):
         # Calls the MaxPooling function
         # Shape (input): ((h - 2 - 2) x (w - 2 - 2) x out_channels)
         # Shape (output): ((h - 2 - 2) / 2 x (w - 2 - 2) / 2 x out_channels)
-        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.pool = MaxPool2d(kernel_size=2, stride=2)
 
     def forward(self, x):
         """
@@ -114,7 +114,7 @@ class DownSample(nn.Module):
         # and max pooling operation
         return down, pool
 
-class UpSample(nn.Module):
+class UpSample(Module):
     """
     PyTorch Module that upsamples the input. 
     This module consists of a de-convolution
@@ -138,7 +138,7 @@ class UpSample(nn.Module):
         # Initiates the de-convolution function
         # Shape (input): (h x w x in_channels)
         # Shape (output): (h x w x in_channels // 2)
-        self.up = nn.ConvTranspose2d(in_channels, in_channels // 2, kernel_size=2, stride=2)
+        self.up = ConvTranspose2d(in_channels, in_channels // 2, kernel_size=2, stride=2)
         # Initiates the double convolution function
         # Shape (input): (2*h x 2*w x in_channels // 2)
         # Shape (output): ((2*h - 2 - 2) x (2*w - 2 - 2) x in_channels // 2)
@@ -170,13 +170,13 @@ class UpSample(nn.Module):
         # Concatenates the results of the
         # upconvolution with those obtained in 
         # the downsampling step 
-        x = torch.cat([x1, x2], 1)
+        x = cat([x1, x2], 1)
         # Returns the result of the convolution
         # applied to the result of the concatenation 
         # step
         return self.conv(x)
     
-class UNet(nn.Module):
+class UNet(Module):
     """
     PyTorch Module that pieces together the 
     modules created above, forming a U-Net. 
@@ -212,7 +212,7 @@ class UNet(nn.Module):
         self.up_convolution_4 = UpSample(128, 64) # (((h - 4) / 2 - 4) / 2, ((w - 4) / 2 - 4) / 2, 128) -> ((h - 4) / 2, (w - 4) / 2, 64)
 
         # Last convolution to obtain the segmentation masks
-        self.out = nn.Conv2d(in_channels=64, out_channels=num_classes, kernel_size=1) # ((h - 4) / 2, (w - 4) / 2, 64) -> (h, w, num_classes)
+        self.out = Conv2d(in_channels=64, out_channels=num_classes, kernel_size=1) # ((h - 4) / 2, (w - 4) / 2, 64) -> (h, w, num_classes)
 
     def forward(self, x):
         """
