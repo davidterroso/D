@@ -27,6 +27,9 @@ D
  ┃ ┣ foldsSplit.py # Has functions that perform k-fold-split on the RETOUCH dataset, according to the project needs
  ┃ ┣ patchExtraction.py # Has functions extract the patches later used to train the networks
  ┃ ┗ readOCT.py # Reads and saves the OCT's B-scans so that it can be saved in the user's computer
+ ┣ networks # Folder that contains the Python files that contain the CNNs used in this project
+ ┃ ┣ __init__.py # Despite not having code in it, marks the folder as a possible library and allows its use in Jupyter
+ ┃ ┗ unet.py # U-Net model in PyTorch
  ┣ splits # Will contain all the train-test splits
  ┃ ┣ segmentation_test_splits.csv # Contains the index of the volumes that will be used in the testing of the segmentation models
  ┃ ┗ segmentation_train_splits.csv # Contains the index of the volumes that will be used in the training of the segmentation models
