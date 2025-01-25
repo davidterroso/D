@@ -177,3 +177,40 @@ class UpSample(nn.Module):
         # step
         return self.conv(x)
     
+class UNet(nn.Module):
+    """
+    PyTorch Module that pieces together the 
+    modules created above, forming a U-Net. 
+    """
+    def __init__(self, in_channels, num_classes):
+        """
+        Initiates the UNet object, indicating the input and output size of the
+        multiple models and the order in which they are presented
+        
+        Args:
+            in_channels (int): Number of channels that are input in this module
+            out_channels (int): Number of channels that are output of this module
+        
+        Return:
+            None
+        """
+        # Calls the nn.Module class
+        super().__init__()
+
+        # Convolutions that form the encoding path
+        self.down_convolution_1 = DownSample(in_channels, 64) # (h, w, 1) -> ((h - 4) / 2, (w - 4) / 2, 64)
+        self.down_convolution_2 = DownSample(64, 128) # ((h - 4) / 2, (w - 4) / 2, 64) -> (((h - 4) / 2 - 4) / 2, ((w - 4) / 2 - 4) / 2, 128)
+        self.down_convolution_3 = DownSample(128, 256) # (((h - 4) / 2 - 4) / 2, ((w - 4) / 2 - 4) / 2, 128) -> ((((h - 4) / 2 - 4) / 2 - 4) / 2, (((w - 4) / 2 - 4) / 2 - 4) / 2, 256)
+        self.down_convolution_4 = DownSample(256, 512) # ((((h - 4) / 2 - 4) / 2 - 4) / 2, (((w - 4) / 2 - 4) / 2 - 4) / 2, 256) -> (((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((w - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, 512)
+
+        # Double convolution on the bottleneck
+        bottle_neck = self.bottle_neck = DoubleConvolution(512, 1024) # (((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((w - 4) / 2 - 4 / 2) - 4) / 2 - 4) / 2, 512) -> ((((((h - 4) / 2 - 4 / 2 - 4 / 2 - 4) / 2 - 4) / 2, ((((((w - 4) / 2 - 4) / 2 - 4) / 2) - 4) / 2 - 4) / 2, 1024)
+
+        # Up-convolutions that form the decoding path
+        self.up_convolution_1 = UpSample(1024, 512) # ((((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((((w - 4) / 2 - 4) / 2 - 4) / 2) - 4) / 2 - 4) / 2, 1024) -> (((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((w - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, 512)
+        self.up_convolution_2 = UpSample(512, 256) # (((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((w - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, 512) -> ((((h - 4) / 2 - 4) / 2 - 4) / 2, (((w - 4) / 2 - 4) / 2 - 4) / 2, 256)
+        self.up_convolution_3 = UpSample(256, 128) # ((((h - 4) / 2 - 4) / 2 - 4) / 2, (((w - 4) / 2 - 4) / 2 - 4) / 2, 256) -> (((h - 4) / 2 - 4) / 2, ((w - 4) / 2 - 4) / 2, 128)
+        self.up_convolution_4 = UpSample(128, 64) # (((h - 4) / 2 - 4) / 2, ((w - 4) / 2 - 4) / 2, 128) -> ((h - 4) / 2, (w - 4) / 2, 64)
+
+        # Last convolution to obtain the segmentation masks
+        self.out = nn.Conv2d(in_channels=64, out_channels=num_classes, kernel_size=1) # ((h - 4) / 2, (w - 4) / 2, 64) -> (h, w, num_classes)
