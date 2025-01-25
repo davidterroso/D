@@ -5,4 +5,3 @@ pillow==11.1.0
 scikit-learn==1.6.1
 scikit-image==0.24.0
 SimpleITK==2.4.1
-tensorflow==2.10.1
