@@ -1,4 +1,5 @@
 import torch
+from pandas import read_csv
 from torch.utils.data import DataLoader
 from networks.unet import UNet
 
@@ -44,9 +45,9 @@ def train_model (
     # Dictionary of models, associates a string to a 
     # PyTorch module
     models = {
-        "UNet": "UNet()"
-        # "UNet3":
-        # "2.5D":
+        "UNet": "",
+        "UNet3": "",
+        "2.5D": ""
     }
 
     # Checks whether the selected model exists or not
@@ -71,6 +72,18 @@ def train_model (
         device_name = "cpu"
     # Saves the variable device as torch.device 
     device = torch.device(device_name)
+
+    # Checks if the selected fold for testing exists
+    if ((fold_test < 0) or (fold_test > 5)):
+        print("There are five folds. Please select one of them.")
+        return 0
+
+    # Reads the CSV file that contains the volumes that 
+    # will be used to train the network
+    df = read_csv("splits/segmentation_train_splits.csv")
+    fold_column_name = f"Fold{fold_test}_Volumes"
+    train_volumes = df[fold_column_name].dropna().to_list()
+
     
 if __name__ == "__main__":
     train_model(
