@@ -4,6 +4,7 @@
 - [Folder Structure](#folder-structure)
 - [pipeline.ipynb](#pipelineipynb)
 - [README.md](#readmemd)
+- [train.py](#trainpy)
 - [visualize\_scans.py](#visualize_scanspy)
 - [RETOUCH Folder Structure](#retouch-folder-structure)
 
@@ -37,6 +38,7 @@ D
  ┣ documentation.md # Project documentation
  ┣ pipeline.ipynb # Project's pipeline code
  ┣ README.md # Front page of the project, used to orient the user
+ ┣ train.py # File used to train the networks
  ┗ visualize_scans.py # Simple UI for the user to visualize what is happening to the images in the processing
  ```
 
@@ -45,6 +47,9 @@ Python notebook that contains the pipeline behind this project, from reading the
 
 ## README.md
 Markdown file that introduces and orients the user in this project, introducing where to navigate to better understand it.
+
+## train.py
+In this file, the functions that train the implemented neural networks are present.
 
 ## visualize_scans.py
 File that, when ran, shows an UI that allows the user to select B-scans from the volumes in the training set of the RETOUCH dataset to visualize, showcasing the unaltered slice, the fluid masks, the entropy mask, and the ROI mask. 
