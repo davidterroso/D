@@ -1,3 +1,4 @@
+import torch
 from torch.utils.data import DataLoader
 from networks.unet import UNet
 
@@ -54,6 +55,22 @@ def train_model (
         for key in models.keys():
             print(key)
         return 0
+    
+    # Checks whether the option selected is possible
+    if device not in ["CPU", "GPU"]:
+        print("Unrecognized device. Possible devices:")
+        print("CPU")
+        print("GPU")
+    elif (device == "GPU"):
+        # Checks whether the GPU is available 
+        if torch.cuda.is_available():
+            device_name = "cuda"
+        else:
+            print("GPU is not available. CPU was selected.")
+    elif (device=="CPU"):
+        device_name = "cpu"
+    # Saves the variable device as torch.device 
+    device = torch.device(device_name)
     
 if __name__ == "__main__":
     train_model(
