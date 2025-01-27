@@ -31,7 +31,7 @@ The code here implemented was ran in a Windows device, requiring some caution wi
 5. Install TensorFlow
 - TensorFlow requires a recent version of pip, so upgrade your pip installation to be sure you're running the latest version.
   ```pip install --upgrade pip```
-- Then, install TensorFlow with pip.
+- Then, install TensorFlow with pip. The version installed was 2.10.1.
   ```pip install "tensorflow<2.11"```
 
 6. Verify the installation
@@ -68,7 +68,7 @@ Another environment was created to support PyTorch. Since the required versions 
   ```conda install -c conda-forge cudatoolkit=11.8 cudnn```
 
 3. Install PyTorch
-- PyTorch installation was done using conda and the version is obtained according to the CUDA version installed, which was 11.8.
+- PyTorch installation was done using conda and the version is obtained according to the CUDA version installed, which was 11.8. The PyTorch version installed was 2.5.1.
   ```conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia```
 
 4. Verify the installation

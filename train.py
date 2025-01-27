@@ -1,7 +1,41 @@
 import torch
+from os import walk, listdir
+from paths import RETOUCH_PATH, IMAGES_PATH
 from pandas import read_csv
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
 from networks.unet import UNet
+from init.readOCT import load_oct_image
+
+def getSlicesFromVolumes(volumes_list):
+    for (root, _, _) in walk(RETOUCH_PATH):
+        train_or_test = root.split("-")
+        if ((len(train_or_test) == 3) and (train_or_test[1] == "TrainingSet")):
+            vendor_volume = train_or_test[2].split("""\\""")
+            if len(vendor_volume) == 2:
+                volume = int(vendor_volume[1][-3:])
+                if volume in volumes_list:
+                    images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\slices"
+                    print(listdir(images_folder))
+
+
+    return 0
+
+class TrainDataset(Dataset):
+    def __init__(self, train_volumes):
+        super().__init__()
+        self.volumes = train_volumes
+
+    def __len__(self):
+        return len(self.volumes)
+
+    def __getitem__(self, index):
+        if torch.is_tensor(index):
+            index = index.tolist()
+
+        # image_name = 
+
+        sample = {"scan": scan, "mask": mask}
+        return sample
 
 def train_model (
         model,
@@ -83,7 +117,9 @@ def train_model (
     df = read_csv("splits/segmentation_train_splits.csv")
     fold_column_name = f"Fold{fold_test}_Volumes"
     train_volumes = df[fold_column_name].dropna().to_list()
+    getSlicesFromVolumes(train_volumes)
 
+    dataset = TrainDataset(train_volumes)
     
 if __name__ == "__main__":
     train_model(
