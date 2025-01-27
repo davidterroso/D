@@ -231,11 +231,7 @@ def train_model (
 
         # Using the Dataset object, creates a DataLoader object 
         # which will be used to train the model in batches
-        if not (model == "2.5D"):
-              dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-        else:
-              dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
-    
+        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
     
 if __name__ == "__main__":
     train_model(
