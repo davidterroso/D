@@ -2,22 +2,31 @@ import torch
 from os import walk, listdir
 from paths import IMAGES_PATH
 from pandas import read_csv
+from skimage.io import imread
 from torch.utils.data import DataLoader, Dataset
 from networks.unet import UNet
 from init.readOCT import load_oct_image
+from init.patchExtraction import extractPatches
 
-def getSlicesFromVolumes(volumes_list):
-    images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\slices\\int32\\"
-    slices_list = []
-    for slice_name in listdir(images_folder):
-        volume = int(slice_name[-12:-9])
+def getPatchesFromVolumes(volumes_list, model):
+    if model == "2.5D":
+        images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\"
+    else:
+        images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\"
+        
+    patches_list = []
+    slices_path = images_folder + "slices\\"
+    for patch_name in listdir(slices_path):
+        volume = patch_name.split("_")[1][-3:]
+        volume = int(volume)
         if volume in volumes_list:
-            slices_list.append(slice_name)
+            patches_list.append(patch_name)
+    return patches_list
 
 class TrainDataset(Dataset):
-    def __init__(self, train_volumes):
+    def __init__(self, train_volumes, model):
         super().__init__()
-        self.slices_names = getSlicesFromVolumes(train_volumes)
+        self.patches_names = getPatchesFromVolumes(train_volumes, model)
 
     def __len__(self):
         return len(self.volumes)
@@ -25,11 +34,17 @@ class TrainDataset(Dataset):
     def __getitem__(self, index):
         if torch.is_tensor(index):
             index = index.tolist()
-        
-        slice_name = self.slices_names[index]
-        slice_path = IMAGES_PATH + "\\OCT_images\\segmentation\\slices\\int32\\" + slice_name
+    
+        if self.model == "2.5D":
+            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\"
+        else:
+            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\"
 
-        # image_name = 
+        slice_name = images_folder + "slices\\" + self.patches_names[index]
+        mask_name = images_folder + "masks\\" + self.patches_names[index]
+
+        scan = imread(slice_name)
+        mask = imread(mask_name)
 
         sample = {"scan": scan, "mask": mask}
         return sample
@@ -44,7 +59,12 @@ def train_model (
         number_of_classes,
         number_of_channels,
         fold_test,
-        tuning
+        tuning,
+        patch_shape, 
+        n_pos, 
+        n_neg, 
+        pos, 
+        neg
 ):
     """
     Function that trains the deep learning models.
@@ -114,9 +134,14 @@ def train_model (
     df = read_csv("splits/segmentation_train_splits.csv")
     fold_column_name = f"Fold{fold_test}_Volumes"
     train_volumes = df[fold_column_name].dropna().to_list()
-    getSlicesFromVolumes(train_volumes)
+    getPatchesFromVolumes(train_volumes, model)
 
-    dataset = TrainDataset(train_volumes)
+    # for epoch in range(epochs):
+    #     extractPatches(IMAGES_PATH, 
+    #                    patch_shape=patch_shape, 
+    #                    n_pos=n_pos, n_neg=n_neg, 
+    #                    pos=pos, neg=neg)
+    # dataset = TrainDataset(train_volumes, model)
     
 if __name__ == "__main__":
     train_model(
@@ -129,5 +154,10 @@ if __name__ == "__main__":
         number_of_classes=4,
         number_of_channels=1,
         fold_test=1,
-        tuning=False
+        tuning=False,
+        patch_shape=(256,128), 
+        n_pos=12, 
+        n_neg=2, 
+        pos=1, 
+        neg=0
     )

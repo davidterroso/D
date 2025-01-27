@@ -10,6 +10,10 @@ from skimage.transform import resize
 from .readOCT import int32_to_uint8
 import numpy as np
 
+# Declares the multiplication factor to obtain the correct patch height 
+# for each device, identified by the height of the image
+SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
+
 def createROIMask(slice, mask, threshold, save_location, save_location_to_view):
     """
     Creates and saves the ROI mask
@@ -232,10 +236,6 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
         None
     """
 
-    # Declares the multiplication factor to obtain the correct patch height 
-    # for each device, identified by the height of the image
-    SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
-
     images_path = folder_path + "\\OCT_images\\segmentation\\slices\\int32\\"
     masks_path = folder_path + "\\OCT_images\\segmentation\\masks\\int8\\"
     ROI_path = folder_path + "\\OCT_images\\segmentation\\roi\\int8\\"
@@ -323,17 +323,17 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
                 # Indicates the name of the ROI patch
                 roi_patch_name_uint8 = save_patches_rois_path_uint8 + patch_name
                 
-                # Saves each slice patch as uint8
+                # Saves each slice patch as uint8 after resizing it to match the patch shape
                 tmp_slice = resize(tmp_slice.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                slice_uint8 = Image.fromarray(int32_to_uint8(tmp_slice))
+                slice_uint8 = Image.fromarray(tmp_slice)
                 slice_uint8.save(slice_patch_name_uint8)
 
-                # Saves each mask patch as uint8
+                # Saves each mask patch as uint8 after resizing it to match the patch shape
                 tmp_mask = resize(tmp_mask.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
                 mask_uint8 = Image.fromarray((np.round(255 * (tmp_mask / 3))).astype(np.uint8))
                 mask_uint8.save(mask_patch_name_uint8)
 
-                # Saves each ROI patch as uint8
+                # Saves each ROI patch as uint8 after resizing it to match the patch shape
                 tmp_roi = resize(tmp_roi.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
                 roi_uint8 = Image.fromarray((tmp_roi * 255).astype(np.uint8))
                 roi_uint8.save(roi_patch_name_uint8)
@@ -353,10 +353,6 @@ def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg):
     Return:
         None
     """
-
-    # Declares the multiplication factor to obtain the correct patch height 
-    # for each device, identified by the height of the image
-    SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
 
     images_path = folder_path + "\\OCT_images\\segmentation\\slices\\int32\\"
     masks_path = folder_path + "\\OCT_images\\segmentation\\masks\\int8\\"
@@ -477,24 +473,23 @@ def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg):
                 patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + ".tiff"
                 after_patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + "_after.tiff"
 
-                # Indicates the name of the slice patch
+                # Indicates the name of the slice patch after resizing it to match the patch shape
                 slice_before_patch_name_uint8 = save_patches_path_uint8 + before_patch_name
                 slice_patch_name_uint8 = save_patches_path_uint8 + patch_name
                 slice_after_patch_name_uint8 = save_patches_path_uint8 + after_patch_name
 
-                # Indicates the name of the mask patch
+                # Indicates the name of the mask patch after resizing it to match the patch shape
                 mask_before_patch_name_uint8 = save_patches_masks_path_uint8 + before_patch_name
                 mask_patch_name_uint8 = save_patches_masks_path_uint8 + patch_name
                 mask_after_patch_name_uint8 = save_patches_masks_path_uint8 + after_patch_name
 
-                # Indicates the name of the ROI patch
+                # Indicates the name of the ROI patch after resizing it to match the patch shape
                 roi_before_patch_name_uint8 = save_patches_rois_path_uint8 + before_patch_name
                 roi_patch_name_uint8 = save_patches_rois_path_uint8 + patch_name
                 roi_after_patch_name_uint8 = save_patches_rois_path_uint8 + after_patch_name
                 
                 # Saves each slice patch as uint8
                 tmp_slice = resize(tmp_slice.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                print(tmp_slice.shape)
                 slice_before_uint8 = Image.fromarray(int32_to_uint8(tmp_slice[:,:,0]))
                 slice_before_uint8.save(slice_before_patch_name_uint8)
                 slice_uint8 = Image.fromarray(int32_to_uint8(tmp_slice[:,:,1]))
