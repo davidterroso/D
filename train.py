@@ -1,29 +1,23 @@
 import torch
 from os import walk, listdir
-from paths import RETOUCH_PATH, IMAGES_PATH
+from paths import IMAGES_PATH
 from pandas import read_csv
 from torch.utils.data import DataLoader, Dataset
 from networks.unet import UNet
 from init.readOCT import load_oct_image
 
 def getSlicesFromVolumes(volumes_list):
-    for (root, _, _) in walk(RETOUCH_PATH):
-        train_or_test = root.split("-")
-        if ((len(train_or_test) == 3) and (train_or_test[1] == "TrainingSet")):
-            vendor_volume = train_or_test[2].split("""\\""")
-            if len(vendor_volume) == 2:
-                volume = int(vendor_volume[1][-3:])
-                if volume in volumes_list:
-                    images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\slices"
-                    print(listdir(images_folder))
-
-
-    return 0
+    images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\slices\\int32\\"
+    slices_list = []
+    for slice_name in listdir(images_folder):
+        volume = int(slice_name[-12:-9])
+        if volume in volumes_list:
+            slices_list.append(slice_name)
 
 class TrainDataset(Dataset):
     def __init__(self, train_volumes):
         super().__init__()
-        self.volumes = train_volumes
+        self.slices_names = getSlicesFromVolumes(train_volumes)
 
     def __len__(self):
         return len(self.volumes)
@@ -31,6 +25,9 @@ class TrainDataset(Dataset):
     def __getitem__(self, index):
         if torch.is_tensor(index):
             index = index.tolist()
+        
+        slice_name = self.slices_names[index]
+        slice_path = IMAGES_PATH + "\\OCT_images\\segmentation\\slices\\int32\\" + slice_name
 
         # image_name = 
 
