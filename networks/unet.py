@@ -20,7 +20,7 @@ class DoubleConvolution(Module):
             None
         """
         # Calls nn.Module class
-        super.__init__()
+        super().__init__()
         # Defines the double convolution
         self.conv_op = Sequential(
             # Two dimensional convolution with kernel of size three 

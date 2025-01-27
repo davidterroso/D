@@ -26,10 +26,11 @@ def getPatchesFromVolumes(volumes_list, model):
 class TrainDataset(Dataset):
     def __init__(self, train_volumes, model):
         super().__init__()
+        self.model = model
         self.patches_names = getPatchesFromVolumes(train_volumes, model)
 
     def __len__(self):
-        return len(self.volumes)
+        return len(self.patches_names)
 
     def __getitem__(self, index):
         if torch.is_tensor(index):
@@ -93,10 +94,9 @@ def train_model (
         None
     """
 
-    # Dictionary of models, associates a string to a 
-    # PyTorch module
+    # Dictionary of models, associates a string to a PyTorch module
     models = {
-        "UNet": "",
+        "UNet": UNet(in_channels=number_of_channels, num_classes=number_of_classes),
         "UNet3": "",
         "2.5D": ""
     }
@@ -122,7 +122,7 @@ def train_model (
     elif (device=="CPU"):
         device_name = "cpu"
     # Saves the variable device as torch.device 
-    device = torch.device(device_name)
+    torch_device = torch.device(device_name)
 
     # Checks if the selected fold for testing exists
     if ((fold_test < 0) or (fold_test > 5)):
@@ -134,14 +134,19 @@ def train_model (
     df = read_csv("splits/segmentation_train_splits.csv")
     fold_column_name = f"Fold{fold_test}_Volumes"
     train_volumes = df[fold_column_name].dropna().to_list()
-    getPatchesFromVolumes(train_volumes, model)
 
-    # for epoch in range(epochs):
+    # # Iterates through every epoch
+    # for epoch in range(1, epochs + 1):
     #     extractPatches(IMAGES_PATH, 
     #                    patch_shape=patch_shape, 
     #                    n_pos=n_pos, n_neg=n_neg, 
     #                    pos=pos, neg=neg)
-    # dataset = TrainDataset(train_volumes, model)
+    #     dataset = TrainDataset(train_volumes, model)
+    #     if not (model == "2.5D"):
+    #           dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    #     else:
+    #           dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+    
     
 if __name__ == "__main__":
     train_model(
