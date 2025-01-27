@@ -135,6 +135,24 @@ def train_model (
     fold_column_name = f"Fold{fold_test}_Volumes"
     train_volumes = df[fold_column_name].dropna().to_list()
 
+    print("Train Volumes:")
+    print(len(train_volumes))    
+
+    if tuning:
+        if fold_test == 1:
+            df_test = read_csv("splits/segmentation_test_splits.csv")
+            fold_column_test = f"Fold2_Volumes"
+            test_volumes = df_test[fold_column_test].dropna().to_list()
+            print(df_test)
+            print("Test Volumes:")
+            print(len(test_volumes))
+            train_volumes = [x for x in train_volumes if x not in test_volumes]
+            print("New Train Volumes:")
+            print(len(train_volumes))            
+        else:
+            print("To tune the hyperparameters, please indicate the first fold as test set. The second fold will be used to test.")
+
+
     # # Iterates through every epoch
     # for epoch in range(1, epochs + 1):
     #     extractPatches(IMAGES_PATH, 
@@ -159,7 +177,7 @@ if __name__ == "__main__":
         number_of_classes=4,
         number_of_channels=1,
         fold_test=1,
-        tuning=False,
+        tuning=True,
         patch_shape=(256,128), 
         n_pos=12, 
         n_neg=2, 

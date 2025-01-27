@@ -110,7 +110,7 @@ def k_fold_split_segmentation(k=5, folders_path=""):
         train_df = concat([train_df, tmp_df], axis=1, sort=False)
 
         # Saves the results from the split in a CSV file just for the train
-        train_df.to_csv(path_or_buf="../splits/segmentation_train_splits.csv", index=False)
+        train_df.to_csv(path_or_buf="./splits/segmentation_train_splits.csv", index=False)
 
     # Iterates through the train-test lists and saves each as an individual 
     # column in a Pandas Dataframe
@@ -119,8 +119,8 @@ def k_fold_split_segmentation(k=5, folders_path=""):
         tmp_df = DataFrame()
         tmp_vols = []
         name_column_vol = f"Fold{l + 1}_Volumes" 
-        for m in range(len(train_folds[l])):
-            tmp_vols.append(train_folds[l][m])
+        for m in range(len(test_folds[l])):
+            tmp_vols.append(test_folds[l][m])
         if l == 0:
             test_df[name_column_vol] = tmp_vols
         else:
@@ -128,7 +128,7 @@ def k_fold_split_segmentation(k=5, folders_path=""):
         test_df = concat([test_df, tmp_df], axis=1, sort=False)
 
         # Saves the results from the split in a CSV file just for the train
-        test_df.to_csv(path_or_buf="../splits/segmentation_test_splits.csv", index=False)
+        test_df.to_csv(path_or_buf="./splits/segmentation_test_splits.csv", index=False)
 
 def k_fold_split_generation(k=5, folders_path=""):
     """
@@ -220,7 +220,7 @@ def k_fold_split_generation(k=5, folders_path=""):
         train_df = concat([train_df, tmp_df], axis=1, sort=False)
 
         # Saves the results from the split in a CSV file just for the train
-        train_df.to_csv(path_or_buf="../splits/generation_train_splits.csv", index=False)
+        train_df.to_csv(path_or_buf="./splits/generation_train_splits.csv", index=False)
 
     test_df = DataFrame()
     for l in range(k):
@@ -241,4 +241,5 @@ def k_fold_split_generation(k=5, folders_path=""):
         test_df = concat([test_df, tmp_df], axis=1, sort=False)
 
         # Saves the results from the split in a CSV file just for the test
-        test_df.to_csv(path_or_buf="../splits/generation_test_splits.csv", index=False)
+        test_df.to_csv(path_or_buf="./splits/generation_test_splits.csv", index=False)
+        
