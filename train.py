@@ -1,9 +1,9 @@
 import torch
-from os import listdir
+from os import listdir, cpu_count
 from paths import IMAGES_PATH
 from pandas import read_csv
 from skimage.io import imread
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import Dataset, DataLoader, random_split
 from networks.unet import UNet
 from init.patchExtraction import extractPatches
 
@@ -118,7 +118,8 @@ def train_model (
         n_pos, 
         n_neg, 
         pos, 
-        neg
+        neg,
+        val_percent
 ):
     """
     Function that trains the deep learning models.
@@ -152,6 +153,9 @@ def train_model (
         the ROI in the ROI mask
         neg (int): indicates what is the value that does not 
         represent the ROI in the ROI mask
+        val_percent (float): decimal value that represents the 
+        percentage of the training set that will be used in the 
+        model validation
     
     Return:
         None
@@ -226,12 +230,22 @@ def train_model (
                        patch_shape=patch_shape, 
                        n_pos=n_pos, n_neg=n_neg, 
                        pos=pos, neg=neg)
+        
         # Creates the Dataset object
         dataset = TrainDataset(train_volumes, model)
 
+        # Splits the dataset in training and 
+        # validation to train the model, with a 
+        # fixed seed to allow reproducibility
+        n_val = int(len(dataset) * val_percent)
+        n_train = len(dataset) - n_val
+        train_set, val_set = random_split(dataset, [n_train, n_val], generator=torch.Generator().manual_seed(0))
+
         # Using the Dataset object, creates a DataLoader object 
         # which will be used to train the model in batches
-        dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+        loader_args = dict(batch_size=batch_size, num_workers=cpu_count(), pin_memory=True)
+        train_loader = DataLoader(train_set, shuffle=True, **loader_args)
+        test_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
     
 if __name__ == "__main__":
     train_model(
@@ -249,5 +263,6 @@ if __name__ == "__main__":
         n_pos=12, 
         n_neg=2, 
         pos=1, 
-        neg=0
+        neg=0,
+        val_percent=0.1
     )
