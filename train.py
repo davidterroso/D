@@ -1,4 +1,5 @@
 import torch
+import wandb
 from os import listdir, cpu_count
 from paths import IMAGES_PATH
 from pandas import read_csv
@@ -226,10 +227,10 @@ def train_model (
     for epoch in range(1, epochs + 1):
         # Eliminates the previous patches and saves 
         # new patches to train the model
-        extractPatches(IMAGES_PATH, 
-                       patch_shape=patch_shape, 
-                       n_pos=n_pos, n_neg=n_neg, 
-                       pos=pos, neg=neg)
+        # extractPatches(IMAGES_PATH, 
+        #                patch_shape=patch_shape, 
+        #                n_pos=n_pos, n_neg=n_neg, 
+        #                pos=pos, neg=neg)
         
         # Creates the Dataset object
         dataset = TrainDataset(train_volumes, model)
@@ -246,6 +247,8 @@ def train_model (
         loader_args = dict(batch_size=batch_size, num_workers=cpu_count(), pin_memory=True)
         train_loader = DataLoader(train_set, shuffle=True, **loader_args)
         test_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
+
+        print(wandb.__version__)
     
 if __name__ == "__main__":
     train_model(
