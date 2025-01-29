@@ -7,7 +7,7 @@ from skimage.util import img_as_float
 from skimage.morphology import disk, binary_closing
 from skimage.filters.rank import entropy
 from skimage.transform import resize
-from .readOCT import int32_to_uint8
+from readOCT import int32_to_uint8
 import numpy as np
 
 # Declares the multiplication factor to obtain the correct patch height 
@@ -220,7 +220,7 @@ def extractPatchCenters(roi_mask, patch_shape, npos, pos, neg):
 
     return c_hold
 
-def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
+def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=None):
     """
     Extract the patches from the OCT scans
 
@@ -231,6 +231,8 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
         n_neg (int): Number of patches outside the ROI to extract
         pos (int): Intensity indicating a positive region on the ROI mask
         neg (int): Intensity indicating a negative region on the ROI mask
+        volumes (List[float]) optional: List of volumes to extract patches 
+        from. The default value is None because it is optional
 
     Return:
         None
@@ -261,82 +263,84 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg):
     # Iterates through the saved ROI masks
     for (root, _, files) in walk(images_path):
         for slice in files:
-            # Reads the masks, the slices, 
-            # and the fluid masks 
-            slice_path = root + slice
-            ROI_mask_path = ROI_path + slice
-            mask_path = masks_path + slice 
-            slice = imread(slice_path)
-            roi = imread(ROI_mask_path)
-            mask = imread(mask_path)
-            # Adjusts the height of the mask 
-            # to the one device used to obtain the OCT
-            img_height = slice.shape[0]
-            npshape = (int(patch_shape[0] * SHAPE_MULT[img_height]), patch_shape[1])
-            # Extracts positive patch centers through two different functions
-            patch_centers = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos, pos=pos, neg=neg)
-            patch_centers_ = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=int(float(n_pos)*.2), pos=pos, neg=neg)
-            # Appends the second patch centers to the first
-            for r, c, l in patch_centers_:
-                patch_centers.append([r, c, l])
-
-            # Extracts negative patch centers
-            if n_neg > 0:
-                negative_patch_centers = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=n_neg, pos=neg, neg=pos)
-                for r, c, l in negative_patch_centers:
-                    # Appends the negative patch centers to the others
+            volume = int(slice.split("_")[1][-3:])
+            if (volumes is None) or (volume in volumes):
+                # Reads the masks, the slices, 
+                # and the fluid masks 
+                slice_path = root + slice
+                ROI_mask_path = ROI_path + slice
+                mask_path = masks_path + slice 
+                slice = imread(slice_path)
+                roi = imread(ROI_mask_path)
+                mask = imread(mask_path)
+                # Adjusts the height of the mask 
+                # to the one device used to obtain the OCT
+                img_height = slice.shape[0]
+                npshape = (int(patch_shape[0] * SHAPE_MULT[img_height]), patch_shape[1])
+                # Extracts positive patch centers through two different functions
+                patch_centers = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos, pos=pos, neg=neg)
+                patch_centers_ = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=int(float(n_pos)*.2), pos=pos, neg=neg)
+                # Appends the second patch centers to the first
+                for r, c, l in patch_centers_:
                     patch_centers.append([r, c, l])
 
-            # Iterates through the calculated centers
-            # and extracts the patches
-            pos_patch_counter = 0
-            neg_patch_counter = 0
-            for r, c, l in patch_centers:
-                # Calculates the patchesfor the B-scan, ROI, and fluid masks
-                h, w = patch_shape[0], patch_shape[1]
-                r, c = int(r - h // 2), int(c - w // 2)
-                tmp_slice = slice[r:r + h, c:c + w]
-                tmp_roi = roi[r:r + h, c:c + w]
-                tmp_mask = mask[r:r + h, c:c + w]
+                # Extracts negative patch centers
+                if n_neg > 0:
+                    negative_patch_centers = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=n_neg, pos=neg, neg=pos)
+                    for r, c, l in negative_patch_centers:
+                        # Appends the negative patch centers to the others
+                        patch_centers.append([r, c, l])
 
-                # Attributes a number to each patch
-                # considering their label
-                if l == 1:
-                    label = "pos"
-                    patch_counter = pos_patch_counter
-                    pos_patch_counter += 1
-                elif l == 0:
-                    label = "neg"
-                    patch_counter = neg_patch_counter
-                    neg_patch_counter += 1
+                # Iterates through the calculated centers
+                # and extracts the patches
+                pos_patch_counter = 0
+                neg_patch_counter = 0
+                for r, c, l in patch_centers:
+                    # Calculates the patchesfor the B-scan, ROI, and fluid masks
+                    h, w = patch_shape[0], patch_shape[1]
+                    r, c = int(r - h // 2), int(c - w // 2)
+                    tmp_slice = slice[r:r + h, c:c + w]
+                    tmp_roi = roi[r:r + h, c:c + w]
+                    tmp_mask = mask[r:r + h, c:c + w]
 
-                # Indicates the name of the patches
-                vol_name = slice_path.split("\\")[-1][:-5]
-                patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + ".tiff"
+                    # Attributes a number to each patch
+                    # considering their label
+                    if l == 1:
+                        label = "pos"
+                        patch_counter = pos_patch_counter
+                        pos_patch_counter += 1
+                    elif l == 0:
+                        label = "neg"
+                        patch_counter = neg_patch_counter
+                        neg_patch_counter += 1
 
-                # Indicates the name of the slice patch
-                slice_patch_name_uint8 = save_patches_path_uint8 + patch_name
+                    # Indicates the name of the patches
+                    vol_name = slice_path.split("\\")[-1][:-5]
+                    patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + ".tiff"
 
-                # Indicates the name of the mask patch
-                mask_patch_name_uint8 = save_patches_masks_path_uint8 + patch_name
+                    # Indicates the name of the slice patch
+                    slice_patch_name_uint8 = save_patches_path_uint8 + patch_name
 
-                # Indicates the name of the ROI patch
-                roi_patch_name_uint8 = save_patches_rois_path_uint8 + patch_name
-                
-                # Saves each slice patch as uint8 after resizing it to match the patch shape
-                tmp_slice = resize(tmp_slice.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                slice_uint8 = Image.fromarray(tmp_slice)
-                slice_uint8.save(slice_patch_name_uint8)
+                    # Indicates the name of the mask patch
+                    mask_patch_name_uint8 = save_patches_masks_path_uint8 + patch_name
 
-                # Saves each mask patch as uint8 after resizing it to match the patch shape
-                tmp_mask = resize(tmp_mask.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                mask_uint8 = Image.fromarray((np.round(255 * (tmp_mask / 3))).astype(np.uint8))
-                mask_uint8.save(mask_patch_name_uint8)
+                    # Indicates the name of the ROI patch
+                    roi_patch_name_uint8 = save_patches_rois_path_uint8 + patch_name
+                    
+                    # Saves each slice patch as uint8 after resizing it to match the patch shape
+                    tmp_slice = resize(tmp_slice.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
+                    slice_uint8 = Image.fromarray(tmp_slice)
+                    slice_uint8.save(slice_patch_name_uint8)
 
-                # Saves each ROI patch as uint8 after resizing it to match the patch shape
-                tmp_roi = resize(tmp_roi.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                roi_uint8 = Image.fromarray((tmp_roi * 255).astype(np.uint8))
-                roi_uint8.save(roi_patch_name_uint8)
+                    # Saves each mask patch as uint8 after resizing it to match the patch shape
+                    tmp_mask = resize(tmp_mask.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
+                    mask_uint8 = Image.fromarray((np.round(255 * (tmp_mask / 3))).astype(np.uint8))
+                    mask_uint8.save(mask_patch_name_uint8)
+
+                    # Saves each ROI patch as uint8 after resizing it to match the patch shape
+                    tmp_roi = resize(tmp_roi.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
+                    roi_uint8 = Image.fromarray((tmp_roi * 255).astype(np.uint8))
+                    roi_uint8.save(roi_patch_name_uint8)
 
 def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg):
     """
@@ -378,7 +382,6 @@ def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg):
         makedirs(save_patches_rois_path_uint8)
 
     # Iterates through the saved ROI masks
-    i = 0
     for (root, _, files) in walk(images_path):
         for slice in files:
             # Reads the masks, the slices, 
