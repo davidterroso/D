@@ -334,12 +334,12 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=Non
 
                     # Saves each mask patch as uint8 after resizing it to match the patch shape
                     tmp_mask = resize(tmp_mask.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                    mask_uint8 = Image.fromarray((np.round(255 * (tmp_mask / 3))).astype(np.uint8))
+                    mask_uint8 = Image.fromarray(tmp_mask)
                     mask_uint8.save(mask_patch_name_uint8)
 
                     # Saves each ROI patch as uint8 after resizing it to match the patch shape
                     tmp_roi = resize(tmp_roi.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                    roi_uint8 = Image.fromarray((tmp_roi * 255).astype(np.uint8))
+                    roi_uint8 = Image.fromarray(tmp_roi)
                     roi_uint8.save(roi_patch_name_uint8)
 
 def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg):
