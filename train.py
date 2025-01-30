@@ -1,5 +1,6 @@
 import torch
 import wandb
+import logging
 from os import listdir, cpu_count
 from paths import IMAGES_PATH
 from pandas import read_csv
@@ -105,7 +106,7 @@ class TrainDataset(Dataset):
         return sample
 
 def train_model (
-        model,
+        model_name,
         device,
         epochs,
         batch_size,
@@ -120,13 +121,14 @@ def train_model (
         n_neg, 
         pos, 
         neg,
-        val_percent
+        val_percent,
+        save_checkpoint
 ):
     """
     Function that trains the deep learning models.
 
     Args:
-        model (str): name of the model desired to train
+        model_name (str): name of the model desired to train
         device (str): indicates whether the network will 
         be trained using the CPU or the GPU
         epochs (int): maximum number of epochs the model 
@@ -157,6 +159,8 @@ def train_model (
         val_percent (float): decimal value that represents the 
         percentage of the training set that will be used in the 
         model validation
+        save_checkpoint (bool): flag that indicates whether the
+        checkpoints are going to be saved or not
     
     Return:
         None
@@ -170,12 +174,14 @@ def train_model (
     }
 
     # Checks whether the selected model exists or not
-    if model not in models.keys():
+    if model_name not in models.keys():
         print("Model not recognized. Possible models:")
         for key in models.keys():
             print(key)
         return 0
     
+    model = models.get(model_name)
+
     # Checks whether the option selected is possible
     if device not in ["CPU", "GPU"]:
         print("Unrecognized device. Possible devices:")
@@ -223,6 +229,32 @@ def train_model (
             # set of folds, which is identified by the fold used in testing
             print("To tune the hyperparameters, please indicate the first fold as test set. The second fold will be used to test.")
 
+    experiment = wandb.init(project="U-Net", resume="allow", anonymous="must")
+    experiment.config.update(
+         dict(epochs=epochs, batch_size=batch_size, learning_rate=learning_rate,
+             val_percent=val_percent, save_checkpoint=save_checkpoint)
+    )
+
+    # Creates the Dataset object
+    dataset = TrainDataset(train_volumes, model_name)
+
+    # Splits the dataset in training and 
+    # validation to train the model, with a 
+    # fixed seed to allow reproducibility
+    n_val = int(len(dataset) * val_percent)
+    n_train = len(dataset) - n_val
+
+    logging.info(f"""Starting training:
+        Epochs:          {epochs}
+        Batch size:      {batch_size}
+        Learning rate:   {learning_rate}
+        Training size:   {n_train}
+        Validation size: {n_val}
+        Checkpoints:     {save_checkpoint}
+        Device:          {torch_device.type}
+
+    """)
+
     # Iterates through every epoch
     for epoch in range(1, epochs + 1):
         # Eliminates the previous patches and saves 
@@ -248,11 +280,11 @@ def train_model (
         # which will be used to train the model in batches
         loader_args = dict(batch_size=batch_size, num_workers=cpu_count(), pin_memory=True)
         train_loader = DataLoader(train_set, shuffle=True, **loader_args)
-        test_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
+        test_loader = DataLoader(val_set, shuffle=False, drop_last=False, **loader_args)
     
 if __name__ == "__main__":
     train_model(
-        model="UNet",
+        model_name="UNet",
         device="GPU",
         epochs=100,
         batch_size=32,
@@ -267,5 +299,6 @@ if __name__ == "__main__":
         n_neg=2, 
         pos=1, 
         neg=0,
-        val_percent=0.1
+        val_percent=0.1,
+        save_checkpoint=True
     )
