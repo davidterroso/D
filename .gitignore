@@ -1,5 +1,6 @@
 # Do not commit the following files/folders
 __pycache__/
+wandb/
 # The paths.py file is being ignored so that 
 # it does not update when using a different device
 paths.py 

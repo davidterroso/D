@@ -7,7 +7,7 @@ from skimage.util import img_as_float
 from skimage.morphology import disk, binary_closing
 from skimage.filters.rank import entropy
 from skimage.transform import resize
-from readOCT import int32_to_uint8
+from .readOCT import int32_to_uint8
 import numpy as np
 
 # Declares the multiplication factor to obtain the correct patch height 

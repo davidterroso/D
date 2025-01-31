@@ -5,6 +5,7 @@ from os import listdir, cpu_count
 from paths import IMAGES_PATH
 from pandas import read_csv
 from skimage.io import imread
+from torch import optim
 from torch.utils.data import Dataset, DataLoader, random_split
 from networks.unet import UNet
 from init.patchExtraction import extractPatches
@@ -112,6 +113,7 @@ def train_model (
         batch_size,
         learning_rate,
         optimizer,
+        momentum,
         number_of_classes,
         number_of_channels,
         fold_test,
@@ -140,6 +142,8 @@ def train_model (
         optimizer (string): optimization function used
         number_of_classes (int): number of classes the 
         model is supposed to output
+        momentum (float): momentum of the optimization 
+        algorithm
         number_of_channels (int): number of channels the 
         input will present
         fold_test (int): number of the fold that will be used 
@@ -255,6 +259,22 @@ def train_model (
 
     """)
 
+    optimizers_dict = {
+        # foreach=True makes the the optimization less time consuming but more memory consuming
+        # maximize=False means we are looking to minimize the loss (in case the Dice coefficient 
+        # was used instead of Dice loss, for example, this parameter should be True)
+        "Adam": optim.Adam(params=model.parameters(), lr=learning_rate, foreach=True, maximize=False), 
+        "SGD": optim.SGD(params=model.parameters(), lr=learning_rate, foreach=True, maximize=False, momentum=momentum),
+        "RMSprop": optim.RMSprop(params=model.parameters(), lr=learning_rate, foreach=True, maximize=False, momentum=momentum)
+    }
+
+    if optimizer in optimizers_dict.keys():
+        optimizer_torch = optimizers_dict.get(optimizer)
+    else:
+        print("The requested optimizer is not available. The available options are:")
+        for key in optimizers_dict.keys():
+            print(key)
+
     # Iterates through every epoch
     for epoch in range(1, epochs + 1):
         # Eliminates the previous patches and saves 
@@ -290,6 +310,7 @@ if __name__ == "__main__":
         batch_size=32,
         learning_rate=2e-5,
         optimizer="Adam",
+        momentum=0,
         number_of_classes=4,
         number_of_channels=1,
         fold_test=1,
