@@ -236,12 +236,6 @@ def train_model (
             # set of folds, which is identified by the fold used in testing
             print("To tune the hyperparameters, please indicate the first fold as test set. The second fold will be used to test.")
 
-    experiment = wandb.init(project="U-Net", resume="allow", anonymous="must")
-    experiment.config.update(
-         dict(epochs=epochs, batch_size=batch_size, learning_rate=learning_rate,
-             val_percent=val_percent, save_checkpoint=save_checkpoint)
-    )
-
     # Creates the Dataset object
     dataset = TrainDataset(train_volumes, model_name)
 
@@ -251,6 +245,7 @@ def train_model (
     n_val = int(len(dataset) * val_percent)
     n_train = len(dataset) - n_val
 
+    # Registers the information that will be logged
     logging.info(f"""Starting training:
         Epochs:          {epochs}
         Batch size:      {batch_size}
@@ -259,7 +254,6 @@ def train_model (
         Validation size: {n_val}
         Checkpoints:     {save_checkpoint}
         Device:          {torch_device.type}
-
     """)
 
     optimizers_dict = {
@@ -271,16 +265,30 @@ def train_model (
         "RMSprop": optim.RMSprop(params=model.parameters(), lr=learning_rate, foreach=True, maximize=False, momentum=momentum)
     }
 
+    # Checks if the optimizer indicated is available and 
+    # in case it is not, cancels the run
     if optimizer in optimizers_dict.keys():
         optimizer_torch = optimizers_dict.get(optimizer)
     else:
         print("The requested optimizer is not available. The available options are:")
         for key in optimizers_dict.keys():
             print(key)
+        return 0
+    
+    # In case a learning rate scheduler is going to be used, 
+    # it initiates it. Otherwise it is set to None
     if scheduler:
         torch_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer_torch, "min", patience=5)
     else:
         torch_scheduler = None
+
+    # Initiates a wandb run that allows live visualization online through the 
+    # link printed in the command line 
+    experiment = wandb.init(project="U-Net", resume="allow", anonymous="must")
+    experiment.config.update(
+         dict(epochs=epochs, batch_size=batch_size, learning_rate=learning_rate,
+             val_percent=val_percent, save_checkpoint=save_checkpoint)
+    )
 
     # Iterates through every epoch
     for epoch in range(1, epochs + 1):
@@ -308,6 +316,9 @@ def train_model (
         loader_args = dict(batch_size=batch_size, num_workers=cpu_count(), pin_memory=True)
         train_loader = DataLoader(train_set, shuffle=True, **loader_args)
         test_loader = DataLoader(val_set, shuffle=False, drop_last=False, **loader_args)
+
+        model.train()
+        epoch_loss = 0
     
 if __name__ == "__main__":
     train_model(
