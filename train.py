@@ -114,6 +114,7 @@ def train_model (
         learning_rate,
         optimizer,
         momentum,
+        scheduler,
         number_of_classes,
         number_of_channels,
         fold_test,
@@ -144,6 +145,8 @@ def train_model (
         model is supposed to output
         momentum (float): momentum of the optimization 
         algorithm
+        scheduler (bool): flag that indicates whether a 
+        learning rate scheduler will be used or not
         number_of_channels (int): number of channels the 
         input will present
         fold_test (int): number of the fold that will be used 
@@ -274,6 +277,10 @@ def train_model (
         print("The requested optimizer is not available. The available options are:")
         for key in optimizers_dict.keys():
             print(key)
+    if scheduler:
+        torch_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer_torch, "min", patience=5)
+    else:
+        torch_scheduler = None
 
     # Iterates through every epoch
     for epoch in range(1, epochs + 1):
@@ -311,6 +318,7 @@ if __name__ == "__main__":
         learning_rate=2e-5,
         optimizer="Adam",
         momentum=0,
+        scheduler=False,
         number_of_classes=4,
         number_of_channels=1,
         fold_test=1,
