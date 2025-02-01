@@ -418,39 +418,39 @@ def train_model (
                         multiclass=True
                     )
 
-                    # Saves the value that are zero as 
-                    # None so that it saves memory
-                    optimizer.zero_grad(set_to_none=True)
-                    # Acumulates scaled gradients
-                    grad_scaler.scale(loss).backward()
-                    # Unscales the gradients so that 
-                    # they can be clipped
-                    grad_scaler.unscale_(optimizer)
-                    # Clips the gradients above the threshold
-                    torch.nn.utils.clip_grad_norm_(model.parameters(), gradient_clipping)
-                    # Updates the parameters 
-                    # based on the current gradient
-                    grad_scaler.step(optimizer)
-                    # Updates the scale 
-                    # for the next iteration
-                    grad_scaler.update()
+                # Saves the value that are zero as 
+                # None so that it saves memory
+                optimizer.zero_grad(set_to_none=True)
+                # Acumulates scaled gradients
+                grad_scaler.scale(loss).backward()
+                # Unscales the gradients so that 
+                # they can be clipped
+                grad_scaler.unscale_(optimizer)
+                # Clips the gradients above the threshold
+                torch.nn.utils.clip_grad_norm_(model.parameters(), gradient_clipping)
+                # Updates the parameters 
+                # based on the current gradient
+                grad_scaler.step(optimizer)
+                # Updates the scale 
+                # for the next iteration
+                grad_scaler.update()
 
-                    # Updates the progress bar by indicating 
-                    # how many images have been trained
-                    progress_bar.update(images.shape[0])
-                    # Updates the global step
-                    # and global loss
-                    global_step += 1
-                    epoch_loss += loss.item()
-                    # Logs the loss, the step, and 
-                    # the epochs on the wandb
-                    experiment.log({
-                        "train_loss": loss.item(),
-                        "step": global_step,
-                        "epoch": epoch
-                    })
-                    # Adds the loss of the batch at the end of the progress bar
-                    progress_bar.set_postfix(**{"Loss (batch)": loss.item()})
+                # Updates the progress bar by indicating 
+                # how many images have been trained
+                progress_bar.update(images.shape[0])
+                # Updates the global step
+                # and global loss
+                global_step += 1
+                epoch_loss += loss.item()
+                # Logs the loss, the step, and 
+                # the epochs on the wandb
+                experiment.log({
+                    "train_loss": loss.item(),
+                    "step": global_step,
+                    "epoch": epoch
+                })
+                # Adds the loss of the batch at the end of the progress bar
+                progress_bar.set_postfix(**{"Loss (batch)": loss.item()})
     
 if __name__ == "__main__":
     train_model(
