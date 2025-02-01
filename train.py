@@ -125,7 +125,8 @@ def train_model (
         pos, 
         neg,
         val_percent,
-        save_checkpoint
+        save_checkpoint,
+        load
 ):
     """
     Function that trains the deep learning models.
@@ -168,10 +169,14 @@ def train_model (
         model validation
         save_checkpoint (bool): flag that indicates whether the
         checkpoints are going to be saved or not
+        load (str): path that indicates where the model desired 
+        to load was saved
     
     Return:
         None
     """
+
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
     # Dictionary of models, associates a string to a PyTorch module
     models = {
@@ -187,8 +192,6 @@ def train_model (
             print(key)
         return 0
     
-    model = models.get(model_name)
-
     # Checks whether the option selected is possible
     if device not in ["CPU", "GPU"]:
         print("Unrecognized device. Possible devices:")
@@ -204,6 +207,30 @@ def train_model (
         device_name = "cpu"
     # Saves the variable device as torch.device 
     torch_device = torch.device(device_name)
+ 
+    # Gets the model selected and indicates in which device it is going 
+    # to be trained on and that the memory format is channels_last: 
+    # h x w x c
+    # instead of
+    # c x h x w
+    model = models.get(model_name)
+    model = model.to(device=torch_device, memory_format=torch.channels_last)
+
+    # Logs the information of the input 
+    # and output channels 
+    logging.info(
+        f"Network\n"
+        f"\t{model.n_channels} input channels\n"
+        f"\t{model.n_classes} output channels (classes)\n"
+    )
+
+    # In case there is a model desired to load indicated by 
+    # the presence of the path, it is loaded 
+    if load:
+        state_dict = torch.load(load, map_location=torch_device)
+        del state_dict["mask_values"]
+        model.load_state_dict(state_dict)
+        logging.info(f"Model loaded from {load}")
 
     # Checks if the selected fold for testing exists
     if ((fold_test < 0) or (fold_test > 5)):
@@ -340,5 +367,6 @@ if __name__ == "__main__":
         pos=1, 
         neg=0,
         val_percent=0.1,
-        save_checkpoint=True
+        save_checkpoint=True,
+        load=False
     )
