@@ -1,6 +1,7 @@
 import torch
 import wandb
 import logging
+import tqdm
 from os import listdir, cpu_count
 from paths import IMAGES_PATH
 from pandas import read_csv
