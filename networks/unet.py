@@ -188,7 +188,8 @@ class UNet(Module):
         
         Args:
             in_channels (int): Number of channels that are input in this module
-            out_channels (int): Number of channels that are output of this module
+            num_classes (int): Number of classes that are expected to output 
+            from this network
         
         Return:
             None

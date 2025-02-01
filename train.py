@@ -1,15 +1,17 @@
-import torch
-import wandb
+import numpy as np
 import logging
+import torch
 import tqdm
+import wandb
 from os import listdir, cpu_count
 from paths import IMAGES_PATH
 from pandas import read_csv
 from skimage.io import imread
 from torch import optim
+from torch.nn.functional import softmax, one_hot
 from torch.utils.data import Dataset, DataLoader, random_split
-from networks.unet import UNet
 from init.patchExtraction import extractPatches
+from networks.unet import UNet
 
 def getPatchesFromVolumes(volumes_list, model):
     """
@@ -99,6 +101,11 @@ class TrainDataset(Dataset):
         # fluid mask
         scan = imread(slice_name)
         mask = imread(mask_name)
+
+        # Expands the scan dimentions to 
+        # include an extra channel of value 1
+        # as the first channel
+        scan = np.expand_dims(scan, axis=0)
 
         # Declares a sample as a dictionary that 
         # to the keyword "scan" associates the 
@@ -262,7 +269,8 @@ def train_model (
         else:
             # Condition to check if the tuning was selected for the correct
             # set of folds, which is identified by the fold used in testing
-            print("To tune the hyperparameters, please indicate the first fold as test set. The second fold will be used to test.")
+            print("To tune the hyperparameters, please indicate the first \
+                  fold as test set. The second fold will be used to test.")
 
     # Creates the Dataset object
     dataset = TrainDataset(train_volumes, model_name)
@@ -353,6 +361,37 @@ def train_model (
 
         model.train()
         epoch_loss = 0
+
+        # Creates a progress bar using tqdm. The limit is when all the images in training are 
+        # used in that epoch, the description indicates in which epoch the training is being 
+        # done, and the unit indicates the unit that is filling the bar
+        with tqdm(total=n_train, desc=f"Epoch {epoch}/{epochs}", unit="img") as progress_bar:
+            # Iterates through the 
+            # batches of images
+            for batch in train_loader:
+                # From the DataLoader object extracts the scan 
+                # and the GT mask
+                images, true_masks = batch["scan"], batch["mask"]
+
+                # Checks if the number of channels given as input matches the number of 
+                # images read with the dataloader
+                assert images.shape[1] == model.n_channels, \
+                    f'Network has been defined with {model.n_channels} input channels, ' \
+                    f'but loaded images have {images.shape[1]} channels. Please check if ' \
+                    'the images are loaded correctly.'
+
+                # Declares what type the images and the true_masks variables, including the device that is
+                # going to be used, the data type and whether it is channels first or channels last
+                images = images.to(device=torch_device, dtype=torch.float32, memory_format=torch.channels_last)
+                true_masks = true_masks.to(device=torch_device, dtype=torch.long)
+
+                with torch.autocast(torch_device.type if torch_device.type != "mps" else "cpu"):
+                    masks_pred = model(images)
+                    loss = dice_loss(
+                        softmax(masks_pred, dim=1).float,
+                        one_hot(true_masks, model.n_classes).permute(0, 3, 1, 2).float(),
+                        multiclass=True
+                    ) 
     
 if __name__ == "__main__":
     train_model(
