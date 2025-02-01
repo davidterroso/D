@@ -312,7 +312,13 @@ def train_model (
 
     # Initiates a wandb run that allows live visualization online through the 
     # link printed in the command line 
+    # "project" argument indicates the name of the project
+    # "resume" indicates that it is possible to continue a previous run if so 
+    # is indicated
+    # "anonymous" indicates that the run will always be done anonymously, 
+    # independently of whether the user is signed in or not
     experiment = wandb.init(project="U-Net", resume="allow", anonymous="must")
+    # Indicates what configurations are going to be saved in the run
     experiment.config.update(
          dict(epochs=epochs, batch_size=batch_size, learning_rate=learning_rate,
              val_percent=val_percent, save_checkpoint=save_checkpoint)
