@@ -116,12 +116,13 @@ class TrainDataset(Dataset):
 
 def train_model (
         model_name,
-        device,
+        device_name,
         epochs,
         batch_size,
         learning_rate,
-        optimizer,
+        optimizer_name,
         momentum,
+        gradient_clipping,
         scheduler,
         number_of_classes,
         number_of_channels,
@@ -134,14 +135,15 @@ def train_model (
         neg,
         val_percent,
         save_checkpoint,
-        load
+        load,
+        amp
 ):
     """
     Function that trains the deep learning models.
 
     Args:
         model_name (str): name of the model desired to train
-        device (str): indicates whether the network will 
+        device_name (str): indicates whether the network will 
         be trained using the CPU or the GPU
         epochs (int): maximum number of epochs the model 
         will train for
@@ -149,11 +151,13 @@ def train_model (
         training
         learning_rate (int): learning rate of the 
         optimization function
-        optimizer (string): optimization function used
+        optimizer_name (string): optimization function used
         number_of_classes (int): number of classes the 
         model is supposed to output
         momentum (float): momentum of the optimization 
         algorithm
+        gradient_clipping (float): threshold after which it
+        scales the gradient down, to prevent gradient exploding
         scheduler (bool): flag that indicates whether a 
         learning rate scheduler will be used or not
         number_of_channels (int): number of channels the 
@@ -179,7 +183,9 @@ def train_model (
         checkpoints are going to be saved or not
         load (str): path that indicates where the model desired 
         to load was saved
-    
+        amp (bool): bool that indicates whether automatic mixed
+        precision is going to be used or not 
+        
     Return:
         None
     """
@@ -201,20 +207,20 @@ def train_model (
         return 0
     
     # Checks whether the option selected is possible
-    if device not in ["CPU", "GPU"]:
+    if device_name not in ["CPU", "GPU"]:
         print("Unrecognized device. Possible devices:")
         print("CPU")
         print("GPU")
-    elif (device == "GPU"):
+    elif (device_name == "GPU"):
         # Checks whether the GPU is available 
         if torch.cuda.is_available():
             device_name = "cuda"
         else:
             print("GPU is not available. CPU was selected.")
-    elif (device=="CPU"):
+    elif (device_name=="CPU"):
         device_name = "cpu"
     # Saves the variable device as torch.device 
-    torch_device = torch.device(device_name)
+    device = torch.device(device_name)
  
     # Gets the model selected and indicates in which device it is going 
     # to be trained on and that the memory format is channels_last: 
@@ -222,7 +228,7 @@ def train_model (
     # instead of
     # c x h x w
     model = models.get(model_name)
-    model = model.to(device=torch_device, memory_format=torch.channels_last)
+    model = model.to(device=device, memory_format=torch.channels_last)
 
     # Logs the information of the input 
     # and output channels 
@@ -235,7 +241,7 @@ def train_model (
     # In case there is a model desired to load indicated by 
     # the presence of the path, it is loaded 
     if load:
-        state_dict = torch.load(load, map_location=torch_device)
+        state_dict = torch.load(load, map_location=device)
         del state_dict["mask_values"]
         model.load_state_dict(state_dict)
         logging.info(f"Model loaded from {load}")
@@ -289,7 +295,8 @@ def train_model (
         Training size:   {n_train}
         Validation size: {n_val}
         Checkpoints:     {save_checkpoint}
-        Device:          {torch_device.type}
+        Device:          {device.type}
+        Mixed Precision: {amp}
     """)
 
     optimizers_dict = {
@@ -301,12 +308,12 @@ def train_model (
         "RMSprop": optim.RMSprop(params=model.parameters(), lr=learning_rate, foreach=True, maximize=False, momentum=momentum)
     }
 
-    # Checks if the optimizer indicated is available and 
+    # Checks if the optimizer_name indicated is available and 
     # in case it is not, cancels the run
-    if optimizer in optimizers_dict.keys():
-        optimizer_torch = optimizers_dict.get(optimizer)
+    if optimizer_name in optimizers_dict.keys():
+        optimizer = optimizers_dict.get(optimizer_name)
     else:
-        print("The requested optimizer is not available. The available options are:")
+        print("The requested optimizer_name is not available. The available options are:")
         for key in optimizers_dict.keys():
             print(key)
         return 0
@@ -314,9 +321,13 @@ def train_model (
     # In case a learning rate scheduler is going to be used, 
     # it initiates it. Otherwise it is set to None
     if scheduler:
-        torch_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer_torch, "min", patience=5)
+        torch_scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, "min", patience=5)
     else:
         torch_scheduler = None
+
+    # Initiates the grad scaler in case mixed 
+    # precision is used
+    grad_scaler = torch.amp.GradScaler(enabled=amp)
 
     # Initiates a wandb run that allows live visualization online through the 
     # link printed in the command line 
@@ -329,9 +340,10 @@ def train_model (
     # Indicates what configurations are going to be saved in the run
     experiment.config.update(
          dict(epochs=epochs, batch_size=batch_size, learning_rate=learning_rate,
-             val_percent=val_percent, save_checkpoint=save_checkpoint)
+             val_percent=val_percent, save_checkpoint=save_checkpoint, amp=amp)
     )
 
+    global_step = 0
     # Iterates through every epoch
     for epoch in range(1, epochs + 1):
         # Eliminates the previous patches and saves 
@@ -359,7 +371,9 @@ def train_model (
         train_loader = DataLoader(train_set, shuffle=True, **loader_args)
         test_loader = DataLoader(val_set, shuffle=False, drop_last=False, **loader_args)
 
+        # Indicates the model that it is going to be trained
         model.train()
+        # Initiates the loss of the current epoch as 0
         epoch_loss = 0
 
         # Creates a progress bar using tqdm. The limit is when all the images in training are 
@@ -382,26 +396,56 @@ def train_model (
 
                 # Declares what type the images and the true_masks variables, including the device that is
                 # going to be used, the data type and whether it is channels first or channels last
-                images = images.to(device=torch_device, dtype=torch.float32, memory_format=torch.channels_last)
-                true_masks = true_masks.to(device=torch_device, dtype=torch.long)
+                images = images.to(device=device, dtype=torch.float32, memory_format=torch.channels_last)
+                true_masks = true_masks.to(device=device, dtype=torch.long)
 
-                with torch.autocast(torch_device.type if torch_device.type != "mps" else "cpu"):
+                # Allows for mixed precision calculations, attributes a device to be used in 
+                # these calculations
+                with torch.autocast(device.type if device.type != "mps" else "cpu", enabled=amp):
+                    # Predicts the masks of the received images
                     masks_pred = model(images)
+                    # Calculates the loss of the prediction masks
                     loss = dice_loss(
-                        softmax(masks_pred, dim=1).float,
+                        # Softmax function is applied to the 
+                        # channels of the predicted values
+                        softmax(masks_pred, dim=1).float(),
+                        # Performs one hot encoding in the true masks, instead of being 
+                        # an image of only channel, it becomes of n channels, n is the 
+                        # number of classes. Permutation is also done to match the
+                        # channels dimensions
                         one_hot(true_masks, model.n_classes).permute(0, 3, 1, 2).float(),
+                        # Indicates that the segmentation is multi-class
                         multiclass=True
-                    ) 
+                    )
+
+                    # Saves the value that are zero as 
+                    # None so that it saves memory
+                    optimizer.zero_grad(set_to_none=True)
+                    # Acumulates scaled gradients
+                    grad_scaler.scale(loss).backward()
+                    # Unscales the gradients so that 
+                    # they can be clipped
+                    grad_scaler.unscale_(optimizer)
+                    # Clips the gradients above the threshold
+                    torch.nn.utils.clip_grad_norm_(model.parameters(), gradient_clipping)
+                    # Updates the parameters 
+                    # based on the current gradient
+                    grad_scaler.step(optimizer)
+                    # Updates the scale 
+                    # for the next iteration
+                    grad_scaler.update()
+
     
 if __name__ == "__main__":
     train_model(
         model_name="UNet",
-        device="GPU",
+        device_name="GPU",
         epochs=100,
         batch_size=32,
         learning_rate=2e-5,
-        optimizer="Adam",
+        optimizer_name="Adam",
         momentum=0,
+        gradient_clipping=1.0,
         scheduler=False,
         number_of_classes=4,
         number_of_channels=1,
@@ -414,5 +458,6 @@ if __name__ == "__main__":
         neg=0,
         val_percent=0.1,
         save_checkpoint=True,
-        load=False
+        load=False,
+        amp=True
     )
