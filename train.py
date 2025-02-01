@@ -230,6 +230,11 @@ def train_model (
     model = models.get(model_name)
     model = model.to(device=device, memory_format=torch.channels_last)
 
+    # In case checkpointing is desired, 
+    # the model is informed 
+    if save_checkpoint:
+        model.use_checkpointing()
+
     # Logs the information of the input 
     # and output channels 
     logging.info(
@@ -369,7 +374,7 @@ def train_model (
         # which will be used to train the model in batches
         loader_args = dict(batch_size=batch_size, num_workers=cpu_count(), pin_memory=True)
         train_loader = DataLoader(train_set, shuffle=True, **loader_args)
-        test_loader = DataLoader(val_set, shuffle=False, drop_last=False, **loader_args)
+        val_loader = DataLoader(val_set, shuffle=False, drop_last=False, **loader_args)
 
         # Indicates the model that it is going to be trained
         model.train()
@@ -451,6 +456,44 @@ def train_model (
                 })
                 # Adds the loss of the batch at the end of the progress bar
                 progress_bar.set_postfix(**{"Loss (batch)": loss.item()})
+
+                division_step = (n_train // (5 * batch_size))
+                if division_step > 0:
+                    if global_step % division_step == 0:
+                        histograms = {}
+                        for tag, value in model.named_parameters():
+                            tag = tag.replace("/", ".")
+                            if not (torch.isinf(value) | torch.isnan(value)).any():
+                                histograms["Weights/" + tag] = wandb.Histogram(value.data.cpu())
+                            if not (torch.isinf(value.grad) | torch.isnan(value.grad)).any():
+                                histograms["Gradients/" + tag] = wandb.Histogram(value.grad.data.cpu())
+
+                        val_score = evaluate(model, val_loader, device, amp)
+                        if scheduler:
+                            torch_scheduler.step(val_score)
+
+                        logging.info("Validation Dice Score: {}".format(val_score))
+                        try:
+                            experiment.log({
+                                "Learning Rate": optimizer.param_groups[0]["lr"],
+                                "Validation Dice": val_score,
+                                "Images": wandb.Image(images[0].cpu()),
+                                "Masks":{
+                                    "True": wandb.Image(true_masks[0].float().cpu()),
+                                    "Prediction": wandb.Image(masks_pred.argmax(dim=1)[0].float().cpu()),
+                                },
+                                "Step": global_step,
+                                "Epoch": epoch,
+                                **histograms
+                            })
+                        except:
+                            pass
+            if save_checkpoint:
+                dir_checkpoint = "."
+                state_dict = model.state_dict()
+                state_dict["mask_values"] = dataset.mask_values
+                torch.save(state_dict, str(dir_checkpoint / "checkpoint_epoch{}.pth".format(epoch)))
+                logging.info(f"Checkpoint {epoch} saved!")       
     
 if __name__ == "__main__":
     train_model(
