@@ -116,6 +116,90 @@ class TrainDataset(Dataset):
         # associates the fluid mask
         sample = {"scan": scan, "mask": mask}
         return sample
+    
+@torch.inference_mode()
+def evaluate(model, dataloader, device, amp, batch_size):
+    """
+    Function used to evaluate the model
+
+    Args:
+        model (torch Module object): model that is being 
+        trained
+        dataloader (torch DataLoader object): DataLoader 
+        that contains the training and evaluation data
+        device (str): indicates which torch device is
+        going to be used
+        amp (bool): flag that indicates if automatic 
+        mixed precision is being used
+        batch_size (int): size of the batch that is being
+        handled
+
+    Return:
+        Weighted mean of the loss across the considered 
+        batches
+    """
+    # Sets the network to evaluation mode
+    model.eval()
+    # Calculates the number of batches 
+    # used to validate the network
+    num_val_batches = len(dataloader)
+    # Initiates the loss as zero
+    total_loss = 0
+
+    # Allows for mixed precision calculations, attributes a device to be used in 
+    # these calculations
+    with torch.autocast(device.type if device.type != 'mps' else 'cpu', enabled=amp):
+        for batch in tqdm(dataloader, total=num_val_batches, desc='Validation round', unit='batch', leave=False):
+            # Gets the images and the masks from the dataloader
+            image, mask_true = batch['scan'], batch['mask']
+
+            # Handles the images and masks according to the device, specified data type and memory format
+            image = image.to(device=device, dtype=torch.float32, memory_format=torch.channels_last)
+            mask_true = mask_true.to(device=device, dtype=torch.long)
+
+            # Predict the mask using the model
+            mask_pred = model(image)
+            # Predicts the masks of the received images
+            masks_pred = model(image)
+            # Performs softmax on the predicted masks
+            # dim=1 indicates that the softmax is calculated 
+            # across the masks, since the channels is the first 
+            # dimension
+            masks_pred_prob = softmax(masks_pred, dim=1).float()
+            # Performs one hot encoding on the true masks, in channels last format
+            masks_true_one_hot = one_hot(mask_true, model.n_classes).float()
+
+            # Calculates the balanced loss for the background mask
+            # Permute changes the images from channels first to channels last
+            background_loss = multiclass_balanced_cross_entropy_loss(
+                                y_true=masks_true_one_hot,
+                                y_pred=masks_pred_prob.permute(0, 3, 1, 2), 
+                                batch_size=batch_size, 
+                                n_classes=model.n_classes, 
+                                eps=1e-7)
+            # Calculates the loss for the IRF mask
+            irf_loss = BCELoss(masks_pred_prob[:, 1, :, :], masks_true_one_hot[:, 1, :, :])
+            # Calculates the loss for the SRF mask
+            srf_loss = BCELoss(masks_pred_prob[:, 2, :, :], masks_true_one_hot[:, 2, :, :])
+            # Calculates the loss for the PED mask
+            ped_loss = BCELoss(masks_pred_prob[:, 3, :, :], masks_true_one_hot[:, 3, :, :])
+            # Calculates the total loss as the sum of all losses
+            batch_loss = background_loss + irf_loss + srf_loss + ped_loss
+
+            # Count the number of labeled voxels and does not count the background to not skew thr
+            num_foreground_voxels = torch.sum(mask_true > 0).item()
+
+            # Accumulate loss weighted by voxel count
+            total_loss += batch_loss.item() * num_foreground_voxels
+            total_foreground_voxels += num_foreground_voxels
+
+    # Sets the model to train mode again
+    model.train()
+    # Returns the weighted mean of the total 
+    # loss according to the fluid voxels
+    # Also avoids division by zero in case there are 
+    # no foreground voxels
+    return total_loss / max(total_foreground_voxels, 1)
 
 def train_model (
         model_name,
@@ -400,6 +484,7 @@ def train_model (
 
                 # Allows for mixed precision calculations, attributes a device to be used in 
                 # these calculations
+                # Calculates loss
                 with torch.autocast(device.type if device.type != "mps" else "cpu", enabled=amp):
                     # Predicts the masks of the received images
                     masks_pred = model(images)
@@ -481,7 +566,7 @@ def train_model (
                                 histograms["Gradients/" + tag] = wandb.Histogram(value.grad.data.cpu())
 
                         # Calculates the validation score for the model
-                        val_score = evaluate(model, val_loader, device, amp)
+                        val_score = evaluate(model, val_loader, device, amp, images[0])
                         
                         # In case a scheduler is used, the
                         # learning rate is adjusted accordingly
