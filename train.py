@@ -118,7 +118,7 @@ class TrainDataset(Dataset):
         return sample
     
 @torch.inference_mode()
-def evaluate(model, dataloader, device, amp, batch_size):
+def evaluate(model, dataloader, device, amp):
     """
     Function used to evaluate the model
 
@@ -131,8 +131,6 @@ def evaluate(model, dataloader, device, amp, batch_size):
         going to be used
         amp (bool): flag that indicates if automatic 
         mixed precision is being used
-        batch_size (int): size of the batch that is being
-        handled
 
     Return:
         Weighted mean of the loss across the considered 
@@ -174,7 +172,7 @@ def evaluate(model, dataloader, device, amp, batch_size):
             background_loss = multiclass_balanced_cross_entropy_loss(
                                 y_true=masks_true_one_hot,
                                 y_pred=masks_pred_prob.permute(0, 3, 1, 2), 
-                                batch_size=batch_size, 
+                                batch_size=image[0], 
                                 n_classes=model.n_classes, 
                                 eps=1e-7)
             # Calculates the loss for the IRF mask
@@ -433,8 +431,8 @@ def train_model (
         # Splits the dataset in training and 
         # validation to train the model, with a 
         # fixed seed to allow reproducibility
-        n_val = int(dataset.__len__ * val_percent)
-        n_train = dataset.__len__ - n_val
+        n_val = int(len(dataset) * val_percent)
+        n_train = len(dataset) - n_val
         train_set, val_set = random_split(dataset, [n_train, n_val], generator=torch.Generator().manual_seed(0))
 
         # Using the Dataset object, creates a DataLoader object 
@@ -555,7 +553,7 @@ def train_model (
                                 histograms["Gradients/" + tag] = wandb.Histogram(value.grad.data.cpu())
 
                         # Calculates the validation score for the model
-                        val_score = evaluate(model, val_loader, device, amp, images[0])
+                        val_score = evaluate(model, val_loader, device, amp)
                         
                         # In case a scheduler is used, the
                         # learning rate is adjusted accordingly
