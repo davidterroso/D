@@ -9,9 +9,11 @@ from paths import IMAGES_PATH
 from pandas import read_csv
 from skimage.io import imread
 from torch import optim
+from torch.nn import BCELoss
 from torch.nn.functional import softmax, one_hot
 from torch.utils.data import Dataset, DataLoader, random_split
 from init.patchExtraction import extractPatches
+from networks.loss import multiclass_balanced_cross_entropy_loss
 from networks.unet import UNet
 
 def getPatchesFromVolumes(volumes_list, model):
@@ -346,11 +348,11 @@ def train_model (
         # Eliminates the previous patches and saves 
         # new patches to train the model, but only 
         # for the volumes that will be used in training
-        # extractPatches(IMAGES_PATH, 
-        #                patch_shape=patch_shape, 
-        #                n_pos=n_pos, n_neg=n_neg, 
-        #                pos=pos, neg=neg, 
-        #                volumes=train_volumes)
+        extractPatches(IMAGES_PATH, 
+                       patch_shape=patch_shape, 
+                       n_pos=n_pos, n_neg=n_neg, 
+                       pos=pos, neg=neg, 
+                       volumes=train_volumes)
         
         # Creates the Dataset object
         dataset = TrainDataset(train_volumes, model)
@@ -401,19 +403,30 @@ def train_model (
                 with torch.autocast(device.type if device.type != "mps" else "cpu", enabled=amp):
                     # Predicts the masks of the received images
                     masks_pred = model(images)
-                    # Calculates the loss of the prediction masks
-                    loss = dice_loss(
-                        # Softmax function is applied to the 
-                        # channels of the predicted values
-                        softmax(masks_pred, dim=1).float(),
-                        # Performs one hot encoding in the true masks, instead of being 
-                        # an image of only channel, it becomes of n channels, n is the 
-                        # number of classes. Permutation is also done to match the
-                        # channels dimensions
-                        one_hot(true_masks, model.n_classes).permute(0, 3, 1, 2).float(),
-                        # Indicates that the segmentation is multi-class
-                        multiclass=True
-                    )
+                    # Performs softmax on the predicted masks
+                    # dim=1 indicates that the softmax is calculated 
+                    # across the masks, since the channels is the first 
+                    # dimension
+                    masks_pred_prob = softmax(masks_pred, dim=1).float()
+                    # Performs one hot encoding on the true masks, in channels last format
+                    masks_true_one_hot = one_hot(true_masks, model.n_classes).float()
+
+                    # Calculates the balanced loss for the background mask
+                    # Permute changes the images from channels first to channels last
+                    background_loss = multiclass_balanced_cross_entropy_loss(
+                                        y_true=masks_true_one_hot,
+                                        y_pred=masks_pred_prob.permute(0, 3, 1, 2), 
+                                        batch_size=images.shape[0], 
+                                        n_classes=number_of_classes, 
+                                        eps=1e-7)
+                    # Calculates the loss for the IRF mask
+                    irf_loss = BCELoss(masks_pred_prob[:, 1, :, :], masks_true_one_hot[:, 1, :, :])
+                    # Calculates the loss for the SRF mask
+                    srf_loss = BCELoss(masks_pred_prob[:, 2, :, :], masks_true_one_hot[:, 2, :, :])
+                    # Calculates the loss for the PED mask
+                    ped_loss = BCELoss(masks_pred_prob[:, 3, :, :], masks_true_one_hot[:, 3, :, :])
+                    # Calculates the total loss as the sum of all losses
+                    loss = background_loss + irf_loss + srf_loss + ped_loss
 
                 # Saves the value that are zero as 
                 # None so that it saves memory
