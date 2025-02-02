@@ -4,7 +4,6 @@ import torch
 import tqdm
 import wandb
 from os import listdir, cpu_count
-from pathlib import Path
 from paths import IMAGES_PATH
 from pandas import read_csv
 from skimage.io import imread
