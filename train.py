@@ -221,7 +221,6 @@ def train_model (
         pos, 
         neg,
         val_percent,
-        load,
         amp
 ):
     """
@@ -265,8 +264,6 @@ def train_model (
         val_percent (float): decimal value that represents the 
         percentage of the training set that will be used in the 
         model validation
-        load (str): path that indicates where the model desired 
-        to load was saved
         amp (bool): bool that indicates whether automatic mixed
         precision is going to be used or not 
         
@@ -321,14 +318,6 @@ def train_model (
         f"\t{model.n_channels} input channels\n"
         f"\t{model.n_classes} output channels (classes)\n"
     )
-
-    # In case there is a model desired to load indicated by 
-    # the presence of the path, it is loaded 
-    if load:
-        state_dict = torch.load(load, map_location=device)
-        del state_dict["mask_values"]
-        model.load_state_dict(state_dict)
-        logging.info(f"Model loaded from {load}")
 
     # Checks if the selected fold for testing exists
     if ((fold_test < 0) or (fold_test > 5)):
@@ -617,6 +606,5 @@ if __name__ == "__main__":
         pos=1, 
         neg=0,
         val_percent=0.1,
-        load=False,
         amp=True
     )
