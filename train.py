@@ -449,23 +449,37 @@ def train_model (
                 # Adds the loss of the batch at the end of the progress bar
                 progress_bar.set_postfix(**{"Loss (batch)": loss.item()})
 
+                # The evaluation of the model is done five times per epoch
                 division_step = (n_train // (5 * batch_size))
                 if division_step > 0:
                     if global_step % division_step == 0:
                         histograms = {}
+                        # Iterates through the model parameters and creates histograms for all of 
+                        # those that do not have infinite or zero values
                         for tag, value in model.named_parameters():
+                            # Name matching so that it 
+                            # can be read and saved properly
                             tag = tag.replace("/", ".")
                             if not (torch.isinf(value) | torch.isnan(value)).any():
+                                # Calculates the histogram of the weight using the CPU
                                 histograms["Weights/" + tag] = wandb.Histogram(value.data.cpu())
                             if not (torch.isinf(value.grad) | torch.isnan(value.grad)).any():
+                                # Calculates the histogram of the gradient using the CPU
                                 histograms["Gradients/" + tag] = wandb.Histogram(value.grad.data.cpu())
 
+                        # Calculates the validation score for the model
                         val_score = evaluate(model, val_loader, device, amp)
+                        
+                        # In case a scheduler is used, the
+                        # learning rate is adjusted accordingly
                         if scheduler:
                             torch_scheduler.step(val_score)
 
+                        # Adds the validation score to the logging
                         logging.info("Validation Dice Score: {}".format(val_score))
+                        # Attempts to log this information
                         try:
+                            # Logs the information in the wandb session
                             experiment.log({
                                 "Learning Rate": optimizer.param_groups[0]["lr"],
                                 "Validation Dice": val_score,
@@ -478,6 +492,9 @@ def train_model (
                                 "Epoch": epoch,
                                 **histograms
                             })
+                        # In case something goes wrong, 
+                        # the program does not crash but 
+                        # does not save the information 
                         except:
                             pass  
     
@@ -489,7 +506,7 @@ if __name__ == "__main__":
         batch_size=32,
         learning_rate=2e-5,
         optimizer_name="Adam",
-        momentum=0,
+        momentum=0.999,
         gradient_clipping=1.0,
         scheduler=False,
         number_of_classes=4,
