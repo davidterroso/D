@@ -4,6 +4,7 @@ import torch
 import tqdm
 import wandb
 from os import listdir, cpu_count
+from pathlib import Path
 from paths import IMAGES_PATH
 from pandas import read_csv
 from skimage.io import imread
@@ -134,7 +135,6 @@ def train_model (
         pos, 
         neg,
         val_percent,
-        save_checkpoint,
         load,
         amp
 ):
@@ -179,8 +179,6 @@ def train_model (
         val_percent (float): decimal value that represents the 
         percentage of the training set that will be used in the 
         model validation
-        save_checkpoint (bool): flag that indicates whether the
-        checkpoints are going to be saved or not
         load (str): path that indicates where the model desired 
         to load was saved
         amp (bool): bool that indicates whether automatic mixed
@@ -229,11 +227,6 @@ def train_model (
     # c x h x w
     model = models.get(model_name)
     model = model.to(device=device, memory_format=torch.channels_last)
-
-    # In case checkpointing is desired, 
-    # the model is informed 
-    if save_checkpoint:
-        model.use_checkpointing()
 
     # Logs the information of the input 
     # and output channels 
@@ -299,7 +292,6 @@ def train_model (
         Learning rate:   {learning_rate}
         Training size:   {n_train}
         Validation size: {n_val}
-        Checkpoints:     {save_checkpoint}
         Device:          {device.type}
         Mixed Precision: {amp}
     """)
@@ -345,7 +337,7 @@ def train_model (
     # Indicates what configurations are going to be saved in the run
     experiment.config.update(
          dict(epochs=epochs, batch_size=batch_size, learning_rate=learning_rate,
-             val_percent=val_percent, save_checkpoint=save_checkpoint, amp=amp)
+             val_percent=val_percent, amp=amp)
     )
 
     global_step = 0
@@ -366,8 +358,8 @@ def train_model (
         # Splits the dataset in training and 
         # validation to train the model, with a 
         # fixed seed to allow reproducibility
-        n_val = int(len(dataset) * val_percent)
-        n_train = len(dataset) - n_val
+        n_val = int(dataset.__len__ * val_percent)
+        n_train = dataset.__len__ - n_val
         train_set, val_set = random_split(dataset, [n_train, n_val], generator=torch.Generator().manual_seed(0))
 
         # Using the Dataset object, creates a DataLoader object 
@@ -487,13 +479,7 @@ def train_model (
                                 **histograms
                             })
                         except:
-                            pass
-            if save_checkpoint:
-                dir_checkpoint = "."
-                state_dict = model.state_dict()
-                state_dict["mask_values"] = dataset.mask_values
-                torch.save(state_dict, str(dir_checkpoint / "checkpoint_epoch{}.pth".format(epoch)))
-                logging.info(f"Checkpoint {epoch} saved!")       
+                            pass  
     
 if __name__ == "__main__":
     train_model(
@@ -516,7 +502,6 @@ if __name__ == "__main__":
         pos=1, 
         neg=0,
         val_percent=0.1,
-        save_checkpoint=True,
         load=False,
         amp=True
     )
