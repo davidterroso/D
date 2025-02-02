@@ -10,7 +10,7 @@ from pandas import read_csv
 from skimage.io import imread
 from torch import optim
 from torch.nn import BCELoss
-from torch.nn.functional import softmax, one_hot
+from torch.nn.functional import one_hot, sigmoid
 from torch.utils.data import Dataset, DataLoader, random_split
 from init.patchExtraction import extractPatches
 from networks.loss import multiclass_balanced_cross_entropy_loss
@@ -165,7 +165,7 @@ def evaluate(model, dataloader, device, amp, batch_size):
             # dim=1 indicates that the softmax is calculated 
             # across the masks, since the channels is the first 
             # dimension
-            masks_pred_prob = softmax(masks_pred, dim=1).float()
+            masks_pred_prob = sigmoid(masks_pred, dim=1).float()
             # Performs one hot encoding on the true masks, in channels last format
             masks_true_one_hot = one_hot(mask_true, model.n_classes).float()
 
@@ -492,7 +492,7 @@ def train_model (
                     # dim=1 indicates that the softmax is calculated 
                     # across the masks, since the channels is the first 
                     # dimension
-                    masks_pred_prob = softmax(masks_pred, dim=1).float()
+                    masks_pred_prob = sigmoid(masks_pred, dim=1).float()
                     # Performs one hot encoding on the true masks, in channels last format
                     masks_true_one_hot = one_hot(true_masks, model.n_classes).float()
 
