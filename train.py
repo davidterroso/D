@@ -218,7 +218,8 @@ def train_model (
         pos, 
         neg,
         val_percent,
-        amp
+        amp,
+        patience
 ):
     """
     Function that trains the deep learning models.
@@ -262,7 +263,10 @@ def train_model (
         percentage of the training set that will be used in the 
         model validation
         amp (bool): bool that indicates whether automatic mixed
-        precision is going to be used or not 
+        precision is going to be used or not
+        patience (int): number of validation errors calculated 
+        that are worse than the best validation error before
+        terminating training
         
     Return:
         None
@@ -444,6 +448,10 @@ def train_model (
         model.train()
         # Initiates the loss of the current epoch as 0
         epoch_loss = 0
+        # Initiates the best validation loss as an infinite value
+        best_val_loss = float("inf")
+        # Initiates the counter of patience
+        patience_counter = 0
 
         # Creates a progress bar using tqdm. The limit is when all the images in training are 
         # used in that epoch, the description indicates in which epoch the training is being 
@@ -552,21 +560,34 @@ def train_model (
                                 histograms["Gradients/" + tag] = wandb.Histogram(value.grad.data.cpu())
 
                         # Calculates the validation score for the model
-                        val_score = evaluate(model, val_loader, device, amp)
+                        val_loss = evaluate(model, val_loader, device, amp)
                         
                         # In case a scheduler is used, the
                         # learning rate is adjusted accordingly
                         if scheduler:
-                            torch_scheduler.step(val_score)
+                            torch_scheduler.step(val_loss)
 
                         # Adds the validation score to the logging
-                        logging.info("Validation Dice Score: {}".format(val_score))
+                        logging.info("Validation Weighted Mean Loss: {}".format(val_loss))
+
+                        # Early stopping check
+                        if val_loss < best_val_loss:
+                            best_val_loss = val_loss
+                            patience_counter = 0
+                            torch.save(model.state_dict(), f"models/{model_name}_best_model.pth")
+                        else:
+                            patience_counter += 1
+                        
+                        if patience_counter >= patience:
+                            logging.info("Early stopping triggered.")
+                            break
+
                         # Attempts to log this information
                         try:
                             # Logs the information in the wandb session
                             experiment.log({
                                 "Learning Rate": optimizer.param_groups[0]["lr"],
-                                "Validation Dice": val_score,
+                                "Validation Weighted Mean Loss": val_loss,
                                 "Images": wandb.Image(images[0].cpu()),
                                 "Masks":{
                                     "True": wandb.Image(true_masks[0].float().cpu()),
@@ -603,5 +624,6 @@ if __name__ == "__main__":
         pos=1, 
         neg=0,
         val_percent=0.1,
-        amp=True
+        amp=True,
+        patience=5
     )
