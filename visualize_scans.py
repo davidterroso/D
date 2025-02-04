@@ -11,6 +11,20 @@ from skimage.morphology import disk
 from paths import IMAGES_PATH
 
 def showImages(original_slice, mask, roi):
+    """
+    Function that displays the images in the TkInter interface
+
+    Args:
+        original_slice (NumPy array): the original selected 
+            B-scan for visualization
+        mask (NumPy array): the fluid masks of the selected 
+            B-scan
+        roi (NumPy array): the ROI mask of the selected 
+            B-scan
+
+    Return:
+        None
+    """
     # Defines the threshold used to
     # calculate the entropy masks
     threshold = 1e-2

@@ -7,12 +7,12 @@ from PIL import Image
 
 def int32_to_uint8(image):
     """
-    Receives an int32 Numpy array that represents an image and transforms it into 
+    Receives an int32 NumPy array that represents an image and transforms it into 
     uint8 so that it can be visualized by the PC image viewer
     Args:
-        image (Numpy int32 array): slice of an OCT scan
+        image (NumPy int32 array): slice of an OCT scan
     Return:
-        (Numpy uint8 array): slice of an OCT scan
+        (NumPy uint8 array): slice of an OCT scan
     """
     return (255 * (image - image.min())/(image.max() - image.min())).astype(np.uint8)
 
@@ -24,9 +24,9 @@ def load_oct_image(filename):
     Args:
         filename: name of the image to be loaded
     Return: 
-        (Numpy int32 array) int32 3D image with voxels range 0-255
-        (Numpy array) the origin of the scan
-        (Numpy array) the scan spacing
+        (NumPy int32 array) int32 3D image with voxels range 0-255
+        (NumPy array) the origin of the scan
+        (NumPy array) the scan spacing
     """
     # Reads the image using SimpleITK
     itkimage = sitk.ReadImage(filename)
@@ -38,13 +38,13 @@ def load_oct_image(filename):
     oct_scan_ret = np.zeros(oct_scan.shape, dtype=np.int32)
 
     if 'Cirrus' in filename:
-        # range 0-255
+        # Range 0-255
         oct_scan_ret = oct_scan.astype(np.int32)
     elif 'Spectralis' in filename:
-        # range 0-2**16
+        # Range 0-2**16
         oct_scan_ret = (oct_scan.astype(np.float32) / (2 ** 16) * 255.).astype(np.int32)
     elif 'Topcon' in filename:
-        # range 0-255
+        # Range 0-255
         oct_scan_ret = oct_scan.astype(np.int32)
 
     # Read the origin of the oct_scan, will be used to convert the 
@@ -61,9 +61,9 @@ def load_oct_mask(filename):
     Args:
         filename (str): name of the image to be loaded
     Return: 
-        (Numpy int8 array) int32 3D image with the fluid masks
-        (Numpy array) the origin of the scan
-        (Numpy array) the scan spacing
+        (NumPy int8 array) int32 3D image with the fluid masks
+        (NumPy array) the origin of the scan
+        (NumPy array) the scan spacing
     """
     # Reads the image using SimpleITK
     itkimage = sitk.ReadImage(filename)

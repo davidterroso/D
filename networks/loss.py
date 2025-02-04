@@ -1,6 +1,21 @@
 import torch
 
 def multiclass_balanced_cross_entropy_loss(y_true, y_pred, batch_size, n_classes, eps=1e-7):
+    """
+    Loss function for the background segmentation on the network
+
+    Args:
+        y_true (PyTorch tensor): ground-truth of the segmented 
+            fluids and background        
+        y_pred (PyTorch tensor): network's prediction of the 
+            segmented fluids and background 
+        batch_size (int): size of the batch
+        eps (float): epsilon value used to prevent divisions by 
+            zero. Default: 1e-7
+    
+    Return:
+        (float): loss of the background segmentation
+    """
     # Casts y_true as float32 to allow 
     # higher precision calculations 
     y_true = y_true.float(torch.float32)
@@ -51,4 +66,4 @@ def multiclass_balanced_cross_entropy_loss(y_true, y_pred, batch_size, n_classes
     loss = -0.5 * torch.mean(cross_ent, dim=-1) + 0.5 * dice_loss
 
     # Returns the loss value
-    return loss
+    return loss.item()

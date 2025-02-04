@@ -23,10 +23,10 @@ def dropPatches(prob, volumes_list, model):
     not present fluid
 
     Args:
-        prob (float): fraction of patches from each slice that will 
-        be dropped in case there is no fluid in the slice
+        prob (float): fraction of patches from each slice that will be 
+            dropped in case there is no fluid in the slice
         volumes_list (List[float]): list of the OCT volume's identifier 
-        that will be used in training
+            that will be used in training
         model (str): name of the model used
 
     Return: None
@@ -89,12 +89,12 @@ def getPatchesFromVolumes(volumes_list, model):
 
     Args:
         volumes_list (List[float]): list of the OCT volume's identifier 
-        that will be used in training
+            that will be used in training
         model (str): name of the model that will be trained
 
     Return:
         patches_list (List[str]): list of the name of the patches that 
-        will be used to train the model
+            will be used to train the model
     """
     # The path to the patches is dependent on the model selected
     if model == "2.5D":
@@ -128,7 +128,7 @@ class TrainDataset(Dataset):
 
         Args: 
             train_volumes(List[float]): list of the training 
-            volumes that will be used to train the model
+                volumes that will be used to train the model
             model (str): name of the model that will be trained
         
         Return:
@@ -151,6 +151,12 @@ class TrainDataset(Dataset):
         """
         Function required in the Dataset object that returns the length 
         of the images used in training
+
+        Args:
+            self (PyTorch Dataset): the PyTorch Dataset object itself
+
+        Return:
+            None
         """
         return len(self.patches_names)
 
@@ -158,6 +164,13 @@ class TrainDataset(Dataset):
         """
         Gets an image from the list of images that can be used in training
         when an index is given, utilized to access the list of images
+        
+        Args:
+            self (PyTorch Dataset): the PyTorch Dataset object itself
+            index (int): index of the dataset to get the image from
+
+        Return:
+            None
         """
         # In case the index is a tensor,
         # converts it to a list
@@ -226,14 +239,14 @@ def evaluate(model, dataloader, device, amp):
     Function used to evaluate the model
 
     Args:
-        model (torch Module object): model that is being 
-        trained
-        dataloader (torch DataLoader object): DataLoader 
-        that contains the training and evaluation data
-        device (str): indicates which torch device is
-        going to be used
+        model (PyTorch Module object): model that is being 
+            trained
+        dataloader (PyTorch DataLoader object): DataLoader 
+            that contains the training and evaluation data
+        device (str): indicates which PyTorch device is
+            going to be used
         amp (bool): flag that indicates if automatic 
-        mixed precision is being used
+            mixed precision is being used
 
     Return:
         Weighted mean of the loss across the considered 
@@ -324,51 +337,52 @@ def train_model (
     Args:
         model_name (str): name of the model desired to train
         device_name (str): indicates whether the network will 
-        be trained using the CPU or the GPU
+            be trained using the CPU or the GPU
         epochs (int): maximum number of epochs the model 
-        will train for
+            will train for
         batch_size (int): size of the batch used in 
-        training
+            training
         learning_rate (int): learning rate of the 
-        optimization function
+            optimization function
         optimizer_name (string): optimization function used
         number_of_classes (int): number of classes the 
-        model is supposed to output
+            model is supposed to output
         momentum (float): momentum of the optimization 
-        algorithm
+            algorithm
         gradient_clipping (float): threshold after which it
-        scales the gradient down, to prevent gradient exploding
+            scales the gradient down, to prevent gradient 
+            exploding
         scheduler (bool): flag that indicates whether a 
-        learning rate scheduler will be used or not
+            learning rate scheduler will be used or not
         number_of_channels (int): number of channels the 
-        input will present
+            input will present
         fold_test (int): number of the fold that will be used 
-        in the network testing 
+            in the network testing 
         tuning (bool): indicates whether this train will
-        be performed to tune the hyperparameters or not
+            be performed to tune the hyperparameters or not
         patch_shape (tuple): indicates what is the shape of 
-        the patches that will be extracted from the B-scans 
+            the patches that will be extracted from the B-scans 
         n_pos (int): number of patches that will be extracted 
-        from the scan ROI
+            from the scan ROI
         n_neg (int): number of patches that will be extracted 
-        from the outside of the scan ROI
+            from the outside of the scan ROI
         pos (int): indicates what is the value that represents 
-        the ROI in the ROI mask
+            the ROI in the ROI mask
         neg (int): indicates what is the value that does not 
-        represent the ROI in the ROI mask
+            represent the ROI in the ROI mask
         val_percent (float): decimal value that represents the 
-        percentage of the training set that will be used in the 
-        model validation
+            percentage of the training set that will be used in the 
+            model validation
         amp (bool): bool that indicates whether automatic mixed
-        precision is going to be used or not
-        patience (int): number of validation errors calculated 
-        that are worse than the best validation error before
-        terminating training
+            precision is going to be used or not
+        patience (int): number of epochs where the validation errors 
+            calculated are worse than the best validation error 
+            before terminating training
         
     Return:
         None
     """
-
+    # Initiates logging 
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
     # Dictionary of models, associates a string to a PyTorch module

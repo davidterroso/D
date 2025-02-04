@@ -17,7 +17,7 @@ def k_fold_split_segmentation(k=5, folders_path=""):
     Args:
         k (int): number of k folds
         folders_path (string): absolute or relative path to the RETOUCH dataset 
-        location
+            location
 
     Return: 
         None
@@ -139,7 +139,7 @@ def k_fold_split_generation(k=5, folders_path=""):
     Args:
         k (int): number of k folds
         folders_path (string): absolute or relative path to the RETOUCH dataset 
-        location
+            location
 
     Return: 
         None

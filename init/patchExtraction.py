@@ -19,13 +19,13 @@ def createROIMask(slice, mask, threshold, save_location, save_location_to_view):
     Creates and saves the ROI mask
 
     Args:
-        slice (np.array): contains the B-scan from where the ROI is going to 
-        be extracted
-        mask (np.array): contains the fluid mask of the corresponding B-scan
+        slice (NumPy array): contains the B-scan from where the ROI is going to 
+            be extracted
+        mask (NumPy array): contains the fluid mask of the corresponding B-scan
         threshold (float): threshold of entropy after which the region is kept
         save_location (str): path to where the image is going to be saved in int8
         save_location_to_view (str): path to where the image is going to be saved 
-        in uint8 for visualization
+            in uint8 for visualization
     
     Return:
         None
@@ -116,17 +116,19 @@ def extractPatchCenters_(roi_mask, patch_shape, npos, pos, neg):
     functions in nutsml.imageutil
 
     Args:
-        roi_mask (np.array int8): image that contains the ROI
+        roi_mask (int8 NumPy array): image that contains the ROI
         patch_shape: shape of the resulting patch
         npos: number of positive patches that are going to be
-        extracted
+            extracted
         pos: intensity value corresponding to the values that 
-        are inside the ROI mask
+            are inside the ROI mask
         neg: intensity value corresponding to the values that 
-        are outside the ROI mask
+            are outside the ROI mask
 
     Returns:
-        list[list]: list of possible centers
+        (List[List]): list of possible centers, which are also lists
+            that contain the row, the column, and a label that 
+            indicates whether they are a positive or negative patch
     """
     # Begins by considering all the positive points as possible 
     # centers. Transpose is used for easier manipulation
@@ -166,17 +168,18 @@ def extractPatchCenters(roi_mask, patch_shape, npos, pos, neg):
         roi_mask (np.array int8): the region of interst mask
         patch_shape: shape of the resulting patch
         npos: number of positive patches that are going to be
-        extracted
+            extracted
         pos: intensity value corresponding to the values that 
-        are inside the ROI mask
+            are inside the ROI mask
         neg: intensity value corresponding to the values that 
-        are outside the ROI mask
+            are outside the ROI mask
 
     Return:
-        (list[list]): List that contains all the centers of 
-        the positive patches that are going to be extracted
+        (List[List]): list of possible positive centers, which 
+            are also lists that contain the row, the column, 
+            and a label that indicates whether they are a 
+            positive or negative patch
     """
-
     PYINX = 0
     PXINX = 1
     h, w = roi_mask.shape
@@ -232,7 +235,7 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=Non
         pos (int): Intensity indicating a positive region on the ROI mask
         neg (int): Intensity indicating a negative region on the ROI mask
         volumes (List[float]) optional: List of volumes to extract patches 
-        from. The default value is None because it is optional
+            from. The default value is None because it is optional
 
     Return:
         None

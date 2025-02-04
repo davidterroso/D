@@ -46,15 +46,15 @@ class DoubleConvolution(Module):
 
         Args: 
             self (DoubleConvolution object): the 
-            DoubleConvolution object which is going
-            to be performed on input x
+                DoubleConvolution object which is going
+                to be performed on input x
             x (PyTorch tensor): result operation
-            before, which can be a downsample of a
-            upsample operation
+                before, which can be a downsample of a
+                upsample operation
 
         Return:
             (PyTorch tensor): result of the double 
-            convolution operation on the input x
+                convolution operation on the input x
         """
         return self.conv_op(x)
 
@@ -92,16 +92,16 @@ class DownSample(Module):
 
         Args: 
             self (DownSample object): the 
-            DownSample object which is going
-            to be performed on input x
+                DownSample object which is going
+                to be performed on input x
             x (PyTorch tensor): result of the
-            double convolution
+                double convolution
 
         Return:
             (PyTorch tensor): result of the 
-            downsampling operation on the input x
+                downsampling operation on the input x
             (PyTorch tensor): result of the max 
-            pooling operation on the input x
+                pooling operation on the input x
         """
         # Calculates the double convolution applied 
         # to the x input
@@ -153,12 +153,12 @@ class UpSample(Module):
 
         Args: 
             self (DownSample object): the 
-            DownSample object which is going
-            to be performed on input x
+                DownSample object which is going
+                to be performed on input x
             x1 (PyTorch tensor): result of the
-            previous step
+                previous step
             x2 (PyTorch tensor): result of the
-            downsampling step
+                downsampling step
 
         Return:
             (PyTorch tensor): result of the upsample, 
@@ -189,7 +189,7 @@ class UNet(Module):
         Args:
             in_channels (int): Number of channels that are input in this module
             num_classes (int): Number of classes that are expected to output 
-            from this network
+                from this network
         
         Return:
             None
