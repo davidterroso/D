@@ -1,14 +1,14 @@
-import numpy as np
 import logging
 import torch
 import tqdm
 import wandb
+from numpy import expand_dims
 from os import listdir, cpu_count
-from paths import IMAGES_PATH
 from pandas import read_csv
+from paths import IMAGES_PATH
 from skimage.io import imread
 from torch import optim
-from torchvision.transforms import v2
+from torchvision.transforms.v2 import Compose, RandomHorizontalFlip, RandomRotation
 from torch.nn import BCELoss
 from torch.nn.functional import one_hot, sigmoid
 from torch.utils.data import Dataset, DataLoader, random_split
@@ -77,9 +77,9 @@ class TrainDataset(Dataset):
         # rotating the image between 0 and 10 degrees
         # Random Horizontal Flip has a probability of 
         # 0.5 flipping the image horizontally
-        self.transforms = v2.Compose([
-            v2.RandomRotation(p=0.5, degrees=[0,10]),
-            v2.RandomHorizontalFlip(p=0.5)])
+        self.transforms = Compose([
+            RandomRotation(p=0.5, degrees=[0,10]),
+            RandomHorizontalFlip(p=0.5)])
 
     def __len__(self):
         """
@@ -123,8 +123,8 @@ class TrainDataset(Dataset):
         # as the first channel
         # The mask dimensions are also expanded 
         # to match
-        scan = np.expand_dims(scan, axis=0)
-        mask = np.expand_dims(mask, axis=0)
+        scan = expand_dims(scan, axis=0)
+        mask = expand_dims(mask, axis=0)
 
         # Converts the scan and mask 
         # to a PyTorch Tensor
