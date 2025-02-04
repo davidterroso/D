@@ -121,7 +121,31 @@ class TrainDataset(Dataset):
         # Expands the scan dimentions to 
         # include an extra channel of value 1
         # as the first channel
+        # The mask dimensions are also expanded 
+        # to match
         scan = np.expand_dims(scan, axis=0)
+        mask = np.expand_dims(mask, axis=0)
+
+        # Converts the scan and mask 
+        # to a PyTorch Tensor
+        scan = torch.from_numpy(scan)
+        mask = torch.from_numpy(mask)
+
+        # Forms a stack with the scan and the mask
+        # Shape: H x W x
+        stack = torch.cat([scan, mask], dim=0)
+
+        # Applies the transfomration to the stack
+        transformed = self.transforms(stack)
+
+        # Separate the scan and the mask from the stack
+        # Keeps the extra dimension on the slice but not on the
+        # mask 
+        scan, mask = transformed[0].unsqueeze(0), transformed[1]
+
+        # Converts the scans back to NumPy
+        scan = scan.numpy()
+        mask = mask.numpy()
 
         # Declares a sample as a dictionary that 
         # to the keyword "scan" associates the 
