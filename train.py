@@ -1,6 +1,5 @@
 import logging
 import torch
-import tqdm
 import wandb
 from numpy import any, expand_dims
 from numpy.random import random_sample
@@ -13,6 +12,7 @@ from torchvision.transforms.v2 import Compose, RandomApply, RandomHorizontalFlip
 from torch.nn import BCELoss
 from torch.nn.functional import one_hot, sigmoid
 from torch.utils.data import Dataset, DataLoader, random_split
+from tqdm import tqdm
 from init.patchExtraction import extractPatches
 from networks.loss import multiclass_balanced_cross_entropy_loss
 from networks.unet import UNet
@@ -211,7 +211,9 @@ class TrainDataset(Dataset):
         mask = torch.from_numpy(mask)
 
         # Forms a stack with the scan and the mask
-        # Shape: H x W x
+        # Initial Scan Shape: H x W x 1
+        # Initial Mask Shape: H x W x 1
+        # Resulting Shape: H x W x 2
         stack = torch.cat([scan, mask], dim=0)
 
         # Applies the transfomration to the stack
@@ -530,19 +532,20 @@ def train_model (
     global_step = 0
     # Iterates through every epoch
     for epoch in range(1, epochs + 1):
-        print(f"Preparing Epoch {epoch} Training")
+        print(f"Preparing epoch {epoch} training")
+        print("...")
 
         # Eliminates the previous patches and saves 
         # new patches to train the model, but only 
         # for the volumes that will be used in training
-        extractPatches(IMAGES_PATH, 
-                       patch_shape=patch_shape, 
-                       n_pos=n_pos, n_neg=n_neg, 
-                       pos=pos, neg=neg, 
-                       volumes=train_volumes)
+        # extractPatches(IMAGES_PATH, 
+        #                patch_shape=patch_shape, 
+        #                n_pos=n_pos, n_neg=n_neg, 
+        #                pos=pos, neg=neg, 
+        #                volumes=train_volumes)
         
         # Randomly drops patches of slices that do not have retinal fluid
-        dropPatches(prob=0.75, volumes_list=train_volumes, model=model_name)
+        # dropPatches(prob=0.75, volumes_list=train_volumes, model=model_name)
         
         # Creates the Dataset object
         dataset = TrainDataset(train_volumes, model_name)
@@ -736,8 +739,8 @@ if __name__ == "__main__":
     train_model(
         model_name="UNet",
         device_name="GPU",
-        epochs=100,
-        batch_size=32,
+        epochs=5,
+        batch_size=2,
         learning_rate=2e-5,
         optimizer_name="Adam",
         momentum=0.999,
@@ -754,5 +757,5 @@ if __name__ == "__main__":
         neg=0,
         val_percent=0.2,
         amp=True,
-        patience=5
+        patience=10
     )
