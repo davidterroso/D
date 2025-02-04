@@ -738,7 +738,7 @@ if __name__ == "__main__":
         n_neg=2, 
         pos=1, 
         neg=0,
-        val_percent=0.1,
+        val_percent=0.2,
         amp=True,
         patience=5
     )
