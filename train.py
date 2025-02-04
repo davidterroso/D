@@ -154,15 +154,13 @@ def evaluate(model, dataloader, device, amp):
             image = image.to(device=device, dtype=torch.float32, memory_format=torch.channels_last)
             mask_true = mask_true.to(device=device, dtype=torch.long)
 
-            # Predict the mask using the model
-            mask_pred = model(image)
             # Predicts the masks of the received images
-            masks_pred = model(image)
-            # Performs softmax on the predicted masks
-            # dim=1 indicates that the softmax is calculated 
+            mask_pred = model(image)
+            # Performs sigmoid on the predicted masks
+            # dim=1 indicates that the sigmoid is calculated 
             # across the masks, since the channels is the first 
             # dimension
-            masks_pred_prob = sigmoid(masks_pred, dim=1).float()
+            masks_pred_prob = sigmoid(mask_pred, dim=1).float()
             # Performs one hot encoding on the true masks, in channels last format
             masks_true_one_hot = one_hot(mask_true, model.n_classes).float()
 
@@ -183,20 +181,15 @@ def evaluate(model, dataloader, device, amp):
             # Calculates the total loss as the sum of all losses
             batch_loss = background_loss + irf_loss + srf_loss + ped_loss
 
-            # Count the number of labeled voxels and does not count the background to not skew thr
-            num_foreground_voxels = torch.sum(mask_true > 0).item()
-
-            # Accumulate loss weighted by voxel count
-            total_loss += batch_loss.item() * num_foreground_voxels
-            total_foreground_voxels += num_foreground_voxels
+            # Accumulate loss
+            total_loss += batch_loss.item()
 
     # Sets the model to train mode again
     model.train()
     # Returns the weighted mean of the total 
     # loss according to the fluid voxels
-    # Also avoids division by zero in case there are 
-    # no foreground voxels
-    return total_loss / max(total_foreground_voxels, 1)
+    # Also avoids division by zero
+    return total_loss / max(num_val_batches, 1)
 
 def train_model (
         model_name,
@@ -453,6 +446,7 @@ def train_model (
         # Initiates the counter of patience
         patience_counter = 0
 
+        print(f"Training Epoch {epoch}")
         # Creates a progress bar using tqdm. The limit is when all the images in training are 
         # used in that epoch, the description indicates in which epoch the training is being 
         # done, and the unit indicates the unit that is filling the bar
@@ -482,8 +476,8 @@ def train_model (
                 with torch.autocast(device.type if device.type != "mps" else "cpu", enabled=amp):
                     # Predicts the masks of the received images
                     masks_pred = model(images)
-                    # Performs softmax on the predicted masks
-                    # dim=1 indicates that the softmax is calculated 
+                    # Performs sigmoid on the predicted masks
+                    # dim=1 indicates that the sigmoid is calculated 
                     # across the masks, since the channels is the first 
                     # dimension
                     masks_pred_prob = sigmoid(masks_pred, dim=1).float()
@@ -528,7 +522,7 @@ def train_model (
                 # how many images have been trained
                 progress_bar.update(images.shape[0])
                 # Updates the global step
-                # and global loss
+                # and epoch loss
                 global_step += 1
                 epoch_loss += loss.item()
                 # Logs the loss, the step, and 
@@ -541,67 +535,79 @@ def train_model (
                 # Adds the loss of the batch at the end of the progress bar
                 progress_bar.set_postfix(**{"Loss (batch)": loss.item()})
 
-                # The evaluation of the model is done five times per epoch
-                division_step = (n_train // (5 * batch_size))
-                if division_step > 0:
-                    if global_step % division_step == 0:
-                        histograms = {}
-                        # Iterates through the model parameters and creates histograms for all of 
-                        # those that do not have infinite or zero values
-                        for tag, value in model.named_parameters():
-                            # Name matching so that it 
-                            # can be read and saved properly
-                            tag = tag.replace("/", ".")
-                            if not (torch.isinf(value) | torch.isnan(value)).any():
-                                # Calculates the histogram of the weight using the CPU
-                                histograms["Weights/" + tag] = wandb.Histogram(value.data.cpu())
-                            if not (torch.isinf(value.grad) | torch.isnan(value.grad)).any():
-                                # Calculates the histogram of the gradient using the CPU
-                                histograms["Gradients/" + tag] = wandb.Histogram(value.grad.data.cpu())
+        print(f"Validating Epoch {epoch}")
+        histograms = {}
+        # Iterates through the model parameters and creates histograms for all of 
+        # those that do not have infinite or zero values
+        for tag, value in model.named_parameters():
+            # Name matching so that it 
+            # can be read and saved properly
+            tag = tag.replace("/", ".")
+            if not (torch.isinf(value) | torch.isnan(value)).any():
+                # Calculates the histogram of the weight using the CPU
+                histograms["Weights/" + tag] = wandb.Histogram(value.data.cpu())
+            if not (torch.isinf(value.grad) | torch.isnan(value.grad)).any():
+                # Calculates the histogram of the gradient using the CPU
+                histograms["Gradients/" + tag] = wandb.Histogram(value.grad.data.cpu())
 
-                        # Calculates the validation score for the model
-                        val_loss = evaluate(model, val_loader, device, amp)
-                        
-                        # In case a scheduler is used, the
-                        # learning rate is adjusted accordingly
-                        if scheduler:
-                            torch_scheduler.step(val_loss)
+        # Calculates the validation score for the model
+        val_loss = evaluate(model, val_loader, device, amp)
+        
+        # In case a scheduler is used, the
+        # learning rate is adjusted accordingly
+        if scheduler:
+            torch_scheduler.step(val_loss)
 
-                        # Adds the validation score to the logging
-                        logging.info("Validation Weighted Mean Loss: {}".format(val_loss))
+        # Adds the validation score to the logging
+        logging.info(f"Validation Mean Loss: {val_loss}")
 
-                        # Early stopping check
-                        if val_loss < best_val_loss:
-                            best_val_loss = val_loss
-                            patience_counter = 0
-                            torch.save(model.state_dict(), f"models/{model_name}_best_model.pth")
-                        else:
-                            patience_counter += 1
-                        
-                        if patience_counter >= patience:
-                            logging.info("Early stopping triggered.")
-                            break
+        # Early stopping check
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            patience_counter = 0
+            torch.save(model.state_dict(), f"models/{model_name}_best_model.pth")
+        else:
+            patience_counter += 1
+        
+        if patience_counter >= patience:
+            logging.info("Early stopping triggered.")
+            break
 
-                        # Attempts to log this information
-                        try:
-                            # Logs the information in the wandb session
-                            experiment.log({
-                                "Learning Rate": optimizer.param_groups[0]["lr"],
-                                "Validation Weighted Mean Loss": val_loss,
-                                "Images": wandb.Image(images[0].cpu()),
-                                "Masks":{
-                                    "True": wandb.Image(true_masks[0].float().cpu()),
-                                    "Prediction": wandb.Image(masks_pred.argmax(dim=1)[0].float().cpu()),
-                                },
-                                "Step": global_step,
-                                "Epoch": epoch,
-                                **histograms
-                            })
-                        # In case something goes wrong, 
-                        # the program does not crash but 
-                        # does not save the information 
-                        except:
-                            pass  
+        # Get masks to display at each epoch
+        pred_mask = masks_pred.argmax(dim=1)
+        # Get the predicted masks
+        irf_predicted_mask = (pred_mask == 1).float()  
+        srf_predicted_mask = (pred_mask == 2).float()
+        ped_predicted_mask = (pred_mask == 3).float()
+        # Get the true masks
+        irf_true_mask = (true_masks == 1).float()
+        srf_true_mask = (true_masks == 2).float()
+        ped_true_mask = (true_masks == 3).float()
+
+        # Attempts to log this information
+        try:
+            # Logs the information in the wandb session
+            experiment.log({
+                "Learning Rate": optimizer.param_groups[0]["lr"],
+                "Validation Mean Loss": val_loss,
+                "Images": wandb.Image(images[0].cpu()),
+                "Masks":{
+                    "IRF True Mask": wandb.Image(irf_true_mask[0].float().cpu()),
+                    "IRF True Mask": wandb.Image(srf_true_mask[0].float().cpu()),
+                    "IRF True Mask": wandb.Image(ped_true_mask[0].float().cpu()),
+                    "IRF Predicted Mask": wandb.Image(irf_predicted_mask[0].float().cpu()),
+                    "SRF Predicted Mask": wandb.Image(srf_predicted_mask[0].float().cpu()),
+                    "PED Predicted Mask": wandb.Image(ped_predicted_mask[0].float().cpu()),
+                },
+                "Step": global_step,
+                "Epoch": epoch,
+                **histograms
+            })
+        # In case something goes wrong, 
+        # the program does not crash but 
+        # does not save the information 
+        except:
+            pass  
     
 if __name__ == "__main__":
     train_model(
