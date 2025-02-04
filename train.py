@@ -8,6 +8,7 @@ from paths import IMAGES_PATH
 from pandas import read_csv
 from skimage.io import imread
 from torch import optim
+from torchvision.transforms import v2
 from torch.nn import BCELoss
 from torch.nn.functional import one_hot, sigmoid
 from torch.utils.data import Dataset, DataLoader, random_split
@@ -70,6 +71,15 @@ class TrainDataset(Dataset):
         super().__init__()
         self.model = model
         self.patches_names = getPatchesFromVolumes(train_volumes, model)
+        # Initiates the transformations that will be 
+        # applied to the images
+        # Random Rotation has a probability of 0.5 of 
+        # rotating the image between 0 and 10 degrees
+        # Random Horizontal Flip has a probability of 
+        # 0.5 flipping the image horizontally
+        self.transforms = v2.Compose([
+            v2.RandomRotation(p=0.5, degrees=[0,10]),
+            v2.RandomHorizontalFlip(p=0.5)])
 
     def __len__(self):
         """
@@ -105,7 +115,7 @@ class TrainDataset(Dataset):
         mask = imread(mask_name)
 
         # Z-Score Normalization / Standardization
-        # Mean of 0 and standard deviation of 1
+        # Mean of 0 and SD of 1
         scan = (scan - 128.) / 128.
 
         # Expands the scan dimentions to 
