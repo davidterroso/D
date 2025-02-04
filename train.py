@@ -472,8 +472,8 @@ def train_model (
         # Using the Dataset object, creates a DataLoader object 
         # which will be used to train the model in batches
         loader_args = dict(batch_size=batch_size, num_workers=cpu_count(), pin_memory=True)
-        train_loader = DataLoader(train_set, shuffle=True, **loader_args)
-        val_loader = DataLoader(val_set, shuffle=False, drop_last=False, **loader_args)
+        train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
+        val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
 
         # Indicates the model that it is going to be trained
         model.train()
