@@ -104,6 +104,10 @@ class TrainDataset(Dataset):
         scan = imread(slice_name)
         mask = imread(mask_name)
 
+        # Z-Score Normalization / Standardization
+        # Mean of 0 and standard deviation of 1
+        scan = (scan - 128.) / 128.
+
         # Expands the scan dimentions to 
         # include an extra channel of value 1
         # as the first channel
