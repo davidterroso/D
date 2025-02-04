@@ -197,6 +197,9 @@ class UNet(Module):
         # Calls the nn.Module class
         super().__init__()
 
+        self.n_channels = in_channels
+        self.n_classes = num_classes
+
         # Convolutions that form the encoding path
         self.down_convolution_1 = DownSample(in_channels, 64) # (h, w, 1) -> ((h - 4) / 2, (w - 4) / 2, 64)
         self.down_convolution_2 = DownSample(64, 128) # ((h - 4) / 2, (w - 4) / 2, 64) -> (((h - 4) / 2 - 4) / 2, ((w - 4) / 2 - 4) / 2, 128)

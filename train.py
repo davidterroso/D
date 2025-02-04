@@ -2,19 +2,85 @@ import logging
 import torch
 import tqdm
 import wandb
-from numpy import expand_dims
-from os import listdir, cpu_count
+from numpy import any, expand_dims
+from numpy.random import random_sample
+from os import cpu_count, listdir, remove
 from pandas import read_csv
 from paths import IMAGES_PATH
 from skimage.io import imread
 from torch import optim
-from torchvision.transforms.v2 import Compose, RandomHorizontalFlip, RandomRotation
+from torchvision.transforms.v2 import Compose, RandomApply, RandomHorizontalFlip, RandomRotation
 from torch.nn import BCELoss
 from torch.nn.functional import one_hot, sigmoid
 from torch.utils.data import Dataset, DataLoader, random_split
 from init.patchExtraction import extractPatches
 from networks.loss import multiclass_balanced_cross_entropy_loss
 from networks.unet import UNet
+
+def dropPatches(prob, volumes_list, model):
+    """
+    Randomly drops a percentage of extracted patches whose slice does
+    not present fluid
+
+    Args:
+        prob (float): fraction of patches from each slice that will 
+        be dropped in case there is no fluid in the slice
+        volumes_list (List[float]): list of the OCT volume's identifier 
+        that will be used in training
+        model (str): name of the model used
+
+    Return: None
+    """
+    # The path to the patches is dependent on the model selected
+    if model == "2.5D":
+        images_path = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\"
+    else:
+        images_path = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\"
+
+    # Declares the path where the true masks are located
+    masks_path = IMAGES_PATH + "\\OCT_images\\segmentation\\masks\\int8\\"
+
+    # Declares the path of the patches
+    patches_slice_path = images_path + "slices\\"
+    patches_mask_path = images_path + "masks\\"
+    patches_roi_path = images_path + "roi\\"
+    
+    # Iterates through the ground truth masks
+    for mask in listdir(masks_path):
+        # Separates the name of the mask 
+        # to obtain its information 
+        mask_name_parts = mask.split("_")
+
+        # Only considers the slices that are in the list 
+        # of volumes that will be used in training
+        if int(mask_name_parts[1][-3:]) in volumes_list:
+            # Reads the mask
+            fluid_mask = imread(str(masks_path + mask))
+
+            # Checks if the slice has any of 
+            # the three fluids
+            irf_exists = any(fluid_mask==1)
+            srf_exists = any(fluid_mask==2)
+            ped_exists = any(fluid_mask==3)
+
+            # In case there is no fluid, randomly eliminates patches
+            if not (irf_exists or srf_exists or ped_exists):
+                # Iterates through the patches extracted
+                for patch in listdir(patches_slice_path):
+                    # Extracts the information from the patches
+                    patch_name_parts = patch.split("_")
+                    # Checks if the name of the vendor, the volume, and the
+                    # slice are the same
+                    if ((patch_name_parts[0] == mask_name_parts[0]) and \
+                        (patch_name_parts[1] == mask_name_parts[1]) and \
+                        (patch_name_parts[2] == mask_name_parts[2][:3])):
+
+                        # Randomly eliminates the indicated percentage 
+                        # of patches
+                        if (float(random_sample()) < prob):
+                            remove(str(patches_slice_path + patch))
+                            remove(str(patches_mask_path + patch))
+                            remove(str(patches_roi_path + patch))
 
 def getPatchesFromVolumes(volumes_list, model):
     """
@@ -78,7 +144,7 @@ class TrainDataset(Dataset):
         # Random Horizontal Flip has a probability of 
         # 0.5 flipping the image horizontally
         self.transforms = Compose([
-            RandomRotation(p=0.5, degrees=[0,10]),
+            RandomApply([RandomRotation(degrees=[0,10])], p=0.5),
             RandomHorizontalFlip(p=0.5)])
 
     def __len__(self):
@@ -450,6 +516,8 @@ def train_model (
     global_step = 0
     # Iterates through every epoch
     for epoch in range(1, epochs + 1):
+        print(f"Preparing Epoch {epoch} Training")
+
         # Eliminates the previous patches and saves 
         # new patches to train the model, but only 
         # for the volumes that will be used in training
@@ -459,8 +527,11 @@ def train_model (
                        pos=pos, neg=neg, 
                        volumes=train_volumes)
         
+        # Randomly drops patches of slices that do not have retinal fluid
+        dropPatches(prob=0.75, volumes_list=train_volumes, model=model_name)
+        
         # Creates the Dataset object
-        dataset = TrainDataset(train_volumes, model)
+        dataset = TrainDataset(train_volumes, model_name)
 
         # Splits the dataset in training and 
         # validation to train the model, with a 
