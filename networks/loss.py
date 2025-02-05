@@ -18,7 +18,7 @@ def multiclass_balanced_cross_entropy_loss(y_true, y_pred, batch_size, n_classes
     """
     # Casts y_true as float32 to allow 
     # higher precision calculations 
-    y_true = y_true.float(torch.float32)
+    y_true = y_true.to(torch.float32)
     
     # Limits predictions to an interval of [eps, 1 - eps] 
     # to avoid log(0) issues
@@ -30,18 +30,14 @@ def multiclass_balanced_cross_entropy_loss(y_true, y_pred, batch_size, n_classes
     cross_ent = torch.log(y_pred_) * y_true
     # Sum over spatial dimensions
     # y_true and y_pred_ have shape (B, H, W, C)
-    # Sum over height
-    cross_ent = torch.sum(cross_ent, dim=-2)
-    # Sum over width
-    cross_ent = torch.sum(cross_ent, dim=-2)
+    # Sum over height and width
+    cross_ent = torch.sum(cross_ent, dim=[1, 2])
     # Reshapes the tensor to have shape (B,C)
     cross_ent = torch.reshape(cross_ent, (batch_size, n_classes))
 
     # Compute the sum of true labels for each class, to balance the loss
-    # Sums the over height
-    y_true_sum = torch.sum(y_true, dim=-2)
-    # Sums the over width
-    y_true_sum = torch.sum(y_true_sum, dim=-2) 
+    # Sums the over height and width
+    y_true_sum = torch.sum(y_true, dim=[1, 2])
     # Reshapes the tensor to have shape (B,C) and sums eps to avoid 
     # division by zero
     y_true_sum = torch.reshape(y_true_sum, (batch_size, n_classes)) + eps
@@ -63,7 +59,7 @@ def multiclass_balanced_cross_entropy_loss(y_true, y_pred, batch_size, n_classes
 
     # Combine the losses
     # The negative sign on cross-entropy is because of the log function
-    loss = -0.5 * torch.mean(cross_ent, dim=-1) + 0.5 * dice_loss
+    loss = (-0.5 * torch.mean(cross_ent, dim=-1, keepdim=False) + 0.5 * dice_loss).mean()
 
     # Returns the loss value
-    return loss.item()
+    return loss

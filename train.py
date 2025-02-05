@@ -9,8 +9,8 @@ from paths import IMAGES_PATH
 from skimage.io import imread
 from torch import optim
 from torchvision.transforms.v2 import Compose, RandomApply, RandomHorizontalFlip, RandomRotation
-from torch.nn import BCELoss
-from torch.nn.functional import one_hot, sigmoid
+from torch.nn import BCEWithLogitsLoss
+from torch.nn.functional import one_hot, softmax
 from torch.utils.data import Dataset, DataLoader, random_split
 from tqdm import tqdm
 from init.patchExtraction import extractPatches
@@ -274,34 +274,27 @@ def evaluate(model, dataloader, device, amp):
             mask_true = mask_true.to(device=device, dtype=torch.long)
 
             # Predicts the masks of the received images
-            mask_pred = model(image)
-            # Performs sigmoid on the predicted masks
-            # dim=1 indicates that the sigmoid is calculated 
+            masks_pred = model(image)
+            # Performs softmax on the predicted masks
+            # dim=1 indicates that the softmax is calculated 
             # across the masks, since the channels is the first 
             # dimension
-            masks_pred_prob = sigmoid(mask_pred, dim=1).float()
+            masks_pred_prob = softmax(masks_pred, dim=1).float()
+            # Permute changes the images from channels first to channels last
+            masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
             # Performs one hot encoding on the true masks, in channels last format
-            masks_true_one_hot = one_hot(mask_true, model.n_classes).float()
+            masks_true_one_hot = one_hot(mask_true.long(), model.n_classes).float()
 
             # Calculates the balanced loss for the background mask
-            # Permute changes the images from channels first to channels last
-            background_loss = multiclass_balanced_cross_entropy_loss(
+            loss = multiclass_balanced_cross_entropy_loss(
                                 y_true=masks_true_one_hot,
-                                y_pred=masks_pred_prob.permute(0, 3, 1, 2), 
-                                batch_size=image[0], 
+                                y_pred=masks_pred_prob, 
+                                batch_size=image.shape[0], 
                                 n_classes=model.n_classes, 
                                 eps=1e-7)
-            # Calculates the loss for the IRF mask
-            irf_loss = BCELoss(masks_pred_prob[:, 1, :, :], masks_true_one_hot[:, 1, :, :])
-            # Calculates the loss for the SRF mask
-            srf_loss = BCELoss(masks_pred_prob[:, 2, :, :], masks_true_one_hot[:, 2, :, :])
-            # Calculates the loss for the PED mask
-            ped_loss = BCELoss(masks_pred_prob[:, 3, :, :], masks_true_one_hot[:, 3, :, :])
-            # Calculates the total loss as the sum of all losses
-            batch_loss = background_loss + irf_loss + srf_loss + ped_loss
 
             # Accumulate loss
-            total_loss += batch_loss.item()
+            total_loss += loss.item()
 
     # Sets the model to train mode again
     model.train()
@@ -602,30 +595,23 @@ def train_model (
                 with torch.autocast(device.type if device.type != "mps" else "cpu", enabled=amp):
                     # Predicts the masks of the received images
                     masks_pred = model(images)
-                    # Performs sigmoid on the predicted masks
-                    # dim=1 indicates that the sigmoid is calculated 
+                    # Performs softmax on the predicted masks
+                    # dim=1 indicates that the softmax is calculated 
                     # across the masks, since the channels is the first 
                     # dimension
-                    masks_pred_prob = sigmoid(masks_pred, dim=1).float()
+                    masks_pred_prob = softmax(masks_pred, dim=1).float()
+                    # Permute changes the images from channels first to channels last
+                    masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
                     # Performs one hot encoding on the true masks, in channels last format
-                    masks_true_one_hot = one_hot(true_masks, model.n_classes).float()
+                    masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float()
 
                     # Calculates the balanced loss for the background mask
-                    # Permute changes the images from channels first to channels last
-                    background_loss = multiclass_balanced_cross_entropy_loss(
+                    loss = multiclass_balanced_cross_entropy_loss(
                                         y_true=masks_true_one_hot,
-                                        y_pred=masks_pred_prob.permute(0, 3, 1, 2), 
+                                        y_pred=masks_pred_prob, 
                                         batch_size=images.shape[0], 
-                                        n_classes=number_of_classes, 
+                                        n_classes=model.n_classes, 
                                         eps=1e-7)
-                    # Calculates the loss for the IRF mask
-                    irf_loss = BCELoss(masks_pred_prob[:, 1, :, :], masks_true_one_hot[:, 1, :, :])
-                    # Calculates the loss for the SRF mask
-                    srf_loss = BCELoss(masks_pred_prob[:, 2, :, :], masks_true_one_hot[:, 2, :, :])
-                    # Calculates the loss for the PED mask
-                    ped_loss = BCELoss(masks_pred_prob[:, 3, :, :], masks_true_one_hot[:, 3, :, :])
-                    # Calculates the total loss as the sum of all losses
-                    loss = background_loss + irf_loss + srf_loss + ped_loss
 
                 # Saves the value that are zero as 
                 # None so that it saves memory
@@ -734,28 +720,3 @@ def train_model (
         # does not save the information 
         except:
             pass  
-    
-if __name__ == "__main__":
-    train_model(
-        model_name="UNet",
-        device_name="GPU",
-        epochs=5,
-        batch_size=2,
-        learning_rate=2e-5,
-        optimizer_name="Adam",
-        momentum=0.999,
-        gradient_clipping=1.0,
-        scheduler=False,
-        number_of_classes=4,
-        number_of_channels=1,
-        fold_test=1,
-        tuning=True,
-        patch_shape=(256,128), 
-        n_pos=12, 
-        n_neg=2, 
-        pos=1, 
-        neg=0,
-        val_percent=0.2,
-        amp=True,
-        patience=10
-    )
