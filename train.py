@@ -70,9 +70,12 @@ def dropPatches(prob, volumes_list, model):
                     patch_name_parts = patch.split("_")
                     # Checks if the name of the vendor, the volume, and the
                     # slice are the same
-                    if ((patch_name_parts[0] == mask_name_parts[0]) and \
+                    # In case the model is the 2.5D only considers the center 
+                    # slice and eliminates the slices to it associated afterwards
+                    if (((patch_name_parts[0] == mask_name_parts[0]) and \
                         (patch_name_parts[1] == mask_name_parts[1]) and \
-                        (patch_name_parts[2] == mask_name_parts[2][:3])):
+                        (patch_name_parts[2] == mask_name_parts[2][:3]))
+                        and (model != "2.5D" or len(patch_name_parts) == 6)):
 
                         # Randomly eliminates the indicated percentage 
                         # of patches
@@ -80,6 +83,20 @@ def dropPatches(prob, volumes_list, model):
                             remove(str(patches_slice_path + patch))
                             remove(str(patches_mask_path + patch))
                             remove(str(patches_roi_path + patch))
+
+                            # In case it is the 2.5D segmentation model
+                            # also deletes the associated before and 
+                            # following patch  
+                            if model == "2.5D":
+                                # Deletes the previous slices
+                                remove(str(patches_slice_path + patch[:-5] + "_before.tiff"))
+                                remove(str(patches_mask_path + patch[:-5] + "_before.tiff"))
+                                remove(str(patches_roi_path + patch[:-5] + "_before.tiff"))
+
+                                # Deletes the following slices
+                                remove(str(patches_slice_path + patch[:-5] + "_after.tiff"))
+                                remove(str(patches_mask_path + patch[:-5] + "_after.tiff"))
+                                remove(str(patches_roi_path + patch[:-5] + "_after.tiff"))
 
 def getPatchesFromVolumes(volumes_list, model):
     """
@@ -382,8 +399,8 @@ def train_model (
     # Dictionary of models, associates a string to a PyTorch module
     models = {
         "UNet": UNet(in_channels=number_of_channels, num_classes=number_of_classes),
-        "UNet3": "",
-        "2.5D": ""
+        "UNet3": UNet(in_channels=number_of_channels, num_classes=number_of_classes), # Change later
+        "2.5D": UNet(in_channels=number_of_channels, num_classes=number_of_classes) # Change later
     }
 
     # Checks whether the selected model exists or not
