@@ -9,11 +9,10 @@ from paths import IMAGES_PATH
 from skimage.io import imread
 from torch import optim
 from torchvision.transforms.v2 import Compose, RandomApply, RandomHorizontalFlip, RandomRotation
-from torch.nn import BCEWithLogitsLoss
 from torch.nn.functional import one_hot, softmax
 from torch.utils.data import Dataset, DataLoader, random_split
 from tqdm import tqdm
-from init.patchExtraction import extractPatches
+from init.patchExtraction import extractPatches, extractPatches25D
 from networks.loss import multiclass_balanced_cross_entropy_loss
 from networks.unet import UNet
 
@@ -531,14 +530,21 @@ def train_model (
         # Eliminates the previous patches and saves 
         # new patches to train the model, but only 
         # for the volumes that will be used in training
-        # extractPatches(IMAGES_PATH, 
-        #                patch_shape=patch_shape, 
-        #                n_pos=n_pos, n_neg=n_neg, 
-        #                pos=pos, neg=neg, 
-        #                volumes=train_volumes)
+        if model_name != "2.5D":
+            extractPatches(IMAGES_PATH, 
+                        patch_shape=patch_shape, 
+                        n_pos=n_pos, n_neg=n_neg, 
+                        pos=pos, neg=neg, 
+                        volumes=train_volumes)
+        else:
+            extractPatches25D(IMAGES_PATH, 
+                        patch_shape=patch_shape, 
+                        n_pos=n_pos, n_neg=n_neg, 
+                        pos=pos, neg=neg, 
+                        volumes=train_volumes)
         
         # Randomly drops patches of slices that do not have retinal fluid
-        # dropPatches(prob=0.75, volumes_list=train_volumes, model=model_name)
+        dropPatches(prob=0.75, volumes_list=train_volumes, model=model_name)
         
         # Creates the Dataset object
         dataset = TrainDataset(train_volumes, model_name)
