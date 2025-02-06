@@ -401,6 +401,8 @@ def train_model (
         fluid (str): name of the fluid that is desired to segment 
             in the triple U-Net framework. Default is None because 
             it is not required in other models
+        run_name (str): name of the run under which the best model
+            will be saved
         
     Return:
         None
@@ -409,10 +411,16 @@ def train_model (
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
     # Dictionary of fluid to labels in masks
-    fluids = {
+    fluids_to_label = {
         "IRF": 1,
         "SRF": 2,
-        "PED": 3,
+        "PED": 3
+    }    
+    # Dictionary of labels in masks to fluid names
+    label_to_fluids = {
+        1: "IRF",
+        2: "SRF",
+        3: "PED"
     }
 
     # Restrictions for the triple U-Net framework
@@ -424,10 +432,10 @@ def train_model (
             print("The fluid desired to segment must be specified.")
             return 0
         # Restriction in case the fluid selected does not exist
-        if fluid not in fluids.keys():
+        if fluid not in fluids_to_label.keys():
             print("The indicated fluid was not recognized." \
                   "Possible fluids to segment:")
-            for key in fluids.keys():
+            for key in fluids_to_label.keys():
                 print(key)
             return 0
         # In case none of the other 
@@ -435,7 +443,7 @@ def train_model (
         # the fluid variable will 
         # correspond to the label 
         # in the mask
-        fluid = fluids.get(fluid)
+        fluid = fluids_to_label.get(fluid)
         # The number of classes in this model must always be 2 because 
         # it is a binary segmentation problem
         if number_of_classes != 2:
@@ -749,10 +757,20 @@ def train_model (
         logging.info(f"Validation Mean Loss: {val_loss}")
 
         # Early stopping check
+        # If the validation loss is better 
+        # than the previously best obtained, 
+        # saves the model as a PyTorch (.pth) file
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             patience_counter = 0
-            torch.save(model.state_dict(), f"models/{model_name}_best_model.pth")
+            # File is saved with a name that depends on the argument input, the name 
+            # of the model, and fluid desired to segment in case it exists
+            if model_name != "UNet3":
+                torch.save(model.state_dict(),
+                            f"models/{model_name}_best_model.pth")
+            else:
+                torch.save(model.state_dict(), 
+                           f"models/{label_to_fluids.get(fluid)}_{model_name}_best_model.pth")
         else:
             patience_counter += 1
         
@@ -760,38 +778,68 @@ def train_model (
             logging.info("Early stopping triggered.")
             break
 
-        # Get masks to display at each epoch
-        pred_mask = masks_pred.argmax(dim=1)
-        # Get the predicted masks
-        irf_predicted_mask = (pred_mask == 1).float()  
-        srf_predicted_mask = (pred_mask == 2).float()
-        ped_predicted_mask = (pred_mask == 3).float()
-        # Get the true masks
-        irf_true_mask = (true_masks == 1).float()
-        srf_true_mask = (true_masks == 2).float()
-        ped_true_mask = (true_masks == 3).float()
+        # Get the predictions in each voxel
+        pred_mask = masks_pred_prob.argmax(dim=1)
 
-        # Attempts to log this information
-        try:
-            # Logs the information in the wandb session
-            experiment.log({
-                "Learning Rate": optimizer.param_groups[0]["lr"],
-                "Validation Mean Loss": val_loss,
-                "Images": wandb.Image(images[0].cpu()),
-                "Masks":{
-                    "IRF True Mask": wandb.Image(irf_true_mask[0].float().cpu()),
-                    "IRF True Mask": wandb.Image(srf_true_mask[0].float().cpu()),
-                    "IRF True Mask": wandb.Image(ped_true_mask[0].float().cpu()),
-                    "IRF Predicted Mask": wandb.Image(irf_predicted_mask[0].float().cpu()),
-                    "SRF Predicted Mask": wandb.Image(srf_predicted_mask[0].float().cpu()),
-                    "PED Predicted Mask": wandb.Image(ped_predicted_mask[0].float().cpu()),
-                },
-                "Step": global_step,
-                "Epoch": epoch,
-                **histograms
-            })
-        # In case something goes wrong, 
-        # the program does not crash but 
-        # does not save the information 
-        except:
-            pass  
+        if model_name != "UNet3":
+            # Get the predicted masks
+            irf_predicted_mask = (pred_mask == 1).float()  
+            srf_predicted_mask = (pred_mask == 2).float()
+            ped_predicted_mask = (pred_mask == 3).float()
+            # Get the true masks
+            irf_true_mask = (true_masks == 1).float()
+            srf_true_mask = (true_masks == 2).float()
+            ped_true_mask = (true_masks == 3).float()
+
+            # Attempts to log this information
+            try:
+                # Logs the information in the wandb session
+                experiment.log({
+                    "Learning Rate": optimizer.param_groups[0]["lr"],
+                    "Validation Mean Loss": val_loss,
+                    "Images": wandb.Image(images[0].cpu()),
+                    "Masks":{
+                        "IRF True Mask": wandb.Image(irf_true_mask[0].float().cpu()),
+                        "SRF True Mask": wandb.Image(srf_true_mask[0].float().cpu()),
+                        "PED True Mask": wandb.Image(ped_true_mask[0].float().cpu()),
+                        "IRF Predicted Mask": wandb.Image(irf_predicted_mask[0].float().cpu()),
+                        "SRF Predicted Mask": wandb.Image(srf_predicted_mask[0].float().cpu()),
+                        "PED Predicted Mask": wandb.Image(ped_predicted_mask[0].float().cpu()),
+                    },
+                    "Step": global_step,
+                    "Epoch": epoch,
+                    **histograms
+                })
+            # In case something goes wrong, 
+            # the program does not crash but 
+            # does not save the information 
+            except:
+                pass 
+
+        else:
+            fluid_predicted_mask = (pred_mask == 1).float()
+            fluid_true_mask = (true_masks == 1).float()
+
+            # Attempts to log this information
+            try:
+                # Logs the information in the wandb session
+                experiment.log({
+                    "Learning Rate": optimizer.param_groups[0]["lr"],
+                    "Validation Mean Loss": val_loss,
+                    "Images": wandb.Image(images[0].cpu()),
+                    "Masks":{
+                        f"{label_to_fluids.get(fluid)} True Mask": 
+                        wandb.Image(fluid_true_mask[0].float().cpu()),
+
+                        f"{label_to_fluids.get(fluid)} Predicted Mask": 
+                        wandb.Image(fluid_predicted_mask[0].float().cpu()),
+                    },
+                    "Step": global_step,
+                    "Epoch": epoch,
+                    **histograms
+                })
+            # In case something goes wrong, 
+            # the program does not crash but 
+            # does not save the information 
+            except:
+                pass  
