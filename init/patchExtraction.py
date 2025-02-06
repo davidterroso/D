@@ -281,7 +281,7 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=Non
                 img_height = slice.shape[0]
                 npshape = (int(patch_shape[0] * SHAPE_MULT[img_height]), patch_shape[1])
                 # Extracts positive patch centers through two different functions
-                patch_centers = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos, pos=pos, neg=neg)
+                patch_centers = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos-int(float(n_pos)*.2), pos=pos, neg=neg)
                 patch_centers_ = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=int(float(n_pos)*.2), pos=pos, neg=neg)
                 # Appends the second patch centers to the first
                 for r, c, l in patch_centers_:
@@ -437,7 +437,7 @@ def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg):
             img_height = slice.shape[0]
             npshape = (int(patch_shape[0] * SHAPE_MULT[img_height]), patch_shape[1])
             # Extracts positive patch centers through two different functions
-            patch_centers = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos, pos=pos, neg=neg)
+            patch_centers = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos-int(float(n_pos)*.2), pos=pos, neg=neg)
             patch_centers_ = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=int(float(n_pos)*.2), pos=pos, neg=neg)
             # Appends the second patch centers to the first
             for r, c, l in patch_centers_:
@@ -505,18 +505,18 @@ def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg):
 
                 # Saves each mask patch as uint8
                 tmp_mask = resize(tmp_mask.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                mask_before_uint8 = Image.fromarray((np.round(255 * (tmp_mask[:,:,0] / 3))).astype(np.uint8))
+                mask_before_uint8 = Image.fromarray(tmp_mask[:,:,0].astype(np.uint8))
                 mask_before_uint8.save(mask_before_patch_name_uint8)
-                mask_uint8 = Image.fromarray((np.round(255 * (tmp_mask[:,:,1] / 3))).astype(np.uint8))
+                mask_uint8 = Image.fromarray(tmp_mask[:,:,1].astype(np.uint8))
                 mask_uint8.save(mask_patch_name_uint8)
-                mask_after_uint8 = Image.fromarray((np.round(255 * (tmp_mask[:,:,2] / 3))).astype(np.uint8))
+                mask_after_uint8 = Image.fromarray(tmp_mask[:,:,2].astype(np.uint8))
                 mask_after_uint8.save(mask_after_patch_name_uint8)
 
                 # Saves each ROI patch as uint8
                 tmp_roi = resize(tmp_roi.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                roi_before_uint8 = Image.fromarray((tmp_roi[:,:,0] * 255).astype(np.uint8))
+                roi_before_uint8 = Image.fromarray(tmp_roi[:,:,0].astype(np.uint8))
                 roi_before_uint8.save(roi_before_patch_name_uint8)
-                roi_uint8 = Image.fromarray((tmp_roi[:,:,1] * 255).astype(np.uint8))
+                roi_uint8 = Image.fromarray(tmp_roi[:,:,1].astype(np.uint8))
                 roi_uint8.save(roi_patch_name_uint8)
-                roi_after_uint8 = Image.fromarray((tmp_roi[:,:,2] * 255).astype(np.uint8))
+                roi_after_uint8 = Image.fromarray(tmp_roi[:,:,2].astype(np.uint8))
                 roi_after_uint8.save(roi_after_patch_name_uint8)
