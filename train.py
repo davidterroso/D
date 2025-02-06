@@ -340,7 +340,8 @@ def train_model (
         neg,
         val_percent,
         amp,
-        patience
+        patience,
+        fluid=None
 ):
     """
     Function that trains the deep learning models.
@@ -382,13 +383,16 @@ def train_model (
         neg (int): indicates what is the value that does not 
             represent the ROI in the ROI mask
         val_percent (float): decimal value that represents the 
-            percentage of the training set that will be used in the 
-            model validation
+            percentage of the training set that will be used in 
+            the model validation
         amp (bool): bool that indicates whether automatic mixed
             precision is going to be used or not
-        patience (int): number of epochs where the validation errors 
-            calculated are worse than the best validation error 
-            before terminating training
+        patience (int): number of epochs where the validation 
+            errors calculated are worse than the best validation 
+            error before terminating training
+        fluid (str): name of the fluid that is desired to segment 
+            in the triple U-Net framework. Default is None because 
+            it is not required in other models
         
     Return:
         None
@@ -410,6 +414,35 @@ def train_model (
             print(key)
         return 0
     
+    fluids = {
+        "IRF": 1,
+        "SRF": 2,
+        "PED": 3,
+    }
+    # Restrictions for the triple U-Net framework
+    if model_name == "UNet3":
+        # Restriction in case no fluid was selected
+        if fluid is None:
+            print("The fluid desired to segment must be specified.")
+            return 0
+        # Restriction in case the fluid selected does not exist
+        if fluid not in fluids.keys():
+            print("The indicated fluid was not recognized." \
+                  "Possible fluids to segment:")
+            for key in fluids.keys():
+                print(key)
+            return 0
+        # The number of classes in this model must always be 2 because 
+        # it is a binary segmentation problem
+        if number_of_classes != 2:
+            print("Because of the selected model, binary will " \
+                  "be performed so the number of classes is set to 2")
+            number_of_classes = 2
+    # Warning in case the model selected does not require fluid
+    elif fluid is not None:
+        print("Model does not require an indication of fluid to segment," \
+              "every fluid will be segmented.")
+
     # Checks whether the option selected is possible
     if device_name not in ["CPU", "GPU"]:
         print("Unrecognized device. Possible devices:")
