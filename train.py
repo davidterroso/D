@@ -1,7 +1,7 @@
 import logging
 import torch
 import wandb
-from numpy import any, expand_dims
+from numpy import any, expand_dims, stack
 from numpy.random import random_sample
 from os import cpu_count, listdir, remove
 from pandas import read_csv
@@ -212,6 +212,14 @@ class TrainDataset(Dataset):
         scan = imread(slice_name)
         mask = imread(mask_name)
 
+        # In case the selected model is the 2.5D, also loads the previous
+        # and following slice
+        if self.model == "2.5D":
+            scan_before = imread(str(slice_name[:-5] + "_before.tiff"))
+            scan_after = imread(str(slice_name[:-5] + "_after.tiff"))
+            # Stacks them to apply the transformations
+            scan = stack(arrays=[scan_before, scan, scan_after], axis=0)
+
         # In case the model selected is the UNet3, all the labels 
         # that are not the one desired to segment are set to 0
         if self.model == "UNet3":
@@ -226,7 +234,8 @@ class TrainDataset(Dataset):
         # as the first channel
         # The mask dimensions are also expanded 
         # to match
-        scan = expand_dims(scan, axis=0)
+        if self.model != "2.5D":
+            scan = expand_dims(scan, axis=0)
         mask = expand_dims(mask, axis=0)
 
         # Converts the scan and mask 
@@ -235,22 +244,26 @@ class TrainDataset(Dataset):
         mask = torch.from_numpy(mask)
 
         # Forms a stack with the scan and the mask
-        # Initial Scan Shape: H x W x 1
-        # Initial Mask Shape: H x W x 1
-        # Resulting Shape: H x W x 2
-        stack = torch.cat([scan, mask], dim=0)
+        # Initial Scan Shape: 1 x H x W / 3 x H x W
+        # Initial Mask Shape: 1 x H x W
+        # Resulting Shape: 2 x H x W / 4 x H x W
+        resulting_stack = torch.cat([scan, mask], dim=0)
 
         # Applies the transfomration to the stack
-        transformed = self.transforms(stack)
+        transformed = self.transforms(resulting_stack)
 
         # Separate the scan and the mask from the stack
-        # Keeps the extra dimension on the slice but not on the
-        # mask 
-        scan, mask = transformed[0].unsqueeze(0), transformed[1]
+        # Keeps the extra dimension on the slice but not on the mask
+        if self.model != "2.5D":
+            scan, mask = transformed[0].unsqueeze(0), transformed[1]
+        # Handles it differently for the 2.5D model, ensuring the correct order of slices 
+        else:
+            scan = torch.cat([transformed[0], transformed[1], transformed[2]], dim=0)
+            mask = transformed[3]
 
         # Converts the scans back to NumPy
-        scan = scan.numpy()
-        mask = mask.numpy()
+        scan = scan.cpu().numpy()
+        mask = mask.cpu().numpy()
 
         # Declares a sample as a dictionary that 
         # to the keyword "scan" associates the 
@@ -459,7 +472,7 @@ def train_model (
     # Dictionary of models, associates a string to a PyTorch module
     models = {
         "UNet": UNet(in_channels=number_of_channels, num_classes=number_of_classes),
-        "UNet3": UNet(in_channels=number_of_channels, num_classes=number_of_classes), # Change later
+        "UNet3": UNet(in_channels=number_of_channels, num_classes=number_of_classes),
         "2.5D": UNet(in_channels=number_of_channels, num_classes=number_of_classes) # Change later
     }
 
