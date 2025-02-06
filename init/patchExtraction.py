@@ -266,6 +266,8 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=Non
     # Iterates through the saved ROI masks
     for (root, _, files) in walk(images_path):
         for slice in files:
+            # Checks if the volume is in the list of 
+            # patches to extract, in case there is a list
             volume = int(slice.split("_")[1][-3:])
             if (volumes is None) or (volume in volumes):
                 # Reads the masks, the slices, 
@@ -345,7 +347,7 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=Non
                     roi_uint8 = Image.fromarray(tmp_roi)
                     roi_uint8.save(roi_patch_name_uint8)
 
-def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg):
+def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=None):
     """
     Extract the subvolumes of patches from the OCT scans
 
@@ -356,6 +358,8 @@ def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg):
         n_neg (int): Number of patches outside the ROI to extract
         pos (int): Intensity indicating a positive region on the ROI mask
         neg (int): Intensity indicating a negative region on the ROI mask
+        volumes (List[float]) optional: List of volumes to extract patches 
+            from. The default value is None because it is optional
 
     Return:
         None
@@ -387,136 +391,140 @@ def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg):
     # Iterates through the saved ROI masks
     for (root, _, files) in walk(images_path):
         for slice in files:
-            # Reads the masks, the slices, 
-            # and the fluid masks 
-            slice_path = root + slice
-            ROI_mask_path = ROI_path + slice
-            mask_path = masks_path + slice 
-            slice_number = int(slice_path[-8:-5])
-            # In case it is the first slice of the volume, the first
-            # and middle slice of the subvolume are the same
-            if slice_number == 0:
-                slice_before_path = slice_path
-                roi_before_path = ROI_mask_path
-                mask_before_path = mask_path
-            else:
-                slice_before_path = slice_path[:-8] + str(slice_number - 1).zfill(3) + ".tiff"
-                roi_before_path = ROI_mask_path[:-8] + str(slice_number - 1).zfill(3) + ".tiff"
-                mask_before_path = mask_path[:-8] + str(slice_number - 1).zfill(3) + ".tiff"
+            # Checks if the volume is in the list of 
+            # patches to extract, in case there is a list
+            volume = int(slice.split("_")[1][-3:])
+            if (volumes is None) or (volume in volumes):
+                # Reads the masks, the slices, 
+                # and the fluid masks 
+                slice_path = root + slice
+                ROI_mask_path = ROI_path + slice
+                mask_path = masks_path + slice 
+                slice_number = int(slice_path[-8:-5])
+                # In case it is the first slice of the volume, the first
+                # and middle slice of the subvolume are the same
+                if slice_number == 0:
+                    slice_before_path = slice_path
+                    roi_before_path = ROI_mask_path
+                    mask_before_path = mask_path
+                else:
+                    slice_before_path = slice_path[:-8] + str(slice_number - 1).zfill(3) + ".tiff"
+                    roi_before_path = ROI_mask_path[:-8] + str(slice_number - 1).zfill(3) + ".tiff"
+                    mask_before_path = mask_path[:-8] + str(slice_number - 1).zfill(3) + ".tiff"
 
-            slice_after_path = slice_path[:-8] + str(slice_number + 1).zfill(3) + ".tiff"
-            roi_after_path = ROI_mask_path[:-8] + str(slice_number + 1).zfill(3) + ".tiff"
-            mask_after_path = mask_path[:-8] + str(slice_number + 1).zfill(3) + ".tiff"
+                slice_after_path = slice_path[:-8] + str(slice_number + 1).zfill(3) + ".tiff"
+                roi_after_path = ROI_mask_path[:-8] + str(slice_number + 1).zfill(3) + ".tiff"
+                mask_after_path = mask_path[:-8] + str(slice_number + 1).zfill(3) + ".tiff"
 
-            # In case it is the last slice of the volume, the middle
-            # and last slice of the subvolume are the same
-            if not isfile(slice_after_path):
-                slice_after_path = slice_path
-                roi_after_path = ROI_mask_path
-                mask_after_path = mask_path
+                # In case it is the last slice of the volume, the middle
+                # and last slice of the subvolume are the same
+                if not isfile(slice_after_path):
+                    slice_after_path = slice_path
+                    roi_after_path = ROI_mask_path
+                    mask_after_path = mask_path
 
-            # Subvolumes containing the previous, current, and 
-            # following slices are created
-            slice_before = imread(slice_before_path)
-            slice = imread(slice_path)
-            slice_after = imread(slice_after_path)
-            slices_subvolumes = np.stack([slice_before, slice, slice_after], axis=-1)
+                # Subvolumes containing the previous, current, and 
+                # following slices are created
+                slice_before = imread(slice_before_path)
+                slice = imread(slice_path)
+                slice_after = imread(slice_after_path)
+                slices_subvolumes = np.stack([slice_before, slice, slice_after], axis=-1)
 
-            roi_before = imread(roi_before_path)
-            roi = imread(ROI_mask_path)
-            roi_after = imread(roi_after_path)
-            rois_subvolumes = np.stack([roi_before, roi, roi_after], axis=-1)
+                roi_before = imread(roi_before_path)
+                roi = imread(ROI_mask_path)
+                roi_after = imread(roi_after_path)
+                rois_subvolumes = np.stack([roi_before, roi, roi_after], axis=-1)
 
-            mask_before = imread(mask_before_path)
-            mask = imread(mask_path)
-            mask_after = imread(mask_after_path)
-            masks_subvolumes = np.stack([mask_before, mask, mask_after], axis=-1)
+                mask_before = imread(mask_before_path)
+                mask = imread(mask_path)
+                mask_after = imread(mask_after_path)
+                masks_subvolumes = np.stack([mask_before, mask, mask_after], axis=-1)
 
-            # Adjusts the height of the mask 
-            # to the one device used to obtain the OCT
-            img_height = slice.shape[0]
-            npshape = (int(patch_shape[0] * SHAPE_MULT[img_height]), patch_shape[1])
-            # Extracts positive patch centers through two different functions
-            patch_centers = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos-int(float(n_pos)*.2), pos=pos, neg=neg)
-            patch_centers_ = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=int(float(n_pos)*.2), pos=pos, neg=neg)
-            # Appends the second patch centers to the first
-            for r, c, l in patch_centers_:
-                patch_centers.append([r, c, l])
-
-            # Extracts negative patch centers
-            if n_neg > 0:
-                negative_patch_centers = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=n_neg, pos=neg, neg=pos)
-                for r, c, l in negative_patch_centers:
-                    # Appends the negative patch centers to the others
+                # Adjusts the height of the mask 
+                # to the one device used to obtain the OCT
+                img_height = slice.shape[0]
+                npshape = (int(patch_shape[0] * SHAPE_MULT[img_height]), patch_shape[1])
+                # Extracts positive patch centers through two different functions
+                patch_centers = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos-int(float(n_pos)*.2), pos=pos, neg=neg)
+                patch_centers_ = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=int(float(n_pos)*.2), pos=pos, neg=neg)
+                # Appends the second patch centers to the first
+                for r, c, l in patch_centers_:
                     patch_centers.append([r, c, l])
 
-            # Iterates through the calculated centers
-            # and extracts the patches
-            pos_patch_counter = 0
-            neg_patch_counter = 0
-            for r, c, l in patch_centers:
-                # Calculates the patchesfor the B-scan, ROI, and fluid masks
-                h, w = patch_shape[0], patch_shape[1]
-                r, c = int(r - h // 2), int(c - w // 2)
-                tmp_slice = slices_subvolumes[r:r + h, c:c + w]
-                tmp_roi = rois_subvolumes[r:r + h, c:c + w]
-                tmp_mask = masks_subvolumes[r:r + h, c:c + w]
+                # Extracts negative patch centers
+                if n_neg > 0:
+                    negative_patch_centers = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=n_neg, pos=neg, neg=pos)
+                    for r, c, l in negative_patch_centers:
+                        # Appends the negative patch centers to the others
+                        patch_centers.append([r, c, l])
 
-                # Attributes a number to each patch
-                # considering their label
-                if l == 1:
-                    label = "pos"
-                    patch_counter = pos_patch_counter
-                    pos_patch_counter += 1
-                elif l == 0:
-                    label = "neg"
-                    patch_counter = neg_patch_counter
-                    neg_patch_counter += 1
+                # Iterates through the calculated centers
+                # and extracts the patches
+                pos_patch_counter = 0
+                neg_patch_counter = 0
+                for r, c, l in patch_centers:
+                    # Calculates the patchesfor the B-scan, ROI, and fluid masks
+                    h, w = patch_shape[0], patch_shape[1]
+                    r, c = int(r - h // 2), int(c - w // 2)
+                    tmp_slice = slices_subvolumes[r:r + h, c:c + w]
+                    tmp_roi = rois_subvolumes[r:r + h, c:c + w]
+                    tmp_mask = masks_subvolumes[r:r + h, c:c + w]
 
-                # Indicates the name of the patches
-                vol_name = slice_path.split("\\")[-1][:-5]
-                before_patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + "_before.tiff"
-                patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + ".tiff"
-                after_patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + "_after.tiff"
+                    # Attributes a number to each patch
+                    # considering their label
+                    if l == 1:
+                        label = "pos"
+                        patch_counter = pos_patch_counter
+                        pos_patch_counter += 1
+                    elif l == 0:
+                        label = "neg"
+                        patch_counter = neg_patch_counter
+                        neg_patch_counter += 1
 
-                # Indicates the name of the slice patch after resizing it to match the patch shape
-                slice_before_patch_name_uint8 = save_patches_path_uint8 + before_patch_name
-                slice_patch_name_uint8 = save_patches_path_uint8 + patch_name
-                slice_after_patch_name_uint8 = save_patches_path_uint8 + after_patch_name
+                    # Indicates the name of the patches
+                    vol_name = slice_path.split("\\")[-1][:-5]
+                    before_patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + "_before.tiff"
+                    patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + ".tiff"
+                    after_patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + "_after.tiff"
 
-                # Indicates the name of the mask patch after resizing it to match the patch shape
-                mask_before_patch_name_uint8 = save_patches_masks_path_uint8 + before_patch_name
-                mask_patch_name_uint8 = save_patches_masks_path_uint8 + patch_name
-                mask_after_patch_name_uint8 = save_patches_masks_path_uint8 + after_patch_name
+                    # Indicates the name of the slice patch after resizing it to match the patch shape
+                    slice_before_patch_name_uint8 = save_patches_path_uint8 + before_patch_name
+                    slice_patch_name_uint8 = save_patches_path_uint8 + patch_name
+                    slice_after_patch_name_uint8 = save_patches_path_uint8 + after_patch_name
 
-                # Indicates the name of the ROI patch after resizing it to match the patch shape
-                roi_before_patch_name_uint8 = save_patches_rois_path_uint8 + before_patch_name
-                roi_patch_name_uint8 = save_patches_rois_path_uint8 + patch_name
-                roi_after_patch_name_uint8 = save_patches_rois_path_uint8 + after_patch_name
-                
-                # Saves each slice patch as uint8
-                tmp_slice = resize(tmp_slice.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                slice_before_uint8 = Image.fromarray(int32_to_uint8(tmp_slice[:,:,0]))
-                slice_before_uint8.save(slice_before_patch_name_uint8)
-                slice_uint8 = Image.fromarray(int32_to_uint8(tmp_slice[:,:,1]))
-                slice_uint8.save(slice_patch_name_uint8)
-                slice_after_uint8 = Image.fromarray(int32_to_uint8(tmp_slice[:,:,2]))
-                slice_after_uint8.save(slice_after_patch_name_uint8)
+                    # Indicates the name of the mask patch after resizing it to match the patch shape
+                    mask_before_patch_name_uint8 = save_patches_masks_path_uint8 + before_patch_name
+                    mask_patch_name_uint8 = save_patches_masks_path_uint8 + patch_name
+                    mask_after_patch_name_uint8 = save_patches_masks_path_uint8 + after_patch_name
 
-                # Saves each mask patch as uint8
-                tmp_mask = resize(tmp_mask.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                mask_before_uint8 = Image.fromarray(tmp_mask[:,:,0].astype(np.uint8))
-                mask_before_uint8.save(mask_before_patch_name_uint8)
-                mask_uint8 = Image.fromarray(tmp_mask[:,:,1].astype(np.uint8))
-                mask_uint8.save(mask_patch_name_uint8)
-                mask_after_uint8 = Image.fromarray(tmp_mask[:,:,2].astype(np.uint8))
-                mask_after_uint8.save(mask_after_patch_name_uint8)
+                    # Indicates the name of the ROI patch after resizing it to match the patch shape
+                    roi_before_patch_name_uint8 = save_patches_rois_path_uint8 + before_patch_name
+                    roi_patch_name_uint8 = save_patches_rois_path_uint8 + patch_name
+                    roi_after_patch_name_uint8 = save_patches_rois_path_uint8 + after_patch_name
+                    
+                    # Saves each slice patch as uint8
+                    tmp_slice = resize(tmp_slice.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
+                    slice_before_uint8 = Image.fromarray(int32_to_uint8(tmp_slice[:,:,0]))
+                    slice_before_uint8.save(slice_before_patch_name_uint8)
+                    slice_uint8 = Image.fromarray(int32_to_uint8(tmp_slice[:,:,1]))
+                    slice_uint8.save(slice_patch_name_uint8)
+                    slice_after_uint8 = Image.fromarray(int32_to_uint8(tmp_slice[:,:,2]))
+                    slice_after_uint8.save(slice_after_patch_name_uint8)
 
-                # Saves each ROI patch as uint8
-                tmp_roi = resize(tmp_roi.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
-                roi_before_uint8 = Image.fromarray(tmp_roi[:,:,0].astype(np.uint8))
-                roi_before_uint8.save(roi_before_patch_name_uint8)
-                roi_uint8 = Image.fromarray(tmp_roi[:,:,1].astype(np.uint8))
-                roi_uint8.save(roi_patch_name_uint8)
-                roi_after_uint8 = Image.fromarray(tmp_roi[:,:,2].astype(np.uint8))
-                roi_after_uint8.save(roi_after_patch_name_uint8)
+                    # Saves each mask patch as uint8
+                    tmp_mask = resize(tmp_mask.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
+                    mask_before_uint8 = Image.fromarray(tmp_mask[:,:,0].astype(np.uint8))
+                    mask_before_uint8.save(mask_before_patch_name_uint8)
+                    mask_uint8 = Image.fromarray(tmp_mask[:,:,1].astype(np.uint8))
+                    mask_uint8.save(mask_patch_name_uint8)
+                    mask_after_uint8 = Image.fromarray(tmp_mask[:,:,2].astype(np.uint8))
+                    mask_after_uint8.save(mask_after_patch_name_uint8)
+
+                    # Saves each ROI patch as uint8
+                    tmp_roi = resize(tmp_roi.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
+                    roi_before_uint8 = Image.fromarray(tmp_roi[:,:,0].astype(np.uint8))
+                    roi_before_uint8.save(roi_before_patch_name_uint8)
+                    roi_uint8 = Image.fromarray(tmp_roi[:,:,1].astype(np.uint8))
+                    roi_uint8.save(roi_patch_name_uint8)
+                    roi_after_uint8 = Image.fromarray(tmp_roi[:,:,2].astype(np.uint8))
+                    roi_after_uint8.save(roi_after_patch_name_uint8)
