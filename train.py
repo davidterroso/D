@@ -760,6 +760,7 @@ def train_model (
         # If the validation loss is better 
         # than the previously best obtained, 
         # saves the model as a PyTorch (.pth) file
+        # and resets the patience counter
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             patience_counter = 0
@@ -771,9 +772,15 @@ def train_model (
             else:
                 torch.save(model.state_dict(), 
                            f"models/{label_to_fluids.get(fluid)}_{model_name}_best_model.pth")
+        # In case the model has not 
+        # obtained a better performance, 
+        # the patience counter increases
         else:
             patience_counter += 1
         
+        # In case the number of epochs after which no 
+        # improvement has been made surpasses the 
+        # patience value, the model stops training
         if patience_counter >= patience:
             logging.info("Early stopping triggered.")
             break
@@ -817,7 +824,9 @@ def train_model (
                 pass 
 
         else:
+            # Get the predicted masks
             fluid_predicted_mask = (pred_mask == 1).float()
+            # Get true masks
             fluid_true_mask = (true_masks == 1).float()
 
             # Attempts to log this information
