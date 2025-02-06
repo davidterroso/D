@@ -137,7 +137,7 @@ class TrainDataset(Dataset):
     with the available images, thus simplifying the training
     process
     """
-    def __init__(self, train_volumes, model):
+    def __init__(self, train_volumes, model, fluid):
         """
         Initiates the Dataset object and gets the possible 
         names of the patches that will be used in training
@@ -146,22 +146,25 @@ class TrainDataset(Dataset):
             train_volumes(List[float]): list of the training 
                 volumes that will be used to train the model
             model (str): name of the model that will be trained
-        
+            fluid (int): label of fluid that is expected to 
+                segment
         Return:
             None
         """
+        # Initiates the model, gets the name of the slices that
+        # compose the dataset, the transformations that will be 
+        # applied to the images, and the 
         super().__init__()
         self.model = model
         self.patches_names = getPatchesFromVolumes(train_volumes, model)
-        # Initiates the transformations that will be 
-        # applied to the images
-        # Random Rotation has a probability of 0.5 of 
-        # rotating the image between 0 and 10 degrees
-        # Random Horizontal Flip has a probability of 
-        # 0.5 flipping the image horizontally
+        # Random Rotation has a probability of 0.5 of rotating 
+        # the image between 0 and 10 degrees
+        # Random Horizontal Flip has a probability of 0.5 
+        # flipping the image horizontally
         self.transforms = Compose([
             RandomApply([RandomRotation(degrees=[0,10])], p=0.5),
             RandomHorizontalFlip(p=0.5)])
+        self.fluid = fluid
 
     def __len__(self):
         """
@@ -208,6 +211,11 @@ class TrainDataset(Dataset):
         # fluid mask
         scan = imread(slice_name)
         mask = imread(mask_name)
+
+        # In case the model selected is the UNet3, all the labels 
+        # that are not the one desired to segment are set to 0
+        if self.model == "UNet3":
+            mask = ((mask == self.fluid).astype(int) * self.fluid)
 
         # Z-Score Normalization / Standardization
         # Mean of 0 and SD of 1
@@ -400,6 +408,46 @@ def train_model (
     # Initiates logging 
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
+    # Dictionary of fluid to labels in masks
+    fluids = {
+        "IRF": 1,
+        "SRF": 2,
+        "PED": 3,
+    }
+
+    # Restrictions for the triple U-Net framework
+    # Has to be done before model initiation in case the number of 
+    # classes is selected incorrectly
+    if model_name == "UNet3":
+        # Restriction in case no fluid was selected
+        if fluid is None:
+            print("The fluid desired to segment must be specified.")
+            return 0
+        # Restriction in case the fluid selected does not exist
+        if fluid not in fluids.keys():
+            print("The indicated fluid was not recognized." \
+                  "Possible fluids to segment:")
+            for key in fluids.keys():
+                print(key)
+            return 0
+        # In case none of the other 
+        # restrictions has been raised, 
+        # the fluid variable will 
+        # correspond to the label 
+        # in the mask
+        fluid = fluids.get(fluid)
+        # The number of classes in this model must always be 2 because 
+        # it is a binary segmentation problem
+        if number_of_classes != 2:
+            print("Because of the selected model, binary will " \
+                  "be performed so the number of classes is set to 2")
+            number_of_classes = 2
+    # Warning in case the model selected does not require fluid but fluid 
+    # was selected
+    elif fluid is not None:
+        print("Model does not require an indication of fluid to segment," \
+              "every fluid will be segmented.")
+
     # Dictionary of models, associates a string to a PyTorch module
     models = {
         "UNet": UNet(in_channels=number_of_channels, num_classes=number_of_classes),
@@ -413,35 +461,6 @@ def train_model (
         for key in models.keys():
             print(key)
         return 0
-    
-    fluids = {
-        "IRF": 1,
-        "SRF": 2,
-        "PED": 3,
-    }
-    # Restrictions for the triple U-Net framework
-    if model_name == "UNet3":
-        # Restriction in case no fluid was selected
-        if fluid is None:
-            print("The fluid desired to segment must be specified.")
-            return 0
-        # Restriction in case the fluid selected does not exist
-        if fluid not in fluids.keys():
-            print("The indicated fluid was not recognized." \
-                  "Possible fluids to segment:")
-            for key in fluids.keys():
-                print(key)
-            return 0
-        # The number of classes in this model must always be 2 because 
-        # it is a binary segmentation problem
-        if number_of_classes != 2:
-            print("Because of the selected model, binary will " \
-                  "be performed so the number of classes is set to 2")
-            number_of_classes = 2
-    # Warning in case the model selected does not require fluid
-    elif fluid is not None:
-        print("Model does not require an indication of fluid to segment," \
-              "every fluid will be segmented.")
 
     # Checks whether the option selected is possible
     if device_name not in ["CPU", "GPU"]:
