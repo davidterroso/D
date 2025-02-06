@@ -1,12 +1,41 @@
 # Repository Documentation <!-- omit in toc -->
 
 ## Table of Contents <!-- omit in toc -->
+- [Device Utilized](#device-utilized)
 - [Folder Structure](#folder-structure)
 - [pipeline.ipynb](#pipelineipynb)
 - [README.md](#readmemd)
 - [train.py](#trainpy)
 - [visualize\_scans.py](#visualize_scanspy)
 - [RETOUCH Folder Structure](#retouch-folder-structure)
+
+## Device Utilized
+In this section, the specifications of the device used in the experiments performed is explained. All the experiments were done using this device and, therefore, the computation time for each experiment can be compared.
+
+**OS**
+- Windows 10 1909
+
+**Motherboard**
+- MPG X570 GAMING PRO CARBON WIFI AM4
+
+**RAM**
+- 32 GB
+
+**SSD**
+- M.2 250GB Samsung 970 EVO plus NVMe
+- 250 GB
+
+**HDD**
+- SEAGATE 2TB SATA3 256MB
+- 2048 GB
+
+**CPU**
+- AMD RYZEN 9 3900X AM4
+- Cores: 12
+
+**GPU**
+- Gigabyte NVIDIA GeForce RTX 3080 10 GB GDDR6X OC-10GD
+- 10 GB
 
 ## Folder Structure
 ```bash
