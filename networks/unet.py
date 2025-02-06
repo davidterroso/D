@@ -162,7 +162,7 @@ class UpSample(Module):
 
         Return:
             (PyTorch tensor): result of the upsample, 
-            concatenation, and convolution
+                concatenation, and convolution
         """
         # Calculates the up convolution applied 
         # to the x1 input
@@ -225,12 +225,12 @@ class UNet(Module):
 
         Args: 
             self (UNet object): the 
-            UNet object that contains the layers
+                UNet object that contains the layers
             x (PyTorch tensor): input image
 
         Return:
             (PyTorch tensor): image with the masks 
-            as other channels
+                as other channels
         """
         # Performs the steps in the encoding path of the 
         # network

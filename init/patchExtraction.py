@@ -126,7 +126,7 @@ def extractPatchCenters_(roi_mask, patch_shape, npos, pos, neg):
             are outside the ROI mask
 
     Returns:
-        (List[List]): list of possible centers, which are also lists
+        (List[List[int]]): list of possible centers, which are also lists
             that contain the row, the column, and a label that 
             indicates whether they are a positive or negative patch
     """
@@ -175,7 +175,7 @@ def extractPatchCenters(roi_mask, patch_shape, npos, pos, neg):
             are outside the ROI mask
 
     Return:
-        (List[List]): list of possible positive centers, which 
+        (List[List[int]]): list of possible positive centers, which 
             are also lists that contain the row, the column, 
             and a label that indicates whether they are a 
             positive or negative patch
