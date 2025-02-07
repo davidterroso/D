@@ -23,7 +23,7 @@ class DoubleConvolution(Module):
         super().__init__()
         # Defines the double convolution
         self.conv_op = Sequential(
-            # Two dimensional convolution with kernel of size three. 
+            # Two dimensional convolution with kernel of size three 
             # Shape (input): (h x w x in_channels)
             # Shape (output): ((h - 2) x (w - 2) x out_channels)
             Conv2d(in_channels, out_channels, kernel_size=3),
@@ -206,7 +206,7 @@ class UNet(Module):
         self.down_convolution_4 = DownSample(256, 512) # ((((h - 4) / 2 - 4) / 2 - 4) / 2, (((w - 4) / 2 - 4) / 2 - 4) / 2, 256) -> (((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((w - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, 512)
 
         # Double convolution on the bottleneck
-        bottle_neck = self.bottle_neck = DoubleConvolution(512, 1024) # (((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((w - 4) / 2 - 4 / 2) - 4) / 2 - 4) / 2, 512) -> ((((((h - 4) / 2 - 4 / 2 - 4 / 2 - 4) / 2 - 4) / 2, ((((((w - 4) / 2 - 4) / 2 - 4) / 2) - 4) / 2 - 4) / 2, 1024)
+        self.bottle_neck = DoubleConvolution(512, 1024) # (((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((w - 4) / 2 - 4 / 2) - 4) / 2 - 4) / 2, 512) -> ((((((h - 4) / 2 - 4 / 2 - 4 / 2 - 4) / 2 - 4) / 2, ((((((w - 4) / 2 - 4) / 2 - 4) / 2) - 4) / 2 - 4) / 2, 1024)
 
         # Up-convolutions that form the decoding path
         self.up_convolution_1 = UpSample(1024, 512) # ((((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((((w - 4) / 2 - 4) / 2 - 4) / 2) - 4) / 2 - 4) / 2, 1024) -> (((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((w - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, 512)
