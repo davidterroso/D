@@ -23,11 +23,10 @@ class DoubleConvolution(Module):
         super().__init__()
         # Defines the double convolution
         self.conv_op = Sequential(
-            # Two dimensional convolution with kernel of size three 
-            # and padding one. 
+            # Two dimensional convolution with kernel of size three. 
             # Shape (input): (h x w x in_channels)
             # Shape (output): ((h - 2) x (w - 2) x out_channels)
-            Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
+            Conv2d(in_channels, out_channels, kernel_size=3),
             # Rectified Linear Activation function. Does not change the 
             # input shape. 
             # inplace argument declares a change directly on the input, 
@@ -35,7 +34,7 @@ class DoubleConvolution(Module):
             ReLU(inplace=True),
             # Shape (input): ((h - 2) x (w - 2) x out_channels)
             # Shape (output): ((h - 2 - 2) x (w - 2 - 2) x out_channels)
-            Conv2d(out_channels, out_channels, kernel_size=3, padding=1),
+            Conv2d(out_channels, out_channels, kernel_size=3),
             ReLU(inplace=True)
         )
 
