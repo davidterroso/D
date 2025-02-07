@@ -348,6 +348,7 @@ def train_model (
         learning_rate,
         optimizer_name,
         momentum,
+        weight_decay,
         gradient_clipping,
         scheduler,
         number_of_classes,
@@ -382,6 +383,7 @@ def train_model (
             model is supposed to output
         momentum (float): momentum of the optimization 
             algorithm
+        weight_decay (float): optimizer's weight decay value
         gradient_clipping (float): threshold after which it
             scales the gradient down, to prevent gradient 
             exploding
@@ -571,9 +573,9 @@ def train_model (
         # foreach=True makes the the optimization less time consuming but more memory consuming
         # maximize=False means we are looking to minimize the loss (in case the Dice coefficient 
         # was used instead of Dice loss, for example, this parameter should be True)
-        "Adam": optim.Adam(params=model.parameters(), lr=learning_rate, foreach=True, maximize=False), 
-        "SGD": optim.SGD(params=model.parameters(), lr=learning_rate, foreach=True, maximize=False, momentum=momentum),
-        "RMSprop": optim.RMSprop(params=model.parameters(), lr=learning_rate, foreach=True, maximize=False, momentum=momentum)
+        "Adam": optim.Adam(params=model.parameters(), lr=learning_rate, foreach=True, maximize=False, weight_decay=weight_decay), 
+        "SGD": optim.SGD(params=model.parameters(), lr=learning_rate, foreach=True, maximize=False, momentum=momentum, weight_decay=weight_decay),
+        "RMSprop": optim.RMSprop(params=model.parameters(), lr=learning_rate, foreach=True, maximize=False, momentum=momentum, weight_decay=weight_decay)
     }
 
     # Checks if the optimizer_name indicated is available and 
