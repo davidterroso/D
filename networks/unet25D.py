@@ -1,5 +1,4 @@
 from torch import cat
-from torch.nn.functional import softmax
 from torch.nn import Module, Sequential, Conv2d, ConvTranspose2d, ReLU, MaxPool2d, Dropout2d, BatchNorm2d, Upsample
 
 class InitialConvolution(Module):
@@ -289,7 +288,6 @@ class TennakoonUNet(Module):
         self.out = Sequential(
             Conv2d(in_channels=4, out_channels=num_classes, kernel_size=3, padding="same"),
             ReLU(inplace=True),
-            softmax(dim=1)
         )
 
     def forward(self, x):

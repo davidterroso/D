@@ -1,0 +1,72 @@
+import torch
+from torch.nn.functional import one_hot, softmax
+from tqdm import tqdm
+from networks.loss import multiclass_balanced_cross_entropy_loss
+
+@torch.inference_mode()
+def evaluate(model, dataloader, device, amp):
+    """
+    Function used to evaluate the model
+
+    Args:
+        model (PyTorch Module object): model that is being 
+            trained
+        dataloader (PyTorch DataLoader object): DataLoader 
+            that contains the training and evaluation data
+        device (str): indicates which PyTorch device is
+            going to be used
+        amp (bool): flag that indicates if automatic 
+            mixed precision is being used
+
+    Return:
+        Weighted mean of the loss across the considered 
+        batches
+    """
+    # Sets the network to evaluation mode
+    model.eval()
+    # Calculates the number of batches 
+    # used to validate the network
+    num_val_batches = len(dataloader)
+    # Initiates the loss as zero
+    total_loss = 0
+
+    # Allows for mixed precision calculations, attributes a device to be used in 
+    # these calculations
+    with torch.autocast(device.type if device.type != 'mps' else 'cpu', enabled=amp):
+        for batch in tqdm(dataloader, total=num_val_batches, desc='Validation round', unit='batch', leave=False):
+            # Gets the images and the masks from the dataloader
+            image, mask_true = batch['scan'], batch['mask']
+
+            # Handles the images and masks according to the device, specified data type and memory format
+            image = image.to(device=device, dtype=torch.float32, memory_format=torch.channels_last)
+            mask_true = mask_true.to(device=device, dtype=torch.long)
+
+            # Predicts the masks of the received images
+            masks_pred = model(image)
+            # Performs softmax on the predicted masks
+            # dim=1 indicates that the softmax is calculated 
+            # across the masks, since the channels is the first 
+            # dimension
+            masks_pred_prob = softmax(masks_pred, dim=1).float()
+            # Permute changes the images from channels first to channels last
+            masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
+            # Performs one hot encoding on the true masks, in channels last format
+            masks_true_one_hot = one_hot(mask_true.long(), model.n_classes).float()
+
+            # Calculates the balanced loss for the background mask
+            loss = multiclass_balanced_cross_entropy_loss(
+                                y_true=masks_true_one_hot,
+                                y_pred=masks_pred_prob, 
+                                batch_size=image.shape[0], 
+                                n_classes=model.n_classes, 
+                                eps=1e-7)
+
+            # Accumulate loss
+            total_loss += loss.item()
+
+    # Sets the model to train mode again
+    model.train()
+    # Returns the weighted mean of the total 
+    # loss according to the fluid voxels
+    # Also avoids division by zero
+    return total_loss / max(num_val_batches, 1)
