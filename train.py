@@ -3,6 +3,7 @@ import torch
 import wandb
 from os import cpu_count
 from pandas import read_csv
+from time import time
 from torch import optim
 from torch.nn.functional import one_hot, softmax
 from torch.utils.data import DataLoader, random_split
@@ -293,7 +294,10 @@ def train_model (
     # Iterates through every epoch
     for epoch in range(1, epochs + 1):
         print(f"Preparing epoch {epoch} training")
-        print("...")
+        print("Extracting patches")
+
+        # Starts timing the patch extraction
+        begin = time()
 
         # Eliminates the previous patches and saves 
         # new patches to train the model, but only 
@@ -311,8 +315,18 @@ def train_model (
                         pos=pos, neg=neg, 
                         volumes=train_volumes)
         
+        # Stops timing the patch extraction and prints it
+        end = time()
+        print(f"Patch extraction took {end - begin} seconds.")
+
+        print("Dropping patches")
+        # Starts timing the patch dropping
+        begin = time()
         # Randomly drops patches of slices that do not have retinal fluid
         dropPatches(prob=0.75, volumes_list=train_volumes, model=model_name)
+        # Stops timing the patch extraction and prints it
+        end = time()
+        print(f"Patch dropping took {end - begin} seconds.")
         
         # Creates the Dataset object
         dataset = TrainDataset(train_volumes, model_name)
