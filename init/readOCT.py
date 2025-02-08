@@ -109,6 +109,11 @@ def save_segmentation_oct_as_tiff(oct_folder, save_folder):
         rmtree(save_name_uint8)
         makedirs(save_name_uint8)
 
+    # Initiates the variable that will 
+    # count the progress of volumes 
+    # whose slices are being extracted
+    volume = 0
+
     # Iterates through the folders to read the OCT volumes used in segmentation
     # and saves them both in int32 for better manipulation and in uint8 for
     # visualization
@@ -119,33 +124,44 @@ def save_segmentation_oct_as_tiff(oct_folder, save_folder):
             if len(vendor_volume) == 2:
                 vendor = vendor_volume[0]
                 volume_name = vendor_volume[1]
+                vendor_volume = vendor + "_" + volume_name
                 save_name_uint8_tmp = save_name_uint8 + vendor + "_" + volume_name
                 save_name_int32_tmp = save_name_int32 + vendor + "_" + volume_name
                 # Iterates through to the subfolders and reads the oct.mhd file to 
                 # extract the images
                 for filename in files:
                     if filename == "oct.mhd":
+                        volume += 1
                         file_path = root + """\\""" + filename
+                        # Loads the OCT volume
                         img, _, _ = load_oct_image(file_path)
                         num_slices = img.shape[0]
-                        # Iterates through the slices to save each slice with 
-                        # an identifiable name, both in uint8 for visualization
-                        # and int32 for better future manipulation 
-                        for slice_num in range(num_slices):
-                            im_slice = img[slice_num,:,:]
-                            # Normalizes the image to uint8 so that it can be 
-                            # visualized in the computer
-                            im_slice_uint8 = int32_to_uint8(im_slice)
+                        # Creates a progress bar
+                        with tqdm(total=num_slices, desc=f"{vendor_volume}: Volume {volume}/70", unit="img") as progress_bar:
+                            # Iterates through the slices to save each slice with 
+                            # an identifiable name, both in uint8 for visualization
+                            # and int32 for better future manipulation 
+                            for slice_num in range(num_slices):
+                                im_slice = img[slice_num,:,:]
+                                # Normalizes the image to uint8 so that it can be 
+                                # visualized in the computer
+                                im_slice_uint8 = int32_to_uint8(im_slice)
 
-                            # Saves image in int32
-                            image = Image.fromarray(im_slice)
-                            save_name_slice = save_name_int32_tmp + "_" + str(slice_num).zfill(3) + '.tiff'
-                            image.save(save_name_slice)
+                                # Saves image in int32
+                                image = Image.fromarray(im_slice)
+                                save_name_slice = save_name_int32_tmp + "_" + str(slice_num).zfill(3) + '.tiff'
+                                image.save(save_name_slice)
 
-                            # Saves image in uint8
-                            image = Image.fromarray(im_slice_uint8)
-                            save_name_slice = save_name_uint8_tmp + "_" + str(slice_num).zfill(3) + '.tiff'
-                            image.save(save_name_slice)
+                                # Saves image in uint8
+                                image = Image.fromarray(im_slice_uint8)
+                                save_name_slice = save_name_uint8_tmp + "_" + str(slice_num).zfill(3) + '.tiff'
+                                image.save(save_name_slice)
+
+                                # Updates the progress bar
+                                progress_bar.update(1)
+    
+    print("All slices have been extracted.")
+    print("EOF.")
 
 def save_segmentation_mask_as_tiff(oct_folder, save_folder):
     """
@@ -175,6 +191,11 @@ def save_segmentation_mask_as_tiff(oct_folder, save_folder):
         rmtree(save_name_uint8)
         makedirs(save_name_uint8)
 
+    # Initiates the variable that will 
+    # count the progress of volumes 
+    # whose slices are being extracted
+    volume = 0
+
     # Iterates through the folders to read the OCT volumes used in segmentation
     # and saves them both in int32 for better manipulation and in uint8 for
     # visualization
@@ -185,6 +206,7 @@ def save_segmentation_mask_as_tiff(oct_folder, save_folder):
             if len(vendor_volume) == 2:
                 vendor = vendor_volume[0]
                 volume_name = vendor_volume[1]
+                vendor_volume = vendor + "_" + volume_name
                 save_name_uint8_tmp = save_name_uint8 + vendor + "_" + volume_name
                 save_name_int8_tmp = save_name_int8 + vendor + "_" + volume_name
 
@@ -192,27 +214,36 @@ def save_segmentation_mask_as_tiff(oct_folder, save_folder):
                 # extract the images
                 for filename in files:
                     if filename == "reference.mhd":
+                        volume += 1
                         file_path = root + """\\""" + filename
+                        # Loads the OCT volume
                         img, _, _ = load_oct_mask(file_path)
                         num_slices = img.shape[0]
+                        # Creates a progress bar
+                        with tqdm(total=num_slices, desc=f"{vendor_volume}: Volume {volume}/70", unit="img") as progress_bar:
+                            # Iterates through the slices to save each slice with an identifiable name,
+                            # both in uint8 for visualization and int32 for better future manipulation 
+                            for slice_num in range(num_slices):
+                                im_slice = img[slice_num,:,:]
 
-                        # Iterates through the slices to save each slice with an identifiable name,
-                        # both in uint8 for visualization and int32 for better future manipulation 
-                        for slice_num in range(num_slices):
-                            im_slice = img[slice_num,:,:]
+                                # Normalize the masks so that they can be visualized
+                                im_slice_uint8 = (np.round(255 * (im_slice / 3))).astype(np.uint8)
 
-                            # Normalize the masks so that they can be visualized
-                            im_slice_uint8 = (np.round(255 * (im_slice / 3))).astype(np.uint8)
+                                # Saves image in int32
+                                image = Image.fromarray(im_slice)
+                                save_name_slice = save_name_int8_tmp + "_" + str(slice_num).zfill(3) + '.tiff'
+                                image.save(save_name_slice)
 
-                            # Saves image in int32
-                            image = Image.fromarray(im_slice)
-                            save_name_slice = save_name_int8_tmp + "_" + str(slice_num).zfill(3) + '.tiff'
-                            image.save(save_name_slice)
+                                # Saves image in uint8
+                                image = Image.fromarray(im_slice_uint8)
+                                save_name_slice = save_name_uint8_tmp + "_" + str(slice_num).zfill(3) + '.tiff'
+                                image.save(save_name_slice)
 
-                            # Saves image in uint8
-                            image = Image.fromarray(im_slice_uint8)
-                            save_name_slice = save_name_uint8_tmp + "_" + str(slice_num).zfill(3) + '.tiff'
-                            image.save(save_name_slice)
+                                # Updates the progress bar
+                                progress_bar.update(1)
+
+    print("All masks have been extracted.")
+    print("EOF.")
 
 def save_generation_oct_as_tiff(oct_folder, save_folder):
     """
@@ -241,9 +272,14 @@ def save_generation_oct_as_tiff(oct_folder, save_folder):
         rmtree(save_name_int8)
         makedirs(save_name_int8)
 
-        # Iterates through the folders to read the OCT volumes used in segmentation
-        # and saves them both in int32 for better manipulation and in uint8 for
-        # visualization
+    # Initiates the variable that will 
+    # count the progress of volumes 
+    # whose slices are being extracted
+    volume = 0
+
+    # Iterates through the folders to read the OCT volumes used in segmentation
+    # and saves them both in int32 for better manipulation and in uint8 for
+    # visualization
     for (root, _, files) in walk(oct_folder):
         train_or_test = root.split("-")
         if (len(train_or_test) == 3):
@@ -251,28 +287,38 @@ def save_generation_oct_as_tiff(oct_folder, save_folder):
             if len(vendor_volume) == 2:
                 vendor = vendor_volume[0]
                 volume_name = vendor_volume[1]
+                vendor_volume = vendor + "_" + volume_name
                 save_name_int8_tmp = save_name_int8 + vendor + "_" + volume_name
                 save_name_int32_tmp = save_name_int32 + vendor + "_" + volume_name
                 # Iterates through to the subfolders and reads the oct.mhd file to 
                 # extract the images
                 for filename in files:
                     if filename == "oct.mhd":
+                        volume += 1
                         file_path = root + """\\""" + filename
                         img, _, _ = load_oct_image(file_path)
                         num_slices = img.shape[0]
-                        # Iterates through the slices to save each slice with an identifiable name, both in uint8 for visualization
-                        # and int32 for better future manipulation          
-                        for slice_num in range(num_slices):
-                            im_slice = img[slice_num,:,:]
-                            # Normalizes the image to uint8 so that it can be visualized in the computer
-                            im_slice_int8 = int32_to_uint8(im_slice)
+                        # Creates a progress bar
+                        with tqdm(total=num_slices, desc=f"{vendor_volume}: Volume {volume}/112", unit="img") as progress_bar:
+                            # Iterates through the slices to save each slice with an identifiable name, both in uint8 for visualization
+                            # and int32 for better future manipulation          
+                            for slice_num in range(num_slices):
+                                im_slice = img[slice_num,:,:]
+                                # Normalizes the image to uint8 so that it can be visualized in the computer
+                                im_slice_int8 = int32_to_uint8(im_slice)
 
-                            # Saves image in int32
-                            image = Image.fromarray(im_slice)
-                            save_name_slice = save_name_int32_tmp + "_" + str(slice_num).zfill(3) + '.tiff'
-                            image.save(save_name_slice)
+                                # Saves image in int32
+                                image = Image.fromarray(im_slice)
+                                save_name_slice = save_name_int32_tmp + "_" + str(slice_num).zfill(3) + '.tiff'
+                                image.save(save_name_slice)
 
-                            # Saves image in uint8
-                            image = Image.fromarray(im_slice_int8)
-                            save_name_slice = save_name_int8_tmp + "_" + str(slice_num).zfill(3) + '.tiff'
-                            image.save(save_name_slice)
+                                # Saves image in uint8
+                                image = Image.fromarray(im_slice_int8)
+                                save_name_slice = save_name_int8_tmp + "_" + str(slice_num).zfill(3) + '.tiff'
+                                image.save(save_name_slice)
+
+                                # Updates the progress bar
+                                progress_bar.update(1)
+
+    print("All slices have been extracted.")
+    print("EOF.")
