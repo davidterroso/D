@@ -270,9 +270,9 @@ class TennakoonUNet(Module):
         self.bottle_neck = DoubleConvolution(256, 512) # # ((((h - 4) / 2 - 4) / 2 - 4) / 2, (((w - 4) / 2 - 4) / 2 - 4) / 2, 256) -> (((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((w - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, 512)
 
         # Up-convolutions that form the decoding path
-        self.up_convolution_1 = UpSample(512, 256, p=0.25) # (((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((w - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, 512) -> ((((h - 4) / 2 - 4) / 2 - 4) / 2, (((w - 4) / 2 - 4) / 2 - 4) / 2, 256)
-        self.up_convolution_2 = UpSample(256, 128, p=0.25) # ((((h - 4) / 2 - 4) / 2 - 4) / 2, (((w - 4) / 2 - 4) / 2 - 4) / 2, 256) -> (((h - 4) / 2 - 4) / 2, ((w - 4) / 2 - 4) / 2, 128)
-        self.up_convolution_3 = UpSample(128, 64, p=0.5) # (((h - 4) / 2 - 4) / 2, ((w - 4) / 2 - 4) / 2, 128) -> ((h - 4) / 2, (w - 4) / 2, 64)
+        self.up_convolution_1 = UpSample(512, 256, p=0.25) # (((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((w - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, 512) ->  ((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4, (((w - 4) / 2 - 4) / 2 - 4) / 2 - 4, 256)
+        self.up_convolution_2 = UpSample(256, 128, p=0.25) # ((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4, (((w - 4) / 2 - 4) / 2 - 4) / 2 - 4, 256) -> (((h - 4) / 2 - 4) / 2 - 12, ((w - 4) / 2 - 4) / 2 - 12, 128)
+        self.up_convolution_3 = UpSample(128, 64, p=0.5) # (((h - 4) / 2 - 4) / 2 - 12, ((w - 4) / 2 - 4) / 2 - 12, 128) -> ((h - 4) / 2 - 28, (w - 4) / 2 - 28, 64)
 
         # Dropout method for the cropped outputs, 
         # depending on the probabilities of dropout
@@ -287,7 +287,7 @@ class TennakoonUNet(Module):
 
         # Last convolution to obtain the segmentation masks
         self.out = Sequential(
-            Conv2d(in_channels=4, out_channels=num_classes, kernel_size=3, padding="same"), # ((h - 4) / 2, (w - 4) / 2, 64) -> (h, w, num_classes)
+            Conv2d(in_channels=4, out_channels=num_classes, kernel_size=3, padding="same"),
             ReLU(inplace=True),
             softmax(dim=1)
         )

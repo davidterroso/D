@@ -13,6 +13,7 @@ from torch.nn.functional import one_hot, softmax
 from torch.utils.data import Dataset, DataLoader, random_split
 from tqdm import tqdm
 from init.patchExtraction import extractPatches, extractPatches25D
+from networks.unet25D import TennakoonUNet
 from networks.loss import multiclass_balanced_cross_entropy_loss
 from networks.unet import UNet
 
@@ -475,7 +476,7 @@ def train_model (
     models = {
         "UNet": UNet(in_channels=number_of_channels, num_classes=number_of_classes),
         "UNet3": UNet(in_channels=number_of_channels, num_classes=number_of_classes),
-        "2.5D": UNet(in_channels=number_of_channels, num_classes=number_of_classes) # Change later
+        "2.5D": TennakoonUNet(in_channels=number_of_channels, num_classes=number_of_classes)
     }
 
     # Checks whether the selected model exists or not
