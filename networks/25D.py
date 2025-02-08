@@ -1,11 +1,13 @@
 from torch import cat
-from torch.nn import Module, Sequential, Conv2d, ConvTranspose2d, ReLU, MaxPool2d, Dropout2d, BatchNorm2d
+from torch.nn.functional import softmax
+from torch.nn import Module, Sequential, Conv2d, ConvTranspose2d, ReLU, MaxPool2d, Dropout2d, BatchNorm2d, Upsample
 
 class InitialConvolution(Module):
     def __init__(self, in_channels, out_channels):
         """
         Initiates the InitialConvolution object, which is composed of one 
-        two-dimensional convolution followed by a ReLU function
+        two-dimensional convolution with kernel size seven followed by a 
+        ReLU function
         
         Args:
             in_channels (int): Number of channels that are input in this module
@@ -16,10 +18,10 @@ class InitialConvolution(Module):
         """
         # Calls nn.Module class
         super().__init__()
-        # Defines the double convolution
+        # Defines the initial convolution
         self.conv_op = Sequential(
             # Two dimensional convolution with kernel of size seven 
-            # and padding one. 
+            # and padding same. 
             # Shape (input): (h x w x in_channels)
             # Shape (output): (h x w x out_channels), because padding is "same"
             Conv2d(in_channels, out_channels, kernel_size=7, padding="same"),
@@ -171,7 +173,7 @@ class UpSample(Module):
     followed by a concatenation with a cropped
     output of a previous double convolution.
     """
-    def __init__(self, in_channels, out_channels):
+    def __init__(self, in_channels, out_channels, p):
         """
         Initiates the UpSample object, which is composed of a de-convolution 
         and a concatenation with a cropped output of a previous double convolution.
@@ -179,16 +181,20 @@ class UpSample(Module):
         Args:
             in_channels (int): Number of channels that are input in this module
             out_channels (int): Number of channels that are output of this module
+            p (float): Probability of dropout 
         
         Return:
             None
         """
         # Calls nn.Module class
-        super().__init__()
+        super().__init__()        
         # Initiates the de-convolution function
         # Shape (input): (h x w x in_channels)
         # Shape (output): (h x w x in_channels // 2)
-        self.up = ConvTranspose2d(in_channels, in_channels // 2, kernel_size=2, stride=2)
+        self.up = Sequential(
+            ConvTranspose2d(in_channels, in_channels // 2, kernel_size=2, stride=2, padding="same"),
+            Dropout2d(p=p)
+        )
         # Initiates the double convolution function
         # Shape (input): (2*h x 2*w x in_channels // 2)
         # Shape (output): ((2*h - 2 - 2) x (2*w - 2 - 2) x in_channels // 2)
@@ -264,12 +270,27 @@ class TennakoonUNet(Module):
         self.bottle_neck = DoubleConvolution(256, 512) # # ((((h - 4) / 2 - 4) / 2 - 4) / 2, (((w - 4) / 2 - 4) / 2 - 4) / 2, 256) -> (((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((w - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, 512)
 
         # Up-convolutions that form the decoding path
-        self.up_convolution_2 = UpSample(512, 256) # (((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((w - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, 512) -> ((((h - 4) / 2 - 4) / 2 - 4) / 2, (((w - 4) / 2 - 4) / 2 - 4) / 2, 256)
-        self.up_convolution_3 = UpSample(256, 128) # ((((h - 4) / 2 - 4) / 2 - 4) / 2, (((w - 4) / 2 - 4) / 2 - 4) / 2, 256) -> (((h - 4) / 2 - 4) / 2, ((w - 4) / 2 - 4) / 2, 128)
-        self.up_convolution_4 = UpSample(128, 64) # (((h - 4) / 2 - 4) / 2, ((w - 4) / 2 - 4) / 2, 128) -> ((h - 4) / 2, (w - 4) / 2, 64)
+        self.up_convolution_1 = UpSample(512, 256, p=0.25) # (((((h - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, ((((w - 4) / 2 - 4) / 2 - 4) / 2 - 4) / 2, 512) -> ((((h - 4) / 2 - 4) / 2 - 4) / 2, (((w - 4) / 2 - 4) / 2 - 4) / 2, 256)
+        self.up_convolution_2 = UpSample(256, 128, p=0.25) # ((((h - 4) / 2 - 4) / 2 - 4) / 2, (((w - 4) / 2 - 4) / 2 - 4) / 2, 256) -> (((h - 4) / 2 - 4) / 2, ((w - 4) / 2 - 4) / 2, 128)
+        self.up_convolution_3 = UpSample(128, 64, p=0.5) # (((h - 4) / 2 - 4) / 2, ((w - 4) / 2 - 4) / 2, 128) -> ((h - 4) / 2, (w - 4) / 2, 64)
+
+        # Dropout method for the cropped outputs, 
+        # depending on the probabilities of dropout
+        self.cropped_dropout_25 = Dropout2d(0.25)
+        self.cropped_dropout_50 = Dropout2d(0.50)
+
+        # Used to include information from larger feature maps, through Upsampling
+        # Do not confuse the functions Upsample with UpSample
+        self.multiscale_up_1 = Upsample(8, 8)
+        self.multiscale_up_2 = Upsample(4, 4)
+        self.multiscale_up_3 = Upsample(2, 2)
 
         # Last convolution to obtain the segmentation masks
-        self.out = Conv2d(in_channels=64, out_channels=num_classes, kernel_size=1) # ((h - 4) / 2, (w - 4) / 2, 64) -> (h, w, num_classes)
+        self.out = Sequential(
+            Conv2d(in_channels=4, out_channels=num_classes, kernel_size=3, padding="same"), # ((h - 4) / 2, (w - 4) / 2, 64) -> (h, w, num_classes)
+            ReLU(inplace=True),
+            softmax(dim=1)
+        )
 
     def forward(self, x):
         """
@@ -286,28 +307,44 @@ class TennakoonUNet(Module):
                 as other channels
         """
         # Performs the steps in the encoding path of the 
-        # network
-        down_1, pool_1 = self.down_convolution_1(x)
+        # network and applies both cropping and dropout to
+        # the results of the downsampling
+        down_0 = self.initial_convolution(x)
+        down_1, pool_1 = self.down_convolution_1(down_0)
+        down_1_cropped = down_1[:, :, 5:-4, 5:-4]
+        down_1_cropped = self.cropped_dropout_50(down_1_cropped)
         down_2, pool_2 = self.down_convolution_2(pool_1)
+        down_2_cropped = down_2[:, :, 17:-17, 17:-17]
+        down_2_cropped = self.cropped_dropout_25(down_2_cropped)
         down_3, pool_3 = self.down_convolution_3(pool_2)
-        down_4, pool_4 = self.down_convolution_4(pool_3)
+        down_3_cropped = down_3[:, :, 42:-42, 42:-42]
+        down_3_cropped = self.cropped_dropout_25(down_3_cropped)
 
         # Calculates the last convolution before 
-        # upsampling without max pooling
-        b = self.bottle_neck(pool_4)
+        # upsampling, without max pooling
+        b = self.bottle_neck(pool_3)
 
         # Performs the steps in the decoding path 
         # of the network
-        up_1 = self.up_convolution_1(b, down_4)
-        up_2 = self.up_convolution_2(up_1, down_3)
-        up_3 = self.up_convolution_3(up_2, down_2)
-        up_4 = self.up_convolution_4(up_3, down_1)
+        up_1 = self.up_convolution_1(b, down_3_cropped)
+        up_2 = self.up_convolution_2(up_1, down_2_cropped)
+        up_3 = self.up_convolution_3(up_2, down_1_cropped)
+
+        # Calculates the upsampling operations
+        ms_1 = self.multiscale_up_1(down_3)
+        ms_1 = ms_1[:, :, 14:-14, 14:-14]
+        ms_2 = self.multiscale_up_2(up_1)
+        ms_2 = ms_2[:, :, 6:-6, 6:-6]
+        ms_3 = self.multiscale_up_3(up_2)
+        ms_3 = ms_3[:, :, 2:-2, 2:-2]
+
+        # Merges the results from the different upsamplings
+        merge = cat([ms_1, ms_2, ms_3, up_3], dim=1)
 
         # Performs the final convolution that outputs
         # the image with its respective masks in 
         # different channels, which is then returned
-        out = self.out(up_4)
+        out = self.out(merge)
 
         return out
-
         
