@@ -298,21 +298,21 @@ def train_model (
         # Eliminates the previous patches and saves 
         # new patches to train the model, but only 
         # for the volumes that will be used in training
-        # if model_name != "2.5D":
-        #     extractPatches(IMAGES_PATH, 
-        #                 patch_shape=patch_shape, 
-        #                 n_pos=n_pos, n_neg=n_neg, 
-        #                 pos=pos, neg=neg, 
-        #                 volumes=train_volumes)
-        # else:
-        #     extractPatches25D(IMAGES_PATH, 
-        #                 patch_shape=patch_shape, 
-        #                 n_pos=n_pos, n_neg=n_neg, 
-        #                 pos=pos, neg=neg, 
-        #                 volumes=train_volumes)
+        if model_name != "2.5D":
+            extractPatches(IMAGES_PATH, 
+                        patch_shape=patch_shape, 
+                        n_pos=n_pos, n_neg=n_neg, 
+                        pos=pos, neg=neg, 
+                        volumes=train_volumes)
+        else:
+            extractPatches25D(IMAGES_PATH, 
+                        patch_shape=patch_shape, 
+                        n_pos=n_pos, n_neg=n_neg, 
+                        pos=pos, neg=neg, 
+                        volumes=train_volumes)
         
         # Randomly drops patches of slices that do not have retinal fluid
-        # dropPatches(prob=0.75, volumes_list=train_volumes, model=model_name)
+        dropPatches(prob=0.75, volumes_list=train_volumes, model=model_name)
         
         # Creates the Dataset object
         dataset = TrainDataset(train_volumes, model_name)
@@ -543,14 +543,15 @@ def train_model (
             # does not save the information 
             except:
                 pass  
-
+            
+# In case it is preferred to run directly in this file, here lays an example
 if __name__ == "__main__":
     train_model(
         run_name="Run1",
         model_name="UNet",
         device_name="GPU",
-        epochs=5,
-        batch_size=2,
+        epochs=100,
+        batch_size=32,
         learning_rate=2e-5,
         optimizer_name="Adam",
         momentum=0.999,
