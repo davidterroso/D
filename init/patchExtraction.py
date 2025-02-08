@@ -1,3 +1,4 @@
+import numpy as np
 from os import walk, makedirs
 from os.path import isfile, exists
 from shutil import rmtree
@@ -7,8 +8,8 @@ from skimage.util import img_as_float
 from skimage.morphology import disk, binary_closing
 from skimage.filters.rank import entropy
 from skimage.transform import resize
+from tqdm import tqdm
 from .readOCT import int32_to_uint8
-import numpy as np
 
 # Declares the multiplication factor to obtain the correct patch height 
 # for each device, identified by the height of the image
@@ -82,33 +83,46 @@ def extractROIMasks(oct_path, folder_path, threshold):
         rmtree(save_folder_uint8)
         makedirs(save_folder_uint8)
 
-    for (root, _, files) in walk(oct_path):
-        train_or_test = root.split("-")
-        if ((len(train_or_test) == 3) and (train_or_test[1] == "TrainingSet")):
-            vendor_volume = train_or_test[2].split("""\\""")
-            if len(vendor_volume) == 2:
-                vendor = vendor_volume[0]
-                volume_name = vendor_volume[1]
-                volume_path = images_path + vendor + "_" + volume_name
-                volume_masks_path = masks_path + vendor + "_" + volume_name
-                slice_num = 0
-                slice_path = volume_path + "_" + str(slice_num).zfill(3) + ".tiff"
-                mask_path = volume_masks_path + "_" + str(slice_num).zfill(3) + ".tiff"   
-                         
-                while isfile(slice_path):
-                    OCT_slice = imread(slice_path)
-                    OCT_slice = img_as_float(OCT_slice.astype(np.float32) / 128. - 1.)
-                    OCT_slice_mask = imread(mask_path)
-                    OCT_slice_mask = OCT_slice_mask.astype(np.int8)
-
-                    save_name = save_folder_int8 + vendor + "_" + volume_name + "_" + str(slice_num).zfill(3) + ".tiff"
-                    save_name_to_view = save_folder_uint8 + vendor + "_" + volume_name + "_" + str(slice_num).zfill(3) + ".tiff"
-
-                    createROIMask(OCT_slice, OCT_slice_mask, threshold, save_location=save_name, save_location_to_view=save_name_to_view)
-
-                    slice_num += 1
+    # Initiates a progress bar that tracks the volumes from which the ROI 
+    # mask has been extracted
+    with tqdm(total=70, desc=f"ROI_Extraction", unit="vol") as progress_bar:
+        # Initiates the variable that will 
+        # count the progress of volumes 
+        # whose slices are being extracted
+        for (root, _, files) in walk(oct_path):
+            train_or_test = root.split("-")
+            if ((len(train_or_test) == 3) and (train_or_test[1] == "TrainingSet")):
+                vendor_volume = train_or_test[2].split("""\\""")
+                if len(vendor_volume) == 2:
+                    vendor = vendor_volume[0]
+                    volume_name = vendor_volume[1]
+                    vendor_volume = vendor + "_" + volume_name
+                    volume_path = images_path + vendor + "_" + volume_name
+                    volume_masks_path = masks_path + vendor + "_" + volume_name
+                    slice_num = 0
                     slice_path = volume_path + "_" + str(slice_num).zfill(3) + ".tiff"
-                    mask_path = volume_masks_path + "_" + str(slice_num).zfill(3) + ".tiff"
+                    mask_path = volume_masks_path + "_" + str(slice_num).zfill(3) + ".tiff"   
+                                
+                    while isfile(slice_path):
+                        OCT_slice = imread(slice_path)
+                        OCT_slice = img_as_float(OCT_slice.astype(np.float32) / 128. - 1.)
+                        OCT_slice_mask = imread(mask_path)
+                        OCT_slice_mask = OCT_slice_mask.astype(np.int8)
+
+                        save_name = save_folder_int8 + vendor + "_" + volume_name + "_" + str(slice_num).zfill(3) + ".tiff"
+                        save_name_to_view = save_folder_uint8 + vendor + "_" + volume_name + "_" + str(slice_num).zfill(3) + ".tiff"
+
+                        createROIMask(OCT_slice, OCT_slice_mask, threshold, save_location=save_name, save_location_to_view=save_name_to_view)
+
+                        slice_num += 1
+                        slice_path = volume_path + "_" + str(slice_num).zfill(3) + ".tiff"
+                        mask_path = volume_masks_path + "_" + str(slice_num).zfill(3) + ".tiff"
+            
+            # Updates the progress bar
+            progress_bar.update(1)
+
+    print("All ROI masks have been extracted.")
+    print("EOF.")
 
 def extractPatchCenters_(roi_mask, patch_shape, npos, pos, neg):
     """
