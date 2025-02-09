@@ -227,23 +227,26 @@ def train_model (
             print("To tune the hyperparameters, please indicate the first \
                   fold as test set. The second fold will be used to test.")
 
+    # Converts the list from float to int
+    initial_train_volumes = [int(x) for x in initial_train_volumes]
+
     # Gets the number of validation volumes and the number 
     # of training volumes that will be used
-    val_size = len(initial_train_volumes) * val_percent
+    val_size = int(len(initial_train_volumes) * val_percent)
     train_size = len(initial_train_volumes) - val_size
 
     # Declares the used seed to promote reproducibility
     seed(0)
 
     # Gets the list of the train and validation volumes that will be used
-    train_volumes = list(choice(initial_train_volumes, train_size, replace=False))
-    val_volumes = [x for x in initial_train_volumes if x not in train_volumes] 
+    train_volumes_list = list(choice(initial_train_volumes, train_size, replace=False))
+    val_volumes_list = [x for x in initial_train_volumes if x not in train_volumes_list] 
 
     # Creates the Dataset object, but is just used to get the 
     # number of slices used, not taking into account the dropped 
     # patches
-    train_dataset = TrainDataset(train_volumes, model_name)
-    val_dataset = TrainDataset(val_volumes, model_name)
+    train_dataset = TrainDataset(train_volumes_list, model_name)
+    val_dataset = ValidationDataset(val_volumes_list, model_name)
 
     # Gets the number of images 
     # in the train and validation dataset
@@ -322,13 +325,25 @@ def train_model (
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 
                         pos=pos, neg=neg, 
-                        volumes=train_volumes)
+                        volumes=train_volumes_list)            
+            
+            extractPatches(IMAGES_PATH, 
+                        patch_shape=patch_shape, 
+                        n_pos=n_pos, n_neg=n_neg, 
+                        pos=pos, neg=neg, 
+                        volumes=val_volumes_list)
         else:
             extractPatches25D(IMAGES_PATH, 
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 
                         pos=pos, neg=neg, 
-                        volumes=train_volumes)
+                        volumes=train_volumes_list)            
+            
+            extractPatches25D(IMAGES_PATH, 
+                        patch_shape=patch_shape, 
+                        n_pos=n_pos, n_neg=n_neg, 
+                        pos=pos, neg=neg, 
+                        volumes=val_volumes_list)
         
         # Stops timing the patch extraction and prints it
         end = time()
@@ -338,15 +353,16 @@ def train_model (
         # Starts timing the patch dropping
         begin = time()
         # Randomly drops patches of slices that do not have retinal fluid
-        dropPatches(prob=0.75, volumes_list=train_volumes, model=model_name)
+        dropPatches(prob=0.75, volumes_list=train_volumes_list, model=model_name)
+        dropPatches(prob=0.75, volumes_list=val_volumes_list, model=model_name)
         # Stops timing the patch extraction and prints it
         end = time()
         print(f"Patch dropping took {end - begin} seconds.")
         
         # Creates the train and validation Dataset objects
         # The validation dataset does not apply transformations
-        train_set = TrainDataset(train_volumes, model_name)
-        val_set = ValidationDataset(val_volumes, model_name)
+        train_set = TrainDataset(train_volumes_list, model_name)
+        val_set = ValidationDataset(val_volumes_list, model_name)
 
         print(f"Train Images: {train_set} | Validation Images: {val_set}")
 
