@@ -477,6 +477,7 @@ def train_model (
             else:
                 torch.save(model.state_dict(), 
                            f"models/{run_name}_{label_to_fluids.get(fluid)}_{model_name}_best_model.pth")
+            print("Model saved.")
         # In case the model has not 
         # obtained a better performance, 
         # the patience counter increases
