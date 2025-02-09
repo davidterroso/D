@@ -7,7 +7,7 @@ from pandas import read_csv
 from time import time
 from torch import optim
 from torch.nn.functional import one_hot, softmax
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 from init.patchExtraction import extractPatches, extractPatches25D
 from network_functions.dataset import TrainDataset, ValidationDataset, dropPatches
@@ -245,8 +245,8 @@ def train_model (
     # Creates the Dataset object, but is just used to get the 
     # number of slices used, not taking into account the dropped 
     # patches
-    train_dataset = TrainDataset(train_volumes_list, model_name)
-    val_dataset = ValidationDataset(val_volumes_list, model_name)
+    train_dataset = TrainDataset(train_volumes_list, model_name, fluid)
+    val_dataset = ValidationDataset(val_volumes_list, model_name, fluid)
 
     # Gets the number of images 
     # in the train and validation dataset
@@ -258,8 +258,6 @@ def train_model (
         Epochs:          {epochs}
         Batch size:      {batch_size}
         Learning rate:   {learning_rate}
-        Training size:   {n_train}
-        Validation size: {n_val}
         Device:          {device.type}
         Mixed Precision: {amp}
     """)
@@ -318,8 +316,9 @@ def train_model (
         begin = time()
 
         # Eliminates the previous patches and saves 
-        # new patches to train the model, but only 
-        # for the volumes that will be used in training
+        # new patches to train and validate the model, 
+        # but only for the volumes that will be used 
+        # in training
         if model_name != "2.5D":
             extractPatches(IMAGES_PATH, 
                         patch_shape=patch_shape, 
@@ -364,7 +363,9 @@ def train_model (
         train_set = TrainDataset(train_volumes_list, model_name)
         val_set = ValidationDataset(val_volumes_list, model_name)
 
-        print(f"Train Images: {train_set} | Validation Images: {val_set}")
+        n_train = len(train_set)
+        n_val = len(val_set)
+        print(f"Train Images: {n_train} | Validation Images: {n_val}")
 
         # Using the Dataset object, creates a DataLoader object 
         # which will be used to train the model in batches
@@ -587,7 +588,9 @@ def train_model (
             except:
                 pass  
             
-# In case it is preferred to run directly in this file, here lays an example
+# In case it is preferred to run 
+# directly in this file, here lays 
+# an example
 if __name__ == "__main__":
     train_model(
         run_name="Run1",

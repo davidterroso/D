@@ -63,3 +63,23 @@ def multiclass_balanced_cross_entropy_loss(y_true, y_pred, batch_size, n_classes
 
     # Returns the loss value
     return loss
+
+def dice_coefficient(prediction, target, num_classes, epsilon=1e-6):
+    dice_scores = []
+    voxel_counts = []
+    total_intersection = 0
+    total_union = 0
+    
+    for class_idx in range(1, num_classes + 1):
+        pred_class = (prediction == class_idx).float()
+        target_class = (target == class_idx).float()
+        intersection = (pred_class * target_class).sum()
+        union = pred_class.sum() + target_class.sum()
+        dice = (2. * intersection + epsilon) / (union + epsilon)
+        dice_scores.append(dice.item())
+        voxel_counts.append(target_class.sum().item())
+        total_intersection += intersection
+        total_union += union
+    
+    total_dice = (2. * total_intersection + epsilon) / (total_union + epsilon)
+    return dice_scores, voxel_counts, total_dice.item()
