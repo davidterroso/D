@@ -1,6 +1,7 @@
 import logging
 import torch
 import wandb
+from numpy.random import choice, seed
 from os import cpu_count
 from pandas import read_csv
 from time import time
@@ -9,7 +10,7 @@ from torch.nn.functional import one_hot, softmax
 from torch.utils.data import DataLoader, random_split
 from tqdm import tqdm
 from init.patchExtraction import extractPatches, extractPatches25D
-from network_functions.dataset import TrainDataset, dropPatches
+from network_functions.dataset import TrainDataset, ValidationDataset, dropPatches
 from network_functions.evaluate import evaluate
 from networks.unet25D import TennakoonUNet
 from networks.loss import multiclass_balanced_cross_entropy_loss
@@ -203,7 +204,7 @@ def train_model (
     # will be used to train the network
     df = read_csv("splits/segmentation_train_splits.csv")
     fold_column_name = f"Fold{fold_test}_Volumes"
-    train_volumes = df[fold_column_name].dropna().to_list()
+    initial_train_volumes = df[fold_column_name].dropna().to_list()
 
     # In case it is desired to tune the model, the test fold (first 
     # during hyperparameter tuning) is not used to test. Instead, the 
@@ -219,21 +220,35 @@ def train_model (
             # as evaluation for the new hyperparameters 
             fold_column_test = f"Fold2_Volumes"
             test_volumes = df_test[fold_column_test].dropna().to_list()
-            train_volumes = [x for x in train_volumes if x not in test_volumes]        
+            initial_train_volumes = [x for x in initial_train_volumes if x not in test_volumes]        
         else:
             # Condition to check if the tuning was selected for the correct
             # set of folds, which is identified by the fold used in testing
             print("To tune the hyperparameters, please indicate the first \
                   fold as test set. The second fold will be used to test.")
 
-    # Creates the Dataset object
-    dataset = TrainDataset(train_volumes, model_name)
+    # Gets the number of validation volumes and the number 
+    # of training volumes that will be used
+    val_size = len(initial_train_volumes) * val_percent
+    train_size = len(initial_train_volumes) - val_size
 
-    # Splits the dataset in training and 
-    # validation to train the model, with a 
-    # fixed seed to allow reproducibility
-    n_val = int(len(dataset) * val_percent)
-    n_train = len(dataset) - n_val
+    # Declares the used seed to promote reproducibility
+    seed(0)
+
+    # Gets the list of the train and validation volumes that will be used
+    train_volumes = list(choice(initial_train_volumes, train_size, replace=False))
+    val_volumes = [x for x in initial_train_volumes if x not in train_volumes] 
+
+    # Creates the Dataset object, but is just used to get the 
+    # number of slices used, not taking into account the dropped 
+    # patches
+    train_dataset = TrainDataset(train_volumes, model_name)
+    val_dataset = TrainDataset(val_volumes, model_name)
+
+    # Gets the number of images 
+    # in the train and validation dataset
+    n_train = len(train_dataset)
+    n_val = len(val_dataset)
 
     # Registers the information that will be logged
     logging.info(f"""Starting training:
@@ -328,21 +343,18 @@ def train_model (
         end = time()
         print(f"Patch dropping took {end - begin} seconds.")
         
-        # Creates the Dataset object
-        dataset = TrainDataset(train_volumes, model_name)
+        # Creates the train and validation Dataset objects
+        # The validation dataset does not apply transformations
+        train_set = TrainDataset(train_volumes, model_name)
+        val_set = ValidationDataset(val_volumes, model_name)
 
-        # Splits the dataset in training and 
-        # validation to train the model, with a 
-        # fixed seed to allow reproducibility
-        n_val = int(len(dataset) * val_percent)
-        n_train = len(dataset) - n_val
-        train_set, val_set = random_split(dataset, [n_train, n_val], generator=torch.Generator().manual_seed(0))
+        print(f"Train Images: {train_set} | Validation Images: {val_set}")
 
         # Using the Dataset object, creates a DataLoader object 
         # which will be used to train the model in batches
         loader_args = dict(batch_size=batch_size, num_workers=cpu_count(), pin_memory=True)
         train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
-        val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
+        val_loader = DataLoader(val_set, shuffle=True, drop_last=True, **loader_args)
 
         # Indicates the model that it is going to be trained
         model.train()

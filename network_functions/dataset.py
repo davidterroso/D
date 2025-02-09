@@ -146,7 +146,8 @@ class TrainDataset(Dataset):
         """
         # Initiates the model, gets the name of the slices that
         # compose the dataset, the transformations that will be 
-        # applied to the images, and the 
+        # applied to the images, and the fluid to segment in 
+        # case it is used
         super().__init__()
         self.model = model
         self.patches_names = getPatchesFromVolumes(train_volumes, model)
@@ -264,3 +265,142 @@ class TrainDataset(Dataset):
         # associates the fluid mask
         sample = {"scan": scan, "mask": mask}
         return sample
+
+class ValidationDataset(Dataset):
+    """
+    Initiates the PyTorch object Dataset called ValidationDataset 
+    with the available images, thus simplifying the training
+    process
+    """
+    def __init__(self, val_volumes, model, fluid=None):
+        """
+        Initiates the Dataset object and gets the possible 
+        names of the patches that will be used in validation
+
+        Args: 
+            val_volumes(List[float]): list of the validation 
+                volumes that will be used to train the model
+            model (str): name of the model that will be trained
+            fluid (int): label of fluid that is expected to 
+                segment. Optional because it is only used in
+                one network
+                
+        Return:
+            None
+        """
+        # Initiates the model, gets the name of the slices that
+        # compose the dataset, the transformations that will be 
+        # applied to the images, and the fluid to segment in 
+        # case it is used
+        super().__init__()
+        self.model = model
+        self.patches_names = getPatchesFromVolumes(val_volumes, model)
+        self.fluid = fluid
+
+    def __len__(self):
+        """
+        Function required in the Dataset object that returns the length 
+        of the images used in validation
+
+        Args:
+            self (PyTorch Dataset): the PyTorch Dataset object itself
+
+        Return:
+            None
+        """
+        return len(self.patches_names)
+
+    def __getitem__(self, index):
+        """
+        Gets an image from the list of images that can be used in 
+        validation when an index is given, utilized to access the 
+        list of images
+        
+        Args:
+            self (PyTorch Dataset): the PyTorch Dataset object itself
+            index (int): index of the dataset to get the image from
+
+        Return:
+            None
+        """
+        # In case the index is a tensor,
+        # converts it to a list
+        if torch.is_tensor(index):
+            index = index.tolist()
+
+        # The path to read the images is different depending on the model
+        if self.model == "2.5D":
+            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\"
+        else:
+            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\"
+
+        # Indicates the path to the image depending on the index given,
+        # which is associated with the image name
+        slice_name = images_folder + "slices\\" + self.patches_names[index]
+        mask_name = images_folder + "masks\\" + self.patches_names[index]
+
+        # Reads the image and the
+        # fluid mask
+        scan = imread(slice_name)
+        mask = imread(mask_name)
+
+        # In case the selected model is the 2.5D, also loads the previous
+        # and following slice
+        if self.model == "2.5D":
+            scan_before = imread(str(slice_name[:-5] + "_before.tiff"))
+            scan_after = imread(str(slice_name[:-5] + "_after.tiff"))
+            # Stacks them to apply the transformations
+            scan = stack(arrays=[scan_before, scan, scan_after], axis=0)
+
+        # In case the model selected is the UNet3, all the labels 
+        # that are not the one desired to segment are set to 0
+        if self.model == "UNet3":
+            mask = ((mask == self.fluid).astype(int) * self.fluid)
+
+        # Z-Score Normalization / Standardization
+        # Mean of 0 and SD of 1
+        scan = (scan - 128.) / 128.
+
+        # Expands the scan dimentions to 
+        # include an extra channel of value 1
+        # as the first channel
+        # The mask dimensions are also expanded 
+        # to match
+        if self.model != "2.5D":
+            scan = expand_dims(scan, axis=0)
+        mask = expand_dims(mask, axis=0)
+
+        # Converts the scan and mask 
+        # to a PyTorch Tensor
+        scan = torch.from_numpy(scan)
+        mask = torch.from_numpy(mask)
+
+        # Forms a stack with the scan and the mask
+        # Initial Scan Shape: 1 x H x W / 3 x H x W
+        # Initial Mask Shape: 1 x H x W
+        # Resulting Shape: 2 x H x W / 4 x H x W
+        resulting_stack = torch.cat([scan, mask], dim=0)
+
+        # Applies the transfomration to the stack
+        transformed = self.transforms(resulting_stack)
+
+        # Separate the scan and the mask from the stack
+        # Keeps the extra dimension on the slice but not on the mask
+        if self.model != "2.5D":
+            scan, mask = transformed[0].unsqueeze(0), transformed[1]
+        # Handles it differently for the 2.5D model, ensuring the correct order of slices 
+        else:
+            scan = torch.cat([transformed[0], transformed[1], transformed[2]], dim=0)
+            mask = transformed[3]
+
+        # Converts the scans back to NumPy
+        scan = scan.cpu().numpy()
+        mask = mask.cpu().numpy()
+
+        # Declares a sample as a dictionary that 
+        # to the keyword "scan" associates the 
+        # original B-scan and to the keyword "mask" 
+        # associates the fluid mask
+        sample = {"scan": scan, "mask": mask}
+        return sample
+    
