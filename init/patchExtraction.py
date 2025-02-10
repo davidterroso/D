@@ -118,8 +118,8 @@ def extractROIMasks(oct_path, folder_path, threshold):
                         slice_path = volume_path + "_" + str(slice_num).zfill(3) + ".tiff"
                         mask_path = volume_masks_path + "_" + str(slice_num).zfill(3) + ".tiff"
             
-            # Updates the progress bar
-            progress_bar.update(1)
+                    # Updates the progress bar
+                    progress_bar.update(1)
 
     print("All ROI masks have been extracted.")
     print("EOF.")
