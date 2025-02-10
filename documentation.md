@@ -3,6 +3,7 @@
 ## Table of Contents <!-- omit in toc -->
 - [Device Utilized](#device-utilized)
 - [Folder Structure](#folder-structure)
+- [paths.py](#pathspy)
 - [pipeline.ipynb](#pipelineipynb)
 - [plot\_logs.py](#plot_logspy)
 - [README.md](#readmemd)
@@ -90,6 +91,13 @@ D
  ┣ train.py # File used to train the networks
  ┗ visualize_scans.py # Simple UI for the user to visualize what is happening to the images in the processing
  ```
+
+## paths.py
+File with the absolute paths required for this project. This changes from device to device and when changed, the following line must be ran in the Git Bash console to prevent it from updating in the repository.
+
+```git update-index --no-assume-unchanged paths.py```
+
+Afterwards, no change made to the file will be included in commits.
 
 ## pipeline.ipynb
 Python notebook that contains the pipeline behind this project, from reading the images and saving, to the training of the networks. When this file is run, it does not need any other changes except some paths and options selected in the beginning. 
