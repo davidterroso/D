@@ -1,6 +1,7 @@
 import logging
 import torch
 import wandb
+from csv import writer
 from numpy.random import choice, seed
 from os import cpu_count
 from pandas import read_csv
@@ -306,6 +307,19 @@ def train_model (
              val_percent=val_percent, amp=amp)
     )
 
+    # Creates two CSV log file for the run, one for the training 
+    # loss per batch and the other for the training and validation 
+    # loss per epoch 
+    csv_epoch_filename = f"logs\{run_name}_training_log_epoch.csv"
+    csv_batch_filename = f"logs\{run_name}_training_log_batch.csv"
+    with open(csv_epoch_filename, mode="w", newline="") as file:
+        writer = writer(file)
+        writer.writerow(["Epoch", "Epoch Training Loss", "Epoch Validation Loss"])
+    
+    with open(csv_batch_filename, mode="w", newline="") as file:
+        writer = writer(file)
+        writer.writerow(["Epoch", "Batch", "Batch Training Loss"])
+
     global_step = 0
     # Iterates through every epoch
     for epoch in range(1, epochs + 1):
@@ -389,7 +403,7 @@ def train_model (
         with tqdm(total=n_train, desc=f"Epoch {epoch}/{epochs}", unit="img") as progress_bar:
             # Iterates through the 
             # batches of images
-            for batch in train_loader:
+            for batch_num, batch in enumerate(train_loader):
                 # From the DataLoader object extracts the scan 
                 # and the GT mask
                 images, true_masks = batch["scan"], batch["mask"]
@@ -464,6 +478,11 @@ def train_model (
                 # Adds the loss of the batch at the end of the progress bar
                 progress_bar.set_postfix(**{"Loss (batch)": loss.item()})
 
+                # Writes the batch loss in the CSV file
+                with open(csv_batch_filename, mode="a", newline="") as file:
+                    writer = writer(file)
+                    writer.writerow([epoch, batch_num, loss.item()])
+
         print(f"Validating Epoch {epoch}")
         histograms = {}
         # Iterates through the model parameters and creates histograms for all of 
@@ -489,6 +508,11 @@ def train_model (
 
         # Adds the validation score to the logging
         logging.info(f"Validation Mean Loss: {val_loss}")
+
+        # Writes the loss of an epoch in training and validation
+        with open(csv_epoch_filename, mode="a", newline="") as file:
+            writer = writer(file)
+            writer.writerow([epoch, epoch_loss / len(train_loader), val_loss])
 
         # Early stopping check
         # If the validation loss is better 

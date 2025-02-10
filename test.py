@@ -14,9 +14,9 @@ def compute_weighted_avg(group_results, number_of_classes):
 
     Args:
         group_results (List[List[str, List[float], List[int], float]]):
-    stores the name of the slices, the Dice coefficient per slice per
-    class, the number of voxels per slice per class and the Dice 
-    coefficient of the slice
+            stores the name of the slices, the Dice coefficient per slice per
+            class, the number of voxels per slice per class and the Dice 
+            coefficient of the slice
         number_of_classes (int): number of classes segmented 
     """
     # Initiates the list that will 
