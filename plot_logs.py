@@ -1,7 +1,92 @@
 import csv
+import matplotlib.pyplot as plt
 
+def plot_logs(run_name):
+    """
+    Plots the logged runs of the training files, as loss per 
+    batch and per epoch, in training and validation
 
-def plot_logs(filename):
+    Args:
+        run_name (str): name of the run desired to plot
 
-    with open(filename) as file:
-        plots = csv.reader(file, delimiter = ',') 
+    Return:
+        None
+    """
+    # Declares the path of the epochs and batch losses
+    epochs_loss_csv = f"logs\{run_name}_training_log_epoch.csv"
+    batch_loss_csv = f"logs\{run_name}_training_log_epoch.csv"
+
+    # Initiates the list with the number of epochs, 
+    # the value obtained for the loss during training 
+    # and validation in the same epoch
+    x_epoch = []
+    train_epoch_loss = []
+    val_epoch_loss = []
+    # Opens the file with the loss in epochs
+    with open(epochs_loss_csv) as file:
+        # Reads the lines in the CSV file
+        lines = csv.reader(file, delimiter = ',')
+        # Iterates through the lines 
+        # and appends the loss values 
+        # to their respective lists
+        for row in lines:
+            x_epoch.append(row[0])
+            train_epoch_loss.append(row[1])
+            val_epoch_loss.append(row[2])
+
+    # Initiates the list with the number of batches and
+    # the value obtained for the loss during training 
+    x_batch = []
+    train_batch_loss = []
+    # Opens the file with the loss in batches
+    with open(batch_loss_csv) as file:
+        # Reads the lines in the CSV file
+        lines = csv.reader(file, delimiter = ',')
+        # Iterates through the lines 
+        # and appends the loss values 
+        # to their respective lists
+        for row in lines:
+            x_batch.append(row[0])
+            train_batch_loss.append(row[1])
+
+    # Divides an image in three subplots 
+    # aligned horizontally
+    fig, (ax1, ax2, ax3) = plt.subplot(1, 3)
+    fig.suptitle(f"{run_name} Losses")
+
+    # Declares the information that is going 
+    # to be plotted, the labels on the axes 
+    # and the title of the subplot
+    # Also informs the color, the style of 
+    # the line that connects the data points
+    # and the marker of a data point
+    ax1.plot(x_epoch, train_epoch_loss, 
+             color='g', linestyle='dashed', 
+             marker='o')
+    ax1.set_title("Train Loss/Epoch")
+    ax1.set(xlabel="Epochs", ylabel="Loss")
+
+    ax2.plot(x_epoch, val_epoch_loss, 
+             color='r', linestyle='dashed', 
+             marker='o')
+    ax2.set_title("Validation Loss/Epoch")
+    ax2.set(xlabel="Epochs", ylabel="Loss")
+
+    ax3.plot(x_batch, train_batch_loss)
+    ax3.set_title("Train Loss/Batch")
+    ax3.set(xlabel="Batches", ylabel="Loss", 
+             color = 'b', linestyle = 'dashed', 
+             marker = 'o')
+    
+    # Declares the path to save
+    img_path = f"imgs\{run_name}_training_error.png"
+    # Saves the image to the designated path
+    plt.savefig(img_path)
+
+    # Shows the image
+    plt.show()
+
+# In case it is needed to run manually, 
+# here is the code
+if __name__ == "__main__":
+    plot_logs(run_name="Run1")
