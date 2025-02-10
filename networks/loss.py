@@ -65,21 +65,57 @@ def multiclass_balanced_cross_entropy_loss(y_true, y_pred, batch_size, n_classes
     return loss
 
 def dice_coefficient(prediction, target, num_classes, epsilon=1e-6):
+    """
+    Calculates the dice coefficient for the slices received
+
+    Args:
+        prediction (PyTorch tensor): images predicted by the model
+        target (PyTorch tensor): corresponding ground-truth
+        num_classes (int): total number of possible classes
+        epsilon (float): small value to avoid division by zero
+
+    Return:
+        dice_scores (List[float]): List with all the calculated 
+            Dice coefficient for the respective class in the 
+            predicted mask
+        voxel_counts (List[int]): List with all the number of 
+            voxels of the corresponding class in the considered 
+            ground-truth
+        total_dice.item (float): total Dice coefficient in the 
+            image 
+    """
+    # Initiates the lists that contain the Dice scores 
+    # and the voxel count per class in the true mask 
     dice_scores = []
     voxel_counts = []
+    # Initiates the count of intersections and the 
+    # count of unions as zero
     total_intersection = 0
     total_union = 0
     
-    for class_idx in range(1, num_classes + 1):
+    # Iterates through the possible classes
+    for class_idx in range(0, num_classes + 1):
+        # Converts each mask to a binary mask where 1 
+        # corresponds to the mask to evaluate and zero 
+        # to all the others
         pred_class = (prediction == class_idx).float()
         target_class = (target == class_idx).float()
+        # Calculates the sum of the intersections in each class
         intersection = (pred_class * target_class).sum()
+        # Calculates the union of classes
         union = pred_class.sum() + target_class.sum()
+        # Calculates the Dice coeficient, with epsilon to avoid 
+        # division by zero 
         dice = (2. * intersection + epsilon) / (union + epsilon)
+        # Appends the value of the Dice coefficient to a list
         dice_scores.append(dice.item())
+        # Appends the value of the number of voxels to a list
         voxel_counts.append(target_class.sum().item())
+        # Adds the intersection and union values to their respective 
+        # totals
         total_intersection += intersection
         total_union += union
-    
+        
+    # Calculates the slice total Dice coefficient
     total_dice = (2. * total_intersection + epsilon) / (total_union + epsilon)
     return dice_scores, voxel_counts, total_dice.item()

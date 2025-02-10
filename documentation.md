@@ -4,6 +4,7 @@
 - [Device Utilized](#device-utilized)
 - [Folder Structure](#folder-structure)
 - [pipeline.ipynb](#pipelineipynb)
+- [plot\_logs.py](#plot_logspy)
 - [README.md](#readmemd)
 - [train.py](#trainpy)
 - [visualize\_scans.py](#visualize_scanspy)
@@ -52,21 +53,39 @@ D
  ┃ ┗ requirements.txt # Contains the necessary packages for this project and their respective versions, 
  ┃                    # without including PyTorch or Tensorflow packages, which are installed manually 
  ┃                    # as described in the README.md file
+ ┣ imgs # Folder that contains the relevant images output from other functions called in this project
+ ┃ ┣ Run1_training_error.png # PNG file which contains the plots of the training and evaluation error in Run1  
+ ┃ ┗ ...
  ┣ init # Folder that contains the Python files that are used before training the networks, to prepare the data
  ┃ ┣ __init__.py # Despite not having code in it, marks the folder as a possible library and allows its use in Jupyter
  ┃ ┣ foldsSplit.py # Has functions that perform k-fold-split on the RETOUCH dataset, according to the project needs
  ┃ ┣ patchExtraction.py # Has functions extract the patches later used to train the networks
  ┃ ┗ readOCT.py # Reads and saves the OCT's B-scans so that it can be saved in the user's computer
+ ┣ logs # Folder that contains the error logs of the runs
+ ┃ ┣ Run1_training_log_epoch.csv # CSV file which saves the training and validation error in each epoch of a run
+ ┃ ┃ ...
+ ┃ ┗ Run1_training_log_batch.csv # CSV file which saves the training error in each batch of a run
+ ┣ models # Folder that contains the PyTorch file of the best models in each run
+ ┃ ┣ Run1_UNet_best_model.pth # PyTorch file of the best model in Run1, which performs multi-class fluid segmentation
+ ┃ ┃ ...
+ ┃ ┗ Run3_UNet_IRF_best_model.pth # PyTorch file of the best model in Run3, which performs binary segmentation on IRF
+ ┣ network_functions # Folder that contains the Python files that contain the functions used in training
+ ┃ ┣ __init__.py # Despite not having code in it, marks the folder as a possible library and allows its use in Jupyter
+ ┃ ┣ dataset.py # Creates the PyTorch Dataset objects that will be used in train, test, and validation of the models
+ ┃ ┗ evaluate.py # Function called to evaluate the model in each epoch
  ┣ networks # Folder that contains the Python files that contain the CNNs used in this project
  ┃ ┣ __init__.py # Despite not having code in it, marks the folder as a possible library and allows its use in Jupyter
- ┃ ┣ loss.py # Contains the loss functions that will be used to train the models
+ ┃ ┣ loss.py # Contains the loss functions that will be used to train and evaluate the models
  ┃ ┗ unet.py # U-Net model in PyTorch
  ┣ splits # Will contain all the train-test splits
+ ┃ ┣ generation_test_splits.csv # Contains the index of the volumes that will be used in the testing of the generative models
+ ┃ ┣ generation_train_splits.csv # Contains the index of the volumes that will be used in the training of the generative models
  ┃ ┣ segmentation_test_splits.csv # Contains the index of the volumes that will be used in the testing of the segmentation models
  ┃ ┗ segmentation_train_splits.csv # Contains the index of the volumes that will be used in the training of the segmentation models
  ┣ .gitignore # Declares the files that must not be updated to git
  ┣ documentation.md # Project documentation
  ┣ pipeline.ipynb # Project's pipeline code
+ ┣ plot_logs.py # Plots the training and validation errors of a run
  ┣ README.md # Front page of the project, used to orient the user
  ┣ train.py # File used to train the networks
  ┗ visualize_scans.py # Simple UI for the user to visualize what is happening to the images in the processing
@@ -74,6 +93,9 @@ D
 
 ## pipeline.ipynb
 Python notebook that contains the pipeline behind this project, from reading the images and saving, to the training of the networks. When this file is run, it does not need any other changes except some paths and options selected in the beginning. 
+
+## plot_logs.py
+Python script that plots and saves the loss in the training and validation of a specific run.
 
 ## README.md
 Markdown file that introduces and orients the user in this project, introducing where to navigate to better understand it.
@@ -102,7 +124,7 @@ RETOUCH # Folder of the RETOUCH dataset
  ┣ RETOUCH-TestSet-Topcon # Folder that contains OCT images obtained using the Topcon device 
  ┃                        # that compose the testing set of the RETOUCH dataset
  ┣ RETOUCH-TrainingSet-Cirrus # Folder that contains OCT images obtained using the Cirrus device 
- ┃                            # that compose the training set of the RETOUCH dataset
+ ┃ ┃                          # that compose the training set of the RETOUCH dataset
  ┃ ┣ TRAIN001
  ┣ ┃ ...
  ┃ ┗ TRAIN024
