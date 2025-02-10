@@ -39,7 +39,6 @@ def train_model (
         n_neg, 
         pos, 
         neg,
-        val_percent,
         amp,
         patience,
         fluid=None,
@@ -86,9 +85,6 @@ def train_model (
             the ROI in the ROI mask
         neg (int): indicates what is the value that does not 
             represent the ROI in the ROI mask
-        val_percent (float): decimal value that represents the 
-            percentage of the training set that will be used in 
-            the model validation
         amp (bool): bool that indicates whether automatic mixed
             precision is going to be used or not
         patience (int): number of epochs where the validation 
@@ -214,12 +210,14 @@ def train_model (
     # the second fold must be removed from the list of training volumes 
     if tuning:
         if fold_test == 1:
+            # Assigns new value to fold test
+            fold_test = 2
             # Reads the CSV file that contains the test splits for segmentation
             df_test = read_csv("splits/segmentation_test_splits.csv")
             # Iterates through the volumes selected to train and removes those
             # that present in the second fold of testing, which will now be used 
             # as evaluation for the new hyperparameters 
-            fold_column_test = f"Fold2_Volumes"
+            fold_column_test = f"Fold{fold_test}_Volumes"
             test_volumes = df_test[fold_column_test].dropna().to_list()
             initial_train_volumes = [x for x in initial_train_volumes if x not in test_volumes]        
         else:
@@ -228,32 +226,12 @@ def train_model (
             print("To tune the hyperparameters, please indicate the first \
                   fold as test set. The second fold will be used to test.")
 
-    # Converts the list from float to int
-    initial_train_volumes = [int(x) for x in initial_train_volumes]
-
-    # Gets the number of validation volumes and the number 
-    # of training volumes that will be used
-    val_size = int(len(initial_train_volumes) * val_percent)
-    train_size = len(initial_train_volumes) - val_size
-
-    # Declares the used seed to promote reproducibility
-    seed(0)
-
-    # Gets the list of the train and validation volumes that will be used
-    train_volumes_list = list(choice(initial_train_volumes, train_size, replace=False))
-    val_volumes_list = [x for x in initial_train_volumes if x not in train_volumes_list] 
-
-    # Creates the Dataset object, but is just used to get the 
-    # number of slices used, not taking into account the dropped 
-    # patches
-    train_dataset = TrainDataset(train_volumes_list, model_name, fluid)
-    val_dataset = ValidationDataset(val_volumes_list, model_name, fluid)
-
-    # Gets the number of images 
-    # in the train and validation dataset
-    n_train = len(train_dataset)
-    n_val = len(val_dataset)
-
+    # Removes from the train volumes those that will 
+    # be used for validation
+    val_fold = f"Fold{fold_test + 1}_Volumes"
+    val_volumes = df_test[val_fold].dropna().tolist()
+    train_volumes = [x for x in initial_train_volumes if x not in val_volumes]
+    
     # Registers the information that will be logged
     logging.info(f"""Starting training:
         Epochs:          {epochs}
@@ -303,8 +281,8 @@ def train_model (
     experiment = wandb.init(project="U-Net", resume="allow", anonymous="must")
     # Indicates what configurations are going to be saved in the run
     experiment.config.update(
-         dict(epochs=epochs, batch_size=batch_size, learning_rate=learning_rate,
-             val_percent=val_percent, amp=amp)
+         dict(epochs=epochs, batch_size=batch_size, 
+              learning_rate=learning_rate, amp=amp)
     )
 
     # Creates two CSV log file for the run, one for the training 
@@ -338,25 +316,25 @@ def train_model (
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 
                         pos=pos, neg=neg, 
-                        volumes=train_volumes_list)            
+                        volumes=train_volumes)            
             
             extractPatches(IMAGES_PATH, 
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 
                         pos=pos, neg=neg, 
-                        volumes=val_volumes_list)
+                        volumes=val_volumes)
         else:
             extractPatches25D(IMAGES_PATH, 
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 
                         pos=pos, neg=neg, 
-                        volumes=train_volumes_list)            
+                        volumes=train_volumes)            
             
             extractPatches25D(IMAGES_PATH, 
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 
                         pos=pos, neg=neg, 
-                        volumes=val_volumes_list)
+                        volumes=val_volumes)
         
         # Stops timing the patch extraction and prints it
         end = time()
@@ -366,16 +344,16 @@ def train_model (
         # Starts timing the patch dropping
         begin = time()
         # Randomly drops patches of slices that do not have retinal fluid
-        dropPatches(prob=0.75, volumes_list=train_volumes_list, model=model_name)
-        dropPatches(prob=0.75, volumes_list=val_volumes_list, model=model_name)
+        dropPatches(prob=0.75, volumes_list=train_volumes, model=model_name)
+        dropPatches(prob=0.75, volumes_list=val_volumes, model=model_name)
         # Stops timing the patch extraction and prints it
         end = time()
         print(f"Patch dropping took {end - begin} seconds.")
         
         # Creates the train and validation Dataset objects
         # The validation dataset does not apply transformations
-        train_set = TrainDataset(train_volumes_list, model_name)
-        val_set = ValidationDataset(val_volumes_list, model_name)
+        train_set = TrainDataset(train_volumes, model_name)
+        val_set = ValidationDataset(val_volumes, model_name)
 
         n_train = len(train_set)
         n_val = len(val_set)
@@ -637,7 +615,6 @@ if __name__ == "__main__":
         n_neg=0, 
         pos=1, 
         neg=0,
-        val_percent=0.2,
         amp=True,
         patience=10
     )
