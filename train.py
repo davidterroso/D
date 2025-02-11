@@ -5,6 +5,7 @@ import wandb
 from os import cpu_count, makedirs
 from os.path import exists
 from pandas import read_csv
+from shutil import rmtree
 from time import time
 from torch import optim
 from torch.nn.functional import one_hot, softmax
@@ -323,24 +324,66 @@ def train_model (
         # but only for the volumes that will be used 
         # in training
         if model_name != "2.5D":
+            save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\slices\\"
+            save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\masks\\"
+            save_patches_rois_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\roi\\"
+
+            # In case the folder to save the images does not exist, it is created
+            if not (exists(save_patches_path_uint8) 
+                    and exists(save_patches_masks_path_uint8) 
+                    and exists(save_patches_rois_path_uint8)):
+                makedirs(save_patches_path_uint8)
+                makedirs(save_patches_masks_path_uint8)
+                makedirs(save_patches_rois_path_uint8)
+            else:
+                rmtree(save_patches_path_uint8)
+                makedirs(save_patches_path_uint8)
+                rmtree(save_patches_masks_path_uint8)
+                makedirs(save_patches_masks_path_uint8)
+                rmtree(save_patches_rois_path_uint8)
+                makedirs(save_patches_rois_path_uint8)
+
+            print("Extracting Training Patches")
             extract_patches(IMAGES_PATH, 
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 
                         pos=pos, neg=neg, 
-                        volumes=train_volumes)            
-            
+                        volumes=train_volumes) 
+                       
+            print("Extracting Validation Patches")
             extract_patches(IMAGES_PATH, 
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 
                         pos=pos, neg=neg, 
                         volumes=val_volumes)
         else:
+            save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\slices\\"
+            save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\masks\\"
+            save_patches_rois_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\roi\\"
+
+            # In case the folder to save the images does not exist, it is created
+            if not (exists(save_patches_path_uint8) 
+                    and exists(save_patches_masks_path_uint8) 
+                    and exists(save_patches_rois_path_uint8)):
+                makedirs(save_patches_path_uint8)
+                makedirs(save_patches_masks_path_uint8)
+                makedirs(save_patches_rois_path_uint8)
+            else:
+                rmtree(save_patches_path_uint8)
+                makedirs(save_patches_path_uint8)
+                rmtree(save_patches_masks_path_uint8)
+                makedirs(save_patches_masks_path_uint8)
+                rmtree(save_patches_rois_path_uint8)
+                makedirs(save_patches_rois_path_uint8)
+
+            print("Extracting Training Patches")
             extract_patches_25D(IMAGES_PATH, 
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 
                         pos=pos, neg=neg, 
                         volumes=train_volumes)            
             
+            print("Extracting Validation Patches")
             extract_patches_25D(IMAGES_PATH, 
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 

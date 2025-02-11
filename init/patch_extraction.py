@@ -262,21 +262,6 @@ def extract_patches(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=No
     save_patches_masks_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\masks\\"
     save_patches_rois_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\roi\\"
 
-    # In case the folder to save the images does not exist, it is created
-    if not (exists(save_patches_path_uint8) 
-            and exists(save_patches_masks_path_uint8) 
-            and exists(save_patches_rois_path_uint8)):
-        makedirs(save_patches_path_uint8)
-        makedirs(save_patches_masks_path_uint8)
-        makedirs(save_patches_rois_path_uint8)
-    else:
-        rmtree(save_patches_path_uint8)
-        makedirs(save_patches_path_uint8)
-        rmtree(save_patches_masks_path_uint8)
-        makedirs(save_patches_masks_path_uint8)
-        rmtree(save_patches_rois_path_uint8)
-        makedirs(save_patches_rois_path_uint8)
-
     # Iterates through the saved ROI masks
     for (root, _, files) in walk(images_path):
         for slice in files:
