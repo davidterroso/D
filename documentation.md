@@ -59,9 +59,9 @@ D
  ┃ ┗ ...
  ┣ init # Folder that contains the Python files that are used before training the networks, to prepare the data
  ┃ ┣ __init__.py # Despite not having code in it, marks the folder as a possible library and allows its use in Jupyter
- ┃ ┣ foldsSplit.py # Has functions that perform k-fold-split on the RETOUCH dataset, according to the project needs
- ┃ ┣ patchExtraction.py # Has functions extract the patches later used to train the networks
- ┃ ┗ readOCT.py # Reads and saves the OCT's B-scans so that it can be saved in the user's computer
+ ┃ ┣ folds_split.py # Has functions that perform k-fold-split on the RETOUCH dataset, according to the project needs
+ ┃ ┣ patch_extraction.py # Has functions extract the patches later used to train the networks
+ ┃ ┗ read_oct.py # Reads and saves the OCT's B-scans so that it can be saved in the user's computer
  ┣ logs # Folder that contains the error logs of the runs
  ┃ ┣ Run1_training_log_epoch.csv # CSV file which saves the training and validation error in each epoch of a run
  ┃ ┃ ...
@@ -115,7 +115,7 @@ In this file, the functions that train the implemented neural networks are prese
 File that, when ran, shows an UI that allows the user to select B-scans from the volumes in the training set of the RETOUCH dataset to visualize, showcasing the unaltered slice, the fluid masks, the entropy mask, and the ROI mask. 
 
 ## RETOUCH Folder Structure
-Explains the folder structure of the RETOUCH dataset in order to compliment the code used in [foldsSplit.py](./init/foldsSplit.py) and [readOCT.py](./init/readOCT.py), allowing for better understanding and visualization.
+Explains the folder structure of the RETOUCH dataset in order to compliment the code used in [folds_split.py](./init/folds_split.py) and [read_oct.py](./init/read_oct.py), allowing for better understanding and visualization.
 
 ```bash
 RETOUCH # Folder of the RETOUCH dataset

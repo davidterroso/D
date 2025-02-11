@@ -10,7 +10,7 @@ from torch import optim
 from torch.nn.functional import one_hot, softmax
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from init.patchExtraction import extractPatches, extractPatches25D
+from init.patch_extraction import extract_patches, extract_patches_25D
 from network_functions.dataset import TrainDataset, ValidationDataset, dropPatches
 from network_functions.evaluate import evaluate
 from networks.unet25D import TennakoonUNet
@@ -312,25 +312,25 @@ def train_model (
         # but only for the volumes that will be used 
         # in training
         if model_name != "2.5D":
-            extractPatches(IMAGES_PATH, 
+            extract_patches(IMAGES_PATH, 
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 
                         pos=pos, neg=neg, 
                         volumes=train_volumes)            
             
-            extractPatches(IMAGES_PATH, 
+            extract_patches(IMAGES_PATH, 
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 
                         pos=pos, neg=neg, 
                         volumes=val_volumes)
         else:
-            extractPatches25D(IMAGES_PATH, 
+            extract_patches_25D(IMAGES_PATH, 
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 
                         pos=pos, neg=neg, 
                         volumes=train_volumes)            
             
-            extractPatches25D(IMAGES_PATH, 
+            extract_patches_25D(IMAGES_PATH, 
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 
                         pos=pos, neg=neg, 

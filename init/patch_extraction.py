@@ -9,13 +9,13 @@ from skimage.morphology import disk, binary_closing
 from skimage.filters.rank import entropy
 from skimage.transform import resize
 from tqdm import tqdm
-from .readOCT import int32_to_uint8
+from .read_oct import int32_to_uint8
 
 # Declares the multiplication factor to obtain the correct patch height 
 # for each device, identified by the height of the image
 SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
 
-def createROIMask(slice, mask, threshold, save_location, save_location_to_view):
+def create_roi_mask(slice, mask, threshold, save_location, save_location_to_view):
     """
     Creates and saves the ROI mask
 
@@ -56,7 +56,7 @@ def createROIMask(slice, mask, threshold, save_location, save_location_to_view):
     slice_to_view = Image.fromarray(slice_to_view, mode='L')
     slice_to_view.save(save_location_to_view)
 
-def extractROIMasks(oct_path, folder_path, threshold):
+def extract_roi_masks(oct_path, folder_path, threshold):
     """
     Responsible for iterating through the folders and extracting the ROI patches
 
@@ -112,7 +112,7 @@ def extractROIMasks(oct_path, folder_path, threshold):
                         save_name = save_folder_int8 + vendor + "_" + volume_name + "_" + str(slice_num).zfill(3) + ".tiff"
                         save_name_to_view = save_folder_uint8 + vendor + "_" + volume_name + "_" + str(slice_num).zfill(3) + ".tiff"
 
-                        createROIMask(OCT_slice, OCT_slice_mask, threshold, save_location=save_name, save_location_to_view=save_name_to_view)
+                        create_roi_mask(OCT_slice, OCT_slice_mask, threshold, save_location=save_name, save_location_to_view=save_name_to_view)
 
                         slice_num += 1
                         slice_path = volume_path + "_" + str(slice_num).zfill(3) + ".tiff"
@@ -124,7 +124,7 @@ def extractROIMasks(oct_path, folder_path, threshold):
     print("All ROI masks have been extracted.")
     print("EOF.")
 
-def extractPatchCenters_(roi_mask, patch_shape, npos, pos, neg):
+def extract_patch_centers_(roi_mask, patch_shape, npos, pos, neg):
     """
     Extract positive patch centers from the ROI mask, inspired by multiple
     functions in nutsml.imageutil
@@ -173,7 +173,7 @@ def extractPatchCenters_(roi_mask, patch_shape, npos, pos, neg):
     possible_centers = np.hstack((possible_centers, labels))
     return possible_centers
 
-def extractPatchCenters(roi_mask, patch_shape, npos, pos, neg):
+def extract_patch_centers(roi_mask, patch_shape, npos, pos, neg):
     """
     Extracts the center of the patches from the B-scan and the 
     respective ROI mask
@@ -237,7 +237,7 @@ def extractPatchCenters(roi_mask, patch_shape, npos, pos, neg):
 
     return c_hold
 
-def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=None):
+def extract_patches(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=None):
     """
     Extract the patches from the OCT scans
 
@@ -297,15 +297,15 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=Non
                 img_height = slice.shape[0]
                 npshape = (int(patch_shape[0] * SHAPE_MULT[img_height]), patch_shape[1])
                 # Extracts positive patch centers through two different functions
-                patch_centers = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos-int(float(n_pos)*.2), pos=pos, neg=neg)
-                patch_centers_ = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=int(float(n_pos)*.2), pos=pos, neg=neg)
+                patch_centers = extract_patch_centers(roi_mask=roi, patch_shape=npshape, npos=n_pos-int(float(n_pos)*.2), pos=pos, neg=neg)
+                patch_centers_ = extract_patch_centers_(roi_mask=roi, patch_shape=npshape, npos=int(float(n_pos)*.2), pos=pos, neg=neg)
                 # Appends the second patch centers to the first
                 for r, c, l in patch_centers_:
                     patch_centers.append([r, c, l])
 
                 # Extracts negative patch centers
                 if n_neg > 0:
-                    negative_patch_centers = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=n_neg, pos=neg, neg=pos)
+                    negative_patch_centers = extract_patch_centers_(roi_mask=roi, patch_shape=npshape, npos=n_neg, pos=neg, neg=pos)
                     for r, c, l in negative_patch_centers:
                         # Appends the negative patch centers to the others
                         patch_centers.append([r, c, l])
@@ -361,7 +361,7 @@ def extractPatches(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=Non
                     roi_uint8 = Image.fromarray(tmp_roi)
                     roi_uint8.save(roi_patch_name_uint8)
 
-def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=None):
+def extract_patches_25D(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=None):
     """
     Extract the subvolumes of patches from the OCT scans
 
@@ -459,15 +459,15 @@ def extractPatches25D(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=
                 img_height = slice.shape[0]
                 npshape = (int(patch_shape[0] * SHAPE_MULT[img_height]), patch_shape[1])
                 # Extracts positive patch centers through two different functions
-                patch_centers = extractPatchCenters(roi_mask=roi, patch_shape=npshape, npos=n_pos-int(float(n_pos)*.2), pos=pos, neg=neg)
-                patch_centers_ = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=int(float(n_pos)*.2), pos=pos, neg=neg)
+                patch_centers = extract_patch_centers(roi_mask=roi, patch_shape=npshape, npos=n_pos-int(float(n_pos)*.2), pos=pos, neg=neg)
+                patch_centers_ = extract_patch_centers_(roi_mask=roi, patch_shape=npshape, npos=int(float(n_pos)*.2), pos=pos, neg=neg)
                 # Appends the second patch centers to the first
                 for r, c, l in patch_centers_:
                     patch_centers.append([r, c, l])
 
                 # Extracts negative patch centers
                 if n_neg > 0:
-                    negative_patch_centers = extractPatchCenters_(roi_mask=roi, patch_shape=npshape, npos=n_neg, pos=neg, neg=pos)
+                    negative_patch_centers = extract_patch_centers_(roi_mask=roi, patch_shape=npshape, npos=n_neg, pos=neg, neg=pos)
                     for r, c, l in negative_patch_centers:
                         # Appends the negative patch centers to the others
                         patch_centers.append([r, c, l])
