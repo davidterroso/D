@@ -1,9 +1,9 @@
+import csv
 import logging
 import torch
 import wandb
-from csv import writer
-from numpy.random import choice, seed
-from os import cpu_count
+from os import cpu_count, makedirs
+from os.path import exists
 from pandas import read_csv
 from time import time
 from torch import optim
@@ -290,14 +290,25 @@ def train_model (
     # loss per epoch 
     csv_epoch_filename = f"logs\{run_name}_training_log_epoch.csv"
     csv_batch_filename = f"logs\{run_name}_training_log_batch.csv"
-    with open(csv_epoch_filename, mode="w", newline="") as file:
-        writer = writer(file)
-        writer.writerow(["Epoch", "Epoch Training Loss", "Epoch Validation Loss"])
-    
-    with open(csv_batch_filename, mode="w", newline="") as file:
-        writer = writer(file)
-        writer.writerow(["Epoch", "Batch", "Batch Training Loss"])
 
+    # Creates the folder logs in case 
+    # they do not exist yet
+    makedirs("logs", exist_ok=True)
+
+    # In case the files desired to write the logs do not exist yet,
+    # they are created
+    if not (exists(csv_epoch_filename) and exists(csv_batch_filename)):
+        with open(csv_epoch_filename, mode="w", newline="") as file:
+            # Creates the log file for the loss per epoch, initiating the columns
+            writer = csv.writer(file)
+            writer.writerow(["Epoch", "Epoch Training Loss", "Epoch Validation Loss"])
+        
+        with open(csv_batch_filename, mode="w", newline="") as file:
+            # Creates the log file for the loss per batch, initiating the columns
+            writer = csv.writer(file)
+            writer.writerow(["Epoch", "Batch", "Batch Training Loss"])
+
+    # Initiates the global step counter
     global_step = 0
     # Iterates through every epoch
     for epoch in range(1, epochs + 1):
