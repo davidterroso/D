@@ -11,7 +11,7 @@ from torch.nn.functional import one_hot, softmax
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from init.patch_extraction import extract_patches, extract_patches_25D
-from network_functions.dataset import TrainDataset, ValidationDataset, dropPatches
+from network_functions.dataset import TrainDataset, ValidationDataset, drop_patches
 from network_functions.evaluate import evaluate
 from networks.unet25D import TennakoonUNet
 from networks.loss import multiclass_balanced_cross_entropy_loss
@@ -344,8 +344,8 @@ def train_model (
         # Starts timing the patch dropping
         begin = time()
         # Randomly drops patches of slices that do not have retinal fluid
-        dropPatches(prob=0.75, volumes_list=train_volumes, model=model_name)
-        dropPatches(prob=0.75, volumes_list=val_volumes, model=model_name)
+        drop_patches(prob=0.75, volumes_list=train_volumes, model=model_name)
+        drop_patches(prob=0.75, volumes_list=val_volumes, model=model_name)
         # Stops timing the patch extraction and prints it
         end = time()
         print(f"Patch dropping took {end - begin} seconds.")
