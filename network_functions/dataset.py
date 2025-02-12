@@ -1,12 +1,79 @@
 import torch
-from numpy import any, expand_dims, stack
+from numpy import any, expand_dims, max, min, nonzero, stack, sum, int8, uint8
 from numpy.random import random_sample
 from os import listdir, remove
 from os.path import exists
 from paths import IMAGES_PATH
 from skimage.io import imread
+from skimage.transform import resize
 from torchvision.transforms.v2 import Compose, RandomApply, RandomHorizontalFlip, RandomRotation, InterpolationMode
 from torch.utils.data import Dataset
+
+# Dictionary for the patch multiplication depending on the height of the image
+SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
+
+def handle_test_images(scan, mask, roi, patch_shape):
+    """
+    Function that handles the images shapes in test images
+
+    Args:
+        scan (NumPy array): OCT B-scan to handle
+        mask (NumPy array): fluid ground-truth mask to handle
+        roi (NumPy array): ROI mask useful to extract the 
+            center location
+        patch_shape (tuple(int, int)): shape of the output 
+            images
+
+    Return:
+        scan (NumPy array): OCT B-scan in shape (256, 512)
+        mask (NumPy array): fluid ground-truth mask in shape
+            (256, 512) 
+
+    """
+    # Gets the height of the image
+    img_height = scan.shape[0]
+
+    # Gets the new patch shape
+    new_patch_shape = (int(patch_shape[0] * SHAPE_MULT[img_height]), patch_shape[1])
+
+    # Declares the ROI mask as int8
+    roimask = roi.astype(int8)
+    # Calculates the number of rows that 
+    # have non-zero values in the ROI mask
+    nx_y = nonzero(sum(roimask, axis=1))[0]
+
+    # In case there are rows with ROI
+    if len(nx_y) > 0:
+        # Locates the lowest and highest row with ROI
+        miny, maxy = float(min(nx_y)), float(max(nx_y))
+        # Declares the row between these two rows as 
+        # the vertical center of the new patch 
+        y = int(miny + (maxy-miny)/2.)
+        # In case this new coordinate is above 
+        # the middle of the patch, the patch 
+        # vertical center is set to the middle 
+        # of the image 
+        if not y > int(float(new_patch_shape[0])/2.):
+            y = int(float(new_patch_shape[0])/2.)
+    # In case there are no rows with ROI, it 
+    # is set to the middle of the image
+    else:
+        y = int(float(new_patch_shape[0])/2)
+
+    # The patches are extracted from the scan
+    img_patch = scan[int(y - new_patch_shape[0] // 2):int(y + new_patch_shape[0] // 2), :, :]
+    mask_patch = mask[int(y - new_patch_shape[0] // 2):int(y + new_patch_shape[0] // 2), :]
+
+    # In case the image height is not 496, it is converted to the bigger and desired shape
+    if img_height != 496:
+        scan = resize(img_patch.astype(uint8), patch_shape, order=0, preserve_range=True).astype("uint8")
+        mask = resize(mask_patch.astype(uint8), patch_shape, order=0, preserve_range=True).astype("uint8")
+    else:
+        scan = img_patch
+        mask = mask_patch
+
+    # Returns the reshaped scan and mask
+    return scan, mask
 
 def drop_patches(prob, volumes_list, model):
     """
@@ -468,16 +535,20 @@ class TestDataset(Dataset):
         images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\slices\\uint8\\"        
         # Declares the path to the masks
         masks_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\masks\\int8\\"
+        # Declares the path to the ROI masks
+        rois_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\roi\\int8\\"
 
         # Indicates the path to the image depending on the index given,
         # which is associated with the image name
         slice_name = images_folder + self.images_names[index]
         mask_name = masks_folder + self.images_names[index]
+        roi_name = rois_folder + self.images_names[index]
 
         # Reads the image and the
         # fluid mask
         scan = imread(slice_name)
         mask = imread(mask_name)
+        roi = imread(roi_name)
 
         # In case the selected model is the 2.5D, also loads the previous
         # and following slice
@@ -508,6 +579,9 @@ class TestDataset(Dataset):
         # that are not the one desired to segment are set to 0
         if self.model == "UNet3":
             mask = ((mask == self.fluid).astype(int) * self.fluid)
+
+        # The shape of the test images is handled
+        scan, mask = handle_test_images(scan, mask, roi, patch_shape=(256, 512))
 
         # Z-Score Normalization / Standardization
         # Mean of 0 and SD of 1
