@@ -162,18 +162,7 @@ def train_model (
         return 0
 
     # Checks whether the option selected is possible
-    if device not in ["CPU", "GPU"]:
-        print("Unrecognized device. Possible devices:")
-        print("CPU")
-        print("GPU")
-    elif (device == "GPU"):
-        # Checks whether the GPU is available 
-        if torch.cuda.is_available():
-            device = "cuda"
-        else:
-            print("GPU is not available. CPU was selected.")
-    elif (device=="CPU"):
-        device = "cpu"
+    device = torch.device("cuda" if torch.cuda.is_available() and device == "GPU" else "cpu")
     # Saves the variable device as torch.device 
     print(f"Training on {device}.")
 
@@ -416,7 +405,7 @@ def train_model (
         # Using the Dataset object, creates a DataLoader object 
         # which will be used to train the model in batches
         begin = time()
-        loader_args = dict(batch_size=batch_size, num_workers=0, pin_memory=True)
+        loader_args = dict(batch_size=batch_size, num_workers=4, pin_memory=True)
         print("Loading training data.")
         train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
         print("Loading validation data.")
@@ -460,7 +449,7 @@ def train_model (
                 # Allows for mixed precision calculations, attributes a device to be used in 
                 # these calculations
                 # Calculates loss
-                with torch.autocast(device.type if device.type != "mps" else "cpu", enabled=amp):
+                with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=amp):
                     # Predicts the masks of the received images
                     masks_pred = model(images)
                     # Performs softmax on the predicted masks
