@@ -5,7 +5,7 @@ from os import listdir, remove
 from os.path import exists
 from paths import IMAGES_PATH
 from skimage.io import imread
-from torchvision.transforms.v2 import Compose, RandomApply, RandomHorizontalFlip, RandomRotation
+from torchvision.transforms.v2 import Compose, RandomApply, RandomHorizontalFlip, RandomRotation, InterpolationMode
 from torch.utils.data import Dataset
 
 def drop_patches(prob, volumes_list, model):
@@ -184,8 +184,10 @@ class TrainDataset(Dataset):
         # the image between 0 and 10 degrees
         # Random Horizontal Flip has a probability of 0.5 
         # flipping the image horizontally
+        # Interpolation is set to nearest to minimize errors 
+        # in categorical data
         self.transforms = Compose([
-            RandomApply([RandomRotation(degrees=[0,10])], p=0.5),
+            RandomApply([RandomRotation(degrees=[0,10], interpolation=InterpolationMode.NEAREST)], p=0.5),
             RandomHorizontalFlip(p=0.5)])
         self.fluid = fluid
 
@@ -372,6 +374,10 @@ class ValidationDataset(Dataset):
         # fluid mask
         scan = imread(slice_name)
         mask = imread(mask_name)
+
+        # Z-Score Normalization / Standardization
+        # Mean of 0 and SD of 1
+        scan = (scan - 128.) / 128.
 
         # Expands the scan dimentions to 
         # include an extra channel of value 1
