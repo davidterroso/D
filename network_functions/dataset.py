@@ -373,6 +373,14 @@ class ValidationDataset(Dataset):
         scan = imread(slice_name)
         mask = imread(mask_name)
 
+        # Expands the scan dimentions to 
+        # include an extra channel of value 1
+        # as the first channel
+        # The mask dimensions are also expanded 
+        # to match
+        if self.model != "2.5D":
+            scan = expand_dims(scan, axis=0)
+
         # In case the selected model is the 2.5D, also loads the previous
         # and following slice
         if self.model == "2.5D":

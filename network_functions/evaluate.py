@@ -33,36 +33,40 @@ def evaluate(model, dataloader, device, amp):
     # Allows for mixed precision calculations, attributes a device to be used in 
     # these calculations
     with torch.autocast(device.type if device.type != 'mps' else 'cpu', enabled=amp):
-        for batch in tqdm(dataloader, total=num_val_batches, desc='Validation round', unit='batch', leave=False):
-            # Gets the images and the masks from the dataloader
-            image, mask_true = batch['scan'], batch['mask']
+        with tqdm(dataloader, total=num_val_batches, desc='Validation round', unit='batch', leave=False) as progress_bar:
+            for batch in dataloader:
+                # Gets the images and the masks from the dataloader
+                image, mask_true = batch['scan'], batch['mask']
 
-            # Handles the images and masks according to the device, specified data type and memory format
-            image = image.to(device=device, dtype=torch.float32, memory_format=torch.channels_last)
-            mask_true = mask_true.to(device=device, dtype=torch.long)
+                # Handles the images and masks according to the device, specified data type and memory format
+                image = image.to(device=device, dtype=torch.float32, memory_format=torch.channels_last)
+                mask_true = mask_true.to(device=device, dtype=torch.long)
 
-            # Predicts the masks of the received images
-            masks_pred = model(image)
-            # Performs softmax on the predicted masks
-            # dim=1 indicates that the softmax is calculated 
-            # across the masks, since the channels is the first 
-            # dimension
-            masks_pred_prob = softmax(masks_pred, dim=1).float()
-            # Permute changes the images from channels first to channels last
-            masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
-            # Performs one hot encoding on the true masks, in channels last format
-            masks_true_one_hot = one_hot(mask_true.long(), model.n_classes).float()
+                # Predicts the masks of the received images
+                masks_pred = model(image)
+                # Performs softmax on the predicted masks
+                # dim=1 indicates that the softmax is calculated 
+                # across the masks, since the channels is the first 
+                # dimension
+                masks_pred_prob = softmax(masks_pred, dim=1).float()
+                # Permute changes the images from channels first to channels last
+                masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
+                # Performs one hot encoding on the true masks, in channels last format
+                masks_true_one_hot = one_hot(mask_true.long(), model.n_classes).float()
 
-            # Calculates the balanced loss for the background mask
-            loss = multiclass_balanced_cross_entropy_loss(
-                                y_true=masks_true_one_hot,
-                                y_pred=masks_pred_prob, 
-                                batch_size=image.shape[0], 
-                                n_classes=model.n_classes, 
-                                eps=1e-7)
+                # Calculates the balanced loss for the background mask
+                loss = multiclass_balanced_cross_entropy_loss(
+                                    y_true=masks_true_one_hot,
+                                    y_pred=masks_pred_prob, 
+                                    batch_size=image.shape[0], 
+                                    n_classes=model.n_classes, 
+                                    eps=1e-7)
 
-            # Accumulate loss
-            total_loss += loss.item()
+                # Accumulate loss
+                total_loss += loss.item()
+
+                # Updates the progress bar
+                progress_bar.update(len(batch))
 
     # Sets the model to train mode again
     model.train()

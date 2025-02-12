@@ -2,7 +2,7 @@ import csv
 import logging
 import torch
 import wandb
-from os import cpu_count, makedirs
+from os import makedirs
 from os.path import exists
 from pandas import read_csv
 from shutil import rmtree
@@ -22,7 +22,7 @@ from paths import IMAGES_PATH
 def train_model (
         run_name,
         model_name,
-        device_name,
+        device,
         epochs,
         batch_size,
         learning_rate,
@@ -51,7 +51,7 @@ def train_model (
         run_name (str): name of the run under which the best model
             will be saved
         model_name (str): name of the model desired to train
-        device_name (str): indicates whether the network will 
+        device (str): indicates whether the network will 
             be trained using the CPU or the GPU
         epochs (int): maximum number of epochs the model 
             will train for
@@ -162,21 +162,21 @@ def train_model (
         return 0
 
     # Checks whether the option selected is possible
-    if device_name not in ["CPU", "GPU"]:
+    if device not in ["CPU", "GPU"]:
         print("Unrecognized device. Possible devices:")
         print("CPU")
         print("GPU")
-    elif (device_name == "GPU"):
+    elif (device == "GPU"):
         # Checks whether the GPU is available 
         if torch.cuda.is_available():
-            device_name = "cuda"
+            device = "cuda"
         else:
             print("GPU is not available. CPU was selected.")
-    elif (device_name=="CPU"):
-        device_name = "cpu"
+    elif (device=="CPU"):
+        device = "cpu"
     # Saves the variable device as torch.device 
-    device = torch.device(device_name)
- 
+    print(f"Training on {device}.")
+
     # Gets the model selected and indicates in which device it is going 
     # to be trained on and that the memory format is channels_last: 
     # h x w x c
@@ -293,7 +293,7 @@ def train_model (
     csv_batch_filename = f"logs\{run_name}_training_log_batch.csv"
 
     # Creates the folder logs in case 
-    # they do not exist yet
+    # it does not exist yet
     makedirs("logs", exist_ok=True)
 
     # In case the files desired to write the logs do not exist yet,
@@ -323,72 +323,72 @@ def train_model (
         # new patches to train and validate the model, 
         # but only for the volumes that will be used 
         # in training
-        if model_name != "2.5D":
-            save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\slices\\"
-            save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\masks\\"
-            save_patches_rois_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\roi\\"
+        # if model_name != "2.5D":
+        #     save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\slices\\"
+        #     save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\masks\\"
+        #     save_patches_rois_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\roi\\"
 
-            # In case the folder to save the images does not exist, it is created
-            if not (exists(save_patches_path_uint8) 
-                    and exists(save_patches_masks_path_uint8) 
-                    and exists(save_patches_rois_path_uint8)):
-                makedirs(save_patches_path_uint8)
-                makedirs(save_patches_masks_path_uint8)
-                makedirs(save_patches_rois_path_uint8)
-            else:
-                rmtree(save_patches_path_uint8)
-                makedirs(save_patches_path_uint8)
-                rmtree(save_patches_masks_path_uint8)
-                makedirs(save_patches_masks_path_uint8)
-                rmtree(save_patches_rois_path_uint8)
-                makedirs(save_patches_rois_path_uint8)
+        #     # In case the folder to save the images does not exist, it is created
+        #     if not (exists(save_patches_path_uint8) 
+        #             and exists(save_patches_masks_path_uint8) 
+        #             and exists(save_patches_rois_path_uint8)):
+        #         makedirs(save_patches_path_uint8)
+        #         makedirs(save_patches_masks_path_uint8)
+        #         makedirs(save_patches_rois_path_uint8)
+        #     else:
+        #         rmtree(save_patches_path_uint8)
+        #         makedirs(save_patches_path_uint8)
+        #         rmtree(save_patches_masks_path_uint8)
+        #         makedirs(save_patches_masks_path_uint8)
+        #         rmtree(save_patches_rois_path_uint8)
+        #         makedirs(save_patches_rois_path_uint8)
 
-            print("Extracting Training Patches")
-            extract_patches(IMAGES_PATH, 
-                        patch_shape=patch_shape, 
-                        n_pos=n_pos, n_neg=n_neg, 
-                        pos=pos, neg=neg, 
-                        volumes=train_volumes) 
+        #     print("Extracting Training Patches")
+        #     extract_patches(IMAGES_PATH, 
+        #                 patch_shape=patch_shape, 
+        #                 n_pos=n_pos, n_neg=n_neg, 
+        #                 pos=pos, neg=neg, 
+        #                 volumes=train_volumes) 
                        
-            print("Extracting Validation Patches")
-            extract_patches(IMAGES_PATH, 
-                        patch_shape=patch_shape, 
-                        n_pos=n_pos, n_neg=n_neg, 
-                        pos=pos, neg=neg, 
-                        volumes=val_volumes)
-        else:
-            save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\slices\\"
-            save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\masks\\"
-            save_patches_rois_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\roi\\"
+        #     print("Extracting Validation Patches")
+        #     extract_patches(IMAGES_PATH, 
+        #                 patch_shape=patch_shape, 
+        #                 n_pos=n_pos, n_neg=n_neg, 
+        #                 pos=pos, neg=neg, 
+        #                 volumes=val_volumes)
+        # else:
+        #     save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\slices\\"
+        #     save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\masks\\"
+        #     save_patches_rois_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\roi\\"
 
-            # In case the folder to save the images does not exist, it is created
-            if not (exists(save_patches_path_uint8) 
-                    and exists(save_patches_masks_path_uint8) 
-                    and exists(save_patches_rois_path_uint8)):
-                makedirs(save_patches_path_uint8)
-                makedirs(save_patches_masks_path_uint8)
-                makedirs(save_patches_rois_path_uint8)
-            else:
-                rmtree(save_patches_path_uint8)
-                makedirs(save_patches_path_uint8)
-                rmtree(save_patches_masks_path_uint8)
-                makedirs(save_patches_masks_path_uint8)
-                rmtree(save_patches_rois_path_uint8)
-                makedirs(save_patches_rois_path_uint8)
+        #     # In case the folder to save the images does not exist, it is created
+        #     if not (exists(save_patches_path_uint8) 
+        #             and exists(save_patches_masks_path_uint8) 
+        #             and exists(save_patches_rois_path_uint8)):
+        #         makedirs(save_patches_path_uint8)
+        #         makedirs(save_patches_masks_path_uint8)
+        #         makedirs(save_patches_rois_path_uint8)
+        #     else:
+        #         rmtree(save_patches_path_uint8)
+        #         makedirs(save_patches_path_uint8)
+        #         rmtree(save_patches_masks_path_uint8)
+        #         makedirs(save_patches_masks_path_uint8)
+        #         rmtree(save_patches_rois_path_uint8)
+        #         makedirs(save_patches_rois_path_uint8)
 
-            print("Extracting Training Patches")
-            extract_patches_25D(IMAGES_PATH, 
-                        patch_shape=patch_shape, 
-                        n_pos=n_pos, n_neg=n_neg, 
-                        pos=pos, neg=neg, 
-                        volumes=train_volumes)            
+        #     print("Extracting Training Patches")
+        #     extract_patches_25D(IMAGES_PATH, 
+        #                 patch_shape=patch_shape, 
+        #                 n_pos=n_pos, n_neg=n_neg, 
+        #                 pos=pos, neg=neg, 
+        #                 volumes=train_volumes)            
             
-            print("Extracting Validation Patches")
-            extract_patches_25D(IMAGES_PATH, 
-                        patch_shape=patch_shape, 
-                        n_pos=n_pos, n_neg=n_neg, 
-                        pos=pos, neg=neg, 
-                        volumes=val_volumes)
+        #     print("Extracting Validation Patches")
+        #     extract_patches_25D(IMAGES_PATH, 
+        #                 patch_shape=patch_shape, 
+        #                 n_pos=n_pos, n_neg=n_neg, 
+        #                 pos=pos, neg=neg, 
+        #                 volumes=val_volumes)
         
         # Stops timing the patch extraction and prints it
         end = time()
@@ -398,8 +398,8 @@ def train_model (
         # Starts timing the patch dropping
         begin = time()
         # Randomly drops patches of slices that do not have retinal fluid
-        drop_patches(prob=0.75, volumes_list=train_volumes, model=model_name)
-        drop_patches(prob=0.75, volumes_list=val_volumes, model=model_name)
+        # drop_patches(prob=0.75, volumes_list=train_volumes, model=model_name)
+        # drop_patches(prob=0.75, volumes_list=val_volumes, model=model_name)
         # Stops timing the patch extraction and prints it
         end = time()
         print(f"Patch dropping took {end - begin} seconds.")
@@ -415,9 +415,14 @@ def train_model (
 
         # Using the Dataset object, creates a DataLoader object 
         # which will be used to train the model in batches
-        loader_args = dict(batch_size=batch_size, num_workers=cpu_count(), pin_memory=True)
+        begin = time()
+        loader_args = dict(batch_size=batch_size, num_workers=0, pin_memory=True)
+        print("Loading training data.")
         train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
+        print("Loading validation data.")
         val_loader = DataLoader(val_set, shuffle=True, drop_last=True, **loader_args)
+        end = time()
+        print(f"Data loading took {end - begin} seconds.")
 
         # Indicates the model that it is going to be trained
         model.train()
@@ -512,7 +517,7 @@ def train_model (
 
                 # Writes the batch loss in the CSV file
                 with open(csv_batch_filename, mode="a", newline="") as file:
-                    writer = writer(file)
+                    writer = csv.writer(file)
                     writer.writerow([epoch, batch_num, loss.item()])
 
         print(f"Validating Epoch {epoch}")
@@ -543,8 +548,12 @@ def train_model (
 
         # Writes the loss of an epoch in training and validation
         with open(csv_epoch_filename, mode="a", newline="") as file:
-            writer = writer(file)
+            writer = csv.writer(file)
             writer.writerow([epoch, epoch_loss / len(train_loader), val_loss])
+
+        # Creates the folder models in case 
+        # it does not exist yet
+        makedirs("models", exist_ok=True)
 
         # Early stopping check
         # If the validation loss is better 
@@ -651,7 +660,7 @@ if __name__ == "__main__":
     train_model(
         run_name="Run1",
         model_name="UNet",
-        device_name="GPU",
+        device="GPU",
         epochs=100,
         batch_size=32,
         learning_rate=2e-5,
