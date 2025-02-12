@@ -32,46 +32,44 @@ def evaluate(model, dataloader, device, amp):
 
     # Allows for mixed precision calculations, attributes a device to be used in 
     # these calculations
-    # TODO try disabling autocast: enabled = False
-    # with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=False):       
-    with tqdm(dataloader, total=num_val_batches, desc='Validating Epoch', unit='batch', leave=False) as progress_bar:
-        for batch in dataloader:
-            with torch.no_grad():
-                # Gets the images and the masks from the dataloader
-                images, true_masks = batch['scan'], batch['mask']
+    with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=False):       
+        with tqdm(dataloader, total=num_val_batches, desc='Validating Epoch', unit='batch', leave=False) as progress_bar:
+            for batch in dataloader:
+                    # Gets the images and the masks from the dataloader
+                    images, true_masks = batch['scan'], batch['mask']
 
-                # Handles the images and masks according to the device, specified data type and memory format
-                images = images.to(device=device, dtype=torch.float32, memory_format=torch.channels_last)
-                true_masks = true_masks.to(device=device, dtype=torch.long)
+                    # Handles the images and masks according to the device, specified data type and memory format
+                    images = images.to(device=device, dtype=torch.float32, memory_format=torch.channels_last)
+                    true_masks = true_masks.to(device=device, dtype=torch.long)
 
-                # Predicts the masks of the received images
-                masks_pred = model(images)
+                    # Predicts the masks of the received images
+                    masks_pred = model(images)
 
-                # Performs softmax on the predicted masks
-                # dim=1 indicates that the softmax is calculated 
-                # across the masks, since the channels is the first 
-                # dimension
-                masks_pred_prob = softmax(masks_pred, dim=1).float()
-                # Permute changes the images from channels first to channels last
-                masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
-                # Performs one hot encoding on the true masks, in channels last format
-                masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float()
+                    # Performs softmax on the predicted masks
+                    # dim=1 indicates that the softmax is calculated 
+                    # across the masks, since the channels is the first 
+                    # dimension
+                    masks_pred_prob = softmax(masks_pred, dim=1).float()
+                    # Permute changes the images from channels first to channels last
+                    masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
+                    # Performs one hot encoding on the true masks, in channels last format
+                    masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float()
 
-                # Calculates the balanced loss for the background mask
-                loss = multiclass_balanced_cross_entropy_loss(
-                                    y_true=masks_true_one_hot,
-                                    y_pred=masks_pred_prob, 
-                                    batch_size=images.shape[0], 
-                                    n_classes=model.n_classes, 
-                                    eps=1e-7)
+                    # Calculates the balanced loss for the background mask
+                    loss = multiclass_balanced_cross_entropy_loss(
+                                        y_true=masks_true_one_hot,
+                                        y_pred=masks_pred_prob, 
+                                        batch_size=images.shape[0], 
+                                        n_classes=model.n_classes, 
+                                        eps=1e-7)
 
-                print(loss)
+                    print(loss)
 
-                # Accumulate loss
-                total_loss += loss.item()
+                    # Accumulate loss
+                    total_loss += loss.item()
 
-                # Updates the progress bar
-                progress_bar.update(1)
+                    # Updates the progress bar
+                    progress_bar.update(1)
 
     # Sets the model to train mode again
     model.train()
