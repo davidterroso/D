@@ -148,15 +148,15 @@ def test_model (
                 vendor_results[vendor].append((dice_scores, voxel_counts))
     
     # Saves the Dice score per slice
-    slice_df = DataFrame(slice_results, columns=["slice", *[f"dice_class_{i}" for i in range(1, number_of_classes + 1)], *[f"voxels_class_{i}" for i in range(1, number_of_classes + 1)], "total_dice"])
+    slice_df = DataFrame(slice_results, columns=["slice", *[f"dice_class_{i}" for i in range(0, number_of_classes + 1)], *[f"voxels_class_{i}" for i in range(1, number_of_classes)], "total_dice"])
     slice_df.to_csv("results/slice_dice.csv", index=False)
     
     # Saves the Dice score per volume
-    volume_df = DataFrame(compute_weighted_avg(volume_results, number_of_classes), columns=["volume", *[f"dice_class_{i}" for i in range(1, number_of_classes + 1)], "total_dice"])
+    volume_df = DataFrame(compute_weighted_avg(volume_results, number_of_classes), columns=["volume", *[f"dice_class_{i}" for i in range(0, number_of_classes)], "total_dice"])
     volume_df.to_csv("results/volume_dice.csv", index=False)
     
     # Saves the Dice score per vendor
-    vendor_df = DataFrame(compute_weighted_avg(vendor_results, number_of_classes), columns=["vendor", *[f"dice_class_{i}" for i in range(1, number_of_classes + 1)], "total_dice"])
+    vendor_df = DataFrame(compute_weighted_avg(vendor_results, number_of_classes), columns=["vendor", *[f"dice_class_{i}" for i in range(0, number_of_classes)], "total_dice"])
     vendor_df.to_csv("results/vendor_dice.csv", index=False)
 
 # In case it is preferred to run 
