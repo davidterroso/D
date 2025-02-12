@@ -32,7 +32,7 @@ def evaluate(model, dataloader, device, amp):
 
     # Allows for mixed precision calculations, attributes a device to be used in 
     # these calculations
-    with torch.autocast(device_type=device.type if device.type != 'mps' else 'cpu', enabled=amp):
+    with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=amp):       
         with tqdm(dataloader, total=num_val_batches, desc='Validation round', unit='batch', leave=False) as progress_bar:
             for batch in dataloader:
                 # Gets the images and the masks from the dataloader
@@ -66,7 +66,7 @@ def evaluate(model, dataloader, device, amp):
                 total_loss += loss.item()
 
                 # Updates the progress bar
-                progress_bar.update(len(batch))
+                progress_bar.update(1)
 
     # Sets the model to train mode again
     model.train()
