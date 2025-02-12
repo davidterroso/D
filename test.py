@@ -1,7 +1,8 @@
 import torch
 from collections import defaultdict
-from torch.utils.data import DataLoader
+from os import makedirs
 from pandas import DataFrame, read_csv
+from torch.utils.data import DataLoader
 from networks.loss import dice_coefficient
 from networks.unet25D import TennakoonUNet
 from networks.unet import UNet
@@ -57,6 +58,7 @@ def test_model (
     Return:
         None
     """
+    # Gets the list of volumes used to test the model
     df = read_csv("splits/segmentation_test_splits.csv")
     test_fold_column_name = f"Fold{fold_test}_Volumes"
     test_volumes = df[test_fold_column_name].dropna().to_list()
@@ -80,8 +82,10 @@ def test_model (
         print("Model name and weights name do not match.")
         return 0
     
+    # Declares the path to the weights
     weights_path = "models\\" + weights_name 
 
+    # Checks if the declared device exists
     if device_name not in ["CPU", "GPU"]:
         print("Unrecognized device. Possible devices:")
         print("CPU")
@@ -138,8 +142,8 @@ def test_model (
             for i, path in enumerate(paths):
                 # Calculates the Dice coefficient of the predicted mask
                 dice_scores, voxel_counts, total_dice = dice_coefficient(preds[i], batch[i], number_of_classes)
-                # Gets the information from the slice's path/name
-                folder, vendor, volume, slice_name = path.split("/")[-4:]
+                # Gets the information from the slice's name
+                vendor, volume, slice_number = path[-5:].split("_")
                 volume_name = f"{vendor}_{volume}"
                 
                 # Appends the results per slice, per volume, and per vendor
@@ -147,8 +151,12 @@ def test_model (
                 volume_results[volume_name].append((dice_scores, voxel_counts))
                 vendor_results[vendor].append((dice_scores, voxel_counts))
     
+    # Creates the folder results in case 
+    # it does not exist yet
+    makedirs("results", exist_ok=True)
+
     # Saves the Dice score per slice
-    slice_df = DataFrame(slice_results, columns=["slice", *[f"dice_class_{i}" for i in range(0, number_of_classes + 1)], *[f"voxels_class_{i}" for i in range(1, number_of_classes)], "total_dice"])
+    slice_df = DataFrame(slice_results, columns=["slice", *[f"dice_class_{i}" for i in range(0, number_of_classes)], *[f"voxels_class_{i}" for i in range(1, number_of_classes)], "total_dice"])
     slice_df.to_csv("results/slice_dice.csv", index=False)
     
     # Saves the Dice score per volume
