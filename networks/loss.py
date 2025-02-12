@@ -48,7 +48,6 @@ def multiclass_balanced_cross_entropy_loss(y_true, y_pred, batch_size, n_classes
     cross_ent = cross_ent / y_true_sum
 
     # Calculate Dice loss for the first class (index 0)
-    # You may want to extend this to all classes if needed.
     g_0 = y_true[:, :, :, 0]   # shape (B, H, W)
     p_0 = y_pred_[:, :, :, 0]   # shape (B, H, W)
 

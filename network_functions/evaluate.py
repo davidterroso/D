@@ -32,18 +32,21 @@ def evaluate(model, dataloader, device, amp):
 
     # Allows for mixed precision calculations, attributes a device to be used in 
     # these calculations
-    with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=amp):       
-        with tqdm(dataloader, total=num_val_batches, desc='Validation round', unit='batch', leave=False) as progress_bar:
-            for batch in dataloader:
+    # TODO try disabling autocast: enabled = False
+    # with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=False):       
+    with tqdm(dataloader, total=num_val_batches, desc='Validating Epoch', unit='batch', leave=False) as progress_bar:
+        for batch in dataloader:
+            with torch.no_grad():
                 # Gets the images and the masks from the dataloader
-                image, mask_true = batch['scan'], batch['mask']
+                images, true_masks = batch['scan'], batch['mask']
 
                 # Handles the images and masks according to the device, specified data type and memory format
-                image = image.to(device=device, dtype=torch.float32, memory_format=torch.channels_last)
-                mask_true = mask_true.to(device=device, dtype=torch.long)
+                images = images.to(device=device, dtype=torch.float32, memory_format=torch.channels_last)
+                true_masks = true_masks.to(device=device, dtype=torch.long)
 
                 # Predicts the masks of the received images
-                masks_pred = model(image)
+                masks_pred = model(images)
+
                 # Performs softmax on the predicted masks
                 # dim=1 indicates that the softmax is calculated 
                 # across the masks, since the channels is the first 
@@ -52,15 +55,17 @@ def evaluate(model, dataloader, device, amp):
                 # Permute changes the images from channels first to channels last
                 masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
                 # Performs one hot encoding on the true masks, in channels last format
-                masks_true_one_hot = one_hot(mask_true.long(), model.n_classes).float()
+                masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float()
 
                 # Calculates the balanced loss for the background mask
                 loss = multiclass_balanced_cross_entropy_loss(
                                     y_true=masks_true_one_hot,
                                     y_pred=masks_pred_prob, 
-                                    batch_size=image.shape[0], 
+                                    batch_size=images.shape[0], 
                                     n_classes=model.n_classes, 
                                     eps=1e-7)
+
+                print(loss)
 
                 # Accumulate loss
                 total_loss += loss.item()
