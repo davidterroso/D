@@ -320,7 +320,8 @@ def train_model (
     # val_loader = DataLoader(val_set, shuffle=True, drop_last=True, **loader_args)
     # end = time()
     # print(f"Data loading took {end - begin} seconds.")
-
+    # Initiates the best validation loss as an infinite value
+    best_val_loss = float("inf")
     # Initiates the global step counter
     global_step = 0
     # Iterates through every epoch
@@ -440,8 +441,6 @@ def train_model (
         model.train()
         # Initiates the loss of the current epoch as 0
         epoch_loss = 0
-        # Initiates the best validation loss as an infinite value
-        best_val_loss = float("inf")
         # Initiates the counter of patience
         patience_counter = 0
 
@@ -479,9 +478,9 @@ def train_model (
                     # dim=1 indicates that the softmax is calculated 
                     # across the masks, since the channels is the first 
                     # dimension
-                    masks_pred_prob = softmax(masks_pred, dim=1).float()
+                    masks_pred_prob_bchw = softmax(masks_pred, dim=1).float()
                     # Permute changes the images from channels first to channels last
-                    masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
+                    masks_pred_prob = masks_pred_prob_bchw.permute(0, 2, 3, 1)
                     # Performs one hot encoding on the true masks, in channels last format
                     masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float()
 
@@ -598,7 +597,7 @@ def train_model (
             break
 
         # Get the predictions in each voxel
-        pred_mask = masks_pred_prob.argmax(dim=1)
+        pred_mask = masks_pred_prob_bchw.argmax(dim=1)
 
         if model_name != "UNet3":
             # Get the predicted masks
