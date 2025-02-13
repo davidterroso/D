@@ -17,7 +17,8 @@ def handle_test_images(scan, mask, roi, patch_shape):
     Function that handles the images shapes in test images
 
     Args:
-        scan (NumPy array): OCT B-scan to handle
+        scan (NumPy array): OCT B-scan to handle in channels 
+            last
         mask (NumPy array): fluid ground-truth mask to handle
         roi (NumPy array): ROI mask useful to extract the 
             center location
@@ -573,7 +574,9 @@ class TestDataset(Dataset):
                 scan_after = imread(slice_name)
 
             # Creates a stack with all the slices
-            scan = stack(arrays=[scan_before, scan, scan_after], axis=0)
+            scan = stack(arrays=[scan_before, scan, scan_after], axis=-1)
+        else:
+            scan = expand_dims(scan, axis=-1)
 
         # In case the model selected is the UNet3, all the labels 
         # that are not the one desired to segment are set to 0
@@ -591,5 +594,5 @@ class TestDataset(Dataset):
         # to the keyword "scan" associates the 
         # original B-scan and to the keyword "mask" 
         # associates the fluid mask
-        sample = {"scan": scan, "mask": mask}
+        sample = {"scan": scan, "mask": mask, "image_name": self.images_names[index]}
         return sample

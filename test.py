@@ -3,6 +3,7 @@ from collections import defaultdict
 from os import makedirs
 from pandas import DataFrame, read_csv
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 from networks.loss import dice_coefficient
 from networks.unet25D import TennakoonUNet
 from networks.unet import UNet
@@ -39,6 +40,7 @@ def test_model (
         fold_test,
         model_name,
         weights_name,
+        device_name,
         number_of_channels,
         number_of_classes,
         batch_size
@@ -110,8 +112,9 @@ def test_model (
     model.eval()
 
     # Creates the TestDataset and DataLoader object with the test volumes
+    # Number of workers was set to the most optimal
     test_dataset = TestDataset(test_volumes, model_name)
-    test_dataloader = DataLoader(test_dataset, batch_size=batch_size)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=1)
     
     # Initiates the list that will 
     # store the results of the slices 
@@ -125,47 +128,69 @@ def test_model (
     # Informs that no backward propagation will be calculated 
     # because it is an inference, thus reducing memory consumption
     with torch.no_grad():
-        # Iterates through every batch and path 
-        # (that compose the batch) in the dataloader
-        for batch, paths in test_dataloader:
-            # Declares to which device 
-            # will be allocated 
-            batch = batch.to(device)
-            # Predicts the output of the batch
-            outputs = model(batch)
-            # The prediction is assumed as the value 
-            # that has a higher logit
-            preds = torch.argmax(outputs, dim=1)
-            
-            # Itereates through the paths that 
-            # compose the DataLoader object
-            for i, path in enumerate(paths):
+        # Creates a progress bar to track the progress on validation batches
+        with tqdm(test_dataloader, total=len(test_dataloader), desc='Validating Epoch', unit='batch', leave=True) as progress_bar:
+            # Iterates through every batch and path 
+            # (that compose the batch) in the dataloader
+            for batch in test_dataloader:
+                # Gets the images and the masks from the dataloader
+                images, true_masks, image_name = batch['scan'], batch['mask'], batch['image_name']
+
+                # Handles the images and masks according to the device, specified data type and memory format
+                images = images.to(device=device, dtype=torch.float32, memory_format=torch.channels_last)
+                true_masks = true_masks.to(device=device, dtype=torch.long)
+
+                # Converts the image from channels 
+                # last to channels first
+                images = images.permute(0, 3, 1, 2)
+
+                # Predicts the output of the batch
+                outputs = model(images)
+                # The prediction is assumed as the value 
+                # that has a higher logit
+                preds = torch.argmax(outputs, dim=1)
+                
                 # Calculates the Dice coefficient of the predicted mask
-                dice_scores, voxel_counts, total_dice = dice_coefficient(preds[i], batch[i], number_of_classes)
+                dice_scores, voxel_counts, total_dice = dice_coefficient(model_name, preds, true_masks, number_of_classes)
                 # Gets the information from the slice's name
-                vendor, volume, slice_number = path[-5:].split("_")
+                vendor, volume, slice_number = image_name[0][:-5].split("_")
                 volume_name = f"{vendor}_{volume}"
                 
                 # Appends the results per slice, per volume, and per vendor
-                slice_results.append([path, *dice_scores, *voxel_counts, total_dice])
+                slice_results.append([image_name[0], *dice_scores, *voxel_counts, total_dice])
                 volume_results[volume_name].append((dice_scores, voxel_counts))
                 vendor_results[vendor].append((dice_scores, voxel_counts))
-    
+
+                # Update the progress bar
+                progress_bar.update(1)
+
     # Creates the folder results in case 
     # it does not exist yet
     makedirs("results", exist_ok=True)
 
+    run_name = weights_name.split("_")[0]
+
     # Saves the Dice score per slice
-    slice_df = DataFrame(slice_results, columns=["slice", *[f"dice_class_{i}" for i in range(0, number_of_classes)], *[f"voxels_class_{i}" for i in range(1, number_of_classes)], "total_dice"])
-    slice_df.to_csv("results/slice_dice.csv", index=False)
-    
+    slice_df = DataFrame(slice_results, 
+                        columns=["slice", 
+                                *[f"dice_class_{i}" for i in range(number_of_classes + 1)], 
+                                *[f"voxels_class_{i}" for i in range(number_of_classes + 1)], 
+                                "total_dice"])
+    slice_df.to_csv(f"results/{run_name}_slice_dice.csv", index=False)
+
     # Saves the Dice score per volume
-    volume_df = DataFrame(compute_weighted_avg(volume_results, number_of_classes), columns=["volume", *[f"dice_class_{i}" for i in range(0, number_of_classes)], "total_dice"])
-    volume_df.to_csv("results/volume_dice.csv", index=False)
-    
+    volume_df = DataFrame(compute_weighted_avg(volume_results, number_of_classes), 
+                        columns=["volume", 
+                                *[f"dice_class_{i}" for i in range(0, number_of_classes)], 
+                                "total_dice"])
+    volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=False)
+
     # Saves the Dice score per vendor
-    vendor_df = DataFrame(compute_weighted_avg(vendor_results, number_of_classes), columns=["vendor", *[f"dice_class_{i}" for i in range(0, number_of_classes)], "total_dice"])
-    vendor_df.to_csv("results/vendor_dice.csv", index=False)
+    vendor_df = DataFrame(compute_weighted_avg(vendor_results, number_of_classes), 
+                        columns=["vendor", 
+                                *[f"dice_class_{i}" for i in range(0, number_of_classes)], 
+                                "total_dice"])
+    vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=False)
 
 # In case it is preferred to run 
 # directly in this file, here lays 
@@ -178,5 +203,5 @@ if __name__ == "__main__":
         number_of_channels=1,
         number_of_classes=4,
         device_name="GPU",
-        batch_size=32
+        batch_size=1
     )
