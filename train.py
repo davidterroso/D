@@ -542,7 +542,7 @@ def train_model (
                 histograms["Gradients/" + tag] = wandb.Histogram(value.grad.data.cpu())
 
         # Calculates the validation score for the model
-        val_loss = evaluate(model, val_loader, device, amp)
+        val_loss = evaluate(model_name, model, val_loader, device, amp)
         
         # In case a scheduler is used, the
         # learning rate is adjusted accordingly
@@ -672,7 +672,7 @@ def train_model (
 # an example
 if __name__ == "__main__":
     train_model(
-        run_name="Run1",
+        run_name="Run2",
         model_name="UNet",
         device="GPU",
         epochs=100,

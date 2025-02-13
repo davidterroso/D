@@ -4,11 +4,12 @@ from tqdm import tqdm
 from networks.loss import multiclass_balanced_cross_entropy_loss
 
 @torch.inference_mode()
-def evaluate(model, dataloader, device, amp):
+def evaluate(model_name, model, dataloader, device, amp):
     """
     Function used to evaluate the model
 
     Args:
+        model_name (str): name of the model used in segmentation
         model (PyTorch Module object): model that is being 
             trained
         dataloader (PyTorch DataLoader object): DataLoader 
@@ -57,6 +58,7 @@ def evaluate(model, dataloader, device, amp):
 
                     # Calculates the balanced loss for the background mask
                     loss = multiclass_balanced_cross_entropy_loss(
+                                        model_name=model_name,
                                         y_true=masks_true_one_hot,
                                         y_pred=masks_pred_prob, 
                                         batch_size=images.shape[0], 
