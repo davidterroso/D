@@ -56,7 +56,7 @@ def plot_logs(run_name):
 
     # Divides an image in three subplots 
     # aligned horizontally
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(16,8))
     fig.suptitle(f"{run_name} Losses")
 
     # Declares the information that is going 
