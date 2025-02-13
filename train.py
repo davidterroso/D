@@ -268,7 +268,8 @@ def train_model (
     # is indicated
     # "anonymous" indicates that the run will always be done anonymously, 
     # independently of whether the user is signed in or not
-    experiment = wandb.init(project="U-Net", resume="allow", anonymous="must")
+    experiment = wandb.init(project="U-Net", name=run_name, entity="davidterroso19")
+
     # Indicates what configurations are going to be saved in the run
     experiment.config.update(
          dict(epochs=epochs, batch_size=batch_size, 
@@ -518,13 +519,6 @@ def train_model (
                 # and epoch loss
                 global_step += 1
                 epoch_loss += loss.item()
-                # Logs the loss, the step, and 
-                # the epochs on the wandb
-                experiment.log({
-                    "train_loss": loss.item(),
-                    "step": global_step,
-                    "epoch": epoch
-                })
                 # Adds the loss of the batch at the end of the progress bar
                 progress_bar.set_postfix(**{"Loss (batch)": loss.item()})
 
@@ -615,16 +609,20 @@ def train_model (
             try:
                 # Logs the information in the wandb session
                 experiment.log({
+                    "Step": global_step,
                     "Learning Rate": optimizer.param_groups[0]["lr"],
                     "Validation Mean Loss": val_loss,
-                    "Images": wandb.Image(images[0].cpu()),
+                    "Images": wandb.Image(images[0].cpu() * 128 + 128), # Calculations 
+                                                                        # to revert the 
+                                                                        # standardization
                     "Masks":{
-                        "IRF True Mask": wandb.Image(irf_true_mask[0].float().cpu()),
-                        "SRF True Mask": wandb.Image(srf_true_mask[0].float().cpu()),
-                        "PED True Mask": wandb.Image(ped_true_mask[0].float().cpu()),
-                        "IRF Predicted Mask": wandb.Image(irf_predicted_mask[0].float().cpu()),
-                        "SRF Predicted Mask": wandb.Image(srf_predicted_mask[0].float().cpu()),
-                        "PED Predicted Mask": wandb.Image(ped_predicted_mask[0].float().cpu()),
+                        # Multiplied by 255 to visualize
+                        "IRF True Mask": wandb.Image(irf_true_mask[0].float().cpu() * 255),
+                        "SRF True Mask": wandb.Image(srf_true_mask[0].float().cpu() * 255),
+                        "PED True Mask": wandb.Image(ped_true_mask[0].float().cpu() * 255),
+                        "IRF Predicted Mask": wandb.Image(irf_predicted_mask[0].float().cpu() * 255),
+                        "SRF Predicted Mask": wandb.Image(srf_predicted_mask[0].float().cpu() * 255),
+                        "PED Predicted Mask": wandb.Image(ped_predicted_mask[0].float().cpu() * 255),
                     },
                     "Step": global_step,
                     "Epoch": epoch,
@@ -648,13 +646,16 @@ def train_model (
                 experiment.log({
                     "Learning Rate": optimizer.param_groups[0]["lr"],
                     "Validation Mean Loss": val_loss,
-                    "Images": wandb.Image(images[0].cpu()),
+                    "Images": wandb.Image(images[0].cpu() * 128 + 128), # Calculations 
+                                                                        # to revert the 
+                                                                        # standardization
                     "Masks":{
+                        # Multiplied by 255 to visualize
                         f"{label_to_fluids.get(fluid)} True Mask": 
-                        wandb.Image(fluid_true_mask[0].float().cpu()),
+                        wandb.Image(fluid_true_mask[0].float().cpu() * 255),
 
                         f"{label_to_fluids.get(fluid)} Predicted Mask": 
-                        wandb.Image(fluid_predicted_mask[0].float().cpu()),
+                        wandb.Image(fluid_predicted_mask[0].float().cpu() * 255),
                     },
                     "Step": global_step,
                     "Epoch": epoch,
