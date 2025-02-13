@@ -354,8 +354,8 @@ class TrainDataset(Dataset):
             mask = transformed[3]
 
         # Converts the scans back to NumPy
-        scan = scan.cpu().numpy()
-        mask = mask.cpu().numpy()
+        scan = scan.numpy()
+        mask = mask.numpy()
 
         # Declares a sample as a dictionary that 
         # to the keyword "scan" associates the 
