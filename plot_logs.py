@@ -1,5 +1,6 @@
 import csv
 import matplotlib.pyplot as plt
+from os import makedirs
 
 def plot_logs(run_name):
     """
@@ -26,13 +27,15 @@ def plot_logs(run_name):
     with open(epochs_loss_csv) as file:
         # Reads the lines in the CSV file
         lines = csv.reader(file, delimiter = ',')
+        # Skips the header
+        next(lines)
         # Iterates through the lines 
         # and appends the loss values 
         # to their respective lists
         for row in lines:
             x_epoch.append(row[0])
-            train_epoch_loss.append(row[1])
-            val_epoch_loss.append(row[2])
+            train_epoch_loss.append(float(row[1]))
+            val_epoch_loss.append(float(row[2]))
 
     # Initiates the list with the number of batches and
     # the value obtained for the loss during training 
@@ -42,16 +45,18 @@ def plot_logs(run_name):
     with open(batch_loss_csv) as file:
         # Reads the lines in the CSV file
         lines = csv.reader(file, delimiter = ',')
+        # Skips the header
+        next(lines)
         # Iterates through the lines 
         # and appends the loss values 
         # to their respective lists
         for row in lines:
-            x_batch.append(row[0])
-            train_batch_loss.append(row[1])
+            x_batch.append(float(row[0]))
+            train_batch_loss.append(float(row[1]))
 
     # Divides an image in three subplots 
     # aligned horizontally
-    fig, (ax1, ax2, ax3) = plt.subplot(1, 3)
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
     fig.suptitle(f"{run_name} Losses")
 
     # Declares the information that is going 
@@ -60,24 +65,33 @@ def plot_logs(run_name):
     # Also informs the color, the style of 
     # the line that connects the data points
     # and the marker of a data point
+    # Sets the ticks to show only every 5 
+    # or 10 values
     ax1.plot(x_epoch, train_epoch_loss, 
              color='g', linestyle='dashed', 
              marker='o')
     ax1.set_title("Train Loss/Epoch")
     ax1.set(xlabel="Epochs", ylabel="Loss")
+    ax1.set_xticks(x_epoch[::5])
 
     ax2.plot(x_epoch, val_epoch_loss, 
              color='r', linestyle='dashed', 
              marker='o')
     ax2.set_title("Validation Loss/Epoch")
     ax2.set(xlabel="Epochs", ylabel="Loss")
+    ax2.set_xticks(x_epoch[::5]) 
 
-    ax3.plot(x_batch, train_batch_loss)
-    ax3.set_title("Train Loss/Batch")
-    ax3.set(xlabel="Batches", ylabel="Loss", 
+    ax3.plot(x_batch, train_batch_loss, 
              color = 'b', linestyle = 'dashed', 
              marker = 'o')
+    ax3.set_title("Train Loss/Batch")
+    ax3.set(xlabel="Batches", ylabel="Loss")
+    ax3.set_xticks(x_batch[::10])
     
+    # Creates the imgs folder in case 
+    # it does not exist
+    makedirs("imgs", exist_ok=True)
+
     # Declares the path to save
     img_path = f"imgs\{run_name}_training_error.png"
     # Saves the image to the designated path
