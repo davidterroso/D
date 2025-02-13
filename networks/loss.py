@@ -122,11 +122,12 @@ def multiclass_balanced_cross_entropy_loss(model_name, y_true, y_pred, batch_siz
     # Returns the loss value
     return loss
 
-def dice_coefficient(prediction, target, num_classes, epsilon=1e-6):
+def dice_coefficient(model_name, prediction, target, num_classes, epsilon=1e-6):
     """
     Calculates the dice coefficient for the slices received
 
     Args:
+        model_name (str): name of the model used in segmentation
         prediction (PyTorch tensor): images predicted by the model
         target (PyTorch tensor): corresponding ground-truth
         num_classes (int): total number of possible classes
@@ -142,6 +143,21 @@ def dice_coefficient(prediction, target, num_classes, epsilon=1e-6):
         total_dice.item (float): total Dice coefficient in the 
             image 
     """
+    # In case the model is 2.5D, it needs to 
+    # crop the images to evaluate, since the 
+    # output shape is not the same as the 
+    # input shape because of the unpadded 
+    # convolutions
+    if model_name == "2.5D":
+        target_shape = list(prediction.size())
+        target_height = target_shape[1]
+        target_width = target_shape[2]
+        target = resize_with_crop_or_pad(target, target_height, target_width)
+
+    # Casts y_true as float32 to allow 
+    # higher precision calculations 
+    target = target.to(torch.float32)
+
     # Initiates the lists that contain the Dice scores 
     # and the voxel count per class in the true mask 
     dice_scores = []
