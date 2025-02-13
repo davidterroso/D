@@ -449,7 +449,7 @@ def train_model (
         # Creates a progress bar using tqdm. The limit is when all the images in training are 
         # used in that epoch, the description indicates in which epoch the training is being 
         # done, and the unit indicates the unit that is filling the bar
-        with tqdm(total=n_train, desc=f"Epoch {epoch}/{epochs}", unit="img") as progress_bar:
+        with tqdm(total=n_train, desc=f"Epoch {epoch}/{epochs}", unit="img", leave=True) as progress_bar:
             # Iterates through the 
             # batches of images
             for batch_num, batch in enumerate(train_loader):
