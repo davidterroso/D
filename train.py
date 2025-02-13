@@ -298,6 +298,29 @@ def train_model (
             writer = csv.writer(file)
             writer.writerow(["Epoch", "Batch", "Batch Training Loss"])
 
+    # Creates the train and validation Dataset objects
+    # The validation dataset does not apply transformations
+    train_set = TrainDataset(train_volumes, model_name)
+    val_set = ValidationDataset(val_volumes, model_name)
+
+    n_train = len(train_set)
+    n_val = len(val_set)
+    print(f"Train Images: {n_train} | Validation Images: {n_val}")
+
+    # Using the Dataset object, creates a DataLoader object 
+    # which will be used to train the model in batches
+    begin = time()
+    # Indicates the batch size desired, sets the number of workers to zero because 
+    # otherwise the progress occurs in the CPU instead of the GPU, and pins the memory 
+    # not allowing it to occupy too much
+    loader_args = dict(batch_size=batch_size, num_workers=0, pin_memory=True)
+    print("Loading training data.")
+    train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
+    print("Loading validation data.")
+    val_loader = DataLoader(val_set, shuffle=True, drop_last=True, **loader_args)
+    end = time()
+    print(f"Data loading took {end - begin} seconds.")
+
     # Initiates the global step counter
     global_step = 0
     # Iterates through every epoch
@@ -393,25 +416,25 @@ def train_model (
         end = time()
         print(f"Patch dropping took {end - begin} seconds.")
         
-        # Creates the train and validation Dataset objects
-        # The validation dataset does not apply transformations
-        train_set = TrainDataset(train_volumes, model_name)
-        val_set = ValidationDataset(val_volumes, model_name)
+        # # Creates the train and validation Dataset objects
+        # # The validation dataset does not apply transformations
+        # train_set = TrainDataset(train_volumes, model_name)
+        # val_set = ValidationDataset(val_volumes, model_name)
 
-        n_train = len(train_set)
-        n_val = len(val_set)
-        print(f"Train Images: {n_train} | Validation Images: {n_val}")
+        # n_train = len(train_set)
+        # n_val = len(val_set)
+        # print(f"Train Images: {n_train} | Validation Images: {n_val}")
 
-        # Using the Dataset object, creates a DataLoader object 
-        # which will be used to train the model in batches
-        begin = time()
-        loader_args = dict(batch_size=batch_size, num_workers=4, pin_memory=True)
-        print("Loading training data.")
-        train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
-        print("Loading validation data.")
-        val_loader = DataLoader(val_set, shuffle=True, drop_last=True, **loader_args)
-        end = time()
-        print(f"Data loading took {end - begin} seconds.")
+        # # Using the Dataset object, creates a DataLoader object 
+        # # which will be used to train the model in batches
+        # begin = time()
+        # loader_args = dict(batch_size=batch_size, num_workers=0, pin_memory=True)
+        # print("Loading training data.")
+        # train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
+        # print("Loading validation data.")
+        # val_loader = DataLoader(val_set, shuffle=True, drop_last=True, **loader_args)
+        # end = time()
+        # print(f"Data loading took {end - begin} seconds.")
 
         # Indicates the model that it is going to be trained
         model.train()
