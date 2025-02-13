@@ -666,6 +666,7 @@ def train_model (
             # does not save the information 
             except:
                 pass  
+    wandb.finish()
             
 # In case it is preferred to run 
 # directly in this file, here lays 
