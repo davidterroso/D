@@ -1,10 +1,57 @@
 import torch
+from torch.nn.functional import pad
 
-def multiclass_balanced_cross_entropy_loss(y_true, y_pred, batch_size, n_classes, eps=1e-7):
+def resize_with_crop_or_pad(y_true, target_height, target_width):
+    """
+    Function used to match the dimensions of the predicted 
+    image with the true image
+
+    Args:
+        y_true (PyTorch tensor): the original image
+        target_height (int): desired height of the image, 
+            extracted from the predicted image
+        target_width (int): desired width of the image, 
+            extracted from the predicted image
+    
+    Return:
+        y_true (PyTorch): original image with the shape 
+            of the predicted image
+    """
+    _, h, w, _ = y_true.shape
+
+    # Checks which image is bigger in both axis, and 
+    # if the true image is smaller, calculates the 
+    # required padding
+    pad_top = max((target_height - h) // 2, 0)
+    pad_bottom = max(target_height - h - pad_top, 0)
+    pad_left = max((target_width - w) // 2, 0)
+    pad_right = max(target_width - w - pad_left, 0)
+
+    # Checks which image is bigger in both axis, and 
+    # if the true image is bigger, calculates the 
+    # required padding
+    crop_top = max((h - target_height) // 2, 0)
+    crop_bottom = crop_top + min(h, target_height)
+    crop_left = max((w - target_width) // 2, 0)
+    crop_right = crop_left + min(w, target_width)
+
+    # Crops if the original image is bigger than the predicted
+    y_true = y_true[:, crop_top:crop_bottom, crop_left:crop_right]
+
+    # Pads if the original image is smaller than the predicted
+    y_true= pad(y_true, [pad_left, pad_top, pad_right, pad_bottom])
+
+    # Returns the image with 
+    # the correct dimensions
+    return y_true
+
+
+def multiclass_balanced_cross_entropy_loss(model_name, y_true, y_pred, batch_size, n_classes, eps=1e-7):
     """
     Loss function for the background segmentation on the network
 
     Args:
+        model_name (str): name of the model used in segmentation
         y_true (PyTorch tensor): ground-truth of the segmented 
             fluids and background        
         y_pred (PyTorch tensor): network's prediction of the 
@@ -16,6 +63,18 @@ def multiclass_balanced_cross_entropy_loss(y_true, y_pred, batch_size, n_classes
     Return:
         (float): loss of the background segmentation
     """
+    # In case the model is 2.5D, 
+    # it needs to crop the images 
+    # to evaluate, since the output 
+    # shape is not the same as the 
+    # input shape because of the 
+    # unpadded convolutions
+    if model_name == "2.5D":
+        target_shape = list(y_pred.size())
+        target_height = target_shape[1]
+        target_width = target_shape[2]
+        y_true = resize_with_crop_or_pad(y_true, target_height, target_width)
+
     # Casts y_true as float32 to allow 
     # higher precision calculations 
     y_true = y_true.to(torch.float32)

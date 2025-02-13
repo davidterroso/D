@@ -487,6 +487,7 @@ def train_model (
 
                     # Calculates the balanced loss for the background mask
                     loss = multiclass_balanced_cross_entropy_loss(
+                                        model_name=model_name,
                                         y_true=masks_true_one_hot,
                                         y_pred=masks_pred_prob, 
                                         batch_size=images.shape[0], 
