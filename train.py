@@ -430,7 +430,7 @@ def train_model (
         # Using the Dataset object, creates a DataLoader object 
         # which will be used to train the model in batches
         begin = time()
-        loader_args = dict(batch_size=batch_size, num_workers=4, pin_memory=True)
+        loader_args = dict(batch_size=batch_size, num_workers=1, pin_memory=True)
         print("Loading training data.")
         train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
         print("Loading validation data.")
