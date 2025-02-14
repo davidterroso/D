@@ -199,7 +199,7 @@ if __name__ == "__main__":
     test_model(
         fold_test=2,
         model_name="UNet",
-        weights_name="Run1_UNet_best_model.pth",
+        weights_name="Run2_UNet_best_model.pth",
         number_of_channels=1,
         number_of_classes=4,
         device_name="GPU",
