@@ -1,5 +1,6 @@
 import csv
 import matplotlib.pyplot as plt
+from numpy import linspace
 from os import makedirs
 
 def plot_logs(run_name):
@@ -15,7 +16,7 @@ def plot_logs(run_name):
     """
     # Declares the path of the epochs and batch losses
     epochs_loss_csv = f"logs\{run_name}_training_log_epoch.csv"
-    batch_loss_csv = f"logs\{run_name}_training_log_epoch.csv"
+    batch_loss_csv = f"logs\{run_name}_training_log_batch.csv"
 
     # Initiates the list with the number of epochs, 
     # the value obtained for the loss during training 
@@ -50,9 +51,9 @@ def plot_logs(run_name):
         # Iterates through the lines 
         # and appends the loss values 
         # to their respective lists
-        for row in lines:
-            x_batch.append(float(row[0]))
-            train_batch_loss.append(float(row[1]))
+        for i, row in enumerate(lines):
+            x_batch.append(i)
+            train_batch_loss.append(float(row[2]))
 
     # Divides an image in three subplots 
     # aligned horizontally
@@ -67,26 +68,31 @@ def plot_logs(run_name):
     # and the marker of a data point
     # Sets the ticks to show only every 5 
     # or 10 values
+    len_epoch = len(x_epoch) - 1
+    ticks_epoch = linspace(0, len_epoch, 10)
+    ticks_batch = linspace(0, len(x_batch), 10)
+
     ax1.plot(x_epoch, train_epoch_loss, 
              color='g', linestyle='dashed', 
              marker='o')
     ax1.set_title("Train Loss/Epoch")
     ax1.set(xlabel="Epochs", ylabel="Loss")
-    ax1.set_xticks(x_epoch[::5])
+    ax1.set_xticks(ticks_epoch)
 
     ax2.plot(x_epoch, val_epoch_loss, 
              color='r', linestyle='dashed', 
              marker='o')
     ax2.set_title("Validation Loss/Epoch")
     ax2.set(xlabel="Epochs", ylabel="Loss")
-    ax2.set_xticks(x_epoch[::5]) 
+    ax2.set_xticks(ticks_epoch) 
 
     ax3.plot(x_batch, train_batch_loss, 
              color = 'b', linestyle = 'dashed', 
              marker = 'o')
     ax3.set_title("Train Loss/Batch")
     ax3.set(xlabel="Batches", ylabel="Loss")
-    ax3.set_xticks(x_batch[::10])
+    ax3.set_xticks(ticks_batch)
+    ax3.tick_params(axis='x', labelrotation=20)
     
     # Creates the imgs folder in case 
     # it does not exist
@@ -103,4 +109,4 @@ def plot_logs(run_name):
 # In case it is needed to run manually, 
 # here is the code
 if __name__ == "__main__":
-    plot_logs(run_name="Run1")
+    plot_logs(run_name="Run2")
