@@ -1,9 +1,10 @@
+import numpy as np
 import torch
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 from collections import defaultdict
-from numpy import array, nan
 from os import makedirs
+from os.path import exists
 from pandas import DataFrame, read_csv
 from skimage.io import imread
 from torch.utils.data import DataLoader
@@ -173,9 +174,12 @@ def test_model (
     # Declares the name of the folder in which the images will be saved
     if save_images:
         # In case the folder to save exists, it is deleted and created again
-        folder_to_save = IMAGES_PATH + f"\\OCT_image\\segmentation\\predictions\\{run_name}\\"
-        rmtree(folder_to_save)
-        makedirs(folder_to_save)
+        folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}\\"
+        if exists(folder_to_save):
+            rmtree(folder_to_save)
+            makedirs(folder_to_save)
+        else:
+            makedirs(folder_to_save)
     
     # Informs that no backward propagation will be calculated 
     # because it is an inference, thus reducing memory consumption
@@ -223,9 +227,9 @@ def test_model (
                 # Saves the predicted masks and the GT, in case it is desired
                 if save_images:
                     # Declares the name under which the masks will be saved and writes the path to the original B-scan
-                    predicted_mask_name = folder_to_save + image_name[:-5] + "_predicted" + ".tiff"
-                    gt_mask_name = folder_to_save + image_name[:-5] + "_gt" + ".tiff"
-                    oct_mask_path = IMAGES_PATH + f"\\OCT_image\\segmentation\\slices\\uint8\\{image_name}\\"
+                    predicted_mask_name = folder_to_save + image_name[0][:-5] + "_predicted" + ".tiff"
+                    gt_mask_name = folder_to_save + image_name[0][:-5] + "_gt" + ".tiff"
+                    oct_mask_path = IMAGES_PATH + f"\\OCT_images\\segmentation\\slices\\uint8\\{image_name[0]}\\"
 
                     # Gets the original OCT B-scan
                     oct_image = imread(oct_mask_path)
@@ -233,11 +237,11 @@ def test_model (
                     # Converts each voxel classified as background to 
                     # NaN so that it will not appear in the overlaying
                     # mask
-                    preds = array(preds)
-                    preds[preds == 0] = nan
+                    preds = np.array(preds.cpu().numpy(), dtype=np.float32)[0]
+                    preds[preds == 0] = np.nan
 
-                    true_masks = array(true_masks)
-                    true_masks[true_masks == 0] = nan
+                    true_masks = np.array(true_masks.cpu().numpy(), dtype=np.float32)[0]
+                    true_masks[true_masks == 0] = np.nan
 
                     # The voxels classified in "IRF", "SRF", and "PED" 
                     # will be converted to color as Red for IRF, green 
@@ -255,13 +259,13 @@ def test_model (
                     plt.figure()
                     plt.imshow(oct_image, cmap=plt.cm.gray)
                     plt.imshow(preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
-                    plt.imsave(predicted_mask_name)
+                    plt.savefig(predicted_mask_name)
 
                     # Saves the OCT scan with an overlay of the ground-truth masks
                     plt.figure()
                     plt.imshow(oct_image, cmap=plt.cm.gray)
                     plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
-                    plt.imsave(gt_mask_name)
+                    plt.savefig(gt_mask_name)
 
                 # Update the progress bar
                 progress_bar.update(1)
@@ -304,7 +308,7 @@ if __name__ == "__main__":
     test_model(
         fold_test=2,
         model_name="UNet",
-        weights_name="Run3_UNet_best_model.pth",
+        weights_name="Run1_UNet_best_model.pth",
         number_of_channels=1,
         number_of_classes=4,
         device_name="GPU",
