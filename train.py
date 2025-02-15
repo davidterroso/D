@@ -412,8 +412,8 @@ def train_model (
         # Starts timing the patch dropping
         begin = time()
         # Randomly drops patches of slices that do not have retinal fluid
-        # drop_patches(prob=0.75, volumes_list=train_volumes, model=model_name)
-        # drop_patches(prob=0.75, volumes_list=val_volumes, model=model_name)
+        drop_patches(prob=0.75, volumes_list=train_volumes, model=model_name)
+        drop_patches(prob=0.75, volumes_list=val_volumes, model=model_name)
         # Stops timing the patch extraction and prints it
         end = time()
         print(f"Patch dropping took {end - begin} seconds.")
