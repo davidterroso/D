@@ -9,6 +9,36 @@ from networks.unet25D import TennakoonUNet
 from networks.unet import UNet
 from network_functions.dataset import TestDataset
 
+def compute_class_avg(overall_results, num_classes):
+    """
+    Function used for the calculation of the Dice coefficient per class
+    depending on the voxels per class
+
+    Args:
+        overall_results (dict(int: float, int: int)): dictionary that 
+            contains the class value as a key to access the Dice coefficient 
+            and the total number of voxels in the class
+        num_classes (int): number of classes used
+
+    Return:
+        class_avg (List[float]): list that contains the Dice coefficient 
+            values for each class
+    """
+    # Initiates the list that 
+    # will contain the Dice 
+    # value for each class
+    class_avg = []
+    # Iterates through the 
+    # different classes
+    for i in range(num_classes):
+        # Gets the sum of the Dices in the said class 
+        # and the respective total number of voxels
+        dice_sum, voxel_count_sum = overall_results[i]
+        # Appends the weighted average to the list
+        class_avg.append(dice_sum / voxel_count_sum if voxel_count_sum > 0 else 0)
+    # Returns the list with the averages per class
+    return class_avg
+
 def compute_weighted_avg(group_results, number_of_classes):
     """
     Used to compute the weighted average of the Dice coefficient, 
@@ -16,9 +46,9 @@ def compute_weighted_avg(group_results, number_of_classes):
 
     Args:
         group_results (List[List[str, List[float], List[int], float]]):
-            stores the name of the slices, the Dice coefficient per slice per
-            class, the number of voxels per slice per class and the Dice 
-            coefficient of the slice
+            stores the name of the slices, the Dice coefficient per slice 
+            per class, the number of voxels per slice per class and the 
+            Dice coefficient of the slice
         number_of_classes (int): number of classes segmented 
     """
     # Initiates the list that will 
@@ -120,10 +150,11 @@ def test_model (
     # store the results of the slices 
     slice_results = []
     # Initiates the dictionary that will 
-    # store the results per volume and 
-    # per vendor
+    # store the results per volume, per 
+    # vendor, and per class
     volume_results = defaultdict(list)
     vendor_results = defaultdict(list)
+    class_results = defaultdict(lambda: [0, 0])
     
     # Informs that no backward propagation will be calculated 
     # because it is an inference, thus reducing memory consumption
@@ -161,6 +192,13 @@ def test_model (
                 volume_results[volume_name].append((dice_scores, voxel_counts))
                 vendor_results[vendor].append((dice_scores, voxel_counts))
 
+                # Aggregate Dice scores per class across all images
+                for i in range(number_of_classes):
+                    # Calculates the weighted sum
+                    class_results[i][0] += dice_scores[i] * voxel_counts[i]
+                    # Calculates the total voxel count
+                    class_results[i][1] += voxel_counts[i]
+
                 # Update the progress bar
                 progress_bar.update(1)
 
@@ -191,6 +229,11 @@ def test_model (
                                 *[f"dice_class_{i}" for i in range(0, number_of_classes)], 
                                 "total_dice"])
     vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=False)
+
+    # Saves the Dice score per class
+    class_avg_dice = compute_class_avg(class_results, number_of_classes)
+    class_df = DataFrame([class_avg_dice], columns=[f"dice_class_{i}" for i in range(number_of_classes)])
+    class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
 
 # In case it is preferred to run 
 # directly in this file, here lays 
