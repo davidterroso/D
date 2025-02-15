@@ -109,4 +109,4 @@ def plot_logs(run_name):
 # In case it is needed to run manually, 
 # here is the code
 if __name__ == "__main__":
-    plot_logs(run_name="Run2")
+    plot_logs(run_name="Run3")

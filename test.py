@@ -129,7 +129,7 @@ def test_model (
     # because it is an inference, thus reducing memory consumption
     with torch.no_grad():
         # Creates a progress bar to track the progress on validation batches
-        with tqdm(test_dataloader, total=len(test_dataloader), desc='Validating Epoch', unit='batch', leave=True) as progress_bar:
+        with tqdm(test_dataloader, total=len(test_dataloader), desc='Validating Model', unit='batch', leave=True) as progress_bar:
             # Iterates through every batch and path 
             # (that compose the batch) in the dataloader
             for batch in test_dataloader:
@@ -199,7 +199,7 @@ if __name__ == "__main__":
     test_model(
         fold_test=2,
         model_name="UNet",
-        weights_name="Run2_UNet_best_model.pth",
+        weights_name="Run3_UNet_best_model.pth",
         number_of_channels=1,
         number_of_classes=4,
         device_name="GPU",
