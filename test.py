@@ -155,7 +155,7 @@ def test_model (
     # Creates the TestDataset and DataLoader object with the test volumes
     # Number of workers was set to the most optimal
     test_dataset = TestDataset(test_volumes, model_name)
-    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=1)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=2)
     
     # Initiates the list that will 
     # store the results of the slices 
@@ -229,10 +229,9 @@ def test_model (
                     # Declares the name under which the masks will be saved and writes the path to the original B-scan
                     predicted_mask_name = folder_to_save + image_name[0][:-5] + "_predicted" + ".tiff"
                     gt_mask_name = folder_to_save + image_name[0][:-5] + "_gt" + ".tiff"
-                    oct_mask_path = IMAGES_PATH + f"\\OCT_images\\segmentation\\slices\\uint8\\{image_name[0]}\\"
 
                     # Gets the original OCT B-scan
-                    oct_image = imread(oct_mask_path)
+                    oct_image = images[0].cpu().numpy()[0]
 
                     # Converts each voxel classified as background to 
                     # NaN so that it will not appear in the overlaying
@@ -259,13 +258,15 @@ def test_model (
                     plt.figure()
                     plt.imshow(oct_image, cmap=plt.cm.gray)
                     plt.imshow(preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
-                    plt.savefig(predicted_mask_name)
+                    plt.axis("off")
+                    plt.savefig(predicted_mask_name, bbox_inches='tight', pad_inches=0)
 
                     # Saves the OCT scan with an overlay of the ground-truth masks
                     plt.figure()
                     plt.imshow(oct_image, cmap=plt.cm.gray)
                     plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
-                    plt.savefig(gt_mask_name)
+                    plt.axis("off")
+                    plt.savefig(gt_mask_name, bbox_inches='tight', pad_inches=0)
 
                 # Update the progress bar
                 progress_bar.update(1)
