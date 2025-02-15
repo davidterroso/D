@@ -1,13 +1,19 @@
 import torch
+import matplotlib.colors as mcolors
+import matplotlib.pyplot as plt
 from collections import defaultdict
+from numpy import array, nan
 from os import makedirs
 from pandas import DataFrame, read_csv
+from skimage.io import imread
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+from shutil import rmtree
 from networks.loss import dice_coefficient
 from networks.unet25D import TennakoonUNet
 from networks.unet import UNet
 from network_functions.dataset import TestDataset
+from paths import IMAGES_PATH
 
 def compute_class_avg(overall_results, num_classes):
     """
@@ -73,7 +79,8 @@ def test_model (
         device_name,
         number_of_channels,
         number_of_classes,
-        batch_size
+        batch_size,
+        save_images
     ):
     """
     Function used to test the trained models
@@ -87,6 +94,9 @@ def test_model (
         device_name (str): indicates whether the network will 
             be trained using the CPU or the GPU
         batch_size (int): size of the batch used in testing
+        save_images (bool): flag that indicates whether the 
+            predicted images will be saved or not
+
     Return:
         None
     """
@@ -155,12 +165,23 @@ def test_model (
     volume_results = defaultdict(list)
     vendor_results = defaultdict(list)
     class_results = defaultdict(lambda: [0, 0])
+
+    # Extracts the name of the run from 
+    # the name of the weights file
+    run_name = weights_name.split("_")[0]
+
+    # Declares the name of the folder in which the images will be saved
+    if save_images:
+        # In case the folder to save exists, it is deleted and created again
+        folder_to_save = IMAGES_PATH + f"\\OCT_image\\segmentation\\predictions\\{run_name}\\"
+        rmtree(folder_to_save)
+        makedirs(folder_to_save)
     
     # Informs that no backward propagation will be calculated 
     # because it is an inference, thus reducing memory consumption
     with torch.no_grad():
-        # Creates a progress bar to track the progress on validation batches
-        with tqdm(test_dataloader, total=len(test_dataloader), desc='Validating Model', unit='batch', leave=True) as progress_bar:
+        # Creates a progress bar to track the progress on testing images
+        with tqdm(test_dataloader, total=len(test_dataloader), desc='Testing Model', unit='img', leave=True) as progress_bar:
             # Iterates through every batch and path 
             # (that compose the batch) in the dataloader
             for batch in test_dataloader:
@@ -199,14 +220,55 @@ def test_model (
                     # Calculates the total voxel count
                     class_results[i][1] += voxel_counts[i]
 
+                # Saves the predicted masks and the GT, in case it is desired
+                if save_images:
+                    # Declares the name under which the masks will be saved and writes the path to the original B-scan
+                    predicted_mask_name = folder_to_save + image_name[:-5] + "_predicted" + ".tiff"
+                    gt_mask_name = folder_to_save + image_name[:-5] + "_gt" + ".tiff"
+                    oct_mask_path = IMAGES_PATH + f"\\OCT_image\\segmentation\\slices\\uint8\\{image_name}\\"
+
+                    # Gets the original OCT B-scan
+                    oct_image = imread(oct_mask_path)
+
+                    # Converts each voxel classified as background to 
+                    # NaN so that it will not appear in the overlaying
+                    # mask
+                    preds = array(preds)
+                    preds[preds == 0] = nan
+
+                    true_masks = array(true_masks)
+                    true_masks[true_masks == 0] = nan
+
+                    # The voxels classified in "IRF", "SRF", and "PED" 
+                    # will be converted to color as Red for IRF, green 
+                    # for SRF, and blue for PED
+                    fluid_colors = ["red", "green", "blue"]
+                    fluid_cmap = mcolors.ListedColormap(fluid_colors)
+                    # Declares in which part of the color bar each
+                    # label is going to be placed
+                    fluid_bounds = [1, 2, 3, 4]
+                    # Normalizes the color map according to the 
+                    # bounds declared.
+                    fluid_norm = mcolors.BoundaryNorm(fluid_bounds, fluid_cmap.N)
+
+                    # Saves the OCT scan with an overlay of the predicted masks
+                    plt.figure()
+                    plt.imshow(oct_image, cmap=plt.cm.gray)
+                    plt.imshow(preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+                    plt.imsave(predicted_mask_name)
+
+                    # Saves the OCT scan with an overlay of the ground-truth masks
+                    plt.figure()
+                    plt.imshow(oct_image, cmap=plt.cm.gray)
+                    plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+                    plt.imsave(gt_mask_name)
+
                 # Update the progress bar
                 progress_bar.update(1)
 
     # Creates the folder results in case 
     # it does not exist yet
     makedirs("results", exist_ok=True)
-
-    run_name = weights_name.split("_")[0]
 
     # Saves the Dice score per slice
     slice_df = DataFrame(slice_results, 
@@ -246,5 +308,6 @@ if __name__ == "__main__":
         number_of_channels=1,
         number_of_classes=4,
         device_name="GPU",
-        batch_size=1
+        batch_size=1,
+        save_images=True
     )
