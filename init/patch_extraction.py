@@ -1,5 +1,4 @@
 import numpy as np
-import time
 from os import walk, makedirs
 from os.path import isfile, exists
 from shutil import rmtree
@@ -9,6 +8,7 @@ from skimage.util import img_as_float
 from skimage.morphology import disk, binary_closing
 from skimage.filters.rank import entropy
 from skimage.transform import resize
+from time import time
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 from network_functions.dataset import TrainDataset, ValidationDataset, drop_patches
