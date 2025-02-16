@@ -3,7 +3,7 @@ import numpy as np
 from os import walk, makedirs
 from os.path import exists
 from PIL import Image
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from shutil import rmtree
 
 def int32_to_uint8(image):

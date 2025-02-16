@@ -1,6 +1,6 @@
 import torch
 from torch.nn.functional import one_hot, softmax
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from networks.loss import multiclass_balanced_cross_entropy_loss
 
 @torch.inference_mode()

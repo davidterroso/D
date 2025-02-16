@@ -8,7 +8,7 @@ from os.path import exists
 from pandas import DataFrame, read_csv
 from skimage.io import imread
 from torch.utils.data import DataLoader
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from shutil import rmtree
 from networks.loss import dice_coefficient
 from networks.unet25D import TennakoonUNet
@@ -268,6 +268,10 @@ def test_model (
                     plt.axis("off")
                     plt.savefig(gt_mask_name, bbox_inches='tight', pad_inches=0)
 
+                    # Closes the figure
+                    plt.clf()
+                    plt.close("all")
+
                 # Update the progress bar
                 progress_bar.update(1)
 
@@ -309,7 +313,7 @@ if __name__ == "__main__":
     test_model(
         fold_test=2,
         model_name="UNet",
-        weights_name="Run1_UNet_best_model.pth",
+        weights_name="Run4_UNet_best_model.pth",
         number_of_channels=1,
         number_of_classes=4,
         device_name="GPU",

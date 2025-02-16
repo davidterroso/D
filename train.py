@@ -10,7 +10,7 @@ from time import time
 from torch import optim
 from torch.nn.functional import one_hot, softmax
 from torch.utils.data import DataLoader
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from init.patch_extraction import extract_patches, extract_patches_25D
 from network_functions.dataset import TrainDataset, ValidationDataset, drop_patches
 from network_functions.evaluate import evaluate
@@ -672,7 +672,7 @@ def train_model (
 # an example
 if __name__ == "__main__":
     train_model(
-        run_name="Run3",
+        run_name="Run1",
         model_name="UNet",
         device="GPU",
         epochs=100,
