@@ -34,7 +34,7 @@ def evaluate(model_name, model, dataloader, device, amp):
     # Allows for mixed precision calculations, attributes a device to be used in 
     # these calculations
     with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=amp):       
-        with tqdm(dataloader, total=num_val_batches, desc='Validating Epoch', unit='batch', leave=True) as progress_bar:
+        with tqdm(dataloader, total=num_val_batches, desc='Validating Epoch', unit='batch', leave=True, position=0) as progress_bar:
             for batch in dataloader:
                     # Gets the images and the masks from the dataloader
                     images, true_masks = batch['scan'], batch['mask']

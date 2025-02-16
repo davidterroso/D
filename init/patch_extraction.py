@@ -241,7 +241,7 @@ def extract_roi_masks(oct_path, folder_path, threshold):
 
     # Initiates a progress bar that tracks the volumes from which the ROI 
     # mask has been extracted
-    with tqdm(total=70, desc=f"ROI_Extraction", unit="vol") as progress_bar:
+    with tqdm(total=70, desc=f"ROI_Extraction", unit="vol", leave=True, position=0) as progress_bar:
         # Initiates the variable that will 
         # count the progress of volumes 
         # whose slices are being extracted

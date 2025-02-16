@@ -137,7 +137,7 @@ def save_segmentation_oct_as_tiff(oct_folder, save_folder):
                         img, _, _ = load_oct_image(file_path)
                         num_slices = img.shape[0]
                         # Creates a progress bar
-                        with tqdm(total=num_slices, desc=f"{vendor_volume}: Volume {volume}/70", unit="img") as progress_bar:
+                        with tqdm(total=num_slices, desc=f"{vendor_volume}: Volume {volume}/70", unit="img", leave=True, position=0) as progress_bar:
                             # Iterates through the slices to save each slice with 
                             # an identifiable name, both in uint8 for visualization
                             # and int32 for better future manipulation 
@@ -220,7 +220,7 @@ def save_segmentation_mask_as_tiff(oct_folder, save_folder):
                         img, _, _ = load_oct_mask(file_path)
                         num_slices = img.shape[0]
                         # Creates a progress bar
-                        with tqdm(total=num_slices, desc=f"{vendor_volume}: Volume {volume}/70", unit="img") as progress_bar:
+                        with tqdm(total=num_slices, desc=f"{vendor_volume}: Volume {volume}/70", unit="img", leave=True, position=0) as progress_bar:
                             # Iterates through the slices to save each slice with an identifiable name,
                             # both in uint8 for visualization and int32 for better future manipulation 
                             for slice_num in range(num_slices):
@@ -299,7 +299,7 @@ def save_generation_oct_as_tiff(oct_folder, save_folder):
                         img, _, _ = load_oct_image(file_path)
                         num_slices = img.shape[0]
                         # Creates a progress bar
-                        with tqdm(total=num_slices, desc=f"{vendor_volume}: Volume {volume}/112", unit="img") as progress_bar:
+                        with tqdm(total=num_slices, desc=f"{vendor_volume}: Volume {volume}/112", unit="img", leave=True, position=0) as progress_bar:
                             # Iterates through the slices to save each slice with an identifiable name, both in uint8 for visualization
                             # and int32 for better future manipulation          
                             for slice_num in range(num_slices):

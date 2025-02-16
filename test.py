@@ -185,7 +185,7 @@ def test_model (
     # because it is an inference, thus reducing memory consumption
     with torch.no_grad():
         # Creates a progress bar to track the progress on testing images
-        with tqdm(test_dataloader, total=len(test_dataloader), desc='Testing Model', unit='img', leave=True) as progress_bar:
+        with tqdm(test_dataloader, total=len(test_dataloader), desc='Testing Model', unit='img', leave=True, position=0) as progress_bar:
             # Iterates through every batch and path 
             # (that compose the batch) in the dataloader
             for batch in test_dataloader:
