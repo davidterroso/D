@@ -577,7 +577,7 @@ def train_model (
 # an example
 if __name__ == "__main__":
     train_model(
-        run_name="Run1",
+        run_name="Run5",
         model_name="UNet",
         device="GPU",
         epochs=100,
@@ -598,8 +598,8 @@ if __name__ == "__main__":
         pos=1, 
         neg=0,
         amp=True,
-        assyncronous_patch_extraction=False,
-        patch_dropping=True,
+        assyncronous_patch_extraction=True,
+        patch_dropping=False,
         drop_prob=0.75,
         patience=100
     )
