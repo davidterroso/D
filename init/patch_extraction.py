@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from os import walk, makedirs
 from os.path import isfile, exists
 from shutil import rmtree
@@ -8,12 +9,167 @@ from skimage.util import img_as_float
 from skimage.morphology import disk, binary_closing
 from skimage.filters.rank import entropy
 from skimage.transform import resize
+from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
+from network_functions.dataset import TrainDataset, ValidationDataset, drop_patches
+from paths import IMAGES_PATH
 from .read_oct import int32_to_uint8
 
 # Declares the multiplication factor to obtain the correct patch height 
 # for each device, identified by the height of the image
 SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
+
+def extract_patches_wrapper(model_name, patch_shape, n_pos,
+                             n_neg, pos, neg, train_volumes, 
+                             val_volumes, batch_size, 
+                             patch_dropping, drop_prob):
+    """
+    Args:
+        model_name (str): name of the model desired to train
+        patch_shape (tuple): indicates what is the shape of 
+            the patches that will be extracted from the B-scans
+        n_pos (int): number of patches that will be extracted 
+            from the scan ROI
+        n_neg (int): number of patches that will be extracted 
+            from the outside of the scan ROI 
+        pos (int): indicates what is the value that represents 
+            the ROI in the ROI mask
+        neg (int): indicates what is the value that does not 
+            represent the ROI in the ROI mask
+        train_volumes (List[float]): list of OCT volumes that will 
+            be used to train the model, identified by their 
+            index, that ranges from 1 to 70            
+        val_volumes (List[int]): list of OCT volumes that will 
+            be used to validate the model, identified by their 
+            index, that ranges from 1 to 70
+        batch_size (int): size of the batch used in 
+            training
+        patch_dropping (bool): flag that indicates whether patch
+            dropping will be used or not
+        drop_prob (float): probability of a non-pathogenic patch
+            being dropped
+
+    Return:
+        train_loader (PyTorch DataLoader object): DataLoader 
+            object that contains information about how to load 
+            the images that will be used in training                
+        val_loader (PyTorch DataLoader object): DataLoader 
+            object that contains information about how to load 
+            the images that will be used in validation
+        n_train (int): number of images that will be used to train 
+            the model
+    """
+    print("Extracting patches")
+    # Starts timing the patch extraction
+    begin = time()
+
+    # Eliminates the previous patches and saves 
+    # new patches to train and validate the model, 
+    # but only for the volumes that will be used 
+    # in training
+    if model_name != "2.5D":
+        save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\slices\\"
+        save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\masks\\"
+        save_patches_rois_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\roi\\"
+
+        # In case the folder to save the images does not exist, it is created
+        if not (exists(save_patches_path_uint8) 
+                and exists(save_patches_masks_path_uint8) 
+                and exists(save_patches_rois_path_uint8)):
+            makedirs(save_patches_path_uint8)
+            makedirs(save_patches_masks_path_uint8)
+            makedirs(save_patches_rois_path_uint8)
+        else:
+            rmtree(save_patches_path_uint8)
+            makedirs(save_patches_path_uint8)
+            rmtree(save_patches_masks_path_uint8)
+            makedirs(save_patches_masks_path_uint8)
+            rmtree(save_patches_rois_path_uint8)
+            makedirs(save_patches_rois_path_uint8)
+
+        print("Extracting Training Patches")
+        extract_patches(IMAGES_PATH, 
+                    patch_shape=patch_shape, 
+                    n_pos=n_pos, n_neg=n_neg, 
+                    pos=pos, neg=neg, 
+                    volumes=train_volumes) 
+                
+        print("Extracting Validation Patches")
+        extract_patches(IMAGES_PATH, 
+                    patch_shape=patch_shape, 
+                    n_pos=n_pos, n_neg=n_neg, 
+                    pos=pos, neg=neg, 
+                    volumes=val_volumes)
+    else:
+        save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\slices\\"
+        save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\masks\\"
+        save_patches_rois_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\roi\\"
+
+        # In case the folder to save the images does not exist, it is created
+        if not (exists(save_patches_path_uint8) 
+                and exists(save_patches_masks_path_uint8) 
+                and exists(save_patches_rois_path_uint8)):
+            makedirs(save_patches_path_uint8)
+            makedirs(save_patches_masks_path_uint8)
+            makedirs(save_patches_rois_path_uint8)
+        else:
+            rmtree(save_patches_path_uint8)
+            makedirs(save_patches_path_uint8)
+            rmtree(save_patches_masks_path_uint8)
+            makedirs(save_patches_masks_path_uint8)
+            rmtree(save_patches_rois_path_uint8)
+            makedirs(save_patches_rois_path_uint8)
+
+        print("Extracting Training Patches")
+        extract_patches_25D(IMAGES_PATH, 
+                    patch_shape=patch_shape, 
+                    n_pos=n_pos, n_neg=n_neg, 
+                    pos=pos, neg=neg, 
+                    volumes=train_volumes)            
+        
+        print("Extracting Validation Patches")
+        extract_patches_25D(IMAGES_PATH, 
+                    patch_shape=patch_shape, 
+                    n_pos=n_pos, n_neg=n_neg, 
+                    pos=pos, neg=neg, 
+                    volumes=val_volumes)
+    
+    # Stops timing the patch extraction and prints it
+    end = time()
+    print(f"Patch extraction took {end - begin} seconds.")
+
+    print("Dropping patches")
+    # Starts timing the patch dropping
+    begin = time()
+    # Randomly drops patches of slices that do not have retinal fluid
+    if patch_dropping:
+        drop_patches(prob=drop_prob, volumes_list=train_volumes, model=model_name)
+        drop_patches(prob=drop_prob, volumes_list=val_volumes, model=model_name)
+    # Stops timing the patch extraction and prints it
+    end = time()
+    print(f"Patch dropping took {end - begin} seconds.")
+    
+    # Creates the train and validation Dataset objects
+    # The validation dataset does not apply transformations
+    train_set = TrainDataset(train_volumes, model_name)
+    val_set = ValidationDataset(val_volumes, model_name)
+
+    n_train = len(train_set)
+    n_val = len(val_set)
+    print(f"Train Images: {n_train} | Validation Images: {n_val}")
+
+    # Using the Dataset object, creates a DataLoader object 
+    # which will be used to train the model in batches
+    begin = time()
+    loader_args = dict(batch_size=batch_size, num_workers=2, pin_memory=True)
+    print("Loading training data.")
+    train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
+    print("Loading validation data.")
+    val_loader = DataLoader(val_set, shuffle=True, drop_last=True, **loader_args)
+    end = time()
+    print(f"Data loading took {end - begin} seconds.")
+
+    return train_loader, val_loader, n_train
 
 def create_roi_mask(slice, mask, threshold, save_location, save_location_to_view):
     """
@@ -370,22 +526,6 @@ def extract_patches_25D(folder_path, patch_shape, n_pos, n_neg, pos, neg, volume
     save_patches_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2.5D\\slices\\"
     save_patches_masks_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2.5D\\masks\\"
     save_patches_rois_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2.5D\\roi\\"
-
-    # In case the folder to save the images 
-    # does not exist, it is created
-    if not (exists(save_patches_path_uint8) 
-            and exists(save_patches_masks_path_uint8) 
-            and exists(save_patches_rois_path_uint8)):
-        makedirs(save_patches_path_uint8)
-        makedirs(save_patches_masks_path_uint8)
-        makedirs(save_patches_rois_path_uint8)
-    else:
-        rmtree(save_patches_path_uint8)
-        makedirs(save_patches_path_uint8)
-        rmtree(save_patches_masks_path_uint8)
-        makedirs(save_patches_masks_path_uint8)
-        rmtree(save_patches_rois_path_uint8)
-        makedirs(save_patches_rois_path_uint8)
 
     # Iterates through the saved ROI masks
     for (root, _, files) in walk(images_path):

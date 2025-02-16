@@ -5,170 +5,14 @@ import wandb
 from os import makedirs
 from os.path import exists
 from pandas import read_csv
-from shutil import rmtree
-from time import time
 from torch import optim
 from torch.nn.functional import one_hot, softmax
-from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
-from init.patch_extraction import extract_patches, extract_patches_25D
-from network_functions.dataset import TrainDataset, ValidationDataset, drop_patches
+from init.patch_extraction import extract_patches_wrapper
 from network_functions.evaluate import evaluate
 from networks.unet25D import TennakoonUNet
 from networks.loss import multiclass_balanced_cross_entropy_loss
 from networks.unet import UNet
-from paths import IMAGES_PATH
-
-def extract_patches_wrapper(model_name, patch_shape, n_pos,
-                             n_neg, pos, neg, train_volumes, 
-                             val_volumes, batch_size, 
-                             patch_dropping):
-            """
-
-            Args:
-                model_name (str): name of the model desired to train
-                patch_shape (tuple): indicates what is the shape of 
-                    the patches that will be extracted from the B-scans
-                n_pos (int): number of patches that will be extracted 
-                    from the scan ROI
-                n_neg (int): number of patches that will be extracted 
-                    from the outside of the scan ROI 
-                pos (int): indicates what is the value that represents 
-                    the ROI in the ROI mask
-                neg (int): indicates what is the value that does not 
-                    represent the ROI in the ROI mask
-                train_volumes (List[float]): list of OCT volumes that will 
-                    be used to train the model, identified by their 
-                    index, that ranges from 1 to 70            
-                val_volumes (List[int]): list of OCT volumes that will 
-                    be used to validate the model, identified by their 
-                    index, that ranges from 1 to 70
-                batch_size (int): size of the batch used in 
-                    training
-                patch_dropping (bool): flag that indicates whether patch
-                    dropping will be used or not
-
-            Return:
-                train_loader (PyTorch DataLoader object): DataLoader 
-                    object that contains information about how to load 
-                    the images that will be used in training                
-                val_loader (PyTorch DataLoader object): DataLoader 
-                    object that contains information about how to load 
-                    the images that will be used in validation
-                n_train (int): number of images that will be used to train 
-                    the model
-            """
-            print("Extracting patches")
-            # Starts timing the patch extraction
-            begin = time()
-
-            # Eliminates the previous patches and saves 
-            # new patches to train and validate the model, 
-            # but only for the volumes that will be used 
-            # in training
-            if model_name != "2.5D":
-                save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\slices\\"
-                save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\masks\\"
-                save_patches_rois_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\roi\\"
-
-                # In case the folder to save the images does not exist, it is created
-                if not (exists(save_patches_path_uint8) 
-                        and exists(save_patches_masks_path_uint8) 
-                        and exists(save_patches_rois_path_uint8)):
-                    makedirs(save_patches_path_uint8)
-                    makedirs(save_patches_masks_path_uint8)
-                    makedirs(save_patches_rois_path_uint8)
-                else:
-                    rmtree(save_patches_path_uint8)
-                    makedirs(save_patches_path_uint8)
-                    rmtree(save_patches_masks_path_uint8)
-                    makedirs(save_patches_masks_path_uint8)
-                    rmtree(save_patches_rois_path_uint8)
-                    makedirs(save_patches_rois_path_uint8)
-
-                print("Extracting Training Patches")
-                extract_patches(IMAGES_PATH, 
-                            patch_shape=patch_shape, 
-                            n_pos=n_pos, n_neg=n_neg, 
-                            pos=pos, neg=neg, 
-                            volumes=train_volumes) 
-                        
-                print("Extracting Validation Patches")
-                extract_patches(IMAGES_PATH, 
-                            patch_shape=patch_shape, 
-                            n_pos=n_pos, n_neg=n_neg, 
-                            pos=pos, neg=neg, 
-                            volumes=val_volumes)
-            else:
-                save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\slices\\"
-                save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\masks\\"
-                save_patches_rois_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\roi\\"
-
-                # In case the folder to save the images does not exist, it is created
-                if not (exists(save_patches_path_uint8) 
-                        and exists(save_patches_masks_path_uint8) 
-                        and exists(save_patches_rois_path_uint8)):
-                    makedirs(save_patches_path_uint8)
-                    makedirs(save_patches_masks_path_uint8)
-                    makedirs(save_patches_rois_path_uint8)
-                else:
-                    rmtree(save_patches_path_uint8)
-                    makedirs(save_patches_path_uint8)
-                    rmtree(save_patches_masks_path_uint8)
-                    makedirs(save_patches_masks_path_uint8)
-                    rmtree(save_patches_rois_path_uint8)
-                    makedirs(save_patches_rois_path_uint8)
-
-                print("Extracting Training Patches")
-                extract_patches_25D(IMAGES_PATH, 
-                            patch_shape=patch_shape, 
-                            n_pos=n_pos, n_neg=n_neg, 
-                            pos=pos, neg=neg, 
-                            volumes=train_volumes)            
-                
-                print("Extracting Validation Patches")
-                extract_patches_25D(IMAGES_PATH, 
-                            patch_shape=patch_shape, 
-                            n_pos=n_pos, n_neg=n_neg, 
-                            pos=pos, neg=neg, 
-                            volumes=val_volumes)
-            
-            # Stops timing the patch extraction and prints it
-            end = time()
-            print(f"Patch extraction took {end - begin} seconds.")
-
-            print("Dropping patches")
-            # Starts timing the patch dropping
-            begin = time()
-            # Randomly drops patches of slices that do not have retinal fluid
-            if patch_dropping:
-                drop_patches(prob=0.75, volumes_list=train_volumes, model=model_name)
-                drop_patches(prob=0.75, volumes_list=val_volumes, model=model_name)
-            # Stops timing the patch extraction and prints it
-            end = time()
-            print(f"Patch dropping took {end - begin} seconds.")
-            
-            # Creates the train and validation Dataset objects
-            # The validation dataset does not apply transformations
-            train_set = TrainDataset(train_volumes, model_name)
-            val_set = ValidationDataset(val_volumes, model_name)
-
-            n_train = len(train_set)
-            n_val = len(val_set)
-            print(f"Train Images: {n_train} | Validation Images: {n_val}")
-
-            # Using the Dataset object, creates a DataLoader object 
-            # which will be used to train the model in batches
-            begin = time()
-            loader_args = dict(batch_size=batch_size, num_workers=2, pin_memory=True)
-            print("Loading training data.")
-            train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
-            print("Loading validation data.")
-            val_loader = DataLoader(val_set, shuffle=True, drop_last=True, **loader_args)
-            end = time()
-            print(f"Data loading took {end - begin} seconds.")
-
-            return train_loader, val_loader, n_train
 
 def train_model (
         run_name,
@@ -195,7 +39,8 @@ def train_model (
         patience,
         assyncronous_patch_extraction,
         patch_dropping,
-        fluid=None,
+        drop_prob,
+        fluid=None
 ):
     """
     Function that trains the deep learning models.
@@ -250,6 +95,8 @@ def train_model (
             once (assyncronous)
         patch_dropping (bool): flag that indicates whether patch
             dropping will be used or not
+        drop_prob (float): probability of a non-pathogenic patch
+            being dropped
         fluid (str): name of the fluid that is desired to segment 
             in the triple U-Net framework. Default is None because 
             it is not required in other models
@@ -465,7 +312,7 @@ def train_model (
             model_name=model_name, patch_shape=patch_shape, n_pos=n_pos, 
             n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
             val_volumes=val_volumes, batch_size=batch_size, 
-            patch_dropping=patch_dropping)
+            patch_dropping=patch_dropping, drop_prob=drop_prob)
 
     # Initiates the best validation loss as an infinite value
     best_val_loss = float("inf")
@@ -480,7 +327,7 @@ def train_model (
                 model_name=model_name, patch_shape=patch_shape, n_pos=n_pos, 
                 n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
                 val_volumes=val_volumes, batch_size=batch_size, 
-                patch_dropping=patch_dropping)
+                patch_dropping=patch_dropping, drop_prob=drop_prob)
 
         # Indicates the model that it is going to be trained
         model.train()
@@ -740,5 +587,6 @@ if __name__ == "__main__":
         amp=True,
         assyncronous_patch_extraction=False,
         patch_dropping=True,
+        drop_prob=0.75,
         patience=100
     )
