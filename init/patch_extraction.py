@@ -138,16 +138,16 @@ def extract_patches_wrapper(model_name, patch_shape, n_pos,
     end = time()
     print(f"Patch extraction took {end - begin} seconds.")
 
-    print("Dropping patches")
-    # Starts timing the patch dropping
-    begin = time()
-    # Randomly drops patches of slices that do not have retinal fluid
     if patch_dropping:
+        print("Dropping patches")
+        # Starts timing the patch dropping
+        begin = time()
+        # Randomly drops patches of slices that do not have retinal fluid
         drop_patches(prob=drop_prob, volumes_list=train_volumes, model=model_name)
         drop_patches(prob=drop_prob, volumes_list=val_volumes, model=model_name)
-    # Stops timing the patch extraction and prints it
-    end = time()
-    print(f"Patch dropping took {end - begin} seconds.")
+        # Stops timing the patch extraction and prints it
+        end = time()
+        print(f"Patch dropping took {end - begin} seconds.")
     
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations
