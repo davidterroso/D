@@ -2,7 +2,7 @@ import csv
 import logging
 import torch
 import wandb
-from os import makedirs
+from os import makedirs, remove
 from os.path import exists
 from pandas import read_csv
 from torch import optim
@@ -295,6 +295,19 @@ def train_model (
     # In case the files desired to write the logs do not exist yet,
     # they are created
     if not (exists(csv_epoch_filename) and exists(csv_batch_filename)):
+        with open(csv_epoch_filename, mode="w", newline="") as file:
+            # Creates the log file for the loss per epoch, initiating the columns
+            writer = csv.writer(file)
+            writer.writerow(["Epoch", "Epoch Training Loss", "Epoch Validation Loss"])
+        
+        with open(csv_batch_filename, mode="w", newline="") as file:
+            # Creates the log file for the loss per batch, initiating the columns
+            writer = csv.writer(file)
+            writer.writerow(["Epoch", "Batch", "Batch Training Loss"])
+    else:
+        # Deletes the files before writting them
+        remove(csv_epoch_filename)
+        remove(csv_batch_filename)
         with open(csv_epoch_filename, mode="w", newline="") as file:
             # Creates the log file for the loss per epoch, initiating the columns
             writer = csv.writer(file)
