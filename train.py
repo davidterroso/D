@@ -24,7 +24,39 @@ def extract_patches_wrapper(model_name, patch_shape, n_pos,
                              val_volumes, batch_size, 
                              patch_dropping):
             """
-            
+
+            Args:
+                model_name (str): name of the model desired to train
+                patch_shape (tuple): indicates what is the shape of 
+                    the patches that will be extracted from the B-scans
+                n_pos (int): number of patches that will be extracted 
+                    from the scan ROI
+                n_neg (int): number of patches that will be extracted 
+                    from the outside of the scan ROI 
+                pos (int): indicates what is the value that represents 
+                    the ROI in the ROI mask
+                neg (int): indicates what is the value that does not 
+                    represent the ROI in the ROI mask
+                train_volumes (List[float]): list of OCT volumes that will 
+                    be used to train the model, identified by their 
+                    index, that ranges from 1 to 70            
+                val_volumes (List[int]): list of OCT volumes that will 
+                    be used to validate the model, identified by their 
+                    index, that ranges from 1 to 70
+                batch_size (int): size of the batch used in 
+                    training
+                patch_dropping (bool): flag that indicates whether patch
+                    dropping will be used or not
+
+            Return:
+                train_loader (PyTorch DataLoader object): DataLoader 
+                    object that contains information about how to load 
+                    the images that will be used in training                
+                val_loader (PyTorch DataLoader object): DataLoader 
+                    object that contains information about how to load 
+                    the images that will be used in validation
+                n_train (int): number of images that will be used to train 
+                    the model
             """
             print("Extracting patches")
             # Starts timing the patch extraction
