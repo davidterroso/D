@@ -1,10 +1,13 @@
 import torch
+from torch.nn import Module
+from torch.utils.data import DataLoader
 from torch.nn.functional import one_hot, softmax
 from tqdm.auto import tqdm
 from networks.loss import multiclass_balanced_cross_entropy_loss
 
 @torch.inference_mode()
-def evaluate(model_name, model, dataloader, device, amp):
+def evaluate(model_name: str, model: Module, dataloader: DataLoader, 
+             device: str, amp: bool):
     """
     Function used to evaluate the model
 

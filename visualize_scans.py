@@ -10,7 +10,7 @@ from skimage.util import img_as_float
 from skimage.morphology import disk
 from paths import IMAGES_PATH
 
-def showImages(original_slice, mask, roi):
+def showImages(original_slice: np.ndarray, mask: np.ndarray, roi: np.ndarray):
     """
     Function that displays the images in the TkInter interface
 

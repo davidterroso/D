@@ -1,8 +1,8 @@
-from torch import cat
+from torch import cat, Tensor
 from torch.nn import Module, Sequential, Conv2d, ConvTranspose2d, ReLU, MaxPool2d, Dropout2d, BatchNorm2d, Upsample
 
 class InitialConvolution(Module):
-    def __init__(self, in_channels, out_channels):
+    def __init__(self, in_channels: int, out_channels: int):
         """
         Initiates the InitialConvolution object, which is composed of one 
         two-dimensional convolution with kernel size seven followed by a 
@@ -31,7 +31,7 @@ class InitialConvolution(Module):
             ReLU(inplace=True)
         )
     
-    def forward(self, x):
+    def forward(self, x: Tensor):
         """
         Forward step of the first convolution, 
         returning its result when applied to an input x
@@ -56,7 +56,7 @@ class DoubleConvolution(Module):
     This module consists of a convolution followed by a rectified 
     linear unit (ReLU) two times.
     """
-    def __init__(self, in_channels, out_channels):
+    def __init__(self, in_channels: int, out_channels: int):
         """
         Initiates the DoubleConvolution object, which is composed of two 
         sets of one two-dimensional convolution followed by a ReLU function
@@ -90,7 +90,7 @@ class DoubleConvolution(Module):
             ReLU(inplace=True)
         )
 
-    def forward(self, x):
+    def forward(self, x: Tensor):
         """
         Forward step of the double convolution, 
         returning its result when applied to an input x
@@ -115,7 +115,7 @@ class DownSample(Module):
     This module consists of a double convolution
     followed by a max pooling operation.
     """
-    def __init__(self, in_channels, out_channels):
+    def __init__(self, in_channels: int, out_channels: int):
         """
         Initiates the DownSample object, which is composed of a double convolution 
         and a Max Pooling operation
@@ -136,7 +136,7 @@ class DownSample(Module):
         # Shape (output): ((h - 2 - 2) / 2 x (w - 2 - 2) / 2 x out_channels)
         self.pool = MaxPool2d(kernel_size=2, stride=2)
 
-    def forward(self, x):
+    def forward(self, x: Tensor):
         """
         Forward step of the downsample, returning
         its result when applied to an input x
@@ -172,7 +172,7 @@ class UpSample(Module):
     followed by a concatenation with a cropped
     output of a previous double convolution.
     """
-    def __init__(self, in_channels, out_channels, p):
+    def __init__(self, in_channels: int, out_channels: int, p: float):
         """
         Initiates the UpSample object, which is composed of a de-convolution 
         and a concatenation with a cropped output of a previous double convolution.
@@ -199,7 +199,7 @@ class UpSample(Module):
         # Shape (output): ((2*h - 2 - 2) x (2*w - 2 - 2) x in_channels // 2)
         self.conv = DoubleConvolution(in_channels, out_channels)
 
-    def forward(self, x1, x2):
+    def forward(self, x1: Tensor, x2: Tensor):
         """
         Forward step of the upsample, returning
         its result when applied to an input x1,
@@ -238,7 +238,7 @@ class TennakoonUNet(Module):
     module of the network implemented by 
     Tennakoon et al., 2018. 
     """
-    def __init__(self, in_channels, num_classes):
+    def __init__(self, in_channels: int, num_classes: int):
         """
         Initiates the TennakoonUNet object, indicating the input and output size of the
         multiple models and the order in which they are presented
@@ -290,7 +290,7 @@ class TennakoonUNet(Module):
             ReLU(inplace=True),
         )
 
-    def forward(self, x):
+    def forward(self, x: Tensor):
         """
         Forward step of the U-Net, returning
         the segmented masks.

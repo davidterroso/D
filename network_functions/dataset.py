@@ -1,5 +1,5 @@
 import torch
-from numpy import any, expand_dims, max, min, nonzero, stack, sum, int8, uint8
+from numpy import any, expand_dims, max, min, nonzero, stack, sum, int8, uint8, ndarray
 from numpy.random import random_sample
 from os import listdir, remove
 from os.path import exists
@@ -12,7 +12,7 @@ from torch.utils.data import Dataset
 # Dictionary for the patch multiplication depending on the height of the image
 SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
 
-def handle_test_images(scan, mask, roi, patch_shape):
+def handle_test_images(scan: ndarray, mask: ndarray, roi: ndarray, patch_shape: tuple):
     """
     Function that handles the images shapes in test images
 
@@ -76,7 +76,7 @@ def handle_test_images(scan, mask, roi, patch_shape):
     # Returns the reshaped scan and mask
     return scan, mask
 
-def drop_patches(prob, volumes_list, model):
+def drop_patches(prob: float, volumes_list: list, model: str):
     """
     Randomly drops a percentage of extracted patches whose slice does
     not present fluid
@@ -158,7 +158,7 @@ def drop_patches(prob, volumes_list, model):
                                 remove(str(patches_mask_path + patch[:-5] + "_after.tiff"))
                                 remove(str(patches_roi_path + patch[:-5] + "_after.tiff"))
 
-def patches_from_volumes(volumes_list, model):
+def patches_from_volumes(volumes_list: list, model: str):
     """
     Used to return the list of all the patches that are available to 
     train the network, knowing which volumes will be used
@@ -191,7 +191,7 @@ def patches_from_volumes(volumes_list, model):
             patches_list.append(patch_name)
     return patches_list
 
-def images_from_volumes(volumes_list):
+def images_from_volumes(volumes_list: list):
     """
     Used to return the list of all the images that are available to 
     test the network, knowing which volumes will be used
@@ -225,7 +225,7 @@ class TrainDataset(Dataset):
     with the available images, thus simplifying the training
     process
     """
-    def __init__(self, train_volumes, model, fluid=None):
+    def __init__(self, train_volumes: list, model: str, fluid: int=None):
         """
         Initiates the Dataset object and gets the possible 
         names of the patches that will be used in training
@@ -371,7 +371,7 @@ class ValidationDataset(Dataset):
     with the available images, thus simplifying the training
     process
     """
-    def __init__(self, val_volumes, model, fluid=None):
+    def __init__(self, val_volumes: list, model: str, fluid: int=None):
         """
         Initiates the Dataset object and gets the possible 
         names of the patches that will be used in validation
@@ -476,7 +476,7 @@ class TestDataset(Dataset):
     with the available images, thus simplifying the training
     process
     """
-    def __init__(self, test_volumes, model, fluid=None):
+    def __init__(self, test_volumes: list, model: str, fluid: int=None):
         """
         Initiates the Dataset object and gets the possible 
         names of the images that will be used in testing

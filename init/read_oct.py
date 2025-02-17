@@ -6,7 +6,7 @@ from PIL import Image
 from tqdm.auto import tqdm
 from shutil import rmtree
 
-def int32_to_uint8(image):
+def int32_to_uint8(image: np.ndarray):
     """
     Receives an int32 NumPy array that represents an image and transforms it into 
     uint8 so that it can be visualized by the PC image viewer
@@ -19,7 +19,7 @@ def int32_to_uint8(image):
 
 # Inspired by utils/mhd.py file from Tennakoon et al., 2018 work
 
-def load_oct_image(filename):
+def load_oct_image(filename: str):
     """
     Loads an .mhd OCT volume using Simple ITK library
     Args:
@@ -56,7 +56,7 @@ def load_oct_image(filename):
 
     return oct_scan_ret, origin, spacing
 
-def load_oct_mask(filename):
+def load_oct_mask(filename: str):
     """
     Loads an .mhd OCT fluid mask volume using Simple ITK library
     Args:
@@ -82,7 +82,7 @@ def load_oct_mask(filename):
 
     return oct_scan, origin, spacing
 
-def save_segmentation_oct_as_tiff(oct_folder, save_folder):
+def save_segmentation_oct_as_tiff(oct_folder: str, save_folder: str):
     """
     Reads all the OCT volumes used in the segmentation task
     and saves them as a tiff image in int32 (that will be used) 
@@ -163,7 +163,7 @@ def save_segmentation_oct_as_tiff(oct_folder, save_folder):
     print("All slices have been extracted.")
     print("EOF.")
 
-def save_segmentation_mask_as_tiff(oct_folder, save_folder):
+def save_segmentation_mask_as_tiff(oct_folder: str, save_folder: str):
     """
     Reads all the OCT segmentation masks used in the segmentation 
     task and saves them as a tiff image in int8 (that will be 
@@ -245,7 +245,7 @@ def save_segmentation_mask_as_tiff(oct_folder, save_folder):
     print("All masks have been extracted.")
     print("EOF.")
 
-def save_generation_oct_as_tiff(oct_folder, save_folder):
+def save_generation_oct_as_tiff(oct_folder: str, save_folder: str):
     """
     Reads all the OCT volumes used in the generation task
     and saves them as a tiff image in int32 (that will be used) 

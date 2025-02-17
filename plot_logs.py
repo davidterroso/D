@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from numpy import linspace
 from os import makedirs
 
-def plot_logs(run_name):
+def plot_logs(run_name: str):
     """
     Plots the logged runs of the training files, as loss per 
     batch and per epoch, in training and validation

@@ -16,7 +16,7 @@ from networks.unet import UNet
 from network_functions.dataset import TestDataset
 from paths import IMAGES_PATH
 
-def compute_class_avg(overall_results, num_classes):
+def compute_class_avg(overall_results: dict, num_classes: int):
     """
     Function used for the calculation of the Dice coefficient per class
     depending on the voxels per class
@@ -46,7 +46,7 @@ def compute_class_avg(overall_results, num_classes):
     # Returns the list with the averages per class
     return class_avg
 
-def compute_weighted_avg(group_results, number_of_classes):
+def compute_weighted_avg(group_results: list, number_of_classes: int):
     """
     Used to compute the weighted average of the Dice coefficient, 
     according to the number of voxels identified per class
@@ -74,14 +74,14 @@ def compute_weighted_avg(group_results, number_of_classes):
     return avg_results
 
 def test_model (
-        fold_test,
-        model_name,
-        weights_name,
-        device_name,
-        number_of_channels,
-        number_of_classes,
-        batch_size,
-        save_images
+        fold_test: int,
+        model_name: str,
+        weights_name: str,
+        device_name: str,
+        number_of_channels: int,
+        number_of_classes: int,
+        batch_size: int,
+        save_images: bool
     ):
     """
     Function used to test the trained models
@@ -94,6 +94,10 @@ def test_model (
         weights_name (str): path to the model's weight file
         device_name (str): indicates whether the network will 
             be trained using the CPU or the GPU
+        number_of_channels (int): number of channels the 
+            input will present
+        number_of_classes (int): number of classes the 
+            output will present
         batch_size (int): size of the batch used in testing
         save_images (bool): flag that indicates whether the 
             predicted images will be saved or not

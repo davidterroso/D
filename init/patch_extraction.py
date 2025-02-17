@@ -19,10 +19,10 @@ from .read_oct import int32_to_uint8
 # for each device, identified by the height of the image
 SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
 
-def extract_patches_wrapper(model_name, patch_shape, n_pos,
-                             n_neg, pos, neg, train_volumes, 
-                             val_volumes, batch_size, 
-                             patch_dropping, drop_prob):
+def extract_patches_wrapper(model_name: str, patch_shape: tuple, n_pos: int,
+                             n_neg: int, pos: int, neg: int, train_volumes: list, 
+                             val_volumes: list, batch_size: int, 
+                             patch_dropping: bool, drop_prob: float):
     """
     Args:
         model_name (str): name of the model desired to train
@@ -171,7 +171,8 @@ def extract_patches_wrapper(model_name, patch_shape, n_pos,
 
     return train_loader, val_loader, n_train
 
-def create_roi_mask(slice, mask, threshold, save_location, save_location_to_view):
+def create_roi_mask(slice: np.ndarray, mask: np.ndarray, threshold: float, 
+                    save_location: str, save_location_to_view: str):
     """
     Creates and saves the ROI mask
 
@@ -212,7 +213,7 @@ def create_roi_mask(slice, mask, threshold, save_location, save_location_to_view
     slice_to_view = Image.fromarray(slice_to_view, mode='L')
     slice_to_view.save(save_location_to_view)
 
-def extract_roi_masks(oct_path, folder_path, threshold):
+def extract_roi_masks(oct_path: str, folder_path: str, threshold: float):
     """
     Responsible for iterating through the folders and extracting the ROI patches
 
@@ -280,7 +281,8 @@ def extract_roi_masks(oct_path, folder_path, threshold):
     print("All ROI masks have been extracted.")
     print("EOF.")
 
-def extract_patch_centers_(roi_mask, patch_shape, npos, pos, neg):
+def extract_patch_centers_(roi_mask: np.ndarray, patch_shape: tuple, 
+                           npos: int, pos: int, neg: int):
     """
     Extract positive patch centers from the ROI mask, inspired by multiple
     functions in nutsml.imageutil
@@ -329,7 +331,8 @@ def extract_patch_centers_(roi_mask, patch_shape, npos, pos, neg):
     possible_centers = np.hstack((possible_centers, labels))
     return possible_centers
 
-def extract_patch_centers(roi_mask, patch_shape, npos, pos, neg):
+def extract_patch_centers(roi_mask: np.ndarray, patch_shape: tuple, 
+                          npos: int, pos: int, neg: int):
     """
     Extracts the center of the patches from the B-scan and the 
     respective ROI mask
@@ -393,7 +396,8 @@ def extract_patch_centers(roi_mask, patch_shape, npos, pos, neg):
 
     return c_hold
 
-def extract_patches(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=None):
+def extract_patches(folder_path: str, patch_shape: tuple, n_pos: int, 
+                    n_neg: int, pos: int, neg: int, volumes: list=None):
     """
     Extract the patches from the OCT scans
 
@@ -502,7 +506,8 @@ def extract_patches(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=No
                     roi_uint8 = Image.fromarray(tmp_roi)
                     roi_uint8.save(roi_patch_name_uint8)
 
-def extract_patches_25D(folder_path, patch_shape, n_pos, n_neg, pos, neg, volumes=None):
+def extract_patches_25D(folder_path: str, patch_shape: tuple, n_pos: int, 
+                        n_neg: int, pos: int, neg: int, volumes: list=None):
     """
     Extract the subvolumes of patches from the OCT scans
 

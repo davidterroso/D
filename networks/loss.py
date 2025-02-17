@@ -1,7 +1,7 @@
 import torch
 from torch.nn.functional import pad
 
-def resize_with_crop_or_pad(y_true, target_height, target_width):
+def resize_with_crop_or_pad(y_true: torch.Tensor, target_height: int, target_width: int):
     """
     Function used to match the dimensions of the predicted 
     image with the true image
@@ -46,7 +46,12 @@ def resize_with_crop_or_pad(y_true, target_height, target_width):
     return y_true
 
 
-def multiclass_balanced_cross_entropy_loss(model_name, y_true, y_pred, batch_size, n_classes, eps=1e-7):
+def multiclass_balanced_cross_entropy_loss(model_name: str, 
+                                           y_true: torch.Tensor, 
+                                           y_pred: torch.Tensor, 
+                                           batch_size: int, 
+                                           n_classes: int, 
+                                           eps: float=1e-7):
     """
     Loss function for the background segmentation on the network
 
@@ -122,7 +127,9 @@ def multiclass_balanced_cross_entropy_loss(model_name, y_true, y_pred, batch_siz
     # Returns the loss value
     return loss
 
-def dice_coefficient(model_name, prediction, target, num_classes, epsilon=1e-6):
+def dice_coefficient(model_name: str, prediction: torch.Tensor,
+                      target: torch.Tensor, num_classes: int, 
+                      epsilon: float=1e-6):
     """
     Calculates the dice coefficient for the slices received
 
