@@ -24,24 +24,6 @@ label_to_fluids = {
         3: "PED"
     }
 
-def calculate_dice(union: int, intersection: int, epsilon: float=1e-6) -> float:
-    """
-    Given the number of voxels that result from the union and intersection
-    of the GT mask with the predicted mask, calculates the Dice coefficient
-
-    Args:
-        union (int): number of voxels that result from the union of the GT 
-            and predicted masks
-        intersection (int): number of voxels that result from the intersection 
-            of the GT and predicted masks
-
-    Return:
-        dice (float): Dice coefficient of the respective voxels
-    """
-    dice = (2. * intersection + epsilon) / (union + epsilon)
-
-    return dice
-
 def test_model (
         fold_test: int,
         model_name: str,
@@ -138,7 +120,6 @@ def test_model (
     # vendor, and per class
     volume_results = defaultdict(list)
     vendor_results = defaultdict(list)
-    class_results = defaultdict(lambda: [0, 0])
 
     # Extracts the name of the run from 
     # the name of the weights file
@@ -243,7 +224,6 @@ def test_model (
 
                 # Update the progress bar
                 progress_bar.update(1)
-                break
 
     # Creates the folder results in case 
     # it does not exist yet
@@ -253,12 +233,110 @@ def test_model (
     slice_df = DataFrame(slice_results, 
                         columns=["slice", 
                                 *[f"dice_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
-                                *[f"voxels_class_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
-                                *[f"union_class_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
-                                *[f"intersection_class_{label_to_fluids.get(i)}" for i in range(number_of_classes)]])
+                                *[f"voxels_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
+                                *[f"union_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
+                                *[f"intersection_{label_to_fluids.get(i)}" for i in range(number_of_classes)]])
     
-    slice_df.to_csv(f"results/{run_name}_slice_dice_test.csv", index=False)
+    slice_df.to_csv(f"results/{run_name}_slice_dice.csv", index=False)
 
+    # Creates a list with all the Dices associated with a volume
+    volume_dice_results = []
+    # Iterates through a dictionary that contains the name 
+    # of the volume and the intersection and union of values 
+    # obtained in the said volume per class
+    for volume_name, slice_values in volume_results.items():
+        # For each volume, initiates a list that will contain 
+        # the total number of intersections and unions in the 
+        # slices considered
+        total_union = [0] * number_of_classes
+        total_intersection = [0] * number_of_classes
+        # In class of the slice, gets the union and intersections obtained
+        for (union_values, intersection_values) in slice_values:
+            for i in range(number_of_classes):
+                total_union[i] += union_values[i]
+                total_intersection[i] += intersection_values[i]
+        # Iterates through the classes and in case there are 
+        # voxels labeled in the said class, calculates the Dice value
+        # Otherwise is set to 0
+        dice_per_class = [0] * number_of_classes
+        for i in range(number_of_classes):
+            if total_union[i] > 0:
+                dice_per_class[i] = (2. * total_intersection[i] / total_union[i])
+            else:
+                dice_per_class[i] = 0
+        # Appends the results to a list that contains all the Dice 
+        # in all the volumes
+        volume_dice_results.append([volume_name, *dice_per_class])
+                
+    # Names the columns that will compose the CSV file
+    columns = ["volume"] + [f"Dice_{label_to_fluids.get(i)}" for i in range(number_of_classes)]
+    # Adds the Dice values to the Pandas DataFrame
+    volume_df = DataFrame(volume_dice_results, columns=columns)
+    # Saves it as CSV
+    volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=False)    
+    
+    # Initiates a list that will have the count of the union, the 
+    # count of the intersection, and the Dice values per class
+    total_union = [0] * number_of_classes
+    total_intersection = [0] * number_of_classes
+    overall_dice_per_class = [0] * number_of_classes
+    # Iterates through all the volumes and their slices
+    for volume_name, slice_values in volume_results.items():
+        for (union_values, intersection_values) in slice_values:
+            for i in range(number_of_classes):
+                # In each class sums to the previous 
+                # total the number of union and 
+                # intersection values
+                total_union[i] += union_values[i]
+                total_intersection[i] += intersection_values[i]
+
+    # With the intersection and union values, calculates the Dice coefficient
+    # In case there are no positive voixels in the said class, sets the Dice to zero
+    for i in range(number_of_classes):
+        if total_union[i] > 0:
+            overall_dice_per_class[i] = (2. * total_intersection[i] / total_union[i])
+        else:
+            overall_dice_per_class[i] = 0
+    
+    # Names the columns according to their fluid type
+    columns = [f"Dice_{label_to_fluids.get(i)}" for i in range(number_of_classes)]
+    # Creates a Pandas DataFrame with the column names and its respective values 
+    class_df = DataFrame([overall_dice_per_class], columns=columns)
+    # Converts this DataFrame to a CSV file 
+    class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
+
+    # Dictionary to store accumulated union and intersection counts per vendor
+    vendor_union = defaultdict(lambda: [0] * number_of_classes)
+    vendor_intersection = defaultdict(lambda: [0] * number_of_classes)
+
+    # Iterate over each vendor and accumulate union 
+    # and intersection counts depending on the class
+    for vendor, results in vendor_results.items():
+        for (union_counts, intersection_counts) in results:
+            for i in range(number_of_classes):
+                vendor_union[vendor][i] += union_counts[i]
+                vendor_intersection[vendor][i] += intersection_counts[i]
+
+    # Compute Dice coefficients per class for each vendor
+    # Initiates an empty list
+    vendor_dice_results = []
+    # Iterates through the vendors 
+    for vendor in vendor_union.keys():
+        # For each class calculates the Dice coefficient 
+        for i in range(number_of_classes):
+            if vendor_union[vendor][i] > 0:
+                dice_per_class[i] = (2. * vendor_intersection[vendor][i] / vendor_union[vendor][i])
+            else:
+                dice_per_class[i] = 0
+        # Appends the Dice values to the list
+        vendor_dice_results.append([vendor, *dice_per_class])
+
+    # Names the DataFrame columns
+    columns = ["vendor"] + [f"Dice_{label_to_fluids.get(i, f'Class_{i}')}" for i in range(number_of_classes)]
+    # Creates the DataFrame
+    vendor_df = DataFrame(vendor_dice_results, columns=columns)
+    vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=False)
+    # Save the DataFrame as CSV
 
 # In case it is preferred to run 
 # directly in this file, here lays 
