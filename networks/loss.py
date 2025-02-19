@@ -146,9 +146,14 @@ def dice_coefficient(model_name: str, prediction: torch.Tensor,
             predicted mask
         voxel_counts (List[int]): List with all the number of 
             voxels of the corresponding class in the considered 
-            ground-truth
-        total_dice.item (float): total Dice coefficient in the 
-            image 
+            ground-truth        
+        union_counts (List[int]): List with all the number of 
+            voxels that result from the union between the GT 
+            and the predicted mask        
+        intersection_counts (List[int]): List with all the number of 
+            voxels that intersect between the GT and the predicted
+            mask
+
     """
     # In case the model is 2.5D, it needs to 
     # crop the images to evaluate, since the 
@@ -165,17 +170,17 @@ def dice_coefficient(model_name: str, prediction: torch.Tensor,
     # higher precision calculations 
     target = target.to(torch.float32)
 
-    # Initiates the lists that contain the Dice scores 
-    # and the voxel count per class in the true mask 
+    # Initiates the lists that contain the Dice scores, the voxel count per 
+    # class in the true mask, the number of voxels resulting from the union 
+    # of the two masks, and the number of voxels resulting from the 
+    # intersection of the two masks
     dice_scores = []
     voxel_counts = []
-    # Initiates the count of intersections and the 
-    # count of unions as zero
-    total_intersection = 0
-    total_union = 0
+    union_counts = []
+    intersection_counts = []
     
     # Iterates through the possible classes
-    for class_idx in range(0, num_classes + 1):
+    for class_idx in range(0, num_classes):
         # Converts each mask to a binary mask where 1 
         # corresponds to the mask to evaluate and zero 
         # to all the others
@@ -191,12 +196,10 @@ def dice_coefficient(model_name: str, prediction: torch.Tensor,
         # Appends the value of the Dice coefficient to a list
         dice_scores.append(dice.item())
         # Appends the value of the number of voxels to a list
-        voxel_counts.append(target_class.sum().item())
-        # Adds the intersection and union values to their respective 
-        # totals
-        total_intersection += intersection
-        total_union += union
+        voxel_counts.append(int(target_class.sum().item()))
+        # Appends the union value to a list
+        union_counts.append(int(union.item()))
+        # Appends the intersection value to a list
+        intersection_counts.append(int(intersection.item()))
         
-    # Calculates the slice total Dice coefficient
-    total_dice = (2. * total_intersection + epsilon) / (total_union + epsilon)
-    return dice_scores, voxel_counts, total_dice.item()
+    return dice_scores, voxel_counts, union_counts, intersection_counts 

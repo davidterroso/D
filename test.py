@@ -16,62 +16,31 @@ from networks.unet import UNet
 from network_functions.dataset import TestDataset
 from paths import IMAGES_PATH
 
-def compute_class_avg(overall_results: dict, num_classes: int):
+# Dictionary of labels in masks to fluid names
+label_to_fluids = {
+        0: "Background",
+        1: "IRF",
+        2: "SRF",
+        3: "PED"
+    }
+
+def calculate_dice(union: int, intersection: int, epsilon: float=1e-6) -> float:
     """
-    Function used for the calculation of the Dice coefficient per class
-    depending on the voxels per class
+    Given the number of voxels that result from the union and intersection
+    of the GT mask with the predicted mask, calculates the Dice coefficient
 
     Args:
-        overall_results (dict(int: float, int: int)): dictionary that 
-            contains the class value as a key to access the Dice coefficient 
-            and the total number of voxels in the class
-        num_classes (int): number of classes used
+        union (int): number of voxels that result from the union of the GT 
+            and predicted masks
+        intersection (int): number of voxels that result from the intersection 
+            of the GT and predicted masks
 
     Return:
-        class_avg (List[float]): list that contains the Dice coefficient 
-            values for each class
+        dice (float): Dice coefficient of the respective voxels
     """
-    # Initiates the list that 
-    # will contain the Dice 
-    # value for each class
-    class_avg = []
-    # Iterates through the 
-    # different classes
-    for i in range(num_classes):
-        # Gets the sum of the Dices in the said class 
-        # and the respective total number of voxels
-        dice_sum, voxel_count_sum = overall_results[i]
-        # Appends the weighted average to the list
-        class_avg.append(dice_sum / voxel_count_sum if voxel_count_sum > 0 else 0)
-    # Returns the list with the averages per class
-    return class_avg
+    dice = (2. * intersection + epsilon) / (union + epsilon)
 
-def compute_weighted_avg(group_results: list, number_of_classes: int):
-    """
-    Used to compute the weighted average of the Dice coefficient, 
-    according to the number of voxels identified per class
-
-    Args:
-        group_results (List[List[str, List[float], List[int], float]]):
-            stores the name of the slices, the Dice coefficient per slice 
-            per class, the number of voxels per slice per class and the 
-            Dice coefficient of the slice
-        number_of_classes (int): number of classes segmented 
-    """
-    # Initiates the list that will 
-    # have the average results
-    avg_results = []
-    # Iterates through the values of the list
-    for name, values in group_results.items():
-        # Counts the total number of voxels
-        total_voxels = torch.tensor([sum(v[i] for _, v in values) for i in range(number_of_classes)])
-        # Calculates the total dice for the slice
-        total_dice = torch.tensor([sum(d[i] * v[i] for d, v in values) for i in range(number_of_classes)])
-        # Calculates the average value
-        avg_dice = (total_dice / total_voxels).tolist()
-        # Appends the results
-        avg_results.append([name, *avg_dice, total_dice.sum().item() / total_voxels.sum().item()])
-    return avg_results
+    return dice
 
 def test_model (
         fold_test: int,
@@ -192,6 +161,8 @@ def test_model (
         with tqdm(test_dataloader, total=len(test_dataloader), desc='Testing Model', unit='img', leave=True, position=0) as progress_bar:
             # Iterates through every batch and path 
             # (that compose the batch) in the dataloader
+            # In this case, the batches are of size one, 
+            # so every batch is handled like a single image
             for batch in test_dataloader:
                 # Gets the images and the masks from the dataloader
                 images, true_masks, image_name = batch['scan'], batch['mask'], batch['image_name']
@@ -210,23 +181,17 @@ def test_model (
                 # that has a higher logit
                 preds = torch.argmax(outputs, dim=1)
                 
-                # Calculates the Dice coefficient of the predicted mask
-                dice_scores, voxel_counts, total_dice = dice_coefficient(model_name, preds, true_masks, number_of_classes)
+                # Calculates the Dice coefficient of the predicted mask, and gets the result of the union and intersection between the GT and 
+                # the predicted mask 
+                dice_scores, voxel_counts, union_counts, intersection_counts = dice_coefficient(model_name, preds, true_masks, number_of_classes)
                 # Gets the information from the slice's name
                 vendor, volume, slice_number = image_name[0][:-5].split("_")
                 volume_name = f"{vendor}_{volume}"
                 
                 # Appends the results per slice, per volume, and per vendor
-                slice_results.append([image_name[0], *dice_scores, *voxel_counts, total_dice])
-                volume_results[volume_name].append((dice_scores, voxel_counts))
-                vendor_results[vendor].append((dice_scores, voxel_counts))
-
-                # Aggregate Dice scores per class across all images
-                for i in range(number_of_classes):
-                    # Calculates the weighted sum
-                    class_results[i][0] += dice_scores[i] * voxel_counts[i]
-                    # Calculates the total voxel count
-                    class_results[i][1] += voxel_counts[i]
+                slice_results.append([image_name[0], *dice_scores, *voxel_counts, *union_counts, *intersection_counts])
+                volume_results[volume_name].append((union_counts, intersection_counts))
+                vendor_results[vendor].append((union_counts, intersection_counts))
 
                 # Saves the predicted masks and the GT, in case it is desired
                 if save_images:
@@ -278,6 +243,7 @@ def test_model (
 
                 # Update the progress bar
                 progress_bar.update(1)
+                break
 
     # Creates the folder results in case 
     # it does not exist yet
@@ -286,29 +252,13 @@ def test_model (
     # Saves the Dice score per slice
     slice_df = DataFrame(slice_results, 
                         columns=["slice", 
-                                *[f"dice_class_{i}" for i in range(number_of_classes + 1)], 
-                                *[f"voxels_class_{i}" for i in range(number_of_classes + 1)], 
-                                "total_dice"])
-    slice_df.to_csv(f"results/{run_name}_slice_dice.csv", index=False)
+                                *[f"dice_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
+                                *[f"voxels_class_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
+                                *[f"union_class_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
+                                *[f"intersection_class_{label_to_fluids.get(i)}" for i in range(number_of_classes)]])
+    
+    slice_df.to_csv(f"results/{run_name}_slice_dice_test.csv", index=False)
 
-    # Saves the Dice score per volume
-    volume_df = DataFrame(compute_weighted_avg(volume_results, number_of_classes), 
-                        columns=["volume", 
-                                *[f"dice_class_{i}" for i in range(0, number_of_classes)], 
-                                "total_dice"])
-    volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=False)
-
-    # Saves the Dice score per vendor
-    vendor_df = DataFrame(compute_weighted_avg(vendor_results, number_of_classes), 
-                        columns=["vendor", 
-                                *[f"dice_class_{i}" for i in range(0, number_of_classes)], 
-                                "total_dice"])
-    vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=False)
-
-    # Saves the Dice score per class
-    class_avg_dice = compute_class_avg(class_results, number_of_classes)
-    class_df = DataFrame([class_avg_dice], columns=[f"dice_class_{i}" for i in range(number_of_classes)])
-    class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
 
 # In case it is preferred to run 
 # directly in this file, here lays 
@@ -317,7 +267,7 @@ if __name__ == "__main__":
     test_model(
         fold_test=2,
         model_name="UNet",
-        weights_name="Run5_UNet_best_model.pth",
+        weights_name="Run1_UNet_best_model.pth",
         number_of_channels=1,
         number_of_classes=4,
         device_name="GPU",
