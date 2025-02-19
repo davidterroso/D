@@ -90,9 +90,9 @@ def save_segmentation_oct_as_tiff(oct_folder: str, save_folder: str):
     
     Args:
         oct_folder (str): path to the folder where the OCT scans
-        are located
+            are located
         save_folder (str): path to where the images are going to
-        be stored
+            be stored
 
     Return:
         None
@@ -171,9 +171,9 @@ def save_segmentation_mask_as_tiff(oct_folder: str, save_folder: str):
     
     Args:
         oct_folder (str): path to the folder where the OCT scans
-        are located
+            are located
         save_folder (str): path to where the images are going to
-        be stored
+            be stored
 
     Return:
         None
@@ -253,9 +253,9 @@ def save_generation_oct_as_tiff(oct_folder: str, save_folder: str):
     
     Args:
         oct_folder (str): path to the folder where the OCT scans
-        are located
+            are located
         save_folder (str): path to where the images are going to
-        be stored
+            be stored
 
     Return:
         None
