@@ -31,7 +31,7 @@ def volumes_info(oct_folder: str):
     volume = 0
 
     # Indicates the name of the columns in the DataFrame
-    columns=["VolumeNumber", "Vendor", "Background", "IRF", "SRF", "PED"]
+    columns=["VolumeNumber", "Vendor", "IRF", "SRF", "PED"]
     # Creates the dataframe that will later be converted into a CSV file
     df = DataFrame(columns=columns)
 
@@ -65,7 +65,7 @@ def volumes_info(oct_folder: str):
 
                             # Checks all the possible classes in the volume 
                             # and appends them to a temporary list
-                            for i in range(4):
+                            for i in [1, 2, 3]:
                                 if i in unique_values:
                                     index = np.where(unique_values == i)
                                     voxel_count = voxels_count[index]
