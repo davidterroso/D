@@ -1,8 +1,8 @@
+import numpy as np
+import pandas as pd
 from os import walk
 from random import shuffle
 from sklearn.model_selection import KFold
-from pandas import DataFrame, concat
-import numpy as np
 
 # Volumes from Topcon T-1000: 
 # Training - 056, 062
@@ -96,9 +96,9 @@ def random_k_fold_segmentation(k: int=5, folders_path: str=""):
 
     # Iterates through the train-test lists and saves each as an individual 
     # column in a Pandas Dataframe
-    train_df = DataFrame()
+    train_df = pd.DataFrame()
     for l in range(k):
-        tmp_df = DataFrame()
+        tmp_df = pd.DataFrame()
         tmp_vols = []
         name_column_vol = f"Fold{l + 1}_Volumes" 
         for m in range(len(train_folds[l])):
@@ -107,16 +107,16 @@ def random_k_fold_segmentation(k: int=5, folders_path: str=""):
             train_df[name_column_vol] = tmp_vols
         else:
             tmp_df[name_column_vol] = tmp_vols
-        train_df = concat([train_df, tmp_df], axis=1, sort=False)
+        train_df = pd.concat([train_df, tmp_df], axis=1, sort=False)
 
         # Saves the results from the split in a CSV file just for the train
         train_df.to_csv(path_or_buf="./splits/segmentation_train_splits.csv", index=False)
 
     # Iterates through the train-test lists and saves each as an individual 
     # column in a Pandas Dataframe
-    test_df = DataFrame()
+    test_df = pd.DataFrame()
     for l in range(k):
-        tmp_df = DataFrame()
+        tmp_df = pd.DataFrame()
         tmp_vols = []
         name_column_vol = f"Fold{l + 1}_Volumes" 
         for m in range(len(test_folds[l])):
@@ -125,7 +125,7 @@ def random_k_fold_segmentation(k: int=5, folders_path: str=""):
             test_df[name_column_vol] = tmp_vols
         else:
             tmp_df[name_column_vol] = tmp_vols
-        test_df = concat([test_df, tmp_df], axis=1, sort=False)
+        test_df = pd.concat([test_df, tmp_df], axis=1, sort=False)
 
         # Saves the results from the split in a CSV file just for the train
         test_df.to_csv(path_or_buf="./splits/segmentation_test_splits.csv", index=False)
@@ -201,9 +201,9 @@ def random_k_fold_generation(k: int=5, folders_path: str=""):
 
     # Iterates through the train-test lists and saves each as an individual 
     # column in a Pandas Dataframe
-    train_df = DataFrame()
+    train_df = pd.DataFrame()
     for l in range(k):
-        tmp_df = DataFrame()
+        tmp_df = pd.DataFrame()
         tmp_vols = []
         tmp_ts_sets = []
         name_column_vol = f"Fold{l + 1}_Volumes" 
@@ -217,14 +217,14 @@ def random_k_fold_generation(k: int=5, folders_path: str=""):
         else:
             tmp_df[name_column_vol] = tmp_vols
             tmp_df[name_column_sets] = tmp_ts_sets
-        train_df = concat([train_df, tmp_df], axis=1, sort=False)
+        train_df = pd.concat([train_df, tmp_df], axis=1, sort=False)
 
         # Saves the results from the split in a CSV file just for the train
         train_df.to_csv(path_or_buf="./splits/generation_train_splits.csv", index=False)
 
-    test_df = DataFrame()
+    test_df = pd.DataFrame()
     for l in range(k):
-        tmp_df = DataFrame()
+        tmp_df = pd.DataFrame()
         tmp_vols = []
         tmp_ts_sets = []
         name_column_vol = f"Fold{l + 1}_Volumes" 
@@ -238,8 +238,40 @@ def random_k_fold_generation(k: int=5, folders_path: str=""):
         else:
             tmp_df[name_column_vol] = tmp_vols
             tmp_df[name_column_sets] = tmp_ts_sets
-        test_df = concat([test_df, tmp_df], axis=1, sort=False)
+        test_df = pd.concat([test_df, tmp_df], axis=1, sort=False)
 
         # Saves the results from the split in a CSV file just for the test
         test_df.to_csv(path_or_buf="./splits/generation_test_splits.csv", index=False)
         
+def competitive_k_fold_segmentation(k: int=5):
+    agents_list = np.arange(k)
+    df = pd.read_csv("..\\splits\\volumes_info.csv")
+    vendors_names = df["Vendor"].unique()
+    agents_choices = dict.fromkeys(agents_list, [])
+    for vendor in vendors_names:
+        df_vendor = df[df["Vendor"] == vendor]
+        shuffle(agents_list)
+        irf_expected = df_vendor.loc[:, "IRF"].mean() * 5
+        srf_expected = df_vendor.loc[:, "SRF"].mean() * 5
+        ped_expected = df_vendor.loc[:, "PED"].mean() * 5
+        for agent in agents_list:
+            print(df_vendor.size)
+            min_error = float("inf")
+            for index, row in df_vendor.iterrows():
+                irf_value = row["IRF"]
+                srf_value = row["SRF"]
+                ped_value = row["PED"]
+
+                error = np.abs(irf_expected - irf_value) + np.abs(srf_expected - srf_value) + np.abs(ped_expected - ped_value)
+                if error < min_error:
+                    vol_to_append = row["VolumeNumber"]
+                    index_to_remove = index
+            agents_choices[agent].append(vol_to_append)
+            df_vendor = df_vendor.drop(index_to_remove)
+
+        shuffle(agents_list)
+
+    print(agents_choices)
+
+if __name__ == "__main__":
+    competitive_k_fold_segmentation()
