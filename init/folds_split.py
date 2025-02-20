@@ -8,9 +8,9 @@ import numpy as np
 # Training - 056, 062
 # Testing - None
 
-def k_fold_split_segmentation(k: int=5, folders_path: str=""):
+def random_k_fold_segmentation(k: int=5, folders_path: str=""):
     """
-    k_fold_split_segmentation iterates through the directories of the RETOUCH training
+    random_k_fold_segmentation iterates through the directories of the RETOUCH training
     dataset and extracts the volumes that belong to each vendor and splits
     in k folds according to k value specified in the arguments
 
@@ -130,9 +130,9 @@ def k_fold_split_segmentation(k: int=5, folders_path: str=""):
         # Saves the results from the split in a CSV file just for the train
         test_df.to_csv(path_or_buf="./splits/segmentation_test_splits.csv", index=False)
 
-def k_fold_split_generation(k: int=5, folders_path: str=""):
+def random_k_fold_generation(k: int=5, folders_path: str=""):
     """
-    k_fold_split_generation iterates through the directories of the RETOUCH 
+    random_k_fold_generation iterates through the directories of the RETOUCH 
     training and testing folders and extracts the volumes that belong to each
     vendor and splits in k folds according to k value specified in the arguments
 
