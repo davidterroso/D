@@ -271,8 +271,12 @@ def competitive_k_fold_segmentation(k: int=5):
                 df_vendor = df_vendor.drop(index_to_remove)
                 if df_vendor.shape[0] == 0:
                     break
-        shuffle(agents_list)
-    options_df = pd.DataFrame(agents_choices)
+    options_df = pd.DataFrame()
+    for key, values in agents_choices.items():
+        tmp_df = pd.DataFrame(values)
+        options_df = pd.concat([options_df, tmp_df], axis=1, sort=False)
+
+    options_df.columns = agents_list.tolist()
     options_df.to_csv("..\splits\competitive_fold_selection.csv", index=False)
 
 if __name__ == "__main__":
