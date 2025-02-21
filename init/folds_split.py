@@ -247,31 +247,33 @@ def competitive_k_fold_segmentation(k: int=5):
     agents_list = np.arange(k)
     df = pd.read_csv("..\\splits\\volumes_info.csv")
     vendors_names = df["Vendor"].unique()
-    agents_choices = dict.fromkeys(agents_list, [])
+    agents_choices = {i: [] for i in range(k)}
     for vendor in vendors_names:
         df_vendor = df[df["Vendor"] == vendor]
         shuffle(agents_list)
         irf_expected = df_vendor.loc[:, "IRF"].mean() * 5
         srf_expected = df_vendor.loc[:, "SRF"].mean() * 5
         ped_expected = df_vendor.loc[:, "PED"].mean() * 5
-        for agent in agents_list:
-            print(df_vendor.size)
-            min_error = float("inf")
-            for index, row in df_vendor.iterrows():
-                irf_value = row["IRF"]
-                srf_value = row["SRF"]
-                ped_value = row["PED"]
+        while df_vendor.shape[0] != 0:
+            for agent in agents_list:
+                min_error = float("inf")
+                for index, row in df_vendor.iterrows():
+                    irf_value = row["IRF"]
+                    srf_value = row["SRF"]
+                    ped_value = row["PED"]
 
-                error = np.abs(irf_expected - irf_value) + np.abs(srf_expected - srf_value) + np.abs(ped_expected - ped_value)
-                if error < min_error:
-                    vol_to_append = row["VolumeNumber"]
-                    index_to_remove = index
-            agents_choices[agent].append(vol_to_append)
-            df_vendor = df_vendor.drop(index_to_remove)
-
+                    error = np.abs(irf_expected - irf_value) + np.abs(srf_expected - srf_value) + np.abs(ped_expected - ped_value)
+                    if error < min_error:
+                        min_error = error
+                        vol_to_append = row["VolumeNumber"]
+                        index_to_remove = index
+                agents_choices[agent].append(vol_to_append)
+                df_vendor = df_vendor.drop(index_to_remove)
+                if df_vendor.shape[0] == 0:
+                    break
         shuffle(agents_list)
-
-    print(agents_choices)
+    options_df = pd.DataFrame(agents_choices)
+    options_df.to_csv("..\splits\competitive_fold_selection.csv", index=False)
 
 if __name__ == "__main__":
     competitive_k_fold_segmentation()
