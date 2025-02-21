@@ -276,7 +276,8 @@ def competitive_k_fold_segmentation(k: int=5):
         tmp_df = pd.DataFrame(values)
         options_df = pd.concat([options_df, tmp_df], axis=1, sort=False)
 
-    options_df.columns = agents_list.tolist()
+    options_df.columns = agents_choices.keys()
+    options_df = options_df.astype(np.int8)
     options_df.to_csv("..\splits\competitive_fold_selection.csv", index=False)
 
 if __name__ == "__main__":
