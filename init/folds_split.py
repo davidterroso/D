@@ -275,6 +275,11 @@ def competitive_k_fold_segmentation(k: int=5):
     agents_choices = {i: [] for i in range(k)}
     # Iterates through all the possible vendors
     for vendor in vendors_names:
+        # Initiates the matrix that will contain the errors
+        # obtained per fold per fluid
+        # It has shape (k,3) because there are k agents/folds
+        # and three classes
+        errors = np.zeros((k,3))
         # Gets a sub DataFrame limited to the vendor that 
         # is being iterated in the previous for cycle
         df_vendor = df[df["Vendor"] == vendor]
@@ -305,9 +310,9 @@ def competitive_k_fold_segmentation(k: int=5):
                     ped_value = row["PED"]
                     # Calculates the error this volume brings, 
                     # according to the previous volumes selected
-                    error = np.abs(irf_expected - irf_value) \
-                    + np.abs(srf_expected - srf_value) \
-                    + np.abs(ped_expected - ped_value)
+                    error = np.abs(irf_expected - (irf_value + errors[agent,0])) \
+                    + np.abs(srf_expected - (srf_value + errors[agent,1])) \
+                    + np.abs(ped_expected - (ped_value + errors[agent,2]))
                     # In case the error obtained is better 
                     # than the best previous best error, 
                     # its state is saved
@@ -318,6 +323,11 @@ def competitive_k_fold_segmentation(k: int=5):
                         min_error = error
                         vol_to_append = row["VolumeNumber"]
                         index_to_remove = index
+                # Updates the error values according 
+                # to the selected volume
+                errors[agent,0] += best_irf_value
+                errors[agent,1] += best_srf_value
+                errors[agent,2] += best_ped_value
                 # Saves the selected agent by appending it 
                 # to a list of volumes
                 agents_choices[agent].append(vol_to_append)
@@ -328,6 +338,9 @@ def competitive_k_fold_segmentation(k: int=5):
                 # breaks the second for loop
                 if df_vendor.shape[0] == 0:
                     break
+            # Shuffles the order in which
+            # agents/folds pick their volumes 
+            shuffle(agents_list)
     # Initiates an empty DataFrame that 
     # will store the volumes selected 
     # per fold
@@ -337,13 +350,14 @@ def competitive_k_fold_segmentation(k: int=5):
     for key, values in agents_choices.items():
         # Creates a temporary DataFrame with the values selected and 
         # then concatenates them to the previously initiated DataFrame
-        tmp_df = pd.DataFrame(values)
+        # Saves the values in int instead of float
+        tmp_df = pd.DataFrame(values).astype(np.int8)
         options_df = pd.concat([options_df, tmp_df], axis=1, sort=False)
 
     # Names the columns in the DataFrame
     options_df.columns = agents_choices.keys()
     # Sets all the values inside the DataFrame to int instead of float
-    options_df = options_df.astype(np.int8)
+    # options_df = options_df.astype(np.int8)
     # Saves the DataFrame as a CSV file with no index
     options_df.to_csv("..\splits\competitive_fold_selection.csv", index=False)
 
@@ -378,4 +392,5 @@ def calculate_error(path):
     print(errors_ped)
 
 if __name__ == "__main__":
-    calculate_error(path="..\splits\competitive_fold_selection.csv")
+    # calculate_error(path="..\splits\competitive_fold_selection.csv")
+    competitive_k_fold_segmentation()
