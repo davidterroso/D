@@ -242,7 +242,48 @@ def random_k_fold_generation(k: int=5, folders_path: str=""):
 
         # Saves the results from the split in a CSV file just for the test
         test_df.to_csv(path_or_buf="./splits/generation_test_splits.csv", index=False)
-        
+
+def selective_random_k_fold_segmentation(k: int=5):
+    # Initiates the list of folds list
+    folds_list = np.arange(k)
+    # Reads the information about each volumes voxel count per class
+    df = pd.read_csv("..\\splits\\volumes_info.csv")
+    # Gets all the name of the vendors
+    vendors_names = df["Vendor"].unique()
+    # Iterates through the vendors
+    for vendor in vendors_names:
+        # Gets a sub DataFrame limited to the vendor that 
+        # is being iterated
+        df_vendor = df[df["Vendor"] == vendor]
+        # Gets one row for each fold 
+        sample = df_vendor.sample(k)
+        # Defines the expected value for each class as the
+        # maximum number of volumes of a vendor in a fold (5)
+        # and the mean of voxel counts in this vendor
+        irf_expected = df_vendor.loc[:, "IRF"].mean() * 5
+        srf_expected = df_vendor.loc[:, "SRF"].mean() * 5
+        ped_expected = df_vendor.loc[:, "PED"].mean() * 5
+        vols_dict = {}
+        for index1, row1 in sample.iterrows():
+            vols_dict[0] = row1
+            sub_sample1 = sample.drop(index1)
+            for index2, row2 in sub_sample1.iterrows():
+                vols_dict[1] = row2
+                sub_sample2 = sub_sample1.drop(index2)
+                for index3, row3 in sub_sample2.iterrows():
+                    vols_dict[2] = row3
+                    sub_sample3 = sub_sample2.drop(index3)                
+                    for index4, row4 in sub_sample3.iterrows():
+                        vols_dict[3] = row4
+                        sub_sample4 = sub_sample3.drop(index4)
+                        for index5, row5 in sub_sample4.iterrows():
+                            vols_dict[4] = row5
+                            errors = [0] * 3
+                            for item in vols_dict.items():
+                                errors[0] = errors[0] + item["IRF"]                                
+                                errors[1] = errors[1] + item["SRF"]                                
+                                errors[2] = errors[2] + item["PED"]                                
+
 def competitive_k_fold_segmentation(k: int=5):
     """
     A k number of agents/folds competes for the best possible set of 
@@ -356,8 +397,6 @@ def competitive_k_fold_segmentation(k: int=5):
 
     # Names the columns in the DataFrame
     options_df.columns = agents_choices.keys()
-    # Sets all the values inside the DataFrame to int instead of float
-    # options_df = options_df.astype(np.int8)
     # Saves the DataFrame as a CSV file with no index
     options_df.to_csv("..\splits\competitive_fold_selection.csv", index=False)
 
@@ -424,4 +463,4 @@ def calculate_error(path: str):
         pd.DataFrame(results_df).to_csv(path_or_buf=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold{fold}.csv")
 
 if __name__ == "__main__":
-    calculate_error(path="..\splits\competitive_fold_selection.csv")
+    selective_random_k_fold_segmentation()
