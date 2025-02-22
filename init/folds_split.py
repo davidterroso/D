@@ -361,36 +361,66 @@ def competitive_k_fold_segmentation(k: int=5):
     # Saves the DataFrame as a CSV file with no index
     options_df.to_csv("..\splits\competitive_fold_selection.csv", index=False)
 
-def calculate_error(path):
+def calculate_error(path: str):
+    """
+    Calculates the errors associated with the volumes selected in the splits before
+    and saves them to a CSV file
+
+    Args:
+        path (str): path to the CSV file that contains the division of volumes per 
+            folds
+    
+    Return:
+        None
+    """
+    # Reads the CSV file that contains the division per fold and converts it to a 
+    # DataFrame    
     df = pd.read_csv(path)
+    # Reads the CSV file that contains the information of the voxels in each volume 
+    # and converts it to a DataFrame
     info_df = pd.read_csv("..\\splits\\volumes_info.csv")
+    # Initiates the dictionaries that will store the errors with one dictionary for 
+    # each type of fluid
     errors_irf = {vendor: [0] * df.shape[1] for vendor in info_df["Vendor"].unique()}
     errors_srf = {vendor: [0] * df.shape[1] for vendor in info_df["Vendor"].unique()}
     errors_ped = {vendor: [0] * df.shape[1] for vendor in info_df["Vendor"].unique()}
+    # Iterates through the columns in the DataFrame that contains the values of the 
+    # split desired to analyse
     for col_name, col in df.items():
-        count_vendors = {vendor: 0 for vendor in info_df["Vendor"].unique()}
+        # Iterates through the rows in each column
         for row in col:
+            # Gets the number of the volume to analyse, the name 
+            # of the vendor and the number of voxels per class 
+            # and updates the error according to the corresponding 
+            # fold and vendor
             info = info_df.loc[info_df["VolumeNumber"] == row]
             vendor = info["Vendor"].item()
             irf_count = info["IRF"].item()
             srf_count = info["SRF"].item()
             ped_count = info["PED"].item()
-            count_vendors[vendor] += 1
             errors_irf[vendor][int(col_name)] += irf_count
             errors_srf[vendor][int(col_name)] += srf_count
             errors_ped[vendor][int(col_name)] += ped_count
+        # To each vendor and fluid type calculates the 
+        # corresponding error 
         for vendor in info_df["Vendor"].unique():
             df_vendor = info_df[info_df["Vendor"] == vendor]
-            irf_expected = df_vendor.loc[:, "IRF"].mean() * count_vendors[vendor]
-            srf_expected = df_vendor.loc[:, "SRF"].mean() * count_vendors[vendor]
-            ped_expected = df_vendor.loc[:, "PED"].mean() * count_vendors[vendor]
+            irf_expected = df_vendor.loc[:, "IRF"].mean() * 5
+            srf_expected = df_vendor.loc[:, "SRF"].mean() * 5
+            ped_expected = df_vendor.loc[:, "PED"].mean() * 5
             errors_irf[vendor][int(col_name)] -= irf_expected  
             errors_srf[vendor][int(col_name)] -= srf_expected  
-            errors_ped[vendor][int(col_name)] -= ped_expected  
-    print(errors_irf)
-    print(errors_srf)
-    print(errors_ped)
+            errors_ped[vendor][int(col_name)] -= ped_expected 
+
+    # Initiates strings that will be used as 
+    # separators but if indicated inside the 
+    # f-string will interrupt ""
+    backslash = "\\"
+    underscore = "_"
+    # Saves the errors as CSV files
+    pd.DataFrame(errors_irf).to_csv(path_or_buf=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_irf.csv")
+    pd.DataFrame(errors_srf).to_csv(path_or_buf=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_srf.csv")
+    pd.DataFrame(errors_ped).to_csv(path_or_buf=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_ped.csv")
 
 if __name__ == "__main__":
-    # calculate_error(path="..\splits\competitive_fold_selection.csv")
-    competitive_k_fold_segmentation()
+    calculate_error(path="..\splits\competitive_fold_selection.csv")
