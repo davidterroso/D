@@ -379,48 +379,49 @@ def calculate_error(path: str):
     # Reads the CSV file that contains the information of the voxels in each volume 
     # and converts it to a DataFrame
     info_df = pd.read_csv("..\\splits\\volumes_info.csv")
-    # Initiates the dictionaries that will store the errors with one dictionary for 
-    # each type of fluid
-    errors_irf = {vendor: [0] * df.shape[1] for vendor in info_df["Vendor"].unique()}
-    errors_srf = {vendor: [0] * df.shape[1] for vendor in info_df["Vendor"].unique()}
-    errors_ped = {vendor: [0] * df.shape[1] for vendor in info_df["Vendor"].unique()}
-    # Iterates through the columns in the DataFrame that contains the values of the 
-    # split desired to analyse
-    for col_name, col in df.items():
-        # Iterates through the rows in each column
-        for row in col:
-            # Gets the number of the volume to analyse, the name 
-            # of the vendor and the number of voxels per class 
-            # and updates the error according to the corresponding 
-            # fold and vendor
-            info = info_df.loc[info_df["VolumeNumber"] == row]
-            vendor = info["Vendor"].item()
-            irf_count = info["IRF"].item()
-            srf_count = info["SRF"].item()
-            ped_count = info["PED"].item()
-            errors_irf[vendor][int(col_name)] += irf_count
-            errors_srf[vendor][int(col_name)] += srf_count
-            errors_ped[vendor][int(col_name)] += ped_count
-        # To each vendor and fluid type calculates the 
-        # corresponding error 
-        for vendor in info_df["Vendor"].unique():
-            df_vendor = info_df[info_df["Vendor"] == vendor]
-            irf_expected = df_vendor.loc[:, "IRF"].mean() * 5
-            srf_expected = df_vendor.loc[:, "SRF"].mean() * 5
-            ped_expected = df_vendor.loc[:, "PED"].mean() * 5
-            errors_irf[vendor][int(col_name)] -= irf_expected  
-            errors_srf[vendor][int(col_name)] -= srf_expected  
-            errors_ped[vendor][int(col_name)] -= ped_expected 
 
-    # Initiates strings that will be used as 
-    # separators but if indicated inside the 
-    # f-string will interrupt ""
-    backslash = "\\"
-    underscore = "_"
-    # Saves the errors as CSV files
-    pd.DataFrame(errors_irf).to_csv(path_or_buf=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_irf.csv")
-    pd.DataFrame(errors_srf).to_csv(path_or_buf=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_srf.csv")
-    pd.DataFrame(errors_ped).to_csv(path_or_buf=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_ped.csv")
+    # Iterates through all the folds
+    for fold in range(df.shape[1]):
+        # Gets the list of vendors
+        columns = info_df["Vendor"].unique()
+        # Initiates a dictionary responsible 
+        # for storing the number of volumes 
+        # of a certain vendor
+        vendor_count = dict.fromkeys(columns, 0)
+        # Initiates a DataFrame with zeros
+        results_df = pd.DataFrame(np.zeros((3,3)), columns=columns, index=["IRF", "SRF", "PED"])
+        # Iterates through the volumes selected by a fold
+        for row in df[str(fold)]:
+            # Gets the information of the number of voxels according to the number of the volume
+            info = info_df.loc[info_df["VolumeNumber"] == row]
+            # Gets the vendor of the volume
+            vendor = info["Vendor"].item()
+            # Updates the counter of volumes per vendor
+            vendor_count[vendor] += 1
+            # Updates the total voxel count in the fold directly in the DataFrame
+            results_df.at["IRF", vendor] = info["IRF"].item() + results_df.at["IRF", vendor]
+            results_df.at["SRF", vendor] = info["SRF"].item() + results_df.at["SRF", vendor] 
+            results_df.at["PED", vendor] = info["PED"].item() + results_df.at["PED", vendor]
+        # Iterates through the columns of the DataFrame
+        for col in results_df.columns:
+            # Gets a sub DataFrame of the data
+            df_vendor = info_df[info_df["Vendor"] == col]
+            # Iterates through the rows in the DataFrame
+            for fluid, row in results_df[col].items():
+                # Calculates the expected value according to 
+                # the mean and the number of volumes of a 
+                # certain vendor present in the fold 
+                expected = df_vendor.loc[:, fluid].mean() * vendor_count[col]
+                # Calculates the difference and updates 
+                # the value in the DataFrame
+                results_df.at[fluid, col] = row - expected   
+        # Initiates strings that will be used as 
+        # separators but if indicated inside the 
+        # f-string will interrupt ""
+        backslash = "\\"
+        underscore = "_"
+        # Saves the DataFrame as a CSV file
+        pd.DataFrame(results_df).to_csv(path_or_buf=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold{fold}.csv")
 
 if __name__ == "__main__":
     calculate_error(path="..\splits\competitive_fold_selection.csv")
