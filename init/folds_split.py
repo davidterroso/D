@@ -280,5 +280,35 @@ def competitive_k_fold_segmentation(k: int=5):
     options_df = options_df.astype(np.int8)
     options_df.to_csv("..\splits\competitive_fold_selection.csv", index=False)
 
+def calculate_error(path):
+    df = pd.read_csv(path)
+    info_df = pd.read_csv("..\\splits\\volumes_info.csv")
+    errors_irf = {vendor: [0] * df.shape[1] for vendor in info_df["Vendor"].unique()}
+    errors_srf = {vendor: [0] * df.shape[1] for vendor in info_df["Vendor"].unique()}
+    errors_ped = {vendor: [0] * df.shape[1] for vendor in info_df["Vendor"].unique()}
+    for col_name, col in df.items():
+        count_vendors = {vendor: 0 for vendor in info_df["Vendor"].unique()}
+        for row in col:
+            info = info_df.loc[info_df["VolumeNumber"] == row]
+            vendor = info["Vendor"].item()
+            irf_count = info["IRF"].item()
+            srf_count = info["SRF"].item()
+            ped_count = info["PED"].item()
+            count_vendors[vendor] += 1
+            errors_irf[vendor][int(col_name)] += irf_count
+            errors_srf[vendor][int(col_name)] += srf_count
+            errors_ped[vendor][int(col_name)] += ped_count
+        for vendor in info_df["Vendor"].unique():
+            df_vendor = info_df[info_df["Vendor"] == vendor]
+            irf_expected = df_vendor.loc[:, "IRF"].mean() * count_vendors[vendor]
+            srf_expected = df_vendor.loc[:, "SRF"].mean() * count_vendors[vendor]
+            ped_expected = df_vendor.loc[:, "PED"].mean() * count_vendors[vendor]
+            errors_irf[vendor][int(col_name)] -= irf_expected  
+            errors_srf[vendor][int(col_name)] -= srf_expected  
+            errors_ped[vendor][int(col_name)] -= ped_expected  
+    print(errors_irf)
+    print(errors_srf)
+    print(errors_ped)
+
 if __name__ == "__main__":
-    competitive_k_fold_segmentation()
+    calculate_error(path="..\splits\competitive_fold_selection.csv")
