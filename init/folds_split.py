@@ -284,6 +284,8 @@ def factorial_k_fold_segmentation(k: int=5):
             vols_dict = {}
             # Sets the minimum error to infinite
             min_error = float("inf")
+            # Iterates through all the possible combinations of the 5 
+            # selected volumes and selects the best possible combination
             for index1, row1 in sample.iterrows():
                 vols_dict[0] = row1
                 sub_sample1 = sample.drop(index1)
@@ -319,7 +321,25 @@ def factorial_k_fold_segmentation(k: int=5):
                 if row["VolumeNumber"] in best_distribution:
                     df_vendor = df_vendor.drop(index)
 
-    print(selected_volumes)
+    # Initiates an empty DataFrame that 
+    # will store the volumes selected 
+    # per fold
+    options_df = pd.DataFrame()
+    # Iterates through the dictionary that contains 
+    # the list of the values selected by the each fold 
+    for key, values in selected_volumes.items():
+        # Creates a temporary DataFrame with the values selected and 
+        # then concatenates them to the previously initiated DataFrame
+        # Saves the values in int instead of float
+        tmp_df = pd.DataFrame(values).astype(np.int8)
+        tmp_df = tmp_df.replace(0, pd.NA)
+        tmp_df = tmp_df.dropna(ignore_index=True)
+        options_df = pd.concat([options_df, tmp_df], axis=1, sort=False)
+    # Names the columns in the DataFrame
+    options_df.columns = selected_volumes.keys()
+    print(options_df)
+    # Saves the DataFrame as a CSV file with no index
+    options_df.to_csv("..\splits\\factorial_fold_selection.csv", index=False)
 
 def competitive_k_fold_segmentation(k: int=5):
     """
