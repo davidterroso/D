@@ -243,46 +243,83 @@ def random_k_fold_generation(k: int=5, folders_path: str=""):
         # Saves the results from the split in a CSV file just for the test
         test_df.to_csv(path_or_buf="./splits/generation_test_splits.csv", index=False)
 
-def selective_random_k_fold_segmentation(k: int=5):
-    # Initiates the list of folds list
-    folds_list = np.arange(k)
+def factorial_k_fold_segmentation(k: int=5):
+    """
+    In this function, a sample with the size of the number of folds 
+    is extracted from the available volumes and all the k! possible 
+    solutions are explored with the one that obtains the minimal error
+    This function is significantly more expensive because it reaches
+    n! complexity (in O notation, O(n!)), but still does not reach 
+    the most optimal solution 
+    """
     # Reads the information about each volumes voxel count per class
     df = pd.read_csv("..\\splits\\volumes_info.csv")
     # Gets all the name of the vendors
     vendors_names = df["Vendor"].unique()
+    # Creates the dictionary on which it will be added the desired volumes
+    selected_volumes = {i: [] for i in range(k)}
     # Iterates through the vendors
     for vendor in vendors_names:
         # Gets a sub DataFrame limited to the vendor that 
         # is being iterated
         df_vendor = df[df["Vendor"] == vendor]
-        # Gets one row for each fold 
-        sample = df_vendor.sample(k)
         # Defines the expected value for each class as the
         # maximum number of volumes of a vendor in a fold (5)
         # and the mean of voxel counts in this vendor
         irf_expected = df_vendor.loc[:, "IRF"].mean() * 5
         srf_expected = df_vendor.loc[:, "SRF"].mean() * 5
         ped_expected = df_vendor.loc[:, "PED"].mean() * 5
-        vols_dict = {}
-        for index1, row1 in sample.iterrows():
-            vols_dict[0] = row1
-            sub_sample1 = sample.drop(index1)
-            for index2, row2 in sub_sample1.iterrows():
-                vols_dict[1] = row2
-                sub_sample2 = sub_sample1.drop(index2)
-                for index3, row3 in sub_sample2.iterrows():
-                    vols_dict[2] = row3
-                    sub_sample3 = sub_sample2.drop(index3)                
-                    for index4, row4 in sub_sample3.iterrows():
-                        vols_dict[3] = row4
-                        sub_sample4 = sub_sample3.drop(index4)
-                        for index5, row5 in sub_sample4.iterrows():
-                            vols_dict[4] = row5
-                            errors = [0] * 3
-                            for item in vols_dict.items():
-                                errors[0] = errors[0] + item["IRF"]                                
-                                errors[1] = errors[1] + item["SRF"]                                
-                                errors[2] = errors[2] + item["PED"]                                
+        expected = [irf_expected, srf_expected, ped_expected]
+        while df_vendor.shape[0] != 0:
+            if df_vendor.shape[0] < 5:
+                # In case there are not enough volumes to make a
+                # sample, creates dummy volumes set to zero that 
+                # are later eliminated
+                while df_vendor.shape[0] < 5:
+                    df_vendor.loc[df_vendor.shape[0]] = [0,0,0,0,0] 
+            # Gets one row for each fold 
+            sample = df_vendor.sample(k)
+            # Initiates the dictionary that will 
+            # store the volumes information
+            vols_dict = {}
+            # Sets the minimum error to infinite
+            min_error = float("inf")
+            for index1, row1 in sample.iterrows():
+                vols_dict[0] = row1
+                sub_sample1 = sample.drop(index1)
+                for index2, row2 in sub_sample1.iterrows():
+                    vols_dict[1] = row2
+                    sub_sample2 = sub_sample1.drop(index2)
+                    for index3, row3 in sub_sample2.iterrows():
+                        vols_dict[2] = row3
+                        sub_sample3 = sub_sample2.drop(index3)                
+                        for index4, row4 in sub_sample3.iterrows():
+                            vols_dict[3] = row4
+                            sub_sample4 = sub_sample3.drop(index4)
+                            for index5, row5 in sub_sample4.iterrows():
+                                vols_dict[4] = row5
+                                errors = [0] * 3
+                                for key, item in vols_dict.items():
+                                    errors[0] = errors[0] + item["IRF"]
+                                    errors[1] = errors[1] + item["SRF"]
+                                    errors[2] = errors[2] + item["PED"] 
+                                final_error = np.sum(np.abs(np.array(errors) - np.array(expected)))
+                                if final_error < min_error:
+                                    best_distribution = [row1["VolumeNumber"],
+                                                        row2["VolumeNumber"],
+                                                        row3["VolumeNumber"],
+                                                        row4["VolumeNumber"],
+                                                        row5["VolumeNumber"]]
+                                    min_error = final_error
+            # Adds the volumes to the dictionary
+            for key in selected_volumes.keys():
+                selected_volumes[key].append(best_distribution[key])
+            # Drops the volumes that already have been selected
+            for index, row in df_vendor.iterrows():
+                if row["VolumeNumber"] in best_distribution:
+                    df_vendor = df_vendor.drop(index)
+
+    print(selected_volumes)
 
 def competitive_k_fold_segmentation(k: int=5):
     """
@@ -463,4 +500,4 @@ def calculate_error(path: str):
         pd.DataFrame(results_df).to_csv(path_or_buf=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold{fold}.csv")
 
 if __name__ == "__main__":
-    selective_random_k_fold_segmentation()
+    factorial_k_fold_segmentation()
