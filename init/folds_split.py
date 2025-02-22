@@ -244,40 +244,107 @@ def random_k_fold_generation(k: int=5, folders_path: str=""):
         test_df.to_csv(path_or_buf="./splits/generation_test_splits.csv", index=False)
         
 def competitive_k_fold_segmentation(k: int=5):
+    """
+    A k number of agents/folds competes for the best possible set of 
+    volumes, in order to attain a balanced split according not only 
+    to the number of volumes and vendor but also according to the 
+    quantity of fluid in each volume. In a random order, the agents 
+    are able to choose the volume that minimizes the most the loss, 
+    which is defined as the sum of the absolute differences between 
+    the expected number of voxel counts per fluid (calculated by 
+    multiplying the mean of voxel counts in a determined vendor 
+    by maximum the number of volumes a fold can contain, which is 
+    5 in all vendors) and the obtained value.
+    The folds are also named agents because this approach was 
+    inspired by the competition seen in reinforcement learning systems.
+
+    Args:
+        k (int): number of folds this split must have
+
+    Return:
+        None
+    """
+    # Initiates the list of agents/folds
     agents_list = np.arange(k)
+    # Reads the information about each volumes voxel count per class
     df = pd.read_csv("..\\splits\\volumes_info.csv")
+    # Gets all the name of the vendors
     vendors_names = df["Vendor"].unique()
+    # Initiates a dictionary that will store the volumes 
+    # selected by each agent 
     agents_choices = {i: [] for i in range(k)}
+    # Iterates through all the possible vendors
     for vendor in vendors_names:
+        # Gets a sub DataFrame limited to the vendor that 
+        # is being iterated in the previous for cycle
         df_vendor = df[df["Vendor"] == vendor]
+        # Randomizes the order of the agents to select a 
+        # volume
         shuffle(agents_list)
+        # Defines the expected value for each class as the
+        # maximum number of volumes of a vendor in a fold (5)
+        # and the mean of voxel counts in this vendor
         irf_expected = df_vendor.loc[:, "IRF"].mean() * 5
         srf_expected = df_vendor.loc[:, "SRF"].mean() * 5
         ped_expected = df_vendor.loc[:, "PED"].mean() * 5
+        # Iterates through the list of volumes in a vendor 
+        # until all volumes have been selected
         while df_vendor.shape[0] != 0:
+            # Iterates through the agents/folds in the 
+            # list of agents/folds
             for agent in agents_list:
+                # Initiates the minimum error as infinite
                 min_error = float("inf")
+                # Iterates through the volumes in the DataFrame 
+                # that contain the volumes available
                 for index, row in df_vendor.iterrows():
+                    # Extracts the voxel count per class in the 
+                    # volume 
                     irf_value = row["IRF"]
                     srf_value = row["SRF"]
                     ped_value = row["PED"]
-
-                    error = np.abs(irf_expected - irf_value) + np.abs(srf_expected - srf_value) + np.abs(ped_expected - ped_value)
+                    # Calculates the error this volume brings, 
+                    # according to the previous volumes selected
+                    error = np.abs(irf_expected - irf_value) \
+                    + np.abs(srf_expected - srf_value) \
+                    + np.abs(ped_expected - ped_value)
+                    # In case the error obtained is better 
+                    # than the best previous best error, 
+                    # its state is saved
                     if error < min_error:
+                        best_irf_value = row["IRF"]
+                        best_srf_value = row["SRF"]
+                        best_ped_value = row["PED"]
                         min_error = error
                         vol_to_append = row["VolumeNumber"]
                         index_to_remove = index
+                # Saves the selected agent by appending it 
+                # to a list of volumes
                 agents_choices[agent].append(vol_to_append)
+                # Removes the row that contains the volume 
+                # selected
                 df_vendor = df_vendor.drop(index_to_remove)
+                # In case there are no more volumes to select,
+                # breaks the second for loop
                 if df_vendor.shape[0] == 0:
                     break
+    # Initiates an empty DataFrame that 
+    # will store the volumes selected 
+    # per fold
     options_df = pd.DataFrame()
+    # Iterates through the dictionary that contains 
+    # the list of the values selected by the each fold 
     for key, values in agents_choices.items():
+        # Creates a temporary DataFrame with the values selected and 
+        # then concatenates them to the previously initiated DataFrame
         tmp_df = pd.DataFrame(values)
         options_df = pd.concat([options_df, tmp_df], axis=1, sort=False)
 
+    # Names the columns in the DataFrame
     options_df.columns = agents_choices.keys()
+    # Sets all the values inside the DataFrame to int instead of float
     options_df = options_df.astype(np.int8)
+    # Saves the DataFrame as a CSV file with no index
     options_df.to_csv("..\splits\competitive_fold_selection.csv", index=False)
 
 def calculate_error(path):
