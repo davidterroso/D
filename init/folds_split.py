@@ -331,7 +331,6 @@ def factorial_k_fold_segmentation(k: int=5):
         options_df = pd.concat([options_df, tmp_df], axis=1, sort=False)
     # Names the columns in the DataFrame
     options_df.columns = selected_volumes.keys()
-    print(options_df)
     # Saves the DataFrame as a CSV file with no index
     options_df.to_csv("..\splits\\factorial_fold_selection.csv", index=False)
 
