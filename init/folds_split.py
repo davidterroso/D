@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from itertools import permutations
+from math import ceil
 from os import walk
 from random import shuffle
 from sklearn.model_selection import KFold
@@ -244,7 +245,23 @@ def random_k_fold_generation(k: int=5, folders_path: str=""):
         # Saves the results from the split in a CSV file just for the test
         test_df.to_csv(path_or_buf="./splits/generation_test_splits.csv", index=False)
 
-def iterate_permutations(sample, k, expected, errors):
+def iterate_permutations(sample, expected, errors):
+    """
+    Used to iterate all the possible permutations within a sample
+
+    Args:
+        sample (Pandas DataFrame): sample that will be iterated
+        expected (List[float]): list of expected voxel counts per 
+            class calculated according to the number of volumes in
+            each fold
+        errors (List[float]): list that contains the count of 
+            voxels per class
+
+    Returns:
+        best_distribution (List[int]): list with the indexes of 
+            the volumes in the sample in the order that gets the 
+            best error in order  
+    """
     # Initiates a list with the best distribution that 
     # will contain the best order of the five randomly 
     # extracted volumes 
@@ -252,21 +269,32 @@ def iterate_permutations(sample, k, expected, errors):
     # Sets the minimum error to infinite
     min_error = float("inf")
     # Iterates through all possible permutations
-    for perm in permutations(sample.iterrows(), k):
+    for perm in permutations(sample.iterrows(), sample.shape[0]):
         # Sets a possible combination of volumes
         vols_dict = {i: row for i, (index, row) in enumerate(perm)}
-        # Iterates through all the volymes and their voxel counts
+        # Iterates through all the volumes and their voxel counts
         for key, item in vols_dict.items():
-            errors[0] = errors[0] + item["IRF"]
-            errors[1] = errors[1] + item["SRF"]
-            errors[2] = errors[2] + item["PED"] 
+            # Initiates a list that will handle, temporarely, 
+            # the voxel counts in each permutation 
+            tmp_errors = [0] * 3
+            # Adds the voxel count to the previous 
+            # voxel counts and calculates the error
+            tmp_errors[0] = errors[0] + item["IRF"]
+            tmp_errors[1] = errors[1] + item["SRF"]
+            tmp_errors[2] = errors[2] + item["PED"] 
             final_error = np.sum(np.abs(np.array(errors) - np.array(expected)))
+            # In case the error is better than one of the previously 
+            # calculated, then stores this permutation as the best 
+            # and its respective error, while updating the value of 
+            # the minimal error
             if final_error < min_error:
                 best_distribution = []
-                for i in range(k):
-                    best_distribution.append(vols_dict[i]["VolumeNumber"])
+                best_errors = []
+                for vol in vols_dict.keys():
+                    best_distribution.append(vols_dict[vol]["VolumeNumber"])
+                best_errors = tmp_errors
                 min_error = final_error
-    return best_distribution
+    return best_distribution, best_errors
 
 def factorial_k_fold_segmentation(k: int=5):
     """
@@ -276,6 +304,12 @@ def factorial_k_fold_segmentation(k: int=5):
     This function is significantly more expensive because it reaches
     n! complexity (in O notation, O(n!)), but still does not reach 
     the most optimal solution 
+
+    Args:
+        k (int): number of folds in the split
+
+    Return:
+        None
     """
     # Reads the information about each volumes voxel count per class
     df = pd.read_csv("..\\splits\\volumes_info.csv")
@@ -292,11 +326,11 @@ def factorial_k_fold_segmentation(k: int=5):
         # is being iterated
         df_vendor = df[df["Vendor"] == vendor]
         # Defines the expected value for each class as the
-        # maximum number of volumes of a vendor in a fold (5)
+        # maximum number of volumes of a vendor in a fold
         # and the mean of voxel counts in this vendor
-        irf_expected = df_vendor.loc[:, "IRF"].mean() * 5
-        srf_expected = df_vendor.loc[:, "SRF"].mean() * 5
-        ped_expected = df_vendor.loc[:, "PED"].mean() * 5
+        irf_expected = df_vendor.loc[:, "IRF"].mean() * ceil(df_vendor.shape[0] / k)
+        srf_expected = df_vendor.loc[:, "SRF"].mean() * ceil(df_vendor.shape[0] / k)
+        ped_expected = df_vendor.loc[:, "PED"].mean() * ceil(df_vendor.shape[0] / k)
         expected = [irf_expected, srf_expected, ped_expected]
         while df_vendor.shape[0] != 0:
             # Gets one row for each fold 
@@ -304,8 +338,13 @@ def factorial_k_fold_segmentation(k: int=5):
                 df_vendor.loc[df_vendor.shape[0]] = [0,0,0,0,0]
             sample = df_vendor.sample(k)
 
-            best_distribution = iterate_permutations(sample, k, expected, errors)
+            # Iterates through the possible permutations of the sample, determining which 
+            # is the best possible distribution and the best errors
+            best_distribution, best_errors = iterate_permutations(sample, expected, errors)
 
+            # Updates the error values
+            for index, error in enumerate(best_errors):
+                errors[index] = errors[index] + error
             # Adds the volumes to the dictionary
             for key in selected_volumes.keys():
                 if best_distribution != []:
@@ -378,11 +417,11 @@ def competitive_k_fold_segmentation(k: int=5):
         # volume
         shuffle(agents_list)
         # Defines the expected value for each class as the
-        # maximum number of volumes of a vendor in a fold (5)
+        # maximum number of volumes of a vendor in a fold
         # and the mean of voxel counts in this vendor
-        irf_expected = df_vendor.loc[:, "IRF"].mean() * 5
-        srf_expected = df_vendor.loc[:, "SRF"].mean() * 5
-        ped_expected = df_vendor.loc[:, "PED"].mean() * 5
+        irf_expected = df_vendor.loc[:, "IRF"].mean() * ceil(df_vendor.shape[0] / k)
+        srf_expected = df_vendor.loc[:, "SRF"].mean() * ceil(df_vendor.shape[0] / k)
+        ped_expected = df_vendor.loc[:, "PED"].mean() * ceil(df_vendor.shape[0] / k)
         # Iterates through the list of volumes in a vendor 
         # until all volumes have been selected
         while df_vendor.shape[0] != 0:
