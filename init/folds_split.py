@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from itertools import permutations
 from os import walk
 from random import shuffle
 from sklearn.model_selection import KFold
@@ -243,6 +244,30 @@ def random_k_fold_generation(k: int=5, folders_path: str=""):
         # Saves the results from the split in a CSV file just for the test
         test_df.to_csv(path_or_buf="./splits/generation_test_splits.csv", index=False)
 
+def iterate_permutations(sample, k, expected, errors):
+    # Initiates a list with the best distribution that 
+    # will contain the best order of the five randomly 
+    # extracted volumes 
+    best_distribution = []
+    # Sets the minimum error to infinite
+    min_error = float("inf")
+    # Iterates through all possible permutations
+    for perm in permutations(sample.iterrows(), k):
+        # Sets a possible combination of volumes
+        vols_dict = {i: row for i, (index, row) in enumerate(perm)}
+        # Iterates through all the volymes and their voxel counts
+        for key, item in vols_dict.items():
+            errors[0] = errors[0] + item["IRF"]
+            errors[1] = errors[1] + item["SRF"]
+            errors[2] = errors[2] + item["PED"] 
+            final_error = np.sum(np.abs(np.array(errors) - np.array(expected)))
+            if final_error < min_error:
+                best_distribution = []
+                for i in range(k):
+                    best_distribution.append(vols_dict[i]["VolumeNumber"])
+                min_error = final_error
+    return best_distribution
+
 def factorial_k_fold_segmentation(k: int=5):
     """
     In this function, a sample with the size of the number of folds 
@@ -260,6 +285,9 @@ def factorial_k_fold_segmentation(k: int=5):
     selected_volumes = {i: [] for i in range(k)}
     # Iterates through the vendors
     for vendor in vendors_names:
+        # Initiates the array that will store the errors 
+        # for this vendor
+        errors = [0] * 3
         # Gets a sub DataFrame limited to the vendor that 
         # is being iterated
         df_vendor = df[df["Vendor"] == vendor]
@@ -271,51 +299,17 @@ def factorial_k_fold_segmentation(k: int=5):
         ped_expected = df_vendor.loc[:, "PED"].mean() * 5
         expected = [irf_expected, srf_expected, ped_expected]
         while df_vendor.shape[0] != 0:
-            if df_vendor.shape[0] < 5:
-                # In case there are not enough volumes to make a
-                # sample, creates dummy volumes set to zero that 
-                # are later eliminated
-                while df_vendor.shape[0] < 5:
-                    df_vendor.loc[df_vendor.shape[0]] = [0,0,0,0,0] 
             # Gets one row for each fold 
+            while df_vendor.shape[0] < k:
+                df_vendor.loc[df_vendor.shape[0]] = [0,0,0,0,0]
             sample = df_vendor.sample(k)
-            # Initiates the dictionary that will 
-            # store the volumes information
-            vols_dict = {}
-            # Sets the minimum error to infinite
-            min_error = float("inf")
-            # Iterates through all the possible combinations of the 5 
-            # selected volumes and selects the best possible combination
-            for index1, row1 in sample.iterrows():
-                vols_dict[0] = row1
-                sub_sample1 = sample.drop(index1)
-                for index2, row2 in sub_sample1.iterrows():
-                    vols_dict[1] = row2
-                    sub_sample2 = sub_sample1.drop(index2)
-                    for index3, row3 in sub_sample2.iterrows():
-                        vols_dict[2] = row3
-                        sub_sample3 = sub_sample2.drop(index3)                
-                        for index4, row4 in sub_sample3.iterrows():
-                            vols_dict[3] = row4
-                            sub_sample4 = sub_sample3.drop(index4)
-                            for index5, row5 in sub_sample4.iterrows():
-                                vols_dict[4] = row5
-                                errors = [0] * 3
-                                for key, item in vols_dict.items():
-                                    errors[0] = errors[0] + item["IRF"]
-                                    errors[1] = errors[1] + item["SRF"]
-                                    errors[2] = errors[2] + item["PED"] 
-                                final_error = np.sum(np.abs(np.array(errors) - np.array(expected)))
-                                if final_error < min_error:
-                                    best_distribution = [row1["VolumeNumber"],
-                                                        row2["VolumeNumber"],
-                                                        row3["VolumeNumber"],
-                                                        row4["VolumeNumber"],
-                                                        row5["VolumeNumber"]]
-                                    min_error = final_error
+
+            best_distribution = iterate_permutations(sample, k, expected, errors)
+
             # Adds the volumes to the dictionary
             for key in selected_volumes.keys():
-                selected_volumes[key].append(best_distribution[key])
+                if best_distribution != []:
+                    selected_volumes[key].append(best_distribution[key])
             # Drops the volumes that already have been selected
             for index, row in df_vendor.iterrows():
                 if row["VolumeNumber"] in best_distribution:
