@@ -1,12 +1,12 @@
 import numpy as np
 import pandas as pd
 from itertools import permutations
-from math import ceil
+from math import ceil, isnan
 from os import walk
 from random import shuffle
 from sklearn.model_selection import KFold
 
-# Volumes from Topcon T-1000: 
+# Volumes from Topcon T-1000 with 64 slices: 
 # Training - 056, 062
 # Testing - None
 
@@ -272,28 +272,31 @@ def iterate_permutations(sample, expected, errors):
     for perm in permutations(sample.iterrows(), sample.shape[0]):
         # Sets a possible combination of volumes
         vols_dict = {i: row for i, (index, row) in enumerate(perm)}
+        # Initiates a list that will hold the error of each permutation
+        tmp_error = [0] * 3
         # Iterates through all the volumes and their voxel counts
         for key, item in vols_dict.items():
-            # Initiates a list that will handle, temporarely, 
-            # the voxel counts in each permutation 
-            tmp_errors = [0] * 3
-            # Adds the voxel count to the previous 
-            # voxel counts and calculates the error
-            tmp_errors[0] = errors[0] + item["IRF"]
-            tmp_errors[1] = errors[1] + item["SRF"]
-            tmp_errors[2] = errors[2] + item["PED"] 
-            final_error = np.sum(np.abs(np.array(errors) - np.array(expected)))
-            # In case the error is better than one of the previously 
-            # calculated, then stores this permutation as the best 
-            # and its respective error, while updating the value of 
-            # the minimal error
-            if final_error < min_error:
-                best_distribution = []
-                best_errors = []
-                for vol in vols_dict.keys():
-                    best_distribution.append(vols_dict[vol]["VolumeNumber"])
-                best_errors = tmp_errors
-                min_error = final_error
+            # Updates the error of this permutation
+            tmp_error[0] = tmp_error[0] + item["IRF"]
+            tmp_error[1] = tmp_error[1] + item["SRF"]
+            tmp_error[2] = tmp_error[2] + item["PED"]
+        # Adds the errors of the previous volumes to the error
+        tmp_error[0] = tmp_error[0] + errors[0]
+        tmp_error[1] = tmp_error[1] + errors[1]
+        tmp_error[2] = tmp_error[2] + errors[2]        
+        # Calculates the final error as the sum of all errors
+        final_error = np.sum(np.abs(np.array(errors) - np.array(expected)))
+        # In case the error is better than one of the previously 
+        # calculated, then stores this permutation as the best 
+        # and its respective error, while updating the value of 
+        # the minimal error
+        if final_error < min_error:
+            best_distribution = []
+            best_errors = []
+            for vol in vols_dict.keys():
+                best_distribution.append(vols_dict[vol]["VolumeNumber"])
+            best_errors = tmp_error
+            min_error = final_error
     return best_distribution, best_errors
 
 def factorial_k_fold_segmentation(k: int=5):
@@ -520,6 +523,8 @@ def calculate_error(path: str):
         results_df = pd.DataFrame(np.zeros((3,3)), columns=columns, index=["IRF", "SRF", "PED"])
         # Iterates through the volumes selected by a fold
         for row in df[str(fold)]:
+            if isnan(row):
+                break
             # Gets the information of the number of voxels according to the number of the volume
             info = info_df.loc[info_df["VolumeNumber"] == row]
             # Gets the vendor of the volume
@@ -553,3 +558,4 @@ def calculate_error(path: str):
 
 if __name__ == "__main__":
     factorial_k_fold_segmentation()
+    calculate_error(path="..\\splits\\factorial_fold_selection.csv")
