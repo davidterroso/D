@@ -101,8 +101,8 @@ if status == solver.OPTIMAL or status == solver.FEASIBLE:
     fold_df.columns = [str(f) for f in range(num_folds)]
 
     # Save the new DataFrame to CSV
-    fold_df.to_csv("..\\splits\\mip_folds_assignment.csv", index=False)
-    print("Fold assignment has been completed and saved in the desired format.")
+    fold_df.to_csv("..\\splits\\mip_fold_selection.csv", index=False)
+    print("Fold assignment has been completed.")
 
 else:
     print("No feasible solution found.")
