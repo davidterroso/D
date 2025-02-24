@@ -97,13 +97,11 @@ def mip_k_fold_split(k: int=5):
         for column in range(len(voxel_cols)):
             for fold in range(k):
                 # Difference is the value aimed to minimized 
-                diff[volume, column, fold] = solver.NumVar(0, solver.infinity(), f"diff_{volume}_{column}_{fold}")
-                # NOT WORKING
+                diff[vendor, column, fold] = solver.NumVar(0, solver.infinity(), f"diff_{volume}_{column}_{fold}")
                 solver.Add(diff[vendor, column, fold] >= voxel_sums[(vendor, column, fold)] - expected_voxel_counts[(vendor, column)])
-                solver.Add(diff[volume, column, fold] >= expected_voxel_counts[(volume, column)] - voxel_sums[(volume, column, fold)])
+                solver.Add(diff[vendor, column, fold] >= expected_voxel_counts[(vendor, column)] - voxel_sums[(vendor, column, fold)])
 
-    # Declares that it is desired 
-    # to minimize the max deviation
+    # Declares that it is desired to minimize the total sum of differences, across all the folds in all vendors and classes
     solver.Minimize(solver.Sum(diff[volume, column, fold] for volume in vendors for column in range(len(voxel_cols)) for fold in range(k)))
 
     # Starts solving
@@ -136,7 +134,7 @@ def mip_k_fold_split(k: int=5):
         # Name the columns in the DataFrame
         fold_df.columns = [str(fold) for fold in range(k)]
 
-        # Save the new DataFrame to CSV
+        # Saves the new DataFrame to CSV
         fold_df.to_csv("..\\splits\\mip_fold_selection.csv", index=False)
         print("Fold assignment has been completed.")
 
