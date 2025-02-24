@@ -43,6 +43,9 @@ def mip_k_fold_split(k: int=5):
     # SCIP: Solving Constraint Integer Programs
     solver = pywraplp.Solver.CreateSolver("SCIP")
 
+    # Enables verbose logging to see solver iterations
+    solver.SetSolverSpecificParametersAsString("log_search_progress: true")
+
     # Boolean decision variable x[v, f] that indicates whether the volume v is in fold f  
     x = {}
     # Iterates through the volumes
