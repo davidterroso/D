@@ -1,18 +1,18 @@
 import pandas as pd
+import os
+import sys
 from math import ceil, floor
-from os import devnull
-from sys import __stderr__, stderr
 
 # Supresses the messages informing the 
 # loading of DLL files that come with 
 # the pywraplp import
-stderr = open(devnull, "w")
+sys.stderr = open(os.devnull, "w")
 
 from ortools.linear_solver import pywraplp
 
 # Restores the stderr definitions after the 
 # import is completed
-stderr = __stderr__
+sys.stderr = sys.__stderr__
 
 def mip_k_fold_split(k: int=5):
     """
