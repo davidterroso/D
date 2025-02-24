@@ -535,7 +535,9 @@ def calculate_error(path: str):
             results_df.at["IRF", vendor] = info["IRF"].item() + results_df.at["IRF", vendor]
             results_df.at["SRF", vendor] = info["SRF"].item() + results_df.at["SRF", vendor] 
             results_df.at["PED", vendor] = info["PED"].item() + results_df.at["PED", vendor]
-        # Iterates through the columns of the DataFrame
+        # Iterates through the columns of the 
+        # DataFrame, which represent in this 
+        # case a fold
         for col in results_df.columns:
             # Gets a sub DataFrame of the data
             df_vendor = info_df[info_df["Vendor"] == col]

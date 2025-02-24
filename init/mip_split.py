@@ -17,7 +17,10 @@ sys.stdout = sys.__stdout__
 
 def mip_k_fold_split(k: int=5):
     """
-    
+    This approach uses linear programming to reach the
+    fold division that performs the best according to 
+    the specified k number, the restrictions applied, 
+    and the objective function 
     Args:
         k (int): number of folds this split must have
 
@@ -45,15 +48,6 @@ def mip_k_fold_split(k: int=5):
     # SCIP: Solving Constraint Integer Programs
     solver = pywraplp.Solver.CreateSolver("GLOP")
 
-    # Enables verbose logging to see solver iterations
-    # solver.SetSolverSpecificParametersAsString("""
-    # display/verblevel = 5
-    # numerics/scaling = FALSE
-    # numerics/feastol = 1e-6
-    # numerics/dualfeastol = 1e-6
-    # numerics/lpfeastol = 1e-6
-    # limits/time = 36000
-    # """)
     solver.EnableOutput()
 
     # Boolean decision variable x[v, f] that 
