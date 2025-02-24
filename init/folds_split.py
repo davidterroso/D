@@ -558,6 +558,24 @@ def calculate_error(path: str):
         # Saves the DataFrame as a CSV file
         pd.DataFrame(results_df).to_csv(path_or_buf=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold{fold}.csv")
 
+def quantify_errors(file_name, k):
+    example_df = pd.read_csv(f"..\\splits\\{file_name}0.csv", index_col=0, header=0)
+    mean_results = np.zeros(example_df.shape)
+    std_results = np.zeros(example_df.shape)
+    for col_index, col in enumerate(example_df.columns):
+        for row_index, row in enumerate(example_df.index):
+            values = []
+            for fold in range(k):
+                path_name = f"..\\splits\\{file_name}{fold}.csv"
+                df = pd.read_csv(path_name, index_col=0, header=0)
+                values.append(np.abs(df[col].loc[row]))
+            mean_results[row_index, col_index] = np.array(values).mean()
+            std_results[row_index, col_index] = np.array(values).std()
+
+    print(mean_results)
+    print(std_results)
+
 if __name__ == "__main__":
     # factorial_k_fold_segmentation()
-    calculate_error(path="..\\splits\\mip_fold_selection.csv")
+    # calculate_error(path="..\\splits\\manual_fold_selection.csv")
+    quantify_errors("manual_errors_fold", 5)
