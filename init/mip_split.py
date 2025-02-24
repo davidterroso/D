@@ -38,15 +38,17 @@ def mip_k_fold_split(k: int=5):
     voxel_cols = ["IRF", "SRF", "PED"]
     # Gets the list of all vendors in the dataset
     vendors = df["Vendor"].unique()
-
+    
     # Creates the solver
     # SCIP: Solving Constraint Integer Programs
     solver = pywraplp.Solver.CreateSolver("SCIP")
 
     # Enables verbose logging to see solver iterations
-    solver.SetSolverSpecificParametersAsString("log_search_progress: true")
+    solver.SetSolverSpecificParametersAsString("display/verblevel = 3")
+    solver.EnableOutput()
 
-    # Boolean decision variable x[v, f] that indicates whether the volume v is in fold f  
+    # Boolean decision variable x[v, f] that 
+    # indicates whether the volume v is in fold f  
     x = {}
     # Iterates through the volumes
     for volume in range(num_volumes):
