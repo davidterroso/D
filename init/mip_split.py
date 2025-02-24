@@ -46,8 +46,16 @@ def mip_k_fold_split(k: int=5):
 
     # Creates the solver
     # SCIP: Solving Constraint Integer Programs
-    solver = pywraplp.Solver.CreateSolver("GLOP")
+    # Too slow and eventually stops working
+    # GLOP: Google Linear Optimization Package
+    # Fast, but the solutions given only respect 
+    # the objective function, missing essential 
+    # constraints such as not using all volumes
+    # CP-SAT: Constraint Programing - SATisfiability
+    solver = pywraplp.Solver.CreateSolver("CP-SAT")
 
+    # Allows the solver to print information on 
+    # the console
     solver.EnableOutput()
 
     # Boolean decision variable x[v, f] that 
