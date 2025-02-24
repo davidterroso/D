@@ -6,13 +6,13 @@ from math import ceil, floor
 # Supresses the messages informing the 
 # loading of DLL files that come with 
 # the pywraplp import
-sys.stderr = open(os.devnull, "w")
+sys.stdout = open(os.devnull, "w")
 
 from ortools.linear_solver import pywraplp
 
 # Restores the stderr definitions after the 
 # import is completed
-sys.stderr = sys.__stderr__
+sys.stdout = sys.__stdout__
 
 def mip_k_fold_split(k: int=5):
     """
