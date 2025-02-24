@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import sys
+import time
 from math import ceil, floor
 
 # Supresses the messages informing the 
@@ -30,6 +31,7 @@ def mip_k_fold_split(k: int=5):
     # which are IRF, SRF, and PED
     df = pd.read_csv("..\\splits\\volumes_info.csv")
 
+
     # Extracts the number of volumes to split
     num_volumes = len(df)
     # Calculates the number of volumes per fold
@@ -38,13 +40,20 @@ def mip_k_fold_split(k: int=5):
     voxel_cols = ["IRF", "SRF", "PED"]
     # Gets the list of all vendors in the dataset
     vendors = df["Vendor"].unique()
-    
+
     # Creates the solver
     # SCIP: Solving Constraint Integer Programs
-    solver = pywraplp.Solver.CreateSolver("SCIP")
+    solver = pywraplp.Solver.CreateSolver("GLOP")
 
     # Enables verbose logging to see solver iterations
-    solver.SetSolverSpecificParametersAsString("display/verblevel = 3")
+    # solver.SetSolverSpecificParametersAsString("""
+    # display/verblevel = 5
+    # numerics/scaling = FALSE
+    # numerics/feastol = 1e-6
+    # numerics/dualfeastol = 1e-6
+    # numerics/lpfeastol = 1e-6
+    # limits/time = 36000
+    # """)
     solver.EnableOutput()
 
     # Boolean decision variable x[v, f] that 
@@ -123,6 +132,13 @@ def mip_k_fold_split(k: int=5):
 
     # Starts solving
     status = solver.Solve()
+
+    start_time = time.time()
+    max_runtime = 36000
+
+    while status == pywraplp.Solver.NOT_SOLVED and (time.time() - start_time) < max_runtime:
+        print(f"Solver is still running... {round(time.time() - start_time, 2)}s elapsed")
+        time.sleep(10)
 
     # Outputs the solution
     if status == solver.OPTIMAL or status == solver.FEASIBLE:

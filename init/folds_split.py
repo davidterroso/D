@@ -557,5 +557,5 @@ def calculate_error(path: str):
         pd.DataFrame(results_df).to_csv(path_or_buf=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold{fold}.csv")
 
 if __name__ == "__main__":
-    factorial_k_fold_segmentation()
+    # factorial_k_fold_segmentation()
     calculate_error(path="..\\splits\\mip_fold_selection.csv")
