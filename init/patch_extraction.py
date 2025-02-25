@@ -93,13 +93,17 @@ def extract_patches_wrapper(model_name: str, patch_shape: tuple, n_pos: int,
                     n_pos=n_pos, n_neg=n_neg, 
                     pos=pos, neg=neg, 
                     volumes=train_volumes) 
-                
-        print("Extracting Validation Patches")
-        extract_patches(IMAGES_PATH, 
-                    patch_shape=patch_shape, 
-                    n_pos=n_pos, n_neg=n_neg, 
-                    pos=pos, neg=neg, 
-                    volumes=val_volumes)
+        # Only extracts the validation patches in 
+        # case the model is being tuned
+        # When it is not being tuned, val_volumes
+        # is None
+        if val_volumes is not None:
+            print("Extracting Validation Patches")
+            extract_patches(IMAGES_PATH, 
+                        patch_shape=patch_shape, 
+                        n_pos=n_pos, n_neg=n_neg, 
+                        pos=pos, neg=neg, 
+                        volumes=val_volumes)
     else:
         save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\slices\\"
         save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\masks\\"

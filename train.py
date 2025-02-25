@@ -198,20 +198,30 @@ def train_model (
 
     # Reads the CSV file that contains the volumes that 
     # will be used to train the network
-    # df = read_csv("splits/segmentation_train_splits.csv")
-    # fold_column_name = f"Fold{fold_test}_Volumes"
-    # initial_train_volumes = df[fold_column_name].dropna().to_list()
-
     df = read_csv("splits/competitive_fold_selection.csv")
+    # Initiates the list of the volumes used to train
     train_volumes = []
+    # Only in case the network's hyperparameters are being 
+    # tuned, validation fold is created 
     if tuning:
+        # Initiates the list of the volumes used to validate
         val_volumes = []
+        # Iterates through all the columns in the DataFrame
         for col in df.columns:
+            # In case the column number does not match with either 
+            # the validation or testing fold number, its volumes 
+            # are added to the list of the train volumes
             if (col != str(fold_test)) and (col != str(fold_val)):
                 train_volumes = train_volumes + df[col].to_list()
+            # In case the column number matches the validation 
+            # fold number, the volumes are added to the list of 
+            # validation volumes
             if (col == str(fold_val)):
                 val_volumes = val_volumes + df[col].to_list()
+    # In case the training is not for the tuning of the network 
+    # parameters, no list of validation volumes is created
     else:
+        val_volumes = None
         for col in df.columns:
             if (col != str(fold_test)):
                 train_volumes = train_volumes + df[col].to_list()
@@ -225,6 +235,8 @@ def train_model (
         Mixed Precision: {amp}
     """)
 
+    # Dictionary that contains the optimizers 
+    # that can be used in this network
     optimizers_dict = {
         # foreach=True makes the the optimization less time consuming but more memory consuming
         # maximize=False means we are looking to minimize the loss (in case the Dice coefficient 
@@ -433,7 +445,8 @@ def train_model (
                 # Calculates the histogram of the gradient using the CPU
                 histograms["Gradients/" + tag] = wandb.Histogram(value.grad.data.cpu())
 
-        # Calculates the validation score for the model
+        # Calculates the validation score for 
+        # the model, in case tuning is being done
         if tuning:
             val_loss = evaluate(model_name, model, val_loader, device, amp)
         else:
@@ -444,7 +457,8 @@ def train_model (
         if scheduler and tuning:
             torch_scheduler.step(val_loss)
 
-        # Adds the validation score to the logging
+        # Adds the validation score to the logging, 
+        # in case tuning is being done
         if tuning:
             logging.info(f"Validation Mean Loss: {val_loss}")
 
@@ -462,6 +476,8 @@ def train_model (
         # than the previously best obtained, 
         # saves the model as a PyTorch (.pth) file
         # and resets the patience counter
+        # Only when tuning is being done, the
+        # best models are saved
         if tuning:
             if val_loss < best_val_loss:
                 best_val_loss = val_loss
@@ -484,6 +500,8 @@ def train_model (
         # In case the number of epochs after which no 
         # improvement has been made surpasses the 
         # patience value, the model stops training
+        # Only when tuning is being done, the
+        # early stopage can be triggered
         if patience_counter >= patience and tuning:
             logging.info("Early stopping triggered.")
             break
