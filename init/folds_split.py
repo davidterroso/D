@@ -599,11 +599,15 @@ def quantify_errors(file_name: str, k: int=5):
             # and col, across all folds
             mean_results[row_index, col_index] = np.array(values).mean()
             std_results[row_index, col_index] = np.array(values).std()
-
-    print(mean_results)
-    print(std_results)
+    # Saves both matrices to two different CSV files
+    pd.DataFrame(columns=example_df.columns, 
+                 index=example_df.index, 
+                 data=mean_results).round(decimals=2).to_csv("..\\splits\\manual_errors_overall_mean.csv")
+    pd.DataFrame(columns=example_df.columns, 
+                 index=example_df.index, 
+                 data=std_results).round(decimals=2).to_csv("..\\splits\\manual_errors_overall_std.csv")
 
 if __name__ == "__main__":
     # factorial_k_fold_segmentation()
     # calculate_error(path="..\\splits\\manual_fold_selection.csv")
-    quantify_errors("manual_errors_fold", 5)
+    quantify_errors("..\\splits\\manual_errors_fold", 5)
