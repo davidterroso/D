@@ -561,8 +561,11 @@ def calculate_error(path: str):
             for fluid, row in results_df[col].items():
                 # Calculates the expected value according to 
                 # the mean and the number of volumes of a 
-                # certain vendor present in the fold 
-                expected = df_vendor.loc[:, fluid].mean() * vendor_count[col]
+                # certain vendor present in the fold or according 
+                # to the expected value used to calculate the 
+                # error during the fold splitting
+                # expected = df_vendor.loc[:, fluid].mean() * vendor_count[col]
+                expected = df_vendor.loc[:, fluid].mean() * ceil(df_vendor.shape[0] / df.shape[1])
                 # Calculates the difference and updates 
                 # the value in the DataFrame
                 results_df.at[fluid, col] = row - expected   
@@ -630,5 +633,5 @@ def quantify_errors(file_name: str, k: int=5):
                  data=std_results).round(decimals=2).to_csv(new_file_name + "std.csv")
 
 if __name__ == "__main__":
-    factorial_k_fold_segmentation(random=False)
+    # factorial_k_fold_segmentation()
     calculate_error(path="..\\splits\\sortedfactorial_fold_selection.csv")
