@@ -561,6 +561,20 @@ def calculate_error(path: str):
         quantify_errors(file_name=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold", k=df.shape[1])
 
 def quantify_errors(file_name: str, k: int=5):
+    """
+    This function is called to calculate the mean error and standard deviation of 
+    errors across all folds, for each specific vendor and fluid type, resulting in
+    a table of shape 3x3 that is saved as a CSV file
+
+    Args:
+        file_name (str): path of the files that contain the error in each fold 
+            (e.g. "..\\splits\\manual_errors_fold"). This path does not contain 
+            nor a number of the fold nor the file extension (.csv)
+        k (int): number of folds considered
+
+    Return: 
+        None
+    """
     # Loads the errors of the first fold to initialize the arrays with the errors 
     # and calculate the number of rows and columns that will be handled
     example_df = pd.read_csv(f"{file_name}0.csv", index_col=0, header=0)
