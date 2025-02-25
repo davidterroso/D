@@ -2,17 +2,26 @@ import csv
 import logging
 import torch
 import wandb
+import sys
+from IPython import get_ipython
 from os import makedirs, remove
 from os.path import exists
 from pandas import read_csv
 from torch import optim
 from torch.nn.functional import one_hot, softmax
-from tqdm.auto import tqdm
 from init.patch_extraction import extract_patches_wrapper
 from network_functions.evaluate import evaluate
 from networks.unet25D import TennakoonUNet
 from networks.loss import multiclass_balanced_cross_entropy_loss
 from networks.unet import UNet
+
+# Imports tqdm depending on whether 
+# it is being called from the 
+# Notebook or from this file
+if (get_ipython() is not None):
+    from tqdm.notebook import tqdm
+else:
+    from tqdm.auto import tqdm
 
 def train_model (
         run_name: str,
