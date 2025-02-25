@@ -18,7 +18,7 @@ from networks.unet import UNet
 # it is being called from the 
 # Notebook or from this file
 if (get_ipython() is not None):
-    from tqdm.notebook import tqdm
+    from tqdm import tqdm_notebook as tqdm
 else:
     from tqdm.auto import tqdm
 
@@ -334,6 +334,7 @@ def train_model (
             n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
             val_volumes=val_volumes, batch_size=batch_size, 
             patch_dropping=patch_dropping, drop_prob=drop_prob)
+    print(n_train)
 
     # Initiates the best validation loss as an infinite value
     best_val_loss = float("inf")
@@ -596,7 +597,7 @@ def train_model (
 # an example
 if __name__ == "__main__":
     train_model(
-        run_name="Run7",
+        run_name="Run9",
         model_name="UNet",
         device="GPU",
         epochs=100,

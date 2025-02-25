@@ -3,18 +3,25 @@ import torch
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 from collections import defaultdict
+from IPython import get_ipython
 from os import makedirs
 from os.path import exists
 from pandas import DataFrame, read_csv
-from skimage.io import imread
 from torch.utils.data import DataLoader
-from tqdm.auto import tqdm
 from shutil import rmtree
 from networks.loss import dice_coefficient
 from networks.unet25D import TennakoonUNet
 from networks.unet import UNet
 from network_functions.dataset import TestDataset
 from paths import IMAGES_PATH
+
+# Imports tqdm depending on whether 
+# it is being called from the 
+# Notebook or from this file
+if (get_ipython() is not None):
+    from tqdm import tqdm_notebook as tqdm
+else:
+    from tqdm.auto import tqdm
 
 # Dictionary of labels in masks to fluid names
 label_to_fluids = {
