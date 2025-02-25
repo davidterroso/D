@@ -299,7 +299,7 @@ def iterate_permutations(sample, expected, errors):
             min_error = final_error
     return best_distribution, best_errors
 
-def factorial_k_fold_segmentation(k: int=5):
+def factorial_k_fold_segmentation(k: int=5, random=False):
     """
     In this function, a sample with the size of the number of folds 
     is extracted from the available volumes and all the k! possible 
@@ -310,6 +310,9 @@ def factorial_k_fold_segmentation(k: int=5):
 
     Args:
         k (int): number of folds in the split
+        random (bool): flag that indicates whether the volumes are 
+            extracted randomly from the DataFrame or by decreasing 
+            order in total number of voxels
 
     Return:
         None
@@ -328,6 +331,12 @@ def factorial_k_fold_segmentation(k: int=5):
         # Gets a sub DataFrame limited to the vendor that 
         # is being iterated
         df_vendor = df[df["Vendor"] == vendor]
+        # In case the selection is not random, sorts the DataFrame 
+        # in descending order by the total number of voxels
+        if not random:
+            df_vendor = df_vendor.copy()
+            df_vendor.loc[:, "Total"] = df_vendor.iloc[:, 2:].sum(axis=1)
+            df_vendor = df_vendor.sort_values(by="Total", ascending=False).drop(columns="Total")
         # Defines the expected value for each class as the
         # maximum number of volumes of a vendor in a fold
         # and the mean of voxel counts in this vendor
@@ -339,7 +348,10 @@ def factorial_k_fold_segmentation(k: int=5):
             # Gets one row for each fold 
             while df_vendor.shape[0] < k:
                 df_vendor.loc[df_vendor.shape[0]] = [0,0,0,0,0]
-            sample = df_vendor.sample(k)
+            if random:
+                sample = df_vendor.sample(k)
+            else:
+                sample = df_vendor.head(k)
 
             # Iterates through the possible permutations of the sample, determining which 
             # is the best possible distribution and the best errors
@@ -373,8 +385,12 @@ def factorial_k_fold_segmentation(k: int=5):
         options_df = pd.concat([options_df, tmp_df], axis=1, sort=False)
     # Names the columns in the DataFrame
     options_df.columns = selected_volumes.keys()
-    # Saves the DataFrame as a CSV file with no index
-    options_df.to_csv("..\splits\\factorial_fold_selection.csv", index=False)
+    # Saves the DataFrame as a CSV file with no index with a name according to 
+    # whether the volumes were randomly sampled or not
+    if random:
+        options_df.to_csv("..\\splits\\factorial_fold_selection.csv", index=False)
+    else:
+        options_df.to_csv("..\\splits\\sortedfactorial_fold_selection.csv", index=False)
 
 def competitive_k_fold_segmentation(k: int=5):
     """
@@ -490,7 +506,7 @@ def competitive_k_fold_segmentation(k: int=5):
     # Names the columns in the DataFrame
     options_df.columns = agents_choices.keys()
     # Saves the DataFrame as a CSV file with no index
-    options_df.to_csv("..\splits\competitive_fold_selection.csv", index=False)
+    options_df.to_csv("..\\splits\\competitive_fold_selection.csv", index=False)
 
 def calculate_error(path: str):
     """
@@ -557,8 +573,8 @@ def calculate_error(path: str):
         underscore = "_"
         # Saves the DataFrame as a CSV file
         pd.DataFrame(results_df).to_csv(path_or_buf=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold{fold}.csv")
-        # Calls the function that will present the average error and its standard deviation
-        quantify_errors(file_name=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold", k=df.shape[1])
+    # Calls the function that will present the average error and its standard deviation
+    quantify_errors(file_name=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold", k=df.shape[1])
 
 def quantify_errors(file_name: str, k: int=5):
     """
@@ -614,6 +630,6 @@ def quantify_errors(file_name: str, k: int=5):
                  data=std_results).round(decimals=2).to_csv(new_file_name + "std.csv")
 
 if __name__ == "__main__":
-    # factorial_k_fold_segmentation()
-    # calculate_error(path="..\\splits\\manual_fold_selection.csv")
-    quantify_errors("..\\splits\\old_mip_errors_fold", 5)
+    factorial_k_fold_segmentation()
+    calculate_error(path="..\\splits\\sortedfactorial_fold_selection.csv")
+    # quantify_errors("..\\splits\\old_mip_errors_fold", 5)
