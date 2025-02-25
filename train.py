@@ -2,7 +2,6 @@ import csv
 import logging
 import torch
 import wandb
-import sys
 from IPython import get_ipython
 from os import makedirs, remove
 from os.path import exists
