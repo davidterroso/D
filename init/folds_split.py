@@ -299,7 +299,7 @@ def iterate_permutations(sample, expected, errors):
             min_error = final_error
     return best_distribution, best_errors
 
-def factorial_k_fold_segmentation(k: int=5, random=False):
+def factorial_k_fold_segmentation(k: int=5, random=True):
     """
     In this function, a sample with the size of the number of folds 
     is extracted from the available volumes and all the k! possible 
@@ -630,6 +630,5 @@ def quantify_errors(file_name: str, k: int=5):
                  data=std_results).round(decimals=2).to_csv(new_file_name + "std.csv")
 
 if __name__ == "__main__":
-    factorial_k_fold_segmentation()
+    factorial_k_fold_segmentation(random=False)
     calculate_error(path="..\\splits\\sortedfactorial_fold_selection.csv")
-    # quantify_errors("..\\splits\\old_mip_errors_fold", 5)
