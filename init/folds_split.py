@@ -616,4 +616,4 @@ def quantify_errors(file_name: str, k: int=5):
 if __name__ == "__main__":
     # factorial_k_fold_segmentation()
     # calculate_error(path="..\\splits\\manual_fold_selection.csv")
-    quantify_errors("..\\splits\\manual_errors_fold", 5)
+    quantify_errors("..\\splits\\competitive_errors_fold", 5)
