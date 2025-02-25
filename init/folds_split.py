@@ -557,8 +557,10 @@ def calculate_error(path: str):
         underscore = "_"
         # Saves the DataFrame as a CSV file
         pd.DataFrame(results_df).to_csv(path_or_buf=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold{fold}.csv")
+        # Calls the function that will present the average error and its standard deviation
+        quantify_errors(file_name=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold", k=df.shape[1])
 
-def quantify_errors(file_name, k):
+def quantify_errors(file_name: str, k: int=5):
     example_df = pd.read_csv(f"..\\splits\\{file_name}0.csv", index_col=0, header=0)
     mean_results = np.zeros(example_df.shape)
     std_results = np.zeros(example_df.shape)
