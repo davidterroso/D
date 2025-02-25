@@ -29,6 +29,7 @@ def train_model (
         number_of_classes: int,
         number_of_channels: int,
         fold_test: int,
+        fold_val: int,
         tuning: bool,
         patch_shape: tuple, 
         n_pos: int, 
@@ -71,7 +72,9 @@ def train_model (
         number_of_channels (int): number of channels the 
             input will present
         fold_test (int): number of the fold that will be used 
-            in the network testing 
+            in the network testing         
+        fold_val (int): number of the fold that will be used 
+            in the network validation 
         tuning (bool): indicates whether this train will
             be performed to tune the hyperparameters or not
         patch_shape (tuple): indicates what is the shape of 
@@ -195,38 +198,23 @@ def train_model (
 
     # Reads the CSV file that contains the volumes that 
     # will be used to train the network
-    df = read_csv("splits/segmentation_train_splits.csv")
-    fold_column_name = f"Fold{fold_test}_Volumes"
-    initial_train_volumes = df[fold_column_name].dropna().to_list()
+    # df = read_csv("splits/segmentation_train_splits.csv")
+    # fold_column_name = f"Fold{fold_test}_Volumes"
+    # initial_train_volumes = df[fold_column_name].dropna().to_list()
 
-    # In case it is desired to tune the model, the test fold (first 
-    # during hyperparameter tuning) is not used to test. Instead, the 
-    # second will be used to test the changed hyperparameters. Therefore,
-    # to evaluate the new hyperparameters on unseen data, the volumes from 
-    # the second fold must be removed from the list of training volumes 
+    df = read_csv("splits/competitive_fold_selection.csv")
+    train_volumes = []
     if tuning:
-        if fold_test == 1:
-            # Assigns new value to fold test
-            fold_test = 2
-            # Reads the CSV file that contains the test splits for segmentation
-            df_test = read_csv("splits/segmentation_test_splits.csv")
-            # Iterates through the volumes selected to train and removes those
-            # that present in the second fold of testing, which will now be used 
-            # as evaluation for the new hyperparameters 
-            fold_column_test = f"Fold{fold_test}_Volumes"
-            test_volumes = df_test[fold_column_test].dropna().to_list()
-            initial_train_volumes = [x for x in initial_train_volumes if x not in test_volumes]        
-        else:
-            # Condition to check if the tuning was selected for the correct
-            # set of folds, which is identified by the fold used in testing
-            print("To tune the hyperparameters, please indicate the first \
-                  fold as test set. The second fold will be used to test.")
-
-    # Removes from the train volumes those that will 
-    # be used for validation
-    val_fold = f"Fold{fold_test + 1}_Volumes"
-    val_volumes = df_test[val_fold].dropna().tolist()
-    train_volumes = [x for x in initial_train_volumes if x not in val_volumes]
+        val_volumes = []
+        for col in df.columns:
+            if (col != str(fold_test)) and (col != str(fold_val)):
+                train_volumes = train_volumes + df[col].to_list()
+            if (col == str(fold_val)):
+                val_volumes = val_volumes + df[col].to_list()
+    else:
+        for col in df.columns:
+            if (col != str(fold_test)):
+                train_volumes = train_volumes + df[col].to_list()
     
     # Registers the information that will be logged
     logging.info(f"""Starting training:
@@ -446,15 +434,19 @@ def train_model (
                 histograms["Gradients/" + tag] = wandb.Histogram(value.grad.data.cpu())
 
         # Calculates the validation score for the model
-        val_loss = evaluate(model_name, model, val_loader, device, amp)
+        if tuning:
+            val_loss = evaluate(model_name, model, val_loader, device, amp)
+        else:
+            val_loss = 0
         
         # In case a scheduler is used, the
         # learning rate is adjusted accordingly
-        if scheduler:
+        if scheduler and tuning:
             torch_scheduler.step(val_loss)
 
         # Adds the validation score to the logging
-        logging.info(f"Validation Mean Loss: {val_loss}")
+        if tuning:
+            logging.info(f"Validation Mean Loss: {val_loss}")
 
         # Writes the loss of an epoch in training and validation
         with open(csv_epoch_filename, mode="a", newline="") as file:
@@ -470,28 +462,29 @@ def train_model (
         # than the previously best obtained, 
         # saves the model as a PyTorch (.pth) file
         # and resets the patience counter
-        if val_loss < best_val_loss:
-            best_val_loss = val_loss
-            patience_counter = 0
-            # File is saved with a name that depends on the argument input, the name 
-            # of the model, and fluid desired to segment in case it exists
-            if model_name != "UNet3":
-                torch.save(model.state_dict(),
-                            f"models/{run_name}_{model_name}_best_model.pth")
+        if tuning:
+            if val_loss < best_val_loss:
+                best_val_loss = val_loss
+                patience_counter = 0
+                # File is saved with a name that depends on the argument input, the name 
+                # of the model, and fluid desired to segment in case it exists
+                if model_name != "UNet3":
+                    torch.save(model.state_dict(),
+                                f"models/{run_name}_{model_name}_best_model.pth")
+                else:
+                    torch.save(model.state_dict(), 
+                            f"models/{run_name}_{label_to_fluids.get(fluid)}_{model_name}_best_model.pth")
+                print("Model saved.")
+            # In case the model has not 
+            # obtained a better performance, 
+            # the patience counter increases
             else:
-                torch.save(model.state_dict(), 
-                           f"models/{run_name}_{label_to_fluids.get(fluid)}_{model_name}_best_model.pth")
-            print("Model saved.")
-        # In case the model has not 
-        # obtained a better performance, 
-        # the patience counter increases
-        else:
-            patience_counter += 1
+                patience_counter += 1
         
         # In case the number of epochs after which no 
         # improvement has been made surpasses the 
         # patience value, the model stops training
-        if patience_counter >= patience:
+        if patience_counter >= patience and tuning:
             logging.info("Early stopping triggered.")
             break
 
@@ -591,6 +584,7 @@ if __name__ == "__main__":
         number_of_classes=4,
         number_of_channels=1,
         fold_test=1,
+        fold_val=2,
         tuning=True,
         patch_shape=(256,128), 
         n_pos=12, 
