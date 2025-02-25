@@ -64,9 +64,8 @@ def test_model (
         None
     """
     # Gets the list of volumes used to test the model
-    df = read_csv("splits/segmentation_test_splits.csv")
-    test_fold_column_name = f"Fold{fold_test}_Volumes"
-    test_volumes = df[test_fold_column_name].dropna().to_list()
+    df = read_csv("splits/competitive_fold_selection.csv")
+    test_volumes = df[str(fold_test)].dropna().to_list()
 
     # Dictionary of models, associates a string to a PyTorch module
     models = {

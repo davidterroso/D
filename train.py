@@ -199,11 +199,6 @@ def train_model (
         f"\t{model.n_classes} output channels (classes)\n"
     )
 
-    # Checks if the selected fold for testing exists
-    if ((fold_test < 0) or (fold_test > 5)):
-        print("There are five folds. Please select one of them.")
-        return 0
-
     # Reads the CSV file that contains the volumes that 
     # will be used to train the network
     df = read_csv("splits/competitive_fold_selection.csv")
@@ -220,19 +215,19 @@ def train_model (
             # the validation or testing fold number, its volumes 
             # are added to the list of the train volumes
             if (col != str(fold_test)) and (col != str(fold_val)):
-                train_volumes = train_volumes + df[col].to_list()
+                train_volumes = train_volumes + df[col].dropna().to_list()
             # In case the column number matches the validation 
             # fold number, the volumes are added to the list of 
             # validation volumes
             if (col == str(fold_val)):
-                val_volumes = val_volumes + df[col].to_list()
+                val_volumes = val_volumes + df[col].dropna().to_list()
     # In case the training is not for the tuning of the network 
     # parameters, no list of validation volumes is created
     else:
         val_volumes = None
         for col in df.columns:
             if (col != str(fold_test)):
-                train_volumes = train_volumes + df[col].to_list()
+                train_volumes = train_volumes + df[col].dropna().to_list()
     
     # Registers the information that will be logged
     logging.info(f"""Starting training:
