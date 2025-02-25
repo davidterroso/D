@@ -52,6 +52,8 @@ def mip_k_fold_split(k: int=5):
     # the objective function, missing essential 
     # constraints such as not using all volumes
     # CP-SAT: Constraint Programing - SATisfiability
+    # Fast convergence but reaches a bottleneck where 
+    # it requires too much computational power
     solver = pywraplp.Solver.CreateSolver("CP-SAT")
 
     # Allows the solver to print information on 

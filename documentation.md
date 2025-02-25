@@ -60,6 +60,7 @@ D
  ┣ init # Folder that contains the Python files that are used before training the networks, to prepare the data
  ┃ ┣ __init__.py # Despite not having code in it, marks the folder as a possible library and allows its use in Jupyter
  ┃ ┣ folds_split.py # Has functions that perform k-fold-split on the RETOUCH dataset, according to the project needs
+ ┃ ┣ mip_split.py # Using integer programming, attempts to determine the best fold split
  ┃ ┣ patch_extraction.py # Has functions extract the patches later used to train the networks
  ┃ ┗ read_oct.py # Reads and saves the OCT's B-scans so that it can be saved in the user's computer
  ┣ logs # Folder that contains the error logs of the runs
@@ -79,10 +80,44 @@ D
  ┃ ┣ loss.py # Contains the loss functions that will be used to train and evaluate the models
  ┃ ┗ unet.py # U-Net model in PyTorch
  ┣ splits # Will contain all the train-test splits
+ ┃ ┣ competitive_errors_fold0.csv # Contains the errors obtained in fold 0 of the competitive fold split
+ ┃ ┃ ...
+ ┃ ┣ competitive_errors_fold4.csv # Contains the errors obtained in fold 4 of the competitive fold split
+ ┃ ┣ competitive_errors_mean.csv # Contains the mean of the errors obtained in the competitive fold split
+ ┃ ┣ competitive_errors_std.csv # Contains the standard deviation of the errors obtained in the competitive fold split
+ ┃ ┣ competitive_fold_selection.csv # Contains the fold split obtained using the competitive fold split
+ ┃ ┣ factorial_errors_fold0.csv # Contains the errors obtained in fold 0 of the factorial fold split
+ ┃ ┃ ...
+ ┃ ┣ factorial_errors_fold4.csv # Contains the errors obtained in fold 4 of the factorial fold split
+ ┃ ┣ factorial_errors_mean.csv # Contains the mean of the errors obtained in the factorial fold split
+ ┃ ┣ factorial_errors_std.csv # Contains the standard deviation of the errors obtained in the factorial fold split
+ ┃ ┣ factorial_fold_selection.csv # Contains the fold split obtained using the factorial fold split
+ ┃ ┣ folds_selection.xlsx # Excel file where a manual analysis was made to determine which fold split was optimal
  ┃ ┣ generation_test_splits.csv # Contains the index of the volumes that will be used in the testing of the generative models
- ┃ ┣ generation_train_splits.csv # Contains the index of the volumes that will be used in the training of the generative models
- ┃ ┣ segmentation_test_splits.csv # Contains the index of the volumes that will be used in the testing of the segmentation models
- ┃ ┗ segmentation_train_splits.csv # Contains the index of the volumes that will be used in the training of the segmentation models
+ ┃ ┣ generation_train_splits.csv # Contains the index of the volumes that will be used in the training of the generative 
+ ┃ ┃                             # models
+ ┃ ┣ manual_errors_fold0.csv # Contains the errors obtained in fold 0 of the fold split obtained manually
+ ┃ ┃ ...
+ ┃ ┣ manual_errors_fold4.csv # Contains the errors obtained in fold 4 of the fold split obtained manually
+ ┃ ┣ manual_errors_mean.csv # Contains the mean of the errors obtained in the fold split obtained manually
+ ┃ ┣ manual_errors_std.csv # Contains the standard deviation of the errors obtained in the fold split obtained manually
+ ┃ ┣ manual_fold_selection.csv # Contains the fold split obtained using the fold split obtained manually
+ ┃ ┣ segmentation_test_splits.csv # Contains the index of the volumes that will be used in the testing of 
+ ┃ ┃                              # the segmentation models
+ ┃ ┣ segmentation_train_splits.csv # Contains the index of the volumes that will be used in the training of 
+ ┃ ┃                               # the segmentation models
+ ┃ ┣ sortedfactorial_errors_fold0.csv # Contains the errors obtained in fold 0 of the factorial fold split, with the volumes  
+ ┃ ┃ ...                              # sorted by the quantity of fluid voxels
+ ┃ ┣ sortedfactorial_errors_fold4.csv # Contains the errors obtained in fold 4 of the factorial fold split, with the volumes 
+ ┃ ┃                                  # sorted by the quantity of fluid voxels
+ ┃ ┣ sortedfactorial_errors_mean.csv # Contains the mean of the errors obtained in the factorial fold split, with the volumes 
+ ┃ ┃                                 # sorted by the quantity of fluid voxels
+ ┃ ┣ sortedfactorial_errors_std.csv # Contains the standard deviation of the errors obtained in the factorial fold split, with
+ ┃ ┃                                # the volumes sorted by the quantity of fluid voxels
+ ┃ ┣ sortedfactorial_fold_selection.csv # Contains the fold split obtained using the factorial fold split, with the volumes 
+ ┃ ┃                                    # sorted by the quantity of fluid voxels
+ ┃ ┗ volumes_info.csv # Contains the number of voxels per fluid class of each volume, with their respective vendor and ordered 
+ ┃                    # by their index
  ┣ .gitignore # Declares the files that must not be updated to git
  ┣ documentation.md # Project documentation
  ┣ pipeline.ipynb # Project's pipeline code
