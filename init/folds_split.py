@@ -561,16 +561,28 @@ def calculate_error(path: str):
         quantify_errors(file_name=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold", k=df.shape[1])
 
 def quantify_errors(file_name: str, k: int=5):
-    example_df = pd.read_csv(f"..\\splits\\{file_name}0.csv", index_col=0, header=0)
+    # Loads the errors of the first fold to initialize the arrays with the errors 
+    # and calculate the number of rows and columns that will be handled
+    example_df = pd.read_csv(f"{file_name}0.csv", index_col=0, header=0)
+    # Initializes the matrices that will store 
+    # the mean error and their standard deviation 
     mean_results = np.zeros(example_df.shape)
     std_results = np.zeros(example_df.shape)
+    # Iterates through all the columns and rows of the 
+    # error matrices
     for col_index, col in enumerate(example_df.columns):
         for row_index, row in enumerate(example_df.index):
+            # Initializes a list that will store the values for 
+            # the indicated row and column across all folds
             values = []
+            # Iterates through all folds
             for fold in range(k):
-                path_name = f"..\\splits\\{file_name}{fold}.csv"
-                df = pd.read_csv(path_name, index_col=0, header=0)
+                # Reads the corresponding fold CSV file
+                df = pd.read_csv(f"{file_name}{fold}.csv", index_col=0, header=0)
+                # Appends the results to the list                
                 values.append(np.abs(df[col].loc[row]))
+            # Calculates the mean and std results for this specific row 
+            # and col, across all folds
             mean_results[row_index, col_index] = np.array(values).mean()
             std_results[row_index, col_index] = np.array(values).std()
 
