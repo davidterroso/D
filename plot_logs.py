@@ -88,7 +88,7 @@ def plot_logs(run_name: str):
 
     ax3.plot(x_batch, train_batch_loss, 
              color = 'b', linestyle = 'dashed', 
-             marker = 'o')
+             marker = 'o', alpha=0.03)
     ax3.set_title("Train Loss/Batch")
     ax3.set(xlabel="Batches", ylabel="Loss")
     ax3.set_xticks(ticks_batch)
