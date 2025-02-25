@@ -1,4 +1,5 @@
 import numpy as np
+from IPython import get_ipython
 from os import walk, makedirs
 from os.path import isfile, exists
 from shutil import rmtree
@@ -10,10 +11,17 @@ from skimage.filters.rank import entropy
 from skimage.transform import resize
 from time import time
 from torch.utils.data import DataLoader
-from tqdm.auto import tqdm
 from network_functions.dataset import TrainDataset, ValidationDataset, drop_patches
 from paths import IMAGES_PATH
 from .read_oct import int32_to_uint8
+
+# Imports tqdm depending on whether 
+# it is being called from the 
+# Notebook or from this file
+if (get_ipython() is not None):
+    from tqdm import tqdm_notebook as tqdm
+else:
+    from tqdm.auto import tqdm
 
 # Declares the multiplication factor to obtain the correct patch height 
 # for each device, identified by the height of the image

@@ -1,9 +1,17 @@
 import torch
+from IPython import get_ipython
 from torch.nn import Module
 from torch.utils.data import DataLoader
 from torch.nn.functional import one_hot, softmax
-from tqdm.auto import tqdm
 from networks.loss import multiclass_balanced_cross_entropy_loss
+
+# Imports tqdm depending on whether 
+# it is being called from the 
+# Notebook or from this file
+if (get_ipython() is not None):
+    from tqdm import tqdm_notebook as tqdm
+else:
+    from tqdm.auto import tqdm
 
 @torch.inference_mode()
 def evaluate(model_name: str, model: Module, dataloader: DataLoader, 

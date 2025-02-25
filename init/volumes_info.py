@@ -1,8 +1,16 @@
 import numpy as np
+from IPython import get_ipython
 from os import walk
 from pandas import DataFrame
-from tqdm.auto import tqdm
 from read_oct import load_oct_mask
+
+# Imports tqdm depending on whether 
+# it is being called from the 
+# Notebook or from this file
+if (get_ipython() is not None):
+    from tqdm import tqdm_notebook as tqdm
+else:
+    from tqdm.auto import tqdm
 
 # Dictionary of labels in masks to fluid names
 label_to_fluids = {

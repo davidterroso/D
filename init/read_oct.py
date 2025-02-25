@@ -1,10 +1,18 @@
 import SimpleITK as sitk
 import numpy as np
+from IPython import get_ipython
 from os import walk, makedirs
 from os.path import exists
 from PIL import Image
-from tqdm.auto import tqdm
 from shutil import rmtree
+
+# Imports tqdm depending on whether 
+# it is being called from the 
+# Notebook or from this file
+if (get_ipython() is not None):
+    from tqdm import tqdm_notebook as tqdm
+else:
+    from tqdm.auto import tqdm
 
 def int32_to_uint8(image: np.ndarray):
     """

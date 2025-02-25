@@ -334,7 +334,6 @@ def train_model (
             n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
             val_volumes=val_volumes, batch_size=batch_size, 
             patch_dropping=patch_dropping, drop_prob=drop_prob)
-    print(n_train)
 
     # Initiates the best validation loss as an infinite value
     best_val_loss = float("inf")
