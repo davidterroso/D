@@ -3,6 +3,16 @@
 ## Table of Contents <!-- omit in toc -->
 - [Device Utilized](#device-utilized)
 - [Folder Structure](#folder-structure)
+- [environment](#environment)
+- [imgs](#imgs)
+- [init](#init)
+- [logs](#logs)
+- [models](#models)
+- [network\_functions](#network_functions)
+- [networks](#networks)
+- [results](#results)
+- [splits](#splits)
+- [wandb](#wandb)
 - [paths.py](#pathspy)
 - [pipeline.ipynb](#pipelineipynb)
 - [plot\_logs.py](#plot_logspy)
@@ -131,6 +141,36 @@ D
  ┣ unet.ipynb # Final training of the U-Net
  ┗ visualize_scans.py # Simple UI for the user to visualize what is happening to the images in the processing
  ```
+
+## [environment](environment/)
+Folder that contains the files that describe the environment used in this repository, including the libraries used and their respective versions, as well as the Python version.
+
+## [imgs](imgs/)
+Folder that contains all the images produced when the code is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
+
+## [init](init/)
+Folder that contains the files that are used in the pipeline and when preparing the run of the deep learning models. May also include functions that are used during the [training](train.py) referring to the data processing.
+
+## [logs](logs/)
+Folder that stores the error information of each run completed in this project, including the training errors, the validation errors, and the error obtained in each batch. This logs are plotted using [this file](plot_logs.py).
+
+## [models](models/)
+Folder that contains the best models that are saved when training the network. This folder does not appear in the repository, but is created when the run is made.
+
+## [network_functions](network_functions/)
+Folder that contains functions that are used to support the training ane testing file, handling data and evaluating the networks.
+
+## [networks](networks/)
+In this folder, the PyTorch modules of each network trained is presented, as well as the loss functions used to train or evaluate the network.
+
+## [results](results/)
+Contains the results obtained by each network using the Dice metric to evaluate it. The results are grouped per OCT volume, per OCT vendor, per class, and per slice in each validation volume.
+
+## [splits](splits/)
+Stores the resulting k-fold split performed using [this file](init/folds_split.py) or [this file](init/mip_split.py).
+
+## [wandb](wandb/)
+Folder created when running the training file, by using the Weights and Bias library. In this folder, each run is stored with the name referring to the date and time of the run, as well as a code. It stores a .wandb file with code of the run that contains the statistics of the run and everything visualized in their website through the link printed in the console. It also contains a folder named files where every output of the console is stored, the requirements file, that contains all the imports used in this run, the metadata of the run, stored in .json file, another .json file where the values of each weight is being stored, and a config.yml file that contains information of the run configurations. In case images are being saved, in the folder files\media the images will be stored, identified by the number of the image and an hash code. There is also the logs folder, that stores two .log files that can be used to debug and understand what is being done during the wandb initialization.
 
 ## [paths.py](paths.py)
 File with the absolute paths required for this project. This changes from device to device and when changed, the following line must be ran in the Git Bash console to prevent it from updating in the repository.
