@@ -9,7 +9,7 @@ from sklearn.model_selection import KFold
 # Volumes from Topcon T-1000 with 64 slices: 
 # Training - 056, 062
 # Testing - None
-
+# TODO - finish
 def random_k_fold_segmentation(k: int=5, folders_path: str=""):
     """
     random_k_fold_segmentation iterates through the directories of the RETOUCH training
@@ -43,6 +43,22 @@ def random_k_fold_segmentation(k: int=5, folders_path: str=""):
                     dictionary[vendor].append(volume)
                 else:
                     exceptions_list.append(volume)
+
+    for fold in range(k):
+        fold_volumes = []
+        for vendor in dictionary.keys():
+            quotient, remainder = divmod(len(dictionary[vendor]), k)
+            num_vols = [quotient] * k
+            for i in range(remainder):
+                num_vols += 1
+            shuffle(dictionary[vendor])
+            dictionary[vendor] = dictionary[vendor][0]
+
+
+            # if len(dictionary[vendor] % k):
+                # sample = dictionary[vendor][]
+            # dictionary[vendor]
+    return
     
     # Initiates KFold object from sklearn that splits the
     # dataset with provided k value
@@ -82,6 +98,7 @@ def random_k_fold_segmentation(k: int=5, folders_path: str=""):
         all_train_folds.append(vendor_train_folds)
         all_test_folds.append(vendor_test_folds)
 
+
     # Joins all the volumes from the same fold of different vendors in one list
     train_folds = []
     test_folds = []
@@ -95,6 +112,8 @@ def random_k_fold_segmentation(k: int=5, folders_path: str=""):
         shuffle(tmp_list_test)
         train_folds.append(tmp_list_train)
         test_folds.append(tmp_list_test)
+
+    print(tmp_list_train)
 
     # Iterates through the train-test lists and saves each as an individual 
     # column in a Pandas Dataframe
@@ -112,7 +131,7 @@ def random_k_fold_segmentation(k: int=5, folders_path: str=""):
         train_df = pd.concat([train_df, tmp_df], axis=1, sort=False)
 
         # Saves the results from the split in a CSV file just for the train
-        train_df.to_csv(path_or_buf="./splits/segmentation_train_splits.csv", index=False)
+        train_df.to_csv(path_or_buf="../splits/segmentation_train_splits.csv", index=False)
 
     # Iterates through the train-test lists and saves each as an individual 
     # column in a Pandas Dataframe
@@ -130,7 +149,7 @@ def random_k_fold_segmentation(k: int=5, folders_path: str=""):
         test_df = pd.concat([test_df, tmp_df], axis=1, sort=False)
 
         # Saves the results from the split in a CSV file just for the train
-        test_df.to_csv(path_or_buf="./splits/segmentation_test_splits.csv", index=False)
+        test_df.to_csv(path_or_buf="../splits/segmentation_test_splits.csv", index=False)
 
 def random_k_fold_generation(k: int=5, folders_path: str=""):
     """
@@ -631,7 +650,78 @@ def quantify_errors(file_name: str, k: int=5):
     pd.DataFrame(columns=example_df.columns, 
                  index=example_df.index, 
                  data=std_results).round(decimals=2).to_csv(new_file_name + "std.csv")
+    
+def folds_information(file_name: str, k: int=5):
+    info_df = pd.read_csv("..\\splits\\volumes_info.csv")
+    split_df = pd.read_csv(file_name)
+
+    columns = []
+    for vendor in info_df["Vendor"].unique():
+        for fluid in ["IRF", "SRF", "PED"]:
+            columns.append(vendor + fluid)
+    complete_df = pd.DataFrame(columns=columns)
+    for fold in range(k):
+        vols_list = split_df[str(fold)].dropna().to_list()
+        row = {fold: []}
+        for vendor in info_df["Vendor"].unique():
+            df_vendor = info_df[info_df["Vendor"] == vendor]
+            vendor_per_volume_list = df_vendor["VolumeNumber"].unique()
+            totals = [0] * 3
+            for volume in vols_list:
+                if volume in vendor_per_volume_list:
+                    info_row = info_df.loc[volume - 1]
+                    for index, fluid in enumerate(["IRF", "SRF", "PED"]):
+                        totals[index] = totals[index] + info_row[fluid]
+            row[fold] = row[fold] + totals
+        complete_df.loc[len(complete_df)] = row[fold] 
+
+    fluid_df = pd.DataFrame(columns=["IRF", "SRF", "PED"])
+    for fold in range(k):
+        vols_list = split_df[str(fold)].dropna().to_list()
+        row = {fold: []}
+        totals = [0] * 3
+        for volume in vols_list:
+            info_row = info_df.loc[volume - 1]
+            for index, fluid in enumerate(["IRF", "SRF", "PED"]):
+                totals[index] = totals[index] + info_row[fluid]
+        row[fold] = row[fold] + totals
+        fluid_df.loc[len(fluid_df)] = row[fold] 
+
+    vendor_to_slices_dict = {
+        "Cirrus": 128,
+        "Spectralis": 128,
+        "Topcon": 128,
+    }
+    columns = []
+    for vendor in info_df["Vendor"].unique():
+        for suffix in ["Slices", "Volumes"]:
+            col_name = vendor + suffix
+            columns.append(col_name)
+    volumes_slices_df = pd.DataFrame(columns=columns)
+    for fold in range(k):
+        vols_list = split_df[str(fold)].dropna().to_list()
+        row = {fold: []}
+        for vendor in info_df["Vendor"].unique():
+            slices_volumes = [0] * 2
+            df_vendor = info_df[info_df["Vendor"] == vendor]
+            vendor_per_volume_list = df_vendor["VolumeNumber"].unique()
+            for volume in vols_list:
+                if volume in vendor_per_volume_list:
+                    slices_volumes[1] = slices_volumes[1] + 1
+                    if (vendor == "Topcon") and ((volume == 56) or (volume == 62)):
+                        slices_volumes[0] = slices_volumes[0] + 64
+                    else:
+                        slices_volumes[0] = slices_volumes[0] + vendor_to_slices_dict[vendor]
+            row[fold] = row[fold] + slices_volumes
+        volumes_slices_df.loc[len(volumes_slices_df)] = row[fold] 
+    
+    name_to_save = file_name[:-4]
+    complete_df.to_csv(name_to_save + "_overall.csv")
+    fluid_df.to_csv(name_to_save + "_fluid.csv")
+    volumes_slices_df.to_csv(name_to_save + "_volslices.csv")
 
 if __name__ == "__main__":
     # factorial_k_fold_segmentation()
-    calculate_error(path="..\\splits\\sortedfactorial_fold_selection.csv")
+    # random_k_fold_segmentation(folders_path="D:\RETOUCH", k=5)
+    # calculate_error(path="..\\splits\\sortedfactorial_fold_selection.csv")
+    folds_information("..\\splits\\manual_fold_selection.csv")
