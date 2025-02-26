@@ -93,6 +93,3 @@ def volumes_info(oct_folder: str):
 
     print("All voxels have been counted.")
     print("EOF.")
-
-if __name__ == "__main__":
-    volumes_info(oct_folder="D:\RETOUCH")
