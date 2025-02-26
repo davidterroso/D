@@ -26,6 +26,7 @@ def train_model (
         run_name: str,
         model_name: str,
         device: str,
+        split: str,
         epochs: int,
         batch_size: int,
         learning_rate: float,
@@ -60,6 +61,8 @@ def train_model (
         model_name (str): name of the model desired to train
         device (str): indicates whether the network will 
             be trained using the CPU or the GPU
+        split (str): name of the k-fold split file that will be 
+            used in this run
         epochs (int): maximum number of epochs the model 
             will train for
         batch_size (int): size of the batch used in 
@@ -200,8 +203,8 @@ def train_model (
     )
 
     # Reads the CSV file that contains the volumes that 
-    # will be used to train the network
-    df = read_csv("splits/competitive_fold_selection.csv")
+    # will be used to train and validate the network
+    df = read_csv(f"splits/{split}")
     # Initiates the list of the volumes used to train
     train_volumes = []
     # Only in case the network's hyperparameters are being 
@@ -594,6 +597,7 @@ if __name__ == "__main__":
         run_name="Run9",
         model_name="UNet",
         device="GPU",
+        split="segmentation_fold_selection.csv",
         epochs=100,
         batch_size=32,
         learning_rate=2e-5,
