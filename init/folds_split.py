@@ -23,9 +23,14 @@ def random_k_fold_segmentation(k: int=5, folders_path: str=""):
     Return: 
         None
     """
-    # Extracts the volumes available for training and appends it to a dictionary
+    # Extracts the volumes available for training directly from the folders 
+    # and appends it to a dictionary
+    # Creates a dictionary whose keys will be the vendors and the values 
+    # will be the number of the volumes
     dictionary = {}
+    # Initializes a list that will contain the volumes that are exceptions
     exceptions_list = []
+    # Iterates through the files of the RETOUCH dataset
     for (root, _, _) in walk(folders_path):
         train_or_test = root.split("-")
         if ((len(train_or_test) == 3) and (train_or_test[1] == "TrainingSet")):
@@ -33,43 +38,87 @@ def random_k_fold_segmentation(k: int=5, folders_path: str=""):
             if ((len(vendor_volume) == 1) and (vendor_volume[0] not in dictionary)):
                 dictionary[vendor_volume[0]] = []
             elif len(vendor_volume) == 2:
+                # Gets the name of the vendor and 
+                # the name of the volume from the file name
                 vendor = vendor_volume[0]
                 volume = vendor_volume[1][-3:]
                 # Restriction implemented to make sure the volumes 056 and 062,
                 # from Topcon, which are not the same size as the others, do not
                 # stay on the same fold, promoting class balancement
+                # Appends the volumes to the corresponding dictionary list and 
+                # the exceptions to the specific list 
                 if (volume != "056") and (volume != "062"):
                     dictionary[vendor].append(volume)
                 else:
                     exceptions_list.append(volume)
 
+    # Initializes a dictionary that will hold 
+    # the list of the number of volumes per 
+    # fold per vendor
+    # Each key (vendor) will have a list of 
+    # size k where at the fold index will 
+    # have the number of volumes that will 
+    # be present in the fold of same index 
     vols_per_fold_dict = {}
+    # Iterates through all the vendors
     for vendor in dictionary.keys():
+        # Calculates how many volumes of 
+        # each vendor will be placed into a fold
         quotient, remainder = divmod(len(dictionary[vendor]), k)
         num_vols = [quotient] * k
         for i in range(remainder):
             num_vols[i] += 1
+        # Appends the list of values to the 
+        # dictionary key
         vols_per_fold_dict[vendor] = num_vols
 
+    # Initializes a dictionary that will have a list of
+    # volumes indexes associated to each fold (key)
     fold_vol_dict = {}
+    # Iterates through the folds
     for fold in range(k):
+        # In each fold initializes an empty list that 
+        # will hold the indexes of the volumes
         fold_volumes = []
+        # Iterates throgh all the possible vendors
         for vendor in dictionary.keys():
+            # Shuffles the list that contains the 
+            # volumes indices of the said vendor
             shuffle(dictionary[vendor])
+            # Checks how many volumes are supposed to extract
             num_vols = vols_per_fold_dict[vendor][fold]
+            # Extracts the calculated volumes
             vols = dictionary[vendor][-num_vols:]
+            # Converts their indices from string to int
             for index, vol in enumerate(vols):
                 vols[index] = int(vol)
+            # Updates the dictionary, removing the extracted volumes
             dictionary[vendor] = dictionary[vendor][:-num_vols]
+            # Appends the newly extracted volumes to the list that 
+            # will hold the volumes for this vendor
             fold_volumes = fold_volumes + vols
+        # Places in the key corresponding 
+        # to the fold the indexes of the 
+        # volumes that compose it 
         fold_vol_dict[fold] = fold_volumes
-    fold_vol_dict[0].append(56)
-    fold_vol_dict[1].append(62)
+    # Handles the exceptional volumes by shuffling 
+    # the list that contains their indexes and 
+    # randomly assigning them to fold 1 and 2
+    shuffle(exceptions_list)
+    fold_vol_dict[0].append(int(exceptions_list[0]))
+    fold_vol_dict[1].append(int(exceptions_list[1]))
 
-    final_df = pd.DataFrame().astype(int)
+    # Initiates the final DataFrame that will be saved
+    final_df = pd.DataFrame()
+    # Iterates through all the folds
     for fold, data in fold_vol_dict.items():
+        # Converts the data in each fold to a DataFrame 
+        # and joins them
         tmp_df = pd.DataFrame(columns=[fold], data=data)
+        # The data is saved as int64 to handle the cases where there are NaN values, 
+        # without converting the numerical values from integer to float 
         final_df = pd.concat([final_df, tmp_df], axis=1, sort=False).astype("Int64")
+    # Savesthe file as CSV
     final_df.to_csv("..\\splits\\segmentation_fold_selection.csv", index=False)
 
 def random_k_fold_generation(k: int=5, folders_path: str=""):
