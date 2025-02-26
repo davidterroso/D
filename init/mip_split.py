@@ -131,18 +131,22 @@ def mip_k_fold_split(k: int=5):
                 solver.Add(diff[vendor, column, fold] >= voxel_sums[(vendor, column, fold)] - expected_voxel_counts[(vendor, column)])
                 solver.Add(diff[vendor, column, fold] >= expected_voxel_counts[(vendor, column)] - voxel_sums[(vendor, column, fold)])
 
+    # Another objective function that allows a faster solution can be seen in this file as of the time of the following commit 
+    # https://github.com/davidterroso/D/commit/5980a3ba3cb6be86fc00c71b1edc6d95a64aa170, but its results are not better than other 
+    # methods implemented in this project. The resulting split can also be seen in the same commit, and to calculate the error to 
+    # it associated, it is possible to see in the following folder:
+    # https://github.com/davidterroso/D/tree/993784bf58f11b130fe1ca68c65960e753df8d38/splits
+    # The files are:
+    # https://github.com/davidterroso/D/tree/993784bf58f11b130fe1ca68c65960e753df8d38/splits/old_mip_fold_selection.csv
+    # https://github.com/davidterroso/D/tree/993784bf58f11b130fe1ca68c65960e753df8d38/splits/old_mip_mean.csv
+    # https://github.com/davidterroso/D/tree/993784bf58f11b130fe1ca68c65960e753df8d38/splits/old_mip_std.csv
+    # The objective function in this file is the best one but the method takes too long to reach an optimal solution so it 
+    # was not used
     # Declares that it is desired to minimize the total sum of differences, across all the folds in all vendors and classes
     solver.Minimize(solver.Sum(diff[volume, column, fold] for volume in vendors for column in range(len(voxel_cols)) for fold in range(k)))
 
     # Starts solving
     status = solver.Solve()
-
-    start_time = time.time()
-    max_runtime = 36000
-
-    while status == pywraplp.Solver.NOT_SOLVED and (time.time() - start_time) < max_runtime:
-        print(f"Solver is still running... {round(time.time() - start_time, 2)}s elapsed")
-        time.sleep(10)
 
     # Outputs the solution
     if status == solver.OPTIMAL or status == solver.FEASIBLE:
