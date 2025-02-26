@@ -792,6 +792,6 @@ def folds_information(file_name: str):
 
 if __name__ == "__main__":
     # factorial_k_fold_segmentation()
-    random_k_fold_segmentation(folders_path="D:\RETOUCH")
+    # random_k_fold_segmentation(folders_path="D:\RETOUCH")
     # calculate_error(path="..\\splits\\sortedfactorial_fold_selection.csv")
-    # folds_information("..\\splits\\manual_fold_selection.csv")
+    folds_information("..\\splits\\competitive_fold_selection.csv")
