@@ -7,7 +7,10 @@
 - [pipeline.ipynb](#pipelineipynb)
 - [plot\_logs.py](#plot_logspy)
 - [README.md](#readmemd)
+- [test.py](#testpy)
 - [train.py](#trainpy)
+- [unet\_preliminary.ipynb](#unet_preliminaryipynb)
+- [unet.ipynb](#unetipynb)
 - [visualize\_scans.py](#visualize_scanspy)
 - [RETOUCH Folder Structure](#retouch-folder-structure)
 
@@ -120,33 +123,44 @@ D
  ┃                    # by their index
  ┣ .gitignore # Declares the files that must not be updated to git
  ┣ documentation.md # Project documentation
- ┣ pipeline.ipynb # Project's pipeline code
+ ┣ pipeline.ipynb # Project's pre-processing pipeline code, before training the networks
  ┣ plot_logs.py # Plots the training and validation errors of a run
  ┣ README.md # Front page of the project, used to orient the user
  ┣ train.py # File used to train the networks
+ ┣ unet_preliminary.ipynb # Training of the U-Net made preliminary, with random fold split
+ ┣ unet.ipynb # Final training of the U-Net
  ┗ visualize_scans.py # Simple UI for the user to visualize what is happening to the images in the processing
  ```
 
-## paths.py
+## [paths.py](paths.py)
 File with the absolute paths required for this project. This changes from device to device and when changed, the following line must be ran in the Git Bash console to prevent it from updating in the repository.
 
 ```git update-index --no-assume-unchanged paths.py```
 
 Afterwards, no change made to the file will be included in commits.
 
-## pipeline.ipynb
-Python notebook that contains the pipeline behind this project, from reading the images and saving, to the training of the networks. When this file is run, it does not need any other changes except some paths and options selected in the beginning. 
+## [pipeline.ipynb](pipeline.ipynb)
+Jupyter notebook that contains the pipeline behind this project, from fold splitting to reading the images and saving. When this file is run, it does not need any other changes except some paths and options selected in the beginning. 
 
-## plot_logs.py
+## [plot_logs.py](plot_logs.py)
 Python script that plots and saves the loss in the training and validation of a specific run.
 
-## README.md
+## [README.md](README.md)
 Markdown file that introduces and orients the user in this project, introducing where to navigate to better understand it.
 
-## train.py
-In this file, the functions that train the implemented neural networks are present.
+## [test.py](test.py)
+In this file, the functions that test the previously trained neural networks are presented.
 
-## visualize_scans.py
+## [train.py](train.py)
+In this file, the functions that train the implemented neural networks are presented.
+
+## [unet_preliminary.ipynb](unet_preliminary.ipynb)
+Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the first runs were made, where the data split was random and different from what was implemented in the final version.
+
+## [unet.ipynb](unet.ipynb)
+Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the final training of the U-Net was performed and its results are presented in the same file. 
+
+## [visualize_scans.py](visualize_scans.py)
 File that, when ran, shows an UI that allows the user to select B-scans from the volumes in the training set of the RETOUCH dataset to visualize, showcasing the unaltered slice, the fluid masks, the entropy mask, and the ROI mask. 
 
 ## RETOUCH Folder Structure
