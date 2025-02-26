@@ -119,7 +119,7 @@ def random_k_fold_segmentation(k: int=5, folders_path: str=""):
         # without converting the numerical values from integer to float 
         final_df = pd.concat([final_df, tmp_df], axis=1, sort=False).astype("Int64")
     # Savesthe file as CSV
-    final_df.to_csv("..\\splits\\segmentation_fold_selection.csv", index=False)
+    final_df.to_csv(".\\splits\\segmentation_fold_selection.csv", index=False)
 
 def random_k_fold_generation(k: int=5, folders_path: str=""):
     """
@@ -307,7 +307,7 @@ def factorial_k_fold_segmentation(k: int=5, random=True):
         None
     """
     # Reads the information about each volumes voxel count per class
-    df = pd.read_csv("..\\splits\\volumes_info.csv")
+    df = pd.read_csv(".\\splits\\volumes_info.csv")
     # Gets all the name of the vendors
     vendors_names = df["Vendor"].unique()
     # Creates the dictionary on which it will be added the desired volumes
@@ -377,9 +377,9 @@ def factorial_k_fold_segmentation(k: int=5, random=True):
     # Saves the DataFrame as a CSV file with no index with a name according to 
     # whether the volumes were randomly sampled or not
     if random:
-        options_df.to_csv("..\\splits\\factorial_fold_selection.csv", index=False)
+        options_df.to_csv(".\\splits\\factorial_fold_selection.csv", index=False)
     else:
-        options_df.to_csv("..\\splits\\sortedfactorial_fold_selection.csv", index=False)
+        options_df.to_csv(".\\splits\\sortedfactorial_fold_selection.csv", index=False)
 
 def competitive_k_fold_segmentation(k: int=5):
     """
@@ -405,7 +405,7 @@ def competitive_k_fold_segmentation(k: int=5):
     # Initiates the list of agents/folds
     agents_list = np.arange(k)
     # Reads the information about each volumes voxel count per class
-    df = pd.read_csv("..\\splits\\volumes_info.csv")
+    df = pd.read_csv(".\\splits\\volumes_info.csv")
     # Gets all the name of the vendors
     vendors_names = df["Vendor"].unique()
     # Initiates a dictionary that will store the volumes 
@@ -495,7 +495,7 @@ def competitive_k_fold_segmentation(k: int=5):
     # Names the columns in the DataFrame
     options_df.columns = agents_choices.keys()
     # Saves the DataFrame as a CSV file with no index
-    options_df.to_csv("..\\splits\\competitive_fold_selection.csv", index=False)
+    options_df.to_csv(".\\splits\\competitive_fold_selection.csv", index=False)
 
 def calculate_error(path: str):
     """
@@ -514,7 +514,7 @@ def calculate_error(path: str):
     df = pd.read_csv(path)
     # Reads the CSV file that contains the information of the voxels in each volume 
     # and converts it to a DataFrame
-    info_df = pd.read_csv("..\\splits\\volumes_info.csv")
+    info_df = pd.read_csv(".\\splits\\volumes_info.csv")
 
     # Iterates through all the folds
     for fold in range(df.shape[1]):
@@ -564,9 +564,9 @@ def calculate_error(path: str):
         backslash = "\\"
         underscore = "_"
         # Saves the DataFrame as a CSV file
-        pd.DataFrame(results_df).to_csv(path_or_buf=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold{fold}.csv")
+        pd.DataFrame(results_df).to_csv(path_or_buf=f".\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold{fold}.csv")
     # Calls the function that will present the average error and its standard deviation
-    quantify_errors(file_name=f"..\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold", k=df.shape[1])
+    quantify_errors(file_name=f".\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold", k=df.shape[1])
 
 def quantify_errors(file_name: str, k: int=5):
     """
@@ -576,7 +576,7 @@ def quantify_errors(file_name: str, k: int=5):
 
     Args:
         file_name (str): path of the files that contain the error in each fold 
-            (e.g. "..\\splits\\manual_errors_fold"). This path does not contain 
+            (e.g. ".\\splits\\manual_errors_fold"). This path does not contain 
             nor a number of the fold nor the file extension (.csv)
         k (int): number of folds considered
 
@@ -636,7 +636,7 @@ def folds_information(file_name: str):
     """
     # Loads the CSV files that contain the data regarding 
     # all the volumes and the volumes fold split 
-    info_df = pd.read_csv("..\\splits\\volumes_info.csv")
+    info_df = pd.read_csv(".\\splits\\volumes_info.csv")
     split_df = pd.read_csv(file_name)
     
     # Creates the name of the columns, joining 
@@ -789,9 +789,3 @@ def folds_information(file_name: str):
     complete_df.to_csv(name_to_save + "_overall.csv")
     fluid_df.to_csv(name_to_save + "_fluid.csv")
     volumes_slices_df.to_csv(name_to_save + "_volslices.csv")
-
-if __name__ == "__main__":
-    # factorial_k_fold_segmentation()
-    # random_k_fold_segmentation(folders_path="D:\RETOUCH")
-    # calculate_error(path="..\\splits\\sortedfactorial_fold_selection.csv")
-    folds_information("..\\splits\\competitive_fold_selection.csv")
