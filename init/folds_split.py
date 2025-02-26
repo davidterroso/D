@@ -9,7 +9,6 @@ from sklearn.model_selection import KFold
 # Volumes from Topcon T-1000 with 64 slices: 
 # Training - 056, 062
 # Testing - None
-# TODO - finish
 def random_k_fold_segmentation(k: int=5, folders_path: str=""):
     """
     random_k_fold_segmentation iterates through the directories of the RETOUCH training
@@ -44,112 +43,34 @@ def random_k_fold_segmentation(k: int=5, folders_path: str=""):
                 else:
                     exceptions_list.append(volume)
 
+    vols_per_fold_dict = {}
+    for vendor in dictionary.keys():
+        quotient, remainder = divmod(len(dictionary[vendor]), k)
+        num_vols = [quotient] * k
+        for i in range(remainder):
+            num_vols[i] += 1
+        vols_per_fold_dict[vendor] = num_vols
+
+    fold_vol_dict = {}
     for fold in range(k):
         fold_volumes = []
         for vendor in dictionary.keys():
-            quotient, remainder = divmod(len(dictionary[vendor]), k)
-            num_vols = [quotient] * k
-            for i in range(remainder):
-                num_vols += 1
             shuffle(dictionary[vendor])
-            dictionary[vendor] = dictionary[vendor][0]
+            num_vols = vols_per_fold_dict[vendor][fold]
+            vols = dictionary[vendor][-num_vols:]
+            for index, vol in enumerate(vols):
+                vols[index] = int(vol)
+            dictionary[vendor] = dictionary[vendor][:-num_vols]
+            fold_volumes = fold_volumes + vols
+        fold_vol_dict[fold] = fold_volumes
+    fold_vol_dict[0].append(56)
+    fold_vol_dict[1].append(62)
 
-
-            # if len(dictionary[vendor] % k):
-                # sample = dictionary[vendor][]
-            # dictionary[vendor]
-    return
-    
-    # Initiates KFold object from sklearn that splits the
-    # dataset with provided k value
-    kf = KFold(n_splits=k)
-    all_train_folds = []
-    all_test_folds = []
-    shuffle(exceptions_list)
-    for key in dictionary:
-        # Shuffles the list of volumes available
-        tmp_list = dictionary[key]
-        shuffle(tmp_list)
-        dictionary[key] = tmp_list
-        # Splits in train and test according to the number of folds
-        vendor_train_folds = []
-        vendor_test_folds = []
-        for i, (train_index, test_index) in enumerate(kf.split(dictionary[key])):
-            train_volumes = np.array(dictionary[key])[train_index]
-            test_volumes = np.array(dictionary[key])[test_index]
-            # Restriction implemented to make sure the volumes 056 and 062,
-            # from Topcon, which are not the same size as the others, do not
-            # stay on the same fold, promoting class balancement
-            if key == "Topcon":
-                if i != 1:
-                    train_volumes = np.append(train_volumes, exceptions_list[0])
-                    np.random.shuffle(train_volumes)
-                else:
-                    test_volumes = np.append(test_volumes, exceptions_list[0])
-                    np.random.shuffle(test_volumes)
-                if i != 2:
-                    train_volumes = np.append(train_volumes, exceptions_list[1])
-                    np.random.shuffle(train_volumes)
-                else:
-                    test_volumes = np.append(test_volumes, exceptions_list[1])
-                    np.random.shuffle(test_volumes)
-            vendor_train_folds.append(train_volumes)
-            vendor_test_folds.append(test_volumes)
-        all_train_folds.append(vendor_train_folds)
-        all_test_folds.append(vendor_test_folds)
-
-
-    # Joins all the volumes from the same fold of different vendors in one list
-    train_folds = []
-    test_folds = []
-    for j in range(k):
-        tmp_list_train = []
-        tmp_list_test = []
-        for l in range(len(dictionary.keys())):
-            tmp_list_train = tmp_list_train + all_train_folds[l][j].tolist()
-            tmp_list_test = tmp_list_test + all_test_folds[l][j].tolist()
-        shuffle(tmp_list_train)
-        shuffle(tmp_list_test)
-        train_folds.append(tmp_list_train)
-        test_folds.append(tmp_list_test)
-
-    print(tmp_list_train)
-
-    # Iterates through the train-test lists and saves each as an individual 
-    # column in a Pandas Dataframe
-    train_df = pd.DataFrame()
-    for l in range(k):
-        tmp_df = pd.DataFrame()
-        tmp_vols = []
-        name_column_vol = f"Fold{l + 1}_Volumes" 
-        for m in range(len(train_folds[l])):
-            tmp_vols.append(train_folds[l][m])
-        if l == 0:
-            train_df[name_column_vol] = tmp_vols
-        else:
-            tmp_df[name_column_vol] = tmp_vols
-        train_df = pd.concat([train_df, tmp_df], axis=1, sort=False)
-
-        # Saves the results from the split in a CSV file just for the train
-        train_df.to_csv(path_or_buf="../splits/segmentation_train_splits.csv", index=False)
-
-    # Iterates through the train-test lists and saves each as an individual 
-    # column in a Pandas Dataframe
-    test_df = pd.DataFrame()
-    for l in range(k):
-        tmp_df = pd.DataFrame()
-        tmp_vols = []
-        name_column_vol = f"Fold{l + 1}_Volumes" 
-        for m in range(len(test_folds[l])):
-            tmp_vols.append(test_folds[l][m])
-        if l == 0:
-            test_df[name_column_vol] = tmp_vols
-        else:
-            tmp_df[name_column_vol] = tmp_vols
-        test_df = pd.concat([test_df, tmp_df], axis=1, sort=False)
-
-        # Saves the results from the split in a CSV file just for the train
-        test_df.to_csv(path_or_buf="../splits/segmentation_test_splits.csv", index=False)
+    final_df = pd.DataFrame().astype(int)
+    for fold, data in fold_vol_dict.items():
+        tmp_df = pd.DataFrame(columns=[fold], data=data)
+        final_df = pd.concat([final_df, tmp_df], axis=1, sort=False).astype("Int64")
+    final_df.to_csv("..\\splits\\segmentation_fold_selection.csv", index=False)
 
 def random_k_fold_generation(k: int=5, folders_path: str=""):
     """
@@ -238,7 +159,7 @@ def random_k_fold_generation(k: int=5, folders_path: str=""):
         else:
             tmp_df[name_column_vol] = tmp_vols
             tmp_df[name_column_sets] = tmp_ts_sets
-        train_df = pd.concat([train_df, tmp_df], axis=1, sort=False)
+        train_df = pd.concat([train_df, tmp_df], axis=1, sort=False).astype("Int64")
 
         # Saves the results from the split in a CSV file just for the train
         train_df.to_csv(path_or_buf="./splits/generation_train_splits.csv", index=False)
@@ -259,7 +180,7 @@ def random_k_fold_generation(k: int=5, folders_path: str=""):
         else:
             tmp_df[name_column_vol] = tmp_vols
             tmp_df[name_column_sets] = tmp_ts_sets
-        test_df = pd.concat([test_df, tmp_df], axis=1, sort=False)
+        test_df = pd.concat([test_df, tmp_df], axis=1, sort=False).astype("Int64")
 
         # Saves the results from the split in a CSV file just for the test
         test_df.to_csv(path_or_buf="./splits/generation_test_splits.csv", index=False)
@@ -401,7 +322,7 @@ def factorial_k_fold_segmentation(k: int=5, random=True):
         tmp_df = pd.DataFrame(values).astype(np.int8)
         tmp_df = tmp_df.replace(0, pd.NA)
         tmp_df = tmp_df.dropna(ignore_index=True)
-        options_df = pd.concat([options_df, tmp_df], axis=1, sort=False)
+        options_df = pd.concat([options_df, tmp_df], axis=1, sort=False).astype("Int64")
     # Names the columns in the DataFrame
     options_df.columns = selected_volumes.keys()
     # Saves the DataFrame as a CSV file with no index with a name according to 
@@ -520,7 +441,7 @@ def competitive_k_fold_segmentation(k: int=5):
         # then concatenates them to the previously initiated DataFrame
         # Saves the values in int instead of float
         tmp_df = pd.DataFrame(values).astype(np.int8)
-        options_df = pd.concat([options_df, tmp_df], axis=1, sort=False)
+        options_df = pd.concat([options_df, tmp_df], axis=1, sort=False).astype("Int64")
 
     # Names the columns in the DataFrame
     options_df.columns = agents_choices.keys()
@@ -722,6 +643,6 @@ def folds_information(file_name: str, k: int=5):
 
 if __name__ == "__main__":
     # factorial_k_fold_segmentation()
-    # random_k_fold_segmentation(folders_path="D:\RETOUCH", k=5)
+    random_k_fold_segmentation(folders_path="D:\RETOUCH", k=5)
     # calculate_error(path="..\\splits\\sortedfactorial_fold_selection.csv")
-    folds_information("..\\splits\\manual_fold_selection.csv")
+    # folds_information("..\\splits\\manual_fold_selection.csv")
