@@ -67,7 +67,7 @@ def extract_patches_wrapper(model_name: str, patch_shape: tuple, n_pos: int,
         n_train (int): number of images that will be used to train 
             the model
     """
-    print("Extracting patches")
+    print("Extracting Patches")
     # Starts timing the patch extraction
     begin = time()
 
