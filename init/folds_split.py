@@ -621,77 +621,177 @@ def quantify_errors(file_name: str, k: int=5):
                  index=example_df.index, 
                  data=std_results).round(decimals=2).to_csv(new_file_name + "std.csv")
     
-def folds_information(file_name: str, k: int=5):
+def folds_information(file_name: str):
+    """
+    Useful for the extraction of fold information regarding fluid voxel 
+    counts in each vendors, fluid voxel counts across all vendors, and 
+    volumes and slice quantification  
+
+    Args:
+        file_name (str): name of the CSV file that contains the volumes 
+            distribution across folds
+        
+    Return:
+        None
+    """
+    # Loads the CSV files that contain the data regarding 
+    # all the volumes and the volumes fold split 
     info_df = pd.read_csv("..\\splits\\volumes_info.csv")
     split_df = pd.read_csv(file_name)
-
+    
+    # Creates the name of the columns, joining 
+    # both the vendor and the fluid type to 
+    # which the data refers
     columns = []
     for vendor in info_df["Vendor"].unique():
         for fluid in ["IRF", "SRF", "PED"]:
             columns.append(vendor + fluid)
+
+    # Initiates the DataFrame that will handle 
+    # the data
     complete_df = pd.DataFrame(columns=columns)
-    for fold in range(k):
+    # Iterates through each fold
+    for fold in range(split_df.shape[1]):
+        # Gets the list of volumes of the fold
         vols_list = split_df[str(fold)].dropna().to_list()
+        # Initiates a dictionary that will have the number of the fold 
+        # and the respective desired data
         row = {fold: []}
+        # Iterates through all the possible vendors
         for vendor in info_df["Vendor"].unique():
+            # Gets a sub informative DataFrame corresponding to the 
+            # vendor that is being analyzed
             df_vendor = info_df[info_df["Vendor"] == vendor]
+            # Gets the list of all the volumes from this vendor
             vendor_per_volume_list = df_vendor["VolumeNumber"].unique()
+            # Initiates a list that will have the voxel count for this 
+            # volume across all three classes
             totals = [0] * 3
+            # Iterates through all the volumes in 
+            # the volumes list of this vendor
             for volume in vols_list:
+                # Only procedes if the said volume is 
+                # in the list of volumes of the fold 
+                # to analyze
                 if volume in vendor_per_volume_list:
+                    # Gets the information of the volume 
+                    # from the informative DataFrame
+                    # The index of the volume is the number of the volume 
+                    # minus one because the index starts in zero and the 
+                    # number of the volumes start in one
                     info_row = info_df.loc[volume - 1]
+                    # Iterates through all the possible classes
                     for index, fluid in enumerate(["IRF", "SRF", "PED"]):
+                        # Sums the total number of voxels of the said 
+                        # class to the ones previously summed in the 
+                        # other volumes of the fold
                         totals[index] = totals[index] + info_row[fluid]
+            # Appends the data of this vendor 
+            # to the row of data
             row[fold] = row[fold] + totals
+        # Adds the row of data to the DataFrame
         complete_df.loc[len(complete_df)] = row[fold] 
 
+    # Initiates a DataFrame with the three possible fluids 
+    # as columns
     fluid_df = pd.DataFrame(columns=["IRF", "SRF", "PED"])
-    for fold in range(k):
+    # Iterates through all the folds
+    for fold in range(split_df.shape[1]):
+        # Gets the list of volumes in this fold
         vols_list = split_df[str(fold)].dropna().to_list()
-        row = {fold: []}
+        # Initiates the list of total values 
+        # as zero, with one value for each class
         totals = [0] * 3
+        # Iterates through all the 
+        # volumes in the list of 
+        # volumes of this fold
         for volume in vols_list:
+            # Gets the information of the volume 
+            # regarding voxel counts
+            # The index of the volume is the number of the volume 
+            # minus one because the index starts in zero and the 
+            # number of the volumes start in one
             info_row = info_df.loc[volume - 1]
+            # Iterates through the possible fluids
             for index, fluid in enumerate(["IRF", "SRF", "PED"]):
+                # Adds the number of voxels in this volume to 
+                # the other ons in this fold
                 totals[index] = totals[index] + info_row[fluid]
-        row[fold] = row[fold] + totals
-        fluid_df.loc[len(fluid_df)] = row[fold] 
+        # Appends to the data of this fold to the DataFrame
+        fluid_df.loc[len(fluid_df)] = totals
 
+    # Dictionary that indicates 
+    # the number of slices per volume
     vendor_to_slices_dict = {
         "Cirrus": 128,
-        "Spectralis": 128,
+        "Spectralis": 49,
         "Topcon": 128,
     }
+    # Initiates a list that will contain the name 
+    # of the columns in the DataFrame
     columns = []
+    # Iterates through the vendors
     for vendor in info_df["Vendor"].unique():
+        # Appends to the name of the vendors 
+        # Slices or Volumes, indicating that 
+        # the values in the column correspond 
+        # to the number of slices in the 
+        # volume and the total number of 
+        # volumes
         for suffix in ["Slices", "Volumes"]:
             col_name = vendor + suffix
             columns.append(col_name)
+    # Initiates a DataFrame with the columns created
     volumes_slices_df = pd.DataFrame(columns=columns)
-    for fold in range(k):
+    # Iterates through all the folds
+    for fold in range(split_df.shape[1]):
+        # Gets the list of volumes in a fold
         vols_list = split_df[str(fold)].dropna().to_list()
+        # Initiates the row dictionary that will 
+        # have a corresponding list of values to 
+        # each fold
         row = {fold: []}
+        # Iterates through all the possible vendors
         for vendor in info_df["Vendor"].unique():
+            # Initiates the list as 
+            # an array of zeros, one
+            #  zero for slice count 
+            # and one for volume count
             slices_volumes = [0] * 2
+            # Gets a sub DataFrame that corresponds to the 
+            # information of the volumes of the vendor that 
+            # is being analyzed
             df_vendor = info_df[info_df["Vendor"] == vendor]
-            vendor_per_volume_list = df_vendor["VolumeNumber"].unique()
+            # Gets a list of all the volumes from this vendor
+            vendor_per_volume_list = df_vendor["VolumeNumber"].to_list()
+            # Iterates through the volumes in this fold
             for volume in vols_list:
+                # Only procedes if the volume is in 
+                # the list of volumes in this fold 
                 if volume in vendor_per_volume_list:
+                    # Sums one to the total number of volumes
                     slices_volumes[1] = slices_volumes[1] + 1
+                    # Adds the total number of slices according to the dictionary initiated
+                    # The volumes 56 and 62 are handled differently because their number of 
+                    # slices is not the same as other Topcon volumes
                     if (vendor == "Topcon") and ((volume == 56) or (volume == 62)):
                         slices_volumes[0] = slices_volumes[0] + 64
                     else:
                         slices_volumes[0] = slices_volumes[0] + vendor_to_slices_dict[vendor]
+            # Adds the information of the volumes to the row 
             row[fold] = row[fold] + slices_volumes
+        # Adds this row of information as a row in the DataFrame
         volumes_slices_df.loc[len(volumes_slices_df)] = row[fold] 
     
+    # Gets the under which the files will be saved
     name_to_save = file_name[:-4]
+    # Saves each file with an adequate name
     complete_df.to_csv(name_to_save + "_overall.csv")
     fluid_df.to_csv(name_to_save + "_fluid.csv")
     volumes_slices_df.to_csv(name_to_save + "_volslices.csv")
 
 if __name__ == "__main__":
     # factorial_k_fold_segmentation()
-    random_k_fold_segmentation(folders_path="D:\RETOUCH", k=5)
+    random_k_fold_segmentation(folders_path="D:\RETOUCH")
     # calculate_error(path="..\\splits\\sortedfactorial_fold_selection.csv")
     # folds_information("..\\splits\\manual_fold_selection.csv")
