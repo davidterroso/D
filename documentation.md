@@ -22,6 +22,7 @@
 - [unet\_preliminary.ipynb](#unet_preliminaryipynb)
 - [unet.ipynb](#unetipynb)
 - [visualize\_scans.py](#visualize_scanspy)
+- [Libraries](#libraries)
 - [RETOUCH Folder Structure](#retouch-folder-structure)
 
 ## Device Utilized
@@ -202,6 +203,18 @@ Jupyter notebook that contains the functions that will be used to train, test, a
 
 ## [visualize_scans.py](visualize_scans.py)
 File that, when ran, shows an UI that allows the user to select B-scans from the volumes in the training set of the RETOUCH dataset to visualize, showcasing the unaltered slice, the fluid masks, the entropy mask, and the ROI mask. 
+
+## Libraries
+In this project, nine libraries were used (their versions can be checked in [this file](environment/requirements.txt)):
+- Matplotlib, which is used in the plotting of graphs (such as loss after training), and to save images with an overlay of predicted and ground-truth masks, as done when evaluating the model.
+- NumPy, which is used to handle every sort of arrays, images that are converted to arrays, and calculations.
+- OR-Tools, an operation research library that was used to design the fold split as a linear programming problem. Since this was not implemented because of the high computational costs, the library is not required to import in this project.
+- Pandas, is used when handling CSV files, either by loading, saving, or handling data.
+- Pillow, is used when saving images extracted directly from the OCT volumes.
+- Scikit-image, which is called to load the previously saved images directly as a NumPy array.
+- SimpleITK, a simplified programming interface to the algorithms and data structures of the Insight Toolkit (ITK). In this project, this library is used to load the images from the dataset, which are saved in a file supported by ITK.
+- tqdm is a library that provides functions to create progress bars. This is used in longer processes, such as the training, evaluating, testing, saving images, masks and ROI masks from the original images, and extracting the total number of voxels in volumes.
+- Weights and Bias, which is used to track progress of the training through a website that shows relevant metrics. It includes not only metrics regarding the code, but also regarding the hardware, the weights, and even predicted images.
 
 ## RETOUCH Folder Structure
 Explains the folder structure of the RETOUCH dataset in order to compliment the code used in [folds_split.py](./init/folds_split.py) and [read_oct.py](./init/read_oct.py), allowing for better understanding and visualization.

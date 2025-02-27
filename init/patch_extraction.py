@@ -151,7 +151,7 @@ def extract_patches_wrapper(model_name: str, patch_shape: tuple, n_pos: int,
     print(f"Patch extraction took {end - begin} seconds.")
 
     if patch_dropping:
-        print("Dropping patches")
+        print("Dropping Patches")
         # Starts timing the patch dropping
         begin = time()
         # Randomly drops patches of slices that do not have retinal fluid
@@ -174,9 +174,9 @@ def extract_patches_wrapper(model_name: str, patch_shape: tuple, n_pos: int,
     # which will be used to train the model in batches
     begin = time()
     loader_args = dict(batch_size=batch_size, num_workers=2, pin_memory=True)
-    print("Loading training data.")
+    print("Loading Training Data.")
     train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
-    print("Loading validation data.")
+    print("Loading Validation Data.")
     val_loader = DataLoader(val_set, shuffle=True, drop_last=True, **loader_args)
     end = time()
     print(f"Data loading took {end - begin} seconds.")
