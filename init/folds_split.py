@@ -4,7 +4,6 @@ from itertools import permutations
 from math import ceil, isnan
 from os import walk
 from random import shuffle
-from sklearn.model_selection import KFold
 
 #############################################
 # Volumes from Topcon T-1000 with 64 slices:# 
