@@ -6,9 +6,12 @@ from os import walk
 from random import shuffle
 from sklearn.model_selection import KFold
 
-# Volumes from Topcon T-1000 with 64 slices: 
-# Training - 056, 062
-# Testing - None
+#############################################
+# Volumes from Topcon T-1000 with 64 slices:# 
+# Training - 056, 062                       #
+# Testing - None                            #
+#############################################
+
 def random_k_fold_segmentation(k: int=5, folders_path: str=""):
     """
     random_k_fold_segmentation iterates through the directories of the RETOUCH training
@@ -118,7 +121,7 @@ def random_k_fold_segmentation(k: int=5, folders_path: str=""):
         # The data is saved as int64 to handle the cases where there are NaN values, 
         # without converting the numerical values from integer to float 
         final_df = pd.concat([final_df, tmp_df], axis=1, sort=False).astype("Int64")
-    # Savesthe file as CSV
+    # Saves the file as CSV
     final_df.to_csv(".\\splits\\segmentation_fold_selection.csv", index=False)
 
 def random_k_fold_generation(k: int=5, folders_path: str=""):
@@ -142,6 +145,11 @@ def random_k_fold_generation(k: int=5, folders_path: str=""):
     for (root, _, _) in walk(folders_path):
         train_or_test = root.split("-")
         if (len(train_or_test) == 3):
+            # Saves the set to which the data 
+            # belongs, whether it is train or test
+            # This is important because the number 
+            # of the volume is not enough to 
+            # identify it
             if (train_or_test[1] == "TrainingSet"):
                 belonging_set = "train"
             elif (train_or_test[1] == "TestSet"):
@@ -150,89 +158,87 @@ def random_k_fold_generation(k: int=5, folders_path: str=""):
             if ((len(vendor_volume) == 1) and (vendor_volume[0] not in dictionary)):
                 dictionary[vendor_volume[0]] = []
             elif len(vendor_volume) == 2:
+                # Saves the number of the volume and 
+                # the set to which their belong as a 
+                # tuple in the dictionary
+                # Each volume is now represented as,
+                # for example: (001, train)
                 vendor = vendor_volume[0]
                 volume = vendor_volume[1][-3:]
                 volume_set = (volume, belonging_set)
                 dictionary[vendor].append(volume_set)
-    
-    # Initiates KFold object from sklearn that splits the
-    # dataset with provided k value
-    kf = KFold(n_splits=k)
-    all_train_folds = []
-    all_test_folds = []
-    for key in dictionary:
-        # Shuffles the list of volumes available
-        tmp_list = dictionary[key]
-        shuffle(tmp_list)
-        dictionary[key] = tmp_list
-        # Splits in train and test according to the number of folds
-        vendor_train_folds = []
-        vendor_test_folds = []
-        for (train_index, test_index) in (kf.split(dictionary[key])):
-            train_volumes = np.array(dictionary[key])[train_index]
-            test_volumes = np.array(dictionary[key])[test_index]
-            vendor_train_folds.append(train_volumes)
-            vendor_test_folds.append(test_volumes)
-        all_train_folds.append(vendor_train_folds)
-        all_test_folds.append(vendor_test_folds)
 
-    # Joins all the volumes from the same fold of different vendors in one list
-    train_folds = []
-    test_folds = []
-    for j in range(k):
-        tmp_list_train = []
-        tmp_list_test = []
-        for l in range(len(dictionary.keys())):
-            tmp_list_train = tmp_list_train + all_train_folds[l][j].tolist()
-            tmp_list_test = tmp_list_test + all_test_folds[l][j].tolist()
-        shuffle(tmp_list_train)
-        shuffle(tmp_list_test)
-        train_folds.append(tmp_list_train)
-        test_folds.append(tmp_list_test)
+    # Initializes a dictionary that will hold 
+    # the list of the number of volumes per 
+    # fold per vendor
+    # Each key (vendor) will have a list of 
+    # size k where at the fold index will 
+    # have the number of volumes that will 
+    # be present in the fold of same index 
+    vols_per_fold_dict = {}
+    # Iterates through all the vendors
+    for vendor in dictionary.keys():
+        # Calculates how many volumes of 
+        # each vendor will be placed into a fold
+        quotient, remainder = divmod(len(dictionary[vendor]), k)
+        num_vols = [quotient] * k
+        for i in range(remainder):
+            num_vols[i] += 1
+        # Appends the list of values to the 
+        # dictionary key
+        vols_per_fold_dict[vendor] = num_vols
 
-    # Iterates through the train-test lists and saves each as an individual 
-    # column in a Pandas Dataframe
-    train_df = pd.DataFrame()
-    for l in range(k):
-        tmp_df = pd.DataFrame()
-        tmp_vols = []
-        tmp_ts_sets = []
-        name_column_vol = f"Fold{l + 1}_Volumes" 
-        name_column_sets = f"Fold{l + 1}_Sets"
-        for m in range(len(train_folds[l])):
-            tmp_vols.append(train_folds[l][m][0])
-            tmp_ts_sets.append(train_folds[l][m][1])
-        if l == 0:
-            train_df[name_column_vol] = tmp_vols
-            train_df[name_column_sets] = tmp_ts_sets
-        else:
-            tmp_df[name_column_vol] = tmp_vols
-            tmp_df[name_column_sets] = tmp_ts_sets
-        train_df = pd.concat([train_df, tmp_df], axis=1, sort=False).astype("Int64")
+    # Initializes a dictionary that will have a list of
+    # tuples that will have the number of the volume and 
+    # the set to which they belong associated to each 
+    # fold (key)
+    fold_vol_dict = {}
+    # Iterates through the folds
+    for fold in range(k):
+        # In each fold initializes an empty list that 
+        # will hold the indexes of the volumes and the 
+        # set they belong to
+        fold_volumes = []
+        # Iterates throgh all the possible vendors
+        for vendor in dictionary.keys():
+            # Shuffles the list that contains the 
+            # tuples that hold the volumes indices 
+            # of the said vendor and the sets they 
+            # belong to
+            shuffle(dictionary[vendor])
+            # Checks how many volumes are supposed to extract
+            num_vols = vols_per_fold_dict[vendor][fold]
+            # Extracts the calculated volumes
+            vols = dictionary[vendor][-num_vols:]
+            # Converts the volume information 
+            # from a tuple to a string
+            # Example: 1_train
+            for index, vol in enumerate(vols):
+                vol_num = str(int(vol[0]))
+                vol_set = vol[1]
+                vol_info = f"{vol_num}_{vol_set}"
+                vols[index] = vol_info
+            # Updates the dictionary, removing the extracted volumes
+            dictionary[vendor] = dictionary[vendor][:-num_vols]
+            # Appends the newly extracted volumes to the list that 
+            # will hold the volumes for this vendor
+            fold_volumes = fold_volumes + vols
+        # Places in the key corresponding 
+        # to the fold the string that 
+        # identifies each volume that 
+        # composes it 
+        fold_vol_dict[fold] = fold_volumes
 
-        # Saves the results from the split in a CSV file just for the train
-        train_df.to_csv(path_or_buf="./splits/generation_train_splits.csv", index=False)
-
-    test_df = pd.DataFrame()
-    for l in range(k):
-        tmp_df = pd.DataFrame()
-        tmp_vols = []
-        tmp_ts_sets = []
-        name_column_vol = f"Fold{l + 1}_Volumes" 
-        name_column_sets = f"Fold{l + 1}_Sets"
-        for m in range(len(test_folds[l])):
-            tmp_vols.append(test_folds[l][m][0])
-            tmp_ts_sets.append(test_folds[l][m][1])
-        if l == 0:
-            test_df[name_column_vol] = tmp_vols
-            test_df[name_column_sets] = tmp_ts_sets
-        else:
-            tmp_df[name_column_vol] = tmp_vols
-            tmp_df[name_column_sets] = tmp_ts_sets
-        test_df = pd.concat([test_df, tmp_df], axis=1, sort=False).astype("Int64")
-
-        # Saves the results from the split in a CSV file just for the test
-        test_df.to_csv(path_or_buf="./splits/generation_test_splits.csv", index=False)
+    # Initiates the final DataFrame that will be saved
+    final_df = pd.DataFrame()
+    # Iterates through all the folds
+    for fold, data in fold_vol_dict.items():
+        # Converts the data in each fold to a DataFrame 
+        # and joins them
+        tmp_df = pd.DataFrame(columns=[fold], data=data)
+        final_df = pd.concat([final_df, tmp_df], axis=1, sort=False)
+    # Saves the file as CSV
+    final_df.to_csv(".\\splits\\generation_fold_selection.csv", index=False)
 
 def iterate_permutations(sample, expected, errors):
     """
@@ -789,3 +795,6 @@ def folds_information(file_name: str):
     complete_df.to_csv(name_to_save + "_overall.csv")
     fluid_df.to_csv(name_to_save + "_fluid.csv")
     volumes_slices_df.to_csv(name_to_save + "_volslices.csv")
+
+if __name__ == "__main__":
+    random_k_fold_generation(folders_path="D:\RETOUCH", k=5)
