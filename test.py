@@ -351,10 +351,10 @@ if __name__ == "__main__":
     test_model(
         fold_test=2,
         model_name="UNet",
-        weights_name="Run5_UNet_best_model.pth",
+        weights_name="Run6_UNet_best_model.pth",
         number_of_channels=1,
         number_of_classes=4,
         device_name="GPU",
         batch_size=1,
-        save_images=True
+        save_images=False
     )
