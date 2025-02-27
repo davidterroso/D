@@ -3,12 +3,14 @@ import matplotlib.pyplot as plt
 from numpy import linspace
 from os import makedirs
 
-def plot_logs(run_name: str):
+def plot_logs(imgs_folder: str, run_name: str):
     """
     Plots the logged runs of the training files, as loss per 
     batch and per epoch, in training and validation
 
     Args:
+        imgs_folder (str): folder on which the images will 
+            be saved
         run_name (str): name of the run desired to plot
 
     Return:
@@ -94,19 +96,19 @@ def plot_logs(run_name: str):
     ax3.set_xticks(ticks_batch)
     ax3.tick_params(axis='x', labelrotation=20)
     
-    # Creates the imgs folder in case 
-    # it does not exist
-    makedirs("imgs", exist_ok=True)
+    # Creates the folder in which the images 
+    # will be saved in case it does not exist
+    makedirs(imgs_folder, exist_ok=True)
 
     # Declares the path to save
-    img_path = f"imgs\{run_name}_training_error.png"
+    img_path = f"{imgs_folder}\{run_name}_training_error.png"
     # Saves the image to the designated path
     plt.savefig(img_path)
 
     # Shows the image
     plt.show()
 
-# In case it is needed to run manually, 
+# In case it is needed to run in this script, 
 # here is the code
 if __name__ == "__main__":
     plot_logs(run_name="Run6")

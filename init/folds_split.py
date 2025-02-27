@@ -794,6 +794,3 @@ def folds_information(file_name: str):
     complete_df.to_csv(name_to_save + "_overall.csv")
     fluid_df.to_csv(name_to_save + "_fluid.csv")
     volumes_slices_df.to_csv(name_to_save + "_volslices.csv")
-
-if __name__ == "__main__":
-    random_k_fold_generation(folders_path="D:\RETOUCH", k=5)

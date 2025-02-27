@@ -182,5 +182,7 @@ def mip_k_fold_split(k: int=5):
     else:
         print("No feasible solution found.")
 
+# In case it is needed to run in this script, 
+# here is the code
 if __name__ == "__main__":
     mip_k_fold_split()

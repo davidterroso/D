@@ -4,14 +4,15 @@
 - [Device Utilized](#device-utilized)
 - [Folder Structure](#folder-structure)
 - [environment](#environment)
-- [imgs](#imgs)
 - [init](#init)
 - [logs](#logs)
 - [models](#models)
 - [network\_functions](#network_functions)
 - [networks](#networks)
+- [preliminary\_imgs](#preliminary_imgs)
 - [results](#results)
 - [splits](#splits)
+- [unet\_imgs](#unet_imgs)
 - [wandb](#wandb)
 - [paths.py](#pathspy)
 - [pipeline.ipynb](#pipelineipynb)
@@ -146,9 +147,6 @@ D
 ## [environment](environment/)
 Folder that contains the files that describe the environment used in this repository, including the libraries used and their respective versions, as well as the Python version.
 
-## [imgs](imgs/)
-Folder that contains all the images produced when the code is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
-
 ## [init](init/)
 Folder that contains the files that are used in the pipeline and when preparing the run of the deep learning models. May also include functions that are used during the [training](train.py) referring to the data processing.
 
@@ -164,11 +162,17 @@ Folder that contains functions that are used to support the training ane testing
 ## [networks](networks/)
 In this folder, the PyTorch modules of each network trained is presented, as well as the loss functions used to train or evaluate the network.
 
+## [preliminary_imgs](preliminary_imgs/)
+Folder that contains all the images produced in the [unet_preliminary.ipynb](unet_preliminary.ipynb) code is when it is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
+
 ## [results](results/)
 Contains the results obtained by each network using the Dice metric to evaluate it. The results are grouped per OCT volume, per OCT vendor, per class, and per slice in each validation volume.
 
 ## [splits](splits/)
 Stores the resulting k-fold split performed using [this file](init/folds_split.py) or [this file](init/mip_split.py). In order to organize the files, most of the results from this split have been deleted but can still be seen [here](https://github.com/davidterroso/D/tree/75cb535ff11b4c26af551f263346cad0e74612d5/splits).
+
+## [unet_imgs](unet_imgs/)
+Folder that contains all the images produced in the [unet.ipynb](unet.ipynb) code is when it is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
 
 ## [wandb](wandb/)
 Folder created when running the training file, by using the Weights and Bias library. In this folder, each run is stored with the name referring to the date and time of the run, as well as a code. It stores a .wandb file with code of the run that contains the statistics of the run and everything visualized in their website through the link printed in the console. It also contains a folder named files where every output of the console is stored, the requirements file, that contains all the imports used in this run, the metadata of the run, stored in .json file, another .json file where the values of each weight is being stored, and a config.yml file that contains information of the run configurations. In case images are being saved, in the folder files\media the images will be stored, identified by the number of the image and an hash code. There is also the logs folder, that stores two .log files that can be used to debug and understand what is being done during the wandb initialization.

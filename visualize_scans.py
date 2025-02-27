@@ -239,6 +239,8 @@ class VendorInputApp:
         except ValueError:
             messagebox.showerror("Error", "Volume and Slice must be integers")
 
+# In case it is needed to run in this script, 
+# here is the code
 if __name__ == "__main__":
     # Creates the main window for the interface
     root = tk.Tk()
