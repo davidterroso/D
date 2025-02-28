@@ -48,6 +48,9 @@ def folds_results(first_run_name: str, iteration: int, k: int=5):
         iteration (int): number of the iteration that comprises 
             the k - 1 runs
         k (int): number of folds used in this iteration
+
+    Return: 
+        None
     """
     # Initiates a dictionary that will store 
     # the DataFrames from the different runs
@@ -102,6 +105,9 @@ def folds_results(first_run_name: str, iteration: int, k: int=5):
             for fold, tuple_df in df_dict.items():
                 # Appends to the results list, the value at 
                 # the current vendor and fluid
+                # The DataFrame that is being handled is the 
+                # one that comprises information about classes
+                # and vendors
                 results.append(tuple_df[1].at[vendor, fluid])
             # Calculates the mean across all folds
             mean = np.array(results).mean()
@@ -118,6 +124,39 @@ def folds_results(first_run_name: str, iteration: int, k: int=5):
     vendor_df = vendor_df.set_axis(vendors)
     # Saves the DataFrame with a name refering to the iteration
     vendor_df.to_csv(f".\\results\\Iteration{iteration}_vendors_results.csv")
+
+    # Initiates the DataFrame with the name 
+    # of the fluids as the columns names for 
+    # the class data
+    # e.g. of a column name: Dice_IRF
+    class_df = DataFrame(columns=fluids)
+    # Initiates a list that will store the 
+    # values of the classes 
+    values = []
+    # Iterates through the fluids
+    for fluid in fluids:
+        # Initiates a list that will store the 
+        # results across all folds
+        results = []
+        # Iterates across all folds in the dictionary
+        for fold, tuple_df in df_dict.items():
+            # Appends to the results list, the value at 
+            # the current vendor and fluid
+            # The DataFrame that is now being handled 
+            # comprises information of the classes
+            results.append(tuple_df[0].at[0, fluid])
+        # Calculates the mean across all folds
+        mean = np.array(results).mean()
+        # Calculates the standard deviation across all folds
+        std = np.array(results).std()
+        # Saves the value as "mean (std)"
+        value = f"{mean:.2f} ({std:.2f})"
+        # Appends the value to the list that will form a row
+        values.append(value)
+    # Appends the results in a row to the DataFrame
+    class_df.loc[len(class_df)] = values
+    # Saves the DataFrame with a name refering to the iteration, not including the index
+    class_df.to_csv(f".\\results\\Iteration{iteration}_classes_results.csv", index=False)
 
 def test_model (
         fold_test: int,
@@ -436,13 +475,14 @@ def test_model (
 # directly in this file, here lays 
 # an example
 if __name__ == "__main__":
-    test_model(
-        fold_test=2,
-        model_name="UNet",
-        weights_name="Run6_UNet_best_model.pth",
-        number_of_channels=1,
-        number_of_classes=4,
-        device_name="GPU",
-        batch_size=1,
-        save_images=False
-    )
+    # test_model(
+    #     fold_test=2,
+    #     model_name="UNet",
+    #     weights_name="Run6_UNet_best_model.pth",
+    #     number_of_channels=1,
+    #     number_of_classes=4,
+    #     device_name="GPU",
+    #     batch_size=1,
+    #     save_images=False
+    # )
+    folds_results(first_run_name="Run001", iteration=1, k=3)
