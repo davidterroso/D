@@ -475,14 +475,13 @@ def test_model (
 # directly in this file, here lays 
 # an example
 if __name__ == "__main__":
-    # test_model(
-    #     fold_test=2,
-    #     model_name="UNet",
-    #     weights_name="Run6_UNet_best_model.pth",
-    #     number_of_channels=1,
-    #     number_of_classes=4,
-    #     device_name="GPU",
-    #     batch_size=1,
-    #     save_images=False
-    # )
-    folds_results(first_run_name="Run001", iteration=1, k=3)
+    test_model(
+        fold_test=2,
+        model_name="UNet",
+        weights_name="Run6_UNet_best_model.pth",
+        number_of_channels=1,
+        number_of_classes=4,
+        device_name="GPU",
+        batch_size=1,
+        save_images=False
+    )
