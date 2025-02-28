@@ -49,33 +49,75 @@ def folds_results(first_run_name: str, iteration: int, k: int=5):
             the k - 1 runs
         k (int): number of folds used in this iteration
     """
+    # Initiates a dictionary that will store 
+    # the DataFrames from the different runs
     df_dict = {}
+    # Gets the number of the first run
     first_run_index = int(first_run_name[3:])
+    # Iterates through the runs corresponding to the folds
+    # Starts in the index of the first run and stops k - 1 
+    # integers after
     for fold in range(first_run_index, k + first_run_index - 1):
+        # Gets the name of the run from the fold number
+        # e.g. fold=3 -> run_name="Run003"
         run_name = "Run" + str(fold).zfill(3)
+        # Indicates the name of the file that will store the Dice 
+        # per class
         class_file_name = f".\\results\\{run_name}_class_dice.csv"
+        # Indicates the name of the file that will store the Dice 
+        # per vendor
         vendor_file_name = f".\\results\\{run_name}_vendor_dice.csv"
+        # Reads the DataFrame that handles the data per class
         class_df = read_csv(class_file_name)
+        # Reads the DataFrame that handles the data per vendor
         vendor_df = read_csv(vendor_file_name, index_col="vendor")
+        # Removes the name of the column that has the table's index
         vendor_df.index.name = None
+        # Saves, to the corresponding fold in the 
+        # dictionary, the two DataFrames as a 
+        # single tuple
         df_dict[fold] = (class_df, vendor_df)
+    # Gets the list of vendors and fluids
     vendors = vendor_df.index.to_list()
     fluids = class_df.columns.to_list()
 
-    final_df = DataFrame(columns=fluids)
+    # Initiates the DataFrame with the name 
+    # of the fluids as the columns names for 
+    # the vendor data
+    # e.g. of a column name: Dice_IRF
+    vendor_df = DataFrame(columns=fluids)
+    # Iterates through the 
+    # vendors in the DataFrame
+    # (rows)
     for vendor in vendors:
+        # In each vendor stores an array of values 
+        # that will later be inserted as a row
         values = []
+        # Iterates through the fluids
         for fluid in fluids:
+            # Initiates a list that will store the 
+            # results across all folds
             results = []
+            # Iterates across all folds in the dictionary
             for fold, tuple_df in df_dict.items():
+                # Appends to the results list, the value at 
+                # the current vendor and fluid
                 results.append(tuple_df[1].at[vendor, fluid])
+            # Calculates the mean across all folds
             mean = np.array(results).mean()
+            # Calculates the standard deviation across all folds
             std = np.array(results).std()
+            # Saves the value as "mean (std)"
             value = f"{mean:.2f} ({std:.2f})"
+            # Appends the value to the list that will form a row
             values.append(value)
-        final_df.loc[len(final_df)] = values
-    final_df = final_df.set_axis(vendors)
-    final_df.to_csv(f".\\results\\Iteration{iteration}_results.csv")
+        # Appends the results in a row to the DataFrame
+        vendor_df.loc[len(vendor_df)] = values
+    # Sets the name of the axis in the 
+    # DataFrame to the name of the vendors
+    vendor_df = vendor_df.set_axis(vendors)
+    # Saves the DataFrame with a name refering to the iteration
+    vendor_df.to_csv(f".\\results\\Iteration{iteration}_vendors_results.csv")
 
 def test_model (
         fold_test: int,
