@@ -4,7 +4,7 @@ import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 from collections import defaultdict
 from IPython import get_ipython
-from os import makedirs
+from os import listdir, makedirs
 from os.path import exists
 from pandas import DataFrame, read_csv
 from torch.utils.data import DataLoader
@@ -30,6 +30,35 @@ label_to_fluids = {
         2: "SRF",
         3: "PED"
     }
+
+def fold_results(first_run_name, iteration, k):
+    df_dict = {}
+    first_run_index = int(first_run_name[3:])
+    for fold in range(first_run_index, k + first_run_index - 1):
+        run_name = "Run" + str(fold).zfill(3)
+        class_file_name = f".\\results\\{run_name}_class_dice.csv"
+        vendor_file_name = f".\\results\\{run_name}_vendor_dice.csv"
+        class_df = read_csv(class_file_name)
+        vendor_df = read_csv(vendor_file_name, index_col="vendor")
+        vendor_df.index.name = None
+        df_dict[fold] = (class_df, vendor_df)
+    vendors = vendor_df.index.to_list()
+    fluids = class_df.columns.to_list()
+
+    final_df = DataFrame(columns=fluids)
+    for vendor in vendors:
+        values = []
+        for fluid in fluids:
+            results = []
+            for fold, tuple_df in df_dict.items():
+                results.append(tuple_df[1].at[vendor, fluid])
+            mean = np.array(results).mean()
+            std = np.array(results).std()
+            value = f"{mean:.2f} ({std:.2f})"
+            values.append(value)
+        final_df.loc[len(final_df)] = values
+    final_df = final_df.set_axis(vendors)
+    final_df.to_csv(f".\\results\\Iteration{iteration}_results.csv")
 
 def test_model (
         fold_test: int,
