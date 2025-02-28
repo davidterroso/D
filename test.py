@@ -31,7 +31,24 @@ label_to_fluids = {
         3: "PED"
     }
 
-def fold_results(first_run_name, iteration, k):
+def folds_results(first_run_name: str, iteration: int, k: int=5):
+    """
+    Function used to compare the results obtained in the k folds,
+    calculating the mean and standard deviation of the results 
+    obtained for each vendor and class, from the files output 
+    from the test function
+
+    Args:
+        first_run_name (str): name of the first run of the folds 
+            considered. It is expected that the name of the first 
+            run is something like "Run001" and the runs of the 
+            same iteration but different folds increment one to 
+            run number thus being named "Run002", "Run003", and
+            "Run004", for k=5, for example
+        iteration (int): number of the iteration that comprises 
+            the k - 1 runs
+        k (int): number of folds used in this iteration
+    """
     df_dict = {}
     first_run_index = int(first_run_name[3:])
     for fold in range(first_run_index, k + first_run_index - 1):
