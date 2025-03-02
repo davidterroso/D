@@ -18,7 +18,7 @@
 - [pipeline.ipynb](#pipelineipynb)
 - [plot\_logs.py](#plot_logspy)
 - [README.md](#readmemd)
-- [test.py](#testpy)
+- [test\_model.py](#test_modelpy)
 - [train.py](#trainpy)
 - [unet\_preliminary.ipynb](#unet_preliminaryipynb)
 - [unet.ipynb](#unetipynb)
@@ -193,7 +193,7 @@ Python script that plots and saves the loss in the training and validation of a 
 ## [README.md](README.md)
 Markdown file that introduces and orients the user in this project, introducing where to navigate to better understand it.
 
-## [test.py](test.py)
+## [test_model.py](test_model.py)
 In this file, the functions that test the previously trained neural networks are presented.
 
 ## [train.py](train.py)
