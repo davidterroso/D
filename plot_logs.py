@@ -16,6 +16,9 @@ def plot_logs(imgs_folder: str, run_name: str):
     Return:
         None
     """
+    # Sets Matplotlib to only log messages 
+    # of importance WARNING or higher
+    plt.set_loglevel("WARNING")
     # Declares the path of the epochs and batch losses
     epochs_loss_csv = f"logs\{run_name}_training_log_epoch.csv"
     batch_loss_csv = f"logs\{run_name}_training_log_batch.csv"
