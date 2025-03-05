@@ -512,19 +512,25 @@ def train_model (
             logging.info("Early stopping triggered.")
             break
 
+        # This section of the code is commented because, after implementation, 
+        # no real use was given to the output images and was only slowing down 
+        # the process and occupying storage space
         # Get the predictions in each voxel
-        pred_mask = masks_pred_prob_bchw.argmax(dim=1)
+        # pred_mask = masks_pred_prob_bchw.argmax(dim=1)
 
         # In case the model selected is not the "UNet3"
         if model_name != "UNet3":
+            # This section of the code is commented because, after implementation, 
+            # no real use was given to the output images and was only slowing down 
+            # the process and occupying storage space
             # Get the predicted masks
-            irf_predicted_mask = (pred_mask == 1).float()  
-            srf_predicted_mask = (pred_mask == 2).float()
-            ped_predicted_mask = (pred_mask == 3).float()
-            # Get the true masks
-            irf_true_mask = (true_masks == 1).float()
-            srf_true_mask = (true_masks == 2).float()
-            ped_true_mask = (true_masks == 3).float()
+            # irf_predicted_mask = (pred_mask == 1).float()  
+            # srf_predicted_mask = (pred_mask == 2).float()
+            # ped_predicted_mask = (pred_mask == 3).float()
+            # # Get the true masks
+            # irf_true_mask = (true_masks == 1).float()
+            # srf_true_mask = (true_masks == 2).float()
+            # ped_true_mask = (true_masks == 3).float()
 
             # Attempts to log this information
             try:
@@ -533,18 +539,21 @@ def train_model (
                     "Step": global_step,
                     "Learning Rate": optimizer.param_groups[0]["lr"],
                     "Validation Mean Loss": val_loss,
-                    "Images": wandb.Image(images[0].cpu() * 128 + 128), # Calculations 
-                                                                        # to revert the 
-                                                                        # standardization
-                    "Masks":{
-                        # Multiplied by 255 to visualize
-                        "IRF True Mask": wandb.Image(irf_true_mask[0].float().cpu() * 255),
-                        "SRF True Mask": wandb.Image(srf_true_mask[0].float().cpu() * 255),
-                        "PED True Mask": wandb.Image(ped_true_mask[0].float().cpu() * 255),
-                        "IRF Predicted Mask": wandb.Image(irf_predicted_mask[0].float().cpu() * 255),
-                        "SRF Predicted Mask": wandb.Image(srf_predicted_mask[0].float().cpu() * 255),
-                        "PED Predicted Mask": wandb.Image(ped_predicted_mask[0].float().cpu() * 255),
-                    },
+                    # This section of the code is commented because, after implementation, 
+                    # no real use was given to the output images and was only slowing down 
+                    # the process and occupying storage space
+                    # "Images": wandb.Image(images[0].cpu() * 128 + 128), # Calculations 
+                    #                                                     # to revert the 
+                    #                                                     # standardization
+                    # "Masks":{
+                    #     # Multiplied by 255 to visualize
+                    #     "IRF True Mask": wandb.Image(irf_true_mask[0].float().cpu() * 255),
+                    #     "SRF True Mask": wandb.Image(srf_true_mask[0].float().cpu() * 255),
+                    #     "PED True Mask": wandb.Image(ped_true_mask[0].float().cpu() * 255),
+                    #     "IRF Predicted Mask": wandb.Image(irf_predicted_mask[0].float().cpu() * 255),
+                    #     "SRF Predicted Mask": wandb.Image(srf_predicted_mask[0].float().cpu() * 255),
+                    #     "PED Predicted Mask": wandb.Image(ped_predicted_mask[0].float().cpu() * 255),
+                    # },
                     "Step": global_step,
                     "Epoch": epoch,
                     **histograms
@@ -556,10 +565,13 @@ def train_model (
                 pass 
 
         else:
+            # This section of the code is commented because, after implementation, 
+            # no real use was given to the output images and was only slowing down 
+            # the process and occupying storage space
             # Get the predicted masks
-            fluid_predicted_mask = (pred_mask == 1).float()
+            # fluid_predicted_mask = (pred_mask == 1).float()
             # Get true masks
-            fluid_true_mask = (true_masks == 1).float()
+            # fluid_true_mask = (true_masks == 1).float()
 
             # Attempts to log this information
             try:
@@ -567,17 +579,20 @@ def train_model (
                 experiment.log({
                     "Learning Rate": optimizer.param_groups[0]["lr"],
                     "Validation Mean Loss": val_loss,
-                    "Images": wandb.Image(images[0].cpu() * 128 + 128), # Calculations 
-                                                                        # to revert the 
-                                                                        # standardization
-                    "Masks":{
-                        # Multiplied by 255 to visualize
-                        f"{label_to_fluids.get(fluid)} True Mask": 
-                        wandb.Image(fluid_true_mask[0].float().cpu() * 255),
+                    # This section of the code is commented because, after implementation, 
+                    # no real use was given to the output images and was only slowing down 
+                    # the process and occupying storage space
+                    # "Images": wandb.Image(images[0].cpu() * 128 + 128), # Calculations 
+                    #                                                     # to revert the 
+                    #                                                     # standardization
+                    # "Masks":{
+                    #     # Multiplied by 255 to visualize
+                    #     f"{label_to_fluids.get(fluid)} True Mask": 
+                    #     wandb.Image(fluid_true_mask[0].float().cpu() * 255),
 
-                        f"{label_to_fluids.get(fluid)} Predicted Mask": 
-                        wandb.Image(fluid_predicted_mask[0].float().cpu() * 255),
-                    },
+                    #     f"{label_to_fluids.get(fluid)} Predicted Mask": 
+                    #     wandb.Image(fluid_predicted_mask[0].float().cpu() * 255),
+                    # },
                     "Step": global_step,
                     "Epoch": epoch,
                     **histograms
