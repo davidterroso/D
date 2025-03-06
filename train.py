@@ -343,7 +343,7 @@ def train_model (
     # Iterates through every epoch
     for epoch in range(1, epochs + 1):
         # In case the patch extraction is done syncronously
-        if not assyncronous_patch_extraction:
+        if ((not assyncronous_patch_extraction) and (patch)):
             print(f"Preparing epoch {epoch} training")
             train_loader, val_loader, n_train = extract_patches_wrapper(
                 model_name=model_name, patch=patch, patch_shape=patch_shape, n_pos=n_pos, 
@@ -372,10 +372,10 @@ def train_model (
 
                 # Checks if the number of channels given as input matches the number of 
                 # images read with the dataloader
-                # assert images[0].shape[1] == model.n_channels, \
-                #     f'Network has been defined with {model.n_channels} input channels, ' \
-                #     f'but loaded images have {images[0].shape[1]} channels. Please check if ' \
-                #     'the images are loaded correctly.'
+                assert images[0].shape[1] == model.n_channels, \
+                    f'Network has been defined with {model.n_channels} input channels, ' \
+                    f'but loaded images have {images[0].shape[1]} channels. Please check if ' \
+                    'the images are loaded correctly.'
 
                 # Declares what type the images and the true_masks variables, including the device that is
                 # going to be used, the data type and whether it is channels first or channels last

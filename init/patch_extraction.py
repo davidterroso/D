@@ -69,11 +69,11 @@ def extract_patches_wrapper(model_name: str, patch: bool,  patch_shape: tuple, n
         n_train (int): number of images that will be used to train 
             the model
     """
-    if patch:
-        print("Extracting Patches")
-        # Starts timing the patch extraction
-        begin = time()
+    print("Extracting Patches")
+    # Starts timing the patch extraction
+    begin = time()
 
+    if patch:
         # Eliminates the previous patches and saves 
         # new patches to train and validate the model, 
         # but only for the volumes that will be used 
@@ -163,12 +163,15 @@ def extract_patches_wrapper(model_name: str, patch: bool,  patch_shape: tuple, n
             # Stops timing the patch extraction and prints it
             end = time()
             print(f"Patch dropping took {end - begin} seconds.")
-    
+    else:
+        extract_big_patches()
+
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations
     train_set = TrainDataset(train_volumes, model_name, patch)
     val_set = ValidationDataset(val_volumes, model_name, patch)
 
+    # Calculates the total number of images used in train
     n_train = len(train_set)
     n_val = len(val_set)
     print(f"Train Images: {n_train} | Validation Images: {n_val}")
@@ -687,3 +690,19 @@ def extract_patches_25D(folder_path: str, patch_shape: tuple, n_pos: int,
                     roi_uint8.save(roi_patch_name_uint8)
                     roi_after_uint8 = Image.fromarray(tmp_roi[:,:,2].astype(np.uint8))
                     roi_after_uint8.save(roi_after_patch_name_uint8)
+
+def extract_big_patches(folder_path: str, volumes: list=None):
+    """
+    This function will be used to extract patches from the 
+    Cirrus and Topcon volumes. These patches will have the 
+    shape of the Spectralis slices, allowing the training 
+    to be consistent.
+
+    Args:
+        folders_path (str): Path indicating where the images are stored
+        volumes (List[float]) optional: List of volumes to extract patches 
+            from. The default value is None because it is optional
+    """
+    # Reads an extracted slice from Spectralis to determine the desired shape
+    patch_shape = imread(IMAGES_PATH + "\OCT_images\segmentation\slices\uint8\Spectralis_TRAIN025_000").shape
+    
