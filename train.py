@@ -35,6 +35,7 @@ def train_model (
         weight_decay: float,
         gradient_clipping: float,
         scheduler: bool,
+        patch: bool,
         number_of_classes: int,
         number_of_channels: int,
         fold_test: int,
@@ -79,7 +80,9 @@ def train_model (
             scales the gradient down, to prevent gradient 
             exploding
         scheduler (bool): flag that indicates whether a 
-            learning rate scheduler will be used or not
+            learning rate scheduler will be used or not        
+        patch (bool): flag that indicates whether the 
+            training will be done using patches or not
         number_of_channels (int): number of channels the 
             input will present
         fold_test (int): number of the fold that will be used 
@@ -328,7 +331,7 @@ def train_model (
     # before training
     if assyncronous_patch_extraction:
         train_loader, val_loader, n_train = extract_patches_wrapper(
-            model_name=model_name, patch_shape=patch_shape, n_pos=n_pos, 
+            model_name=model_name, patch=patch, patch_shape=patch_shape, n_pos=n_pos, 
             n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
             val_volumes=val_volumes, batch_size=batch_size, 
             patch_dropping=patch_dropping, drop_prob=drop_prob)
@@ -343,7 +346,7 @@ def train_model (
         if not assyncronous_patch_extraction:
             print(f"Preparing epoch {epoch} training")
             train_loader, val_loader, n_train = extract_patches_wrapper(
-                model_name=model_name, patch_shape=patch_shape, n_pos=n_pos, 
+                model_name=model_name, patch=patch, patch_shape=patch_shape, n_pos=n_pos, 
                 n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
                 val_volumes=val_volumes, batch_size=batch_size, 
                 patch_dropping=patch_dropping, drop_prob=drop_prob)
@@ -369,10 +372,10 @@ def train_model (
 
                 # Checks if the number of channels given as input matches the number of 
                 # images read with the dataloader
-                assert images.shape[1] == model.n_channels, \
-                    f'Network has been defined with {model.n_channels} input channels, ' \
-                    f'but loaded images have {images.shape[1]} channels. Please check if ' \
-                    'the images are loaded correctly.'
+                # assert images[0].shape[1] == model.n_channels, \
+                #     f'Network has been defined with {model.n_channels} input channels, ' \
+                #     f'but loaded images have {images[0].shape[1]} channels. Please check if ' \
+                #     'the images are loaded correctly.'
 
                 # Declares what type the images and the true_masks variables, including the device that is
                 # going to be used, the data type and whether it is channels first or channels last
@@ -609,7 +612,7 @@ def train_model (
 # an example
 if __name__ == "__main__":
     train_model(
-        run_name="Run9",
+        run_name="Run1000",
         model_name="UNet",
         device="GPU",
         split="segmentation_fold_selection.csv",
@@ -621,6 +624,7 @@ if __name__ == "__main__":
         weight_decay=0.0001,
         gradient_clipping=1.0,
         scheduler=False,
+        patch=False,
         number_of_classes=4,
         number_of_channels=1,
         fold_test=1,

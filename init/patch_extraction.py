@@ -27,13 +27,15 @@ else:
 # for each device, identified by the height of the image
 SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
 
-def extract_patches_wrapper(model_name: str, patch_shape: tuple, n_pos: int,
+def extract_patches_wrapper(model_name: str, patch: bool,  patch_shape: tuple, n_pos: int,
                              n_neg: int, pos: int, neg: int, train_volumes: list, 
                              val_volumes: list, batch_size: int, 
                              patch_dropping: bool, drop_prob: float):
     """
     Args:
         model_name (str): name of the model desired to train
+        patch (bool): flag that indicates whether the 
+            training will be done using patches or not
         patch_shape (tuple): indicates what is the shape of 
             the patches that will be extracted from the B-scans
         n_pos (int): number of patches that will be extracted 
@@ -67,104 +69,105 @@ def extract_patches_wrapper(model_name: str, patch_shape: tuple, n_pos: int,
         n_train (int): number of images that will be used to train 
             the model
     """
-    print("Extracting Patches")
-    # Starts timing the patch extraction
-    begin = time()
+    if patch:
+        print("Extracting Patches")
+        # Starts timing the patch extraction
+        begin = time()
 
-    # Eliminates the previous patches and saves 
-    # new patches to train and validate the model, 
-    # but only for the volumes that will be used 
-    # in training
-    if model_name != "2.5D":
-        save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\slices\\"
-        save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\masks\\"
-        save_patches_rois_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\roi\\"
+        # Eliminates the previous patches and saves 
+        # new patches to train and validate the model, 
+        # but only for the volumes that will be used 
+        # in training
+        if model_name != "2.5D":
+            save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\slices\\"
+            save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\masks\\"
+            save_patches_rois_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\roi\\"
 
-        # In case the folder to save the images does not exist, it is created
-        if not (exists(save_patches_path_uint8) 
-                and exists(save_patches_masks_path_uint8) 
-                and exists(save_patches_rois_path_uint8)):
-            makedirs(save_patches_path_uint8)
-            makedirs(save_patches_masks_path_uint8)
-            makedirs(save_patches_rois_path_uint8)
-        else:
-            rmtree(save_patches_path_uint8)
-            makedirs(save_patches_path_uint8)
-            rmtree(save_patches_masks_path_uint8)
-            makedirs(save_patches_masks_path_uint8)
-            rmtree(save_patches_rois_path_uint8)
-            makedirs(save_patches_rois_path_uint8)
+            # In case the folder to save the images does not exist, it is created
+            if not (exists(save_patches_path_uint8) 
+                    and exists(save_patches_masks_path_uint8) 
+                    and exists(save_patches_rois_path_uint8)):
+                makedirs(save_patches_path_uint8)
+                makedirs(save_patches_masks_path_uint8)
+                makedirs(save_patches_rois_path_uint8)
+            else:
+                rmtree(save_patches_path_uint8)
+                makedirs(save_patches_path_uint8)
+                rmtree(save_patches_masks_path_uint8)
+                makedirs(save_patches_masks_path_uint8)
+                rmtree(save_patches_rois_path_uint8)
+                makedirs(save_patches_rois_path_uint8)
 
-        print("Extracting Training Patches")
-        extract_patches(IMAGES_PATH, 
-                    patch_shape=patch_shape, 
-                    n_pos=n_pos, n_neg=n_neg, 
-                    pos=pos, neg=neg, 
-                    volumes=train_volumes) 
-        # Only extracts the validation patches in 
-        # case the model is being tuned
-        # When it is not being tuned, val_volumes
-        # is None
-        if val_volumes is not None:
-            print("Extracting Validation Patches")
+            print("Extracting Training Patches")
             extract_patches(IMAGES_PATH, 
                         patch_shape=patch_shape, 
                         n_pos=n_pos, n_neg=n_neg, 
                         pos=pos, neg=neg, 
-                        volumes=val_volumes)
-    else:
-        save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\slices\\"
-        save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\masks\\"
-        save_patches_rois_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\roi\\"
-
-        # In case the folder to save the images does not exist, it is created
-        if not (exists(save_patches_path_uint8) 
-                and exists(save_patches_masks_path_uint8) 
-                and exists(save_patches_rois_path_uint8)):
-            makedirs(save_patches_path_uint8)
-            makedirs(save_patches_masks_path_uint8)
-            makedirs(save_patches_rois_path_uint8)
+                        volumes=train_volumes) 
+            # Only extracts the validation patches in 
+            # case the model is being tuned
+            # When it is not being tuned, val_volumes
+            # is None
+            if val_volumes is not None:
+                print("Extracting Validation Patches")
+                extract_patches(IMAGES_PATH, 
+                            patch_shape=patch_shape, 
+                            n_pos=n_pos, n_neg=n_neg, 
+                            pos=pos, neg=neg, 
+                            volumes=val_volumes)
         else:
-            rmtree(save_patches_path_uint8)
-            makedirs(save_patches_path_uint8)
-            rmtree(save_patches_masks_path_uint8)
-            makedirs(save_patches_masks_path_uint8)
-            rmtree(save_patches_rois_path_uint8)
-            makedirs(save_patches_rois_path_uint8)
+            save_patches_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\slices\\"
+            save_patches_masks_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\masks\\"
+            save_patches_rois_path_uint8 = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\roi\\"
 
-        print("Extracting Training Patches")
-        extract_patches_25D(IMAGES_PATH, 
-                    patch_shape=patch_shape, 
-                    n_pos=n_pos, n_neg=n_neg, 
-                    pos=pos, neg=neg, 
-                    volumes=train_volumes)            
+            # In case the folder to save the images does not exist, it is created
+            if not (exists(save_patches_path_uint8) 
+                    and exists(save_patches_masks_path_uint8) 
+                    and exists(save_patches_rois_path_uint8)):
+                makedirs(save_patches_path_uint8)
+                makedirs(save_patches_masks_path_uint8)
+                makedirs(save_patches_rois_path_uint8)
+            else:
+                rmtree(save_patches_path_uint8)
+                makedirs(save_patches_path_uint8)
+                rmtree(save_patches_masks_path_uint8)
+                makedirs(save_patches_masks_path_uint8)
+                rmtree(save_patches_rois_path_uint8)
+                makedirs(save_patches_rois_path_uint8)
+
+            print("Extracting Training Patches")
+            extract_patches_25D(IMAGES_PATH, 
+                        patch_shape=patch_shape, 
+                        n_pos=n_pos, n_neg=n_neg, 
+                        pos=pos, neg=neg, 
+                        volumes=train_volumes)            
+            
+            print("Extracting Validation Patches")
+            extract_patches_25D(IMAGES_PATH, 
+                        patch_shape=patch_shape, 
+                        n_pos=n_pos, n_neg=n_neg, 
+                        pos=pos, neg=neg, 
+                        volumes=val_volumes)
         
-        print("Extracting Validation Patches")
-        extract_patches_25D(IMAGES_PATH, 
-                    patch_shape=patch_shape, 
-                    n_pos=n_pos, n_neg=n_neg, 
-                    pos=pos, neg=neg, 
-                    volumes=val_volumes)
-    
-    # Stops timing the patch extraction and prints it
-    end = time()
-    print(f"Patch extraction took {end - begin} seconds.")
-
-    if patch_dropping:
-        print("Dropping Patches")
-        # Starts timing the patch dropping
-        begin = time()
-        # Randomly drops patches of slices that do not have retinal fluid
-        drop_patches(prob=drop_prob, volumes_list=train_volumes, model=model_name)
-        drop_patches(prob=drop_prob, volumes_list=val_volumes, model=model_name)
         # Stops timing the patch extraction and prints it
         end = time()
-        print(f"Patch dropping took {end - begin} seconds.")
+        print(f"Patch extraction took {end - begin} seconds.")
+
+        if patch_dropping:
+            print("Dropping Patches")
+            # Starts timing the patch dropping
+            begin = time()
+            # Randomly drops patches of slices that do not have retinal fluid
+            drop_patches(prob=drop_prob, volumes_list=train_volumes, model=model_name)
+            drop_patches(prob=drop_prob, volumes_list=val_volumes, model=model_name)
+            # Stops timing the patch extraction and prints it
+            end = time()
+            print(f"Patch dropping took {end - begin} seconds.")
     
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations
-    train_set = TrainDataset(train_volumes, model_name)
-    val_set = ValidationDataset(val_volumes, model_name)
+    train_set = TrainDataset(train_volumes, model_name, patch)
+    val_set = ValidationDataset(val_volumes, model_name, patch)
 
     n_train = len(train_set)
     n_val = len(val_set)

@@ -225,7 +225,8 @@ class TrainDataset(Dataset):
     with the available images, thus simplifying the training
     process
     """
-    def __init__(self, train_volumes: list, model: str, fluid: int=None):
+    def __init__(self, train_volumes: list, model: str, 
+                 patch: bool, fluid: int=None):
         """
         Initiates the Dataset object and gets the possible 
         names of the patches that will be used in training
@@ -234,6 +235,8 @@ class TrainDataset(Dataset):
             train_volumes(List[float]): list of the training 
                 volumes that will be used to train the model
             model (str): name of the model that will be trained
+            patch (bool): flag that indicates whether the 
+                training will be done using patches or not
             fluid (int): label of fluid that is expected to 
                 segment. Optional because it is only used in
                 one network
@@ -245,9 +248,14 @@ class TrainDataset(Dataset):
         # compose the dataset, the transformations that will be 
         # applied to the images, and the fluid to segment in 
         # case it is used
-        super().__init__()
+        super().__init__()        
+        self.patch = patch
         self.model = model
-        self.patches_names = patches_from_volumes(train_volumes, model)
+        if patch:
+            self.images_names = patches_from_volumes(train_volumes, model)
+        else:
+            self.images_names = images_from_volumes(train_volumes)
+
         # Random Rotation has a probability of 0.5 of rotating 
         # the image between 0 and 10 degrees
         # Random Horizontal Flip has a probability of 0.5 
@@ -270,7 +278,7 @@ class TrainDataset(Dataset):
         Return:
             None
         """
-        return len(self.patches_names)
+        return len(self.images_names)
 
     def __getitem__(self, index):
         """
@@ -290,15 +298,21 @@ class TrainDataset(Dataset):
             index = index.tolist()
 
         # The path to read the images is different depending on the model
-        if self.model == "2.5D":
-            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\"
+        if self.patch:
+            if self.model == "2.5D":
+                images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\"
+            else:
+                images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\"
+            # Indicates the path to the image depending on the index given,
+            # which is associated with the image name
+            slice_name = images_folder + "slices\\" + self.images_names[index]
         else:
-            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\"
-
-        # Indicates the path to the image depending on the index given,
-        # which is associated with the image name
-        slice_name = images_folder + "slices\\" + self.patches_names[index]
-        mask_name = images_folder + "masks\\" + self.patches_names[index]
+            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\"
+            mask_name = images_folder + "masks\\" + self.images_names[index]            
+            # Indicates the path to the image depending on the index given,
+            # which is associated with the image name
+            slice_name = images_folder + "slices\\uint8\\" + self.images_names[index]
+            mask_name = images_folder + "masks\\int8\\" + self.images_names[index]
 
         # Reads the image and the
         # fluid mask
@@ -371,7 +385,8 @@ class ValidationDataset(Dataset):
     with the available images, thus simplifying the training
     process
     """
-    def __init__(self, val_volumes: list, model: str, fluid: int=None):
+    def __init__(self, val_volumes: list, model: str,
+                 patch: bool, fluid: int=None):
         """
         Initiates the Dataset object and gets the possible 
         names of the patches that will be used in validation
@@ -380,6 +395,8 @@ class ValidationDataset(Dataset):
             val_volumes(List[float]): list of the validation 
                 volumes that will be used to validate the model
             model (str): name of the model that will be trained
+            patch (bool): flag that indicates whether the 
+                training will be done using patches or not
             fluid (int): label of fluid that is expected to 
                 segment. Optional because it is only used in
                 one network
@@ -391,9 +408,13 @@ class ValidationDataset(Dataset):
         # compose the dataset, the transformations that will be 
         # applied to the images, and the fluid to segment in 
         # case it is used
-        super().__init__()
+        super().__init__()        
+        self.patch = patch
         self.model = model
-        self.patches_names = patches_from_volumes(val_volumes, model)
+        if patch:
+            self.images_names = patches_from_volumes(val_volumes, model)
+        else:
+            self.images_names = images_from_volumes(val_volumes)
         self.fluid = fluid
 
     def __len__(self):
@@ -407,7 +428,7 @@ class ValidationDataset(Dataset):
         Return:
             None
         """
-        return len(self.patches_names)
+        return len(self.images_names)
 
     def __getitem__(self, index):
         """
@@ -428,15 +449,21 @@ class ValidationDataset(Dataset):
             index = index.tolist()
 
         # The path to read the images is different depending on the model
-        if self.model == "2.5D":
-            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\"
+        if self.patch:
+            if self.model == "2.5D":
+                images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\"
+            else:
+                images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\"
+            # Indicates the path to the image depending on the index given,
+            # which is associated with the image name
+            slice_name = images_folder + "slices\\" + self.images_names[index]
         else:
-            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\"
-
-        # Indicates the path to the image depending on the index given,
-        # which is associated with the image name
-        slice_name = images_folder + "slices\\" + self.patches_names[index]
-        mask_name = images_folder + "masks\\" + self.patches_names[index]
+            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\"
+            mask_name = images_folder + "masks\\" + self.images_names[index]            
+            # Indicates the path to the image depending on the index given,
+            # which is associated with the image name
+            slice_name = images_folder + "slices\\uint8\\" + self.images_names[index]
+            mask_name = images_folder + "masks\\int8\\" + self.images_names[index]
 
         # Reads the image and the
         # fluid mask
