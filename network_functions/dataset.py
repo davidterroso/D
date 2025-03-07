@@ -460,11 +460,10 @@ class ValidationDataset(Dataset):
             slice_name = images_folder + "slices\\" + self.images_names[index]
         else:
             images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\"
-            mask_name = images_folder + "masks\\" + self.images_names[index]            
             # Indicates the path to the image depending on the index given,
             # which is associated with the image name
-            slice_name = images_folder + "slices\\uint8\\" + self.images_names[index]
-            mask_name = images_folder + "masks\\int8\\" + self.images_names[index]
+            slice_name = images_folder + "big_patches\\" + self.images_names[index]
+            mask_name = images_folder + "big_masks\\" + self.images_names[index]
 
         # Reads the image and the
         # fluid mask
