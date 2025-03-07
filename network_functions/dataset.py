@@ -503,7 +503,8 @@ class TestDataset(Dataset):
     with the available images, thus simplifying the training
     process
     """
-    def __init__(self, test_volumes: list, model: str, fluid: int=None):
+    def __init__(self, test_volumes: list, model: str, 
+                 patch: bool, fluid: int=None):
         """
         Initiates the Dataset object and gets the possible 
         names of the images that will be used in testing
@@ -512,6 +513,8 @@ class TestDataset(Dataset):
             test_volumes(List[float]): list of the test 
                 volumes that will be used to test the model
             model (str): name of the model that will be trained
+            patch (bool): flag that indicates whether the 
+                training will be done using patches or not
             fluid (int): label of fluid that is expected to 
                 segment. Optional because it is only used in
                 one network
@@ -524,6 +527,7 @@ class TestDataset(Dataset):
         # applied to the images, and the fluid to segment in 
         # case it is used
         super().__init__()
+        self.patch = patch
         self.model = model
         self.images_names = images_from_volumes(test_volumes)
         self.fluid = fluid
@@ -611,7 +615,8 @@ class TestDataset(Dataset):
             mask = ((mask == self.fluid).astype(int) * self.fluid)
 
         # The shape of the test images is handled
-        scan, mask = handle_test_images(scan, mask, roi, patch_shape=(256, 512))
+        if self.patch:
+            scan, mask = handle_test_images(scan, mask, roi, patch_shape=(256, 512))
 
         # Z-Score Normalization / Standardization
         # Mean of 0 and SD of 1

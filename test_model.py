@@ -4,7 +4,7 @@ import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 from collections import defaultdict
 from IPython import get_ipython
-from os import listdir, makedirs
+from os import makedirs
 from os.path import exists
 from pandas import DataFrame, read_csv
 from torch.utils.data import DataLoader
@@ -29,6 +29,25 @@ label_to_fluids = {
         1: "IRF",
         2: "SRF",
         3: "PED"
+    }
+
+def collate_fn(batch):
+    """
+    This function is used when getting the images in the DataLoader, 
+    since it requires a function that handles inputs of different 
+    shapes (the default collate function does not) 
+
+    Args:
+        batch (List[Dict[str, NumPy array | str]]): List that 
+            contains the name of the object in the dictionary, 
+            and the respective image, scan, or name
+    Returns:
+        None 
+    """
+    return {
+        'scan': batch[0]['scan'] if isinstance(batch[0]['scan'], torch.Tensor) else torch.tensor(batch[0]['scan']),
+        'mask': batch[0]['mask'] if isinstance(batch[0]['mask'], torch.Tensor) else torch.tensor(batch[0]['mask']),
+        'image_name': batch[0]['image_name']
     }
 
 def folds_results(first_run_name: str, iteration: int, k: int=5):
@@ -166,6 +185,7 @@ def test_model (
         number_of_channels: int,
         number_of_classes: int,
         batch_size: int,
+        patch: bool,
         save_images: bool
     ):
     """
@@ -184,6 +204,8 @@ def test_model (
         number_of_classes (int): number of classes the 
             output will present
         batch_size (int): size of the batch used in testing
+        patch (bool): flag that indicates whether the 
+            training was done using patches or not
         save_images (bool): flag that indicates whether the 
             predicted images will be saved or not
 
@@ -242,8 +264,8 @@ def test_model (
 
     # Creates the TestDataset and DataLoader object with the test volumes
     # Number of workers was set to the most optimal
-    test_dataset = TestDataset(test_volumes, model_name)
-    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=8)
+    test_dataset = TestDataset(test_volumes, model_name, patch)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=8, collate_fn=collate_fn)
     
     # Initiates the list that will 
     # store the results of the slices 
