@@ -731,6 +731,7 @@ def extract_big_patches(folder_path: str, save_folder: str):
     # Loads a Spectralis file to check what is the patch size desired
     spectralis_path = folder_path + "\RETOUCH-TrainingSet-Spectralis\TRAIN025\oct.mhd"
     img, _, _ = load_oct_image(spectralis_path)
+    # Saves the desired shape as a tuple
     spectralis_shape = (img.shape[1], img.shape[2])
 
     # Initiates the variable that will 
@@ -740,25 +741,44 @@ def extract_big_patches(folder_path: str, save_folder: str):
 
     # Iterates through all the folders in the RETOUCH dataset
     for (root, _, files) in walk(folder_path):
+        # Gets if the volume is from the test or training of the dataset
         train_or_test = root.split("-")
+        # Only procedes to the folders in training
         if ((len(train_or_test) == 3) and (train_or_test[1] == "TrainingSet")):
+            # Gets the name of the vendor and the volume from 
+            # the name of the folder
             vendor_volume = train_or_test[2].split("""\\""")
+            # Only iterates in the folders that contains 
+            # the files and not other folders
             if len(vendor_volume) == 2:
+                # Gets the name of the vendor
                 vendor = vendor_volume[0]
+                # Gets the number of the volume
                 volume_name = vendor_volume[1]
+                # Gets the name of the vendors and the name under which the 
+                # patches will be saved
                 vendor_volume = vendor + "_" + volume_name
-                save_name = complete_save_folder + vendor + "_" + volume_name
-                save_name_mask = complete_mask_save_folder + vendor + "_" + volume_name
+                save_name = complete_save_folder + vendor_volume
+                save_name_mask = complete_mask_save_folder + vendor_volume
                 # Iterates through to the subfolders and reads the oct.mhd file to 
                 # extract the images
+                # Iterates through the files and only accesses 
+                # one file of the folder (oct.mhd)
                 for filename in files:
                     if filename == "oct.mhd":
+                        # Registers the number of the volumes 
+                        # iterated
                         volume += 1
+                        # Declares the path to the OCT scan file 
+                        # and to the masks
                         file_path = root + """\\""" + filename
                         mask_path = root + "\\reference.mhd"
                         # Loads the OCT volume
                         img, _, _ = load_oct_image(file_path)
+                        # Loads the fluid mask
                         mask, _, _ = load_oct_mask(mask_path)
+                        # Gets the number of slices in the volume 
+                        # to update the volume progress bar
                         num_slices = img.shape[0]
                         # Creates a progress bar
                         with tqdm(total=num_slices, desc=f"{vendor_volume}: Volume {volume}/70", unit="img", leave=True, position=0) as progress_bar:
@@ -771,9 +791,13 @@ def extract_big_patches(folder_path: str, save_folder: str):
                                 # range 0 to 255 so that it can be 
                                 # visualized in the computer
                                 im_slice_uint8 = int32_to_uint8(im_slice)
-
+                                # In case the volume from 
+                                # the Spectralis vendor,
+                                # the image will not be 
+                                # patched and will be 
+                                # saved entirely
                                 if vendor == "Spectralis":
-                                    # Saves image in uint8
+                                    # Saves image and the mask in uint8
                                     image = Image.fromarray(im_slice_uint8)
                                     save_name_slice = save_name + "_" + str(slice_num).zfill(3) + '.tiff'
                                     image.save(save_name_slice)
@@ -781,18 +805,32 @@ def extract_big_patches(folder_path: str, save_folder: str):
                                     mask_to_save = Image.fromarray(im_mask)
                                     save_name_mask_ = save_name_mask + "_" + str(slice_num).zfill(3) + '.tiff'
                                     mask_to_save.save(save_name_mask_)
+                                # In case the images are 
+                                # not from the Spectralis 
+                                # vendor, the patches are 
+                                # extracted
                                 else:
-                                    # Extracts the patches and saves them to uint8
+                                    # The patches will be extracted from the top to bottom, thus the first row 
+                                    # from which it will be extracted will be the one of index 0
                                     start_index = 0
+                                    # Calculates the total number of patches that will be extracted and iterates 
+                                    # through them
                                     for patch_index in range(im_slice_uint8.shape[0] // spectralis_shape[0] + 1):
+                                        # If the index of the first row is small enough to still extract a patch 
+                                        # of the same height as the others, then it is extracted
                                         if start_index < (im_slice_uint8.shape[0] - spectralis_shape[0]):
                                             patch = im_slice_uint8[start_index:(start_index + spectralis_shape[0]),:]
                                             patch_mask = im_mask[start_index:(start_index + spectralis_shape[0]),:]
                                             start_index = start_index + spectralis_shape[0]
+                                        # In case the first row stands closer to the end of the image than the number 
+                                        # of rows in a patch, then the last patch is extracted, with the last row 
+                                        # coinciding with the border of the image
                                         else:
                                             start_index = im_slice_uint8.shape[0] - spectralis_shape[0]
                                             patch = im_slice_uint8[start_index:(start_index + spectralis_shape[0]),:]
                                             patch_mask = im_mask[start_index:(start_index + spectralis_shape[0]),:]
+                                        # Saves the patch and the mask with a name that also contains an identifier 
+                                        # of the patch, which is only one digit
                                         patch = Image.fromarray(patch)
                                         patch_mask = Image.fromarray(patch_mask)
                                         save_name_patch = save_name + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
