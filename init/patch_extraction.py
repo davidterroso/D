@@ -778,9 +778,9 @@ def extract_big_patches(folder_path: str, save_folder: str):
                                     save_name_slice = save_name + "_" + str(slice_num).zfill(3) + '.tiff'
                                     image.save(save_name_slice)
 
-                                    save_name_mask = save_name_mask + "_" + str(slice_num).zfill(3) + '.tiff'
                                     mask_to_save = Image.fromarray(im_mask)
-                                    mask_to_save.save(save_name_mask)
+                                    save_name_mask_ = save_name_mask + "_" + str(slice_num).zfill(3) + '.tiff'
+                                    mask_to_save.save(save_name_mask_)
                                 else:
                                     # Extracts the patches and saves them to uint8
                                     start_index = 0
@@ -803,5 +803,5 @@ def extract_big_patches(folder_path: str, save_folder: str):
                                 # Updates the progress bar
                                 progress_bar.update(1)
     
-    print("All slices have been extracted.")
+    print("All patches have been extracted.")
     print("EOF.")
