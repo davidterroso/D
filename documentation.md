@@ -21,7 +21,7 @@
 - [test\_model.py](#test_modelpy)
 - [train.py](#trainpy)
 - [unet\_preliminary.ipynb](#unet_preliminaryipynb)
-- [unet.ipynb](#unetipynb)
+- [unet\_random\_patches.ipynb](#unet_random_patchesipynb)
 - [visualize\_scans.py](#visualize_scanspy)
 - [Libraries](#libraries)
 - [RETOUCH Folder Structure](#retouch-folder-structure)
@@ -140,7 +140,7 @@ D
  ┣ README.md # Front page of the project, used to orient the user
  ┣ train.py # File used to train the networks
  ┣ unet_preliminary.ipynb # Training of the U-Net made preliminary, with random fold split
- ┣ unet.ipynb # Final training of the U-Net
+ ┣ unet_random_patches.ipynb # Final training of the U-Net with randomly extracted patches
  ┗ visualize_scans.py # Simple UI for the user to visualize what is happening to the images in the processing
  ```
 
@@ -172,7 +172,7 @@ Contains the results obtained by each network using the Dice metric to evaluate 
 Stores the resulting k-fold split performed using [this file](init/folds_split.py) or [this file](init/mip_split.py). In order to organize the files, most of the results from this split have been deleted but can still be seen [here](https://github.com/davidterroso/D/tree/75cb535ff11b4c26af551f263346cad0e74612d5/splits).
 
 ## [unet_imgs](unet_imgs/)
-Folder that contains all the images produced in the [unet.ipynb](unet.ipynb) code is when it is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
+Folder that contains all the images produced in the [unet_random_patches.ipynb](unet_random_patches.ipynb) code is when it is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
 
 ## [wandb](wandb/)
 Folder created when running the training file, by using the Weights and Bias library. In this folder, each run is stored with the name referring to the date and time of the run, as well as a code. It stores a .wandb file with code of the run that contains the statistics of the run and everything visualized in their website through the link printed in the console. It also contains a folder named files where every output of the console is stored, the requirements file, that contains all the imports used in this run, the metadata of the run, stored in .json file, another .json file where the values of each weight is being stored, and a config.yml file that contains information of the run configurations. In case images are being saved, in the folder files\media the images will be stored, identified by the number of the image and an hash code. There is also the logs folder, that stores two .log files that can be used to debug and understand what is being done during the wandb initialization.
@@ -202,7 +202,7 @@ In this file, the functions that train the implemented neural networks are prese
 ## [unet_preliminary.ipynb](unet_preliminary.ipynb)
 Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the first runs were made, where the data split was random and different from what was implemented in the final version.
 
-## [unet.ipynb](unet.ipynb)
+## [unet_random_patches.ipynb](unet_random_patches.ipynb)
 Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the final training of the U-Net was performed and its results are presented in the same file. 
 
 ## [visualize_scans.py](visualize_scans.py)
