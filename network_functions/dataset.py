@@ -188,8 +188,8 @@ def patches_from_volumes(volumes_list: list, model: str, patch: bool):
     # from the volumes that will be used in 
     # training, returning that list
     patches_list = []
-    if patch: slices_path = images_folder + "slices\\"
-    for patch_name in listdir(slices_path):
+    if patch: images_folder = images_folder + "slices\\"
+    for patch_name in listdir(images_folder):
         volume = patch_name.split("_")[1][-3:]
         volume = int(volume)
         if volume in volumes_list:

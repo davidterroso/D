@@ -163,8 +163,6 @@ def extract_patches_wrapper(model_name: str, patch: bool,  patch_shape: tuple, n
             # Stops timing the patch extraction and prints it
             end = time()
             print(f"Patch dropping took {end - begin} seconds.")
-    else:
-        extract_big_patches()
 
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations

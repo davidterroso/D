@@ -372,9 +372,9 @@ def train_model (
 
                 # Checks if the number of channels given as input matches the number of 
                 # images read with the dataloader
-                assert images[0].shape[1] == model.n_channels, \
+                assert images[0].shape[0] == model.n_channels, \
                     f'Network has been defined with {model.n_channels} input channels, ' \
-                    f'but loaded images have {images[0].shape[1]} channels. Please check if ' \
+                    f'but loaded images have {images[0].shape[0]} channels. Please check if ' \
                     'the images are loaded correctly.'
 
                 # Declares what type the images and the true_masks variables, including the device that is
