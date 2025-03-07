@@ -158,7 +158,7 @@ def drop_patches(prob: float, volumes_list: list, model: str):
                                 remove(str(patches_mask_path + patch[:-5] + "_after.tiff"))
                                 remove(str(patches_roi_path + patch[:-5] + "_after.tiff"))
 
-def patches_from_volumes(volumes_list: list, model: str):
+def patches_from_volumes(volumes_list: list, model: str, patch: bool):
     """
     Used to return the list of all the patches that are available to 
     train the network, knowing which volumes will be used
@@ -167,23 +167,28 @@ def patches_from_volumes(volumes_list: list, model: str):
         volumes_list (List[float]): list of the OCT volume's identifier 
             that will be used in training
         model (str): name of the model that will be trained
+        patch (bool): flag that indicates whether the 
+            training will be done using patches or not
 
     Return:
         patches_list (List[str]): list of the name of the patches that 
             will be used to train the model
     """
     # The path to the patches is dependent on the model selected
-    if model == "2.5D":
-        images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\"
+    if patch:
+        if model == "2.5D":
+            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\"
+        else:
+            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\"
     else:
-        images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\"
-        
+        images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\big_patches\\"
+
     # Iterates through the available patches
     # and registers the name of those that are 
     # from the volumes that will be used in 
     # training, returning that list
     patches_list = []
-    slices_path = images_folder + "slices\\"
+    if patch: slices_path = images_folder + "slices\\"
     for patch_name in listdir(slices_path):
         volume = patch_name.split("_")[1][-3:]
         volume = int(volume)
@@ -251,10 +256,7 @@ class TrainDataset(Dataset):
         super().__init__()        
         self.patch = patch
         self.model = model
-        if patch:
-            self.images_names = patches_from_volumes(train_volumes, model)
-        else:
-            self.images_names = images_from_volumes(train_volumes)
+        self.images_names = patches_from_volumes(train_volumes, model, patch)
 
         # Random Rotation has a probability of 0.5 of rotating 
         # the image between 0 and 10 degrees
@@ -308,11 +310,10 @@ class TrainDataset(Dataset):
             slice_name = images_folder + "slices\\" + self.images_names[index]
         else:
             images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\"
-            mask_name = images_folder + "masks\\" + self.images_names[index]            
             # Indicates the path to the image depending on the index given,
             # which is associated with the image name
-            slice_name = images_folder + "slices\\uint8\\" + self.images_names[index]
-            mask_name = images_folder + "masks\\int8\\" + self.images_names[index]
+            slice_name = images_folder + "big_patches\\" + self.images_names[index]
+            mask_name = images_folder + "big_masks\\" + self.images_names[index]
 
         # Reads the image and the
         # fluid mask
