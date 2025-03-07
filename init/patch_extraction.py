@@ -779,8 +779,8 @@ def extract_big_patches(folder_path: str, save_folder: str):
                                     image.save(save_name_slice)
 
                                     save_name_mask = save_name_mask + "_" + str(slice_num).zfill(3) + '.tiff'
-                                    mask = Image.fromarray(im_mask)
-                                    mask.save(save_name_mask)
+                                    mask_to_save = Image.fromarray(im_mask)
+                                    mask_to_save.save(save_name_mask)
                                 else:
                                     # Extracts the patches and saves them to uint8
                                     start_index = 0
@@ -795,8 +795,8 @@ def extract_big_patches(folder_path: str, save_folder: str):
                                             patch_mask = im_mask[start_index:(start_index + spectralis_shape[0]),:]
                                         patch = Image.fromarray(patch)
                                         patch_mask = Image.fromarray(patch_mask)
-                                        save_name_patch = save_name + "_" + str(slice_num).zfill(3) + str(patch_index) + '.tiff'
-                                        save_name_patch_mask = save_name_mask + "_" + str(slice_num).zfill(3) + str(patch_index) + '.tiff'
+                                        save_name_patch = save_name + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
+                                        save_name_patch_mask = save_name_mask + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
                                         
                                         patch.save(save_name_patch)
                                         patch_mask.save(save_name_patch_mask)
