@@ -13,7 +13,7 @@ from time import time
 from torch.utils.data import DataLoader
 from network_functions.dataset import TrainDataset, ValidationDataset, drop_patches
 from paths import IMAGES_PATH
-from .read_oct import int32_to_uint8
+from .read_oct import int32_to_uint8, load_oct_image, load_oct_mask
 
 # Imports tqdm depending on whether 
 # it is being called from the 
@@ -691,18 +691,117 @@ def extract_patches_25D(folder_path: str, patch_shape: tuple, n_pos: int,
                     roi_after_uint8 = Image.fromarray(tmp_roi[:,:,2].astype(np.uint8))
                     roi_after_uint8.save(roi_after_patch_name_uint8)
 
-def extract_big_patches(folder_path: str, volumes: list=None):
+def extract_big_patches(folder_path: str, save_folder: str):
     """
     This function will be used to extract patches from the 
     Cirrus and Topcon volumes. These patches will have the 
     shape of the Spectralis slices, allowing the training 
-    to be consistent.
-
+    to be consistent. Since all the vendors produce OCT 
+    scans with the same width (512 pixels), the patches 
+    will be extracted vertically with the same height 
+    that the Spectralis scans have (496 pixels). The number
+    of patches extracted per scan will depend on the height
+    of the scan (1024 for Cirrus or 885/650 for Topcon). 
+    Every part of the scan will be in, at least, one patch. 
+    For example, in Cirrus, one patch will be from the rows
+    of pixels [0, 496], [496, 992], and [528, 1024], of the 
+    original scan. The same logic will be applied to the 
+    Topcon scans. The function is called extract_big_patches 
+    because the patches here extracted are significantly 
+    bigger than the ones before.
     Args:
-        folders_path (str): Path indicating where the images are stored
-        volumes (List[float]) optional: List of volumes to extract patches 
-            from. The default value is None because it is optional
-    """
-    # Reads an extracted slice from Spectralis to determine the desired shape
-    patch_shape = imread(IMAGES_PATH + "\OCT_images\segmentation\slices\uint8\Spectralis_TRAIN025_000").shape
+        folders_path (str): Path indicating where the 
+            images are stored        
+        save_folder (str): Path indicating where the 
+            patches will be saved
+    """    
+    # In case the folder to save the images does not exist, it is created
+    complete_save_folder = save_folder + "\\OCT_images\\segmentation\\big_patches\\"
+    complete_mask_save_folder = save_folder + "\\OCT_images\\segmentation\\big_masks\\"
+
+    if ((not exists(complete_save_folder)) and (not exists(complete_mask_save_folder))):
+        makedirs(complete_save_folder)
+        makedirs(complete_mask_save_folder)
+    else:
+        rmtree(complete_save_folder)
+        makedirs(complete_save_folder)
+        rmtree(complete_mask_save_folder)
+        makedirs(complete_mask_save_folder)
+
+    # Loads a Spectralis file to check what is the patch size desired
+    spectralis_path = folder_path + "\RETOUCH-TrainingSet-Spectralis\TRAIN025\oct.mhd"
+    img, _, _ = load_oct_image(spectralis_path)
+    spectralis_shape = (img.shape[1], img.shape[2])
+
+    # Initiates the variable that will 
+    # count the progress of volumes 
+    # whose slices are being extracted
+    volume = 0
+
+    # Iterates through all the folders in the RETOUCH dataset
+    for (root, _, files) in walk(folder_path):
+        train_or_test = root.split("-")
+        if ((len(train_or_test) == 3) and (train_or_test[1] == "TrainingSet")):
+            vendor_volume = train_or_test[2].split("""\\""")
+            if len(vendor_volume) == 2:
+                vendor = vendor_volume[0]
+                volume_name = vendor_volume[1]
+                vendor_volume = vendor + "_" + volume_name
+                save_name = complete_save_folder + vendor + "_" + volume_name
+                save_name_mask = complete_mask_save_folder + vendor + "_" + volume_name
+                # Iterates through to the subfolders and reads the oct.mhd file to 
+                # extract the images
+                for filename in files:
+                    if filename == "oct.mhd":
+                        volume += 1
+                        file_path = root + """\\""" + filename
+                        mask_path = root + "\\reference.mhd"
+                        # Loads the OCT volume
+                        img, _, _ = load_oct_image(file_path)
+                        mask, _, _ = load_oct_mask(mask_path)
+                        num_slices = img.shape[0]
+                        # Creates a progress bar
+                        with tqdm(total=num_slices, desc=f"{vendor_volume}: Volume {volume}/70", unit="img", leave=True, position=0) as progress_bar:
+                            # Iterates through the slices to save each slice with 
+                            # an identifiable name and saves it in uint8
+                            for slice_num in range(num_slices):
+                                im_slice = img[slice_num,:,:]
+                                im_mask = mask[slice_num,:,:]
+                                # Normalizes the image to uint8 and in 
+                                # range 0 to 255 so that it can be 
+                                # visualized in the computer
+                                im_slice_uint8 = int32_to_uint8(im_slice)
+
+                                if vendor == "Spectralis":
+                                    # Saves image in uint8
+                                    image = Image.fromarray(im_slice_uint8)
+                                    save_name_slice = save_name + "_" + str(slice_num).zfill(3) + '.tiff'
+                                    image.save(save_name_slice)
+
+                                    save_name_mask = save_name_mask + "_" + str(slice_num).zfill(3) + '.tiff'
+                                    mask = Image.fromarray(im_mask)
+                                    mask.save(save_name_mask)
+                                else:
+                                    # Extracts the patches and saves them to uint8
+                                    start_index = 0
+                                    for patch_index in range(im_slice_uint8.shape[0] // spectralis_shape[0] + 1):
+                                        if start_index < (im_slice_uint8.shape[0] - spectralis_shape[0]):
+                                            patch = im_slice_uint8[start_index:(start_index + spectralis_shape[0]),:]
+                                            patch_mask = im_mask[start_index:(start_index + spectralis_shape[0]),:]
+                                            start_index = start_index + spectralis_shape[0]
+                                        else:
+                                            start_index = im_slice_uint8.shape[0] - spectralis_shape[0]
+                                            patch = im_slice_uint8[start_index:(start_index + spectralis_shape[0]),:]
+                                            patch_mask = im_mask[start_index:(start_index + spectralis_shape[0]),:]
+                                        patch = Image.fromarray(patch)
+                                        patch_mask = Image.fromarray(patch_mask)
+                                        save_name_patch = save_name + "_" + str(slice_num).zfill(3) + str(patch_index) + '.tiff'
+                                        save_name_patch_mask = save_name_mask + "_" + str(slice_num).zfill(3) + str(patch_index) + '.tiff'
+                                        
+                                        patch.save(save_name_patch)
+                                        patch_mask.save(save_name_patch_mask)
+                                # Updates the progress bar
+                                progress_bar.update(1)
     
+    print("All slices have been extracted.")
+    print("EOF.")
