@@ -243,7 +243,7 @@ def test_model (
     # Creates the TestDataset and DataLoader object with the test volumes
     # Number of workers was set to the most optimal
     test_dataset = TestDataset(test_volumes, model_name)
-    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=2)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=8)
     
     # Initiates the list that will 
     # store the results of the slices 
