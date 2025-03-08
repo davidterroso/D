@@ -177,7 +177,7 @@ def extract_patches_wrapper(model_name: str, patch: bool,  patch_shape: tuple, n
     # Using the Dataset object, creates a DataLoader object 
     # which will be used to train the model in batches
     begin = time()
-    loader_args = dict(batch_size=batch_size, num_workers=8, pin_memory=True)
+    loader_args = dict(batch_size=batch_size, num_workers=10, pin_memory=True)
     print("Loading Training Data.")
     train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
     print("Loading Validation Data.")

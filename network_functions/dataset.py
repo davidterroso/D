@@ -412,10 +412,7 @@ class ValidationDataset(Dataset):
         super().__init__()        
         self.patch = patch
         self.model = model
-        if patch:
-            self.images_names = patches_from_volumes(val_volumes, model)
-        else:
-            self.images_names = images_from_volumes(val_volumes)
+        self.images_names = patches_from_volumes(val_volumes, model, patch)
         self.fluid = fluid
 
     def __len__(self):
