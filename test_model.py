@@ -7,6 +7,7 @@ from IPython import get_ipython
 from os import makedirs
 from os.path import exists
 from pandas import DataFrame, read_csv
+from torch.nn.functional import pad
 from torch.utils.data import DataLoader
 from shutil import rmtree
 from networks.loss import dice_coefficient
@@ -31,6 +32,28 @@ label_to_fluids = {
         3: "PED"
     }
 
+def pad_to_nearest_16(image):
+    """
+    If patches were not used, the images will be 
+    handled with their original shape. This might
+    result in shape's mismatch during inference 
+    since the max-pooling might result in 
+    features with shapes different than the ones 
+    resulting in upsampling due to rounding errors. 
+    Therefore, the image is padded to ensure that
+    it is a multiple of sixteen (four max-pooling 
+    operations are performed in the encoding path
+    thus if the dimensions are divisible by 2^4, 
+    no shape mismatch will happen)
+    """
+    # Gets the height and width of the image
+    h, w = image.shape[-2:]
+    # Calculates the necessary padding
+    pad_h = (16 - h % 16) % 16
+    pad_w = (16 - w % 16) % 16
+    # Returns the padded image
+    return pad(image, (0, pad_w, 0, pad_h))
+
 def collate_fn(batch):
     """
     This function is used when getting the images in the DataLoader, 
@@ -44,11 +67,32 @@ def collate_fn(batch):
     Returns:
         None 
     """
-    return {
-        'scan': batch[0]['scan'] if isinstance(batch[0]['scan'], torch.Tensor) else torch.tensor(batch[0]['scan']),
-        'mask': batch[0]['mask'] if isinstance(batch[0]['mask'], torch.Tensor) else torch.tensor(batch[0]['mask']),
-        'image_name': batch[0]['image_name']
-    }
+    # Gets the information of the batch
+    sample = batch[0]
+    
+    # Gets the scan and the mask from the batch
+    scan = sample['scan']
+    mask = sample['mask']
+    
+    # Ensures that the scan and mask are tensors
+    if not isinstance(scan, torch.Tensor):
+        scan = torch.tensor(scan)
+    if not isinstance(mask, torch.Tensor):
+        mask = torch.tensor(mask)
+
+    # Add batch dimension back
+    scan = scan.unsqueeze(0)  # Shape: (1, H, W, C)
+    mask = mask.unsqueeze(0)  # Shape: (1, H, W)
+    
+    scan = scan.permute(0, 3, 1, 2)
+
+    scan = pad_to_nearest_16(scan)
+    mask = pad_to_nearest_16(mask)
+
+    scan = scan.permute(0, 2, 3, 1)
+
+    return {'scan': scan, 'mask': mask, 'image_name': sample['image_name']}
+
 
 def folds_results(first_run_name: str, iteration: int, k: int=5):
     """
@@ -265,7 +309,7 @@ def test_model (
     # Creates the TestDataset and DataLoader object with the test volumes
     # Number of workers was set to the most optimal
     test_dataset = TestDataset(test_volumes, model_name, patch)
-    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=8, collate_fn=collate_fn)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=10, collate_fn=collate_fn)
     
     # Initiates the list that will 
     # store the results of the slices 
@@ -313,6 +357,7 @@ def test_model (
 
                 # Predicts the output of the batch
                 outputs = model(images)
+
                 # The prediction is assumed as the value 
                 # that has a higher logit
                 preds = torch.argmax(outputs, dim=1)
@@ -321,19 +366,21 @@ def test_model (
                 # the predicted mask 
                 dice_scores, voxel_counts, union_counts, intersection_counts = dice_coefficient(model_name, preds, true_masks, number_of_classes)
                 # Gets the information from the slice's name
-                vendor, volume, slice_number = image_name[0][:-5].split("_")
+                if patch:
+                    image_name = image_name[0]
+                vendor, volume, slice_number = image_name[:-5].split("_")
                 volume_name = f"{vendor}_{volume}"
                 
                 # Appends the results per slice, per volume, and per vendor
-                slice_results.append([image_name[0], *dice_scores, *voxel_counts, *union_counts, *intersection_counts])
+                slice_results.append([image_name, *dice_scores, *voxel_counts, *union_counts, *intersection_counts])
                 volume_results[volume_name].append((union_counts, intersection_counts))
                 vendor_results[vendor].append((union_counts, intersection_counts))
 
                 # Saves the predicted masks and the GT, in case it is desired
                 if save_images:
                     # Declares the name under which the masks will be saved and writes the path to the original B-scan
-                    predicted_mask_name = folder_to_save + image_name[0][:-5] + "_predicted" + ".tiff"
-                    gt_mask_name = folder_to_save + image_name[0][:-5] + "_gt" + ".tiff"
+                    predicted_mask_name = folder_to_save + image_name[:-5] + "_predicted" + ".tiff"
+                    gt_mask_name = folder_to_save + image_name[:-5] + "_gt" + ".tiff"
 
                     # Gets the original OCT B-scan
                     oct_image = images[0].cpu().numpy()[0]
@@ -360,18 +407,18 @@ def test_model (
                     fluid_norm = mcolors.BoundaryNorm(fluid_bounds, fluid_cmap.N)
 
                     # Saves the OCT scan with an overlay of the predicted masks
-                    plt.figure()
+                    plt.figure(figsize=(oct_image.shape[1] / 100, oct_image.shape[0] / 100))
                     plt.imshow(oct_image, cmap=plt.cm.gray)
                     plt.imshow(preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
                     plt.axis("off")
                     plt.savefig(predicted_mask_name, bbox_inches='tight', pad_inches=0)
 
                     # Saves the OCT scan with an overlay of the ground-truth masks
-                    plt.figure()
+                    plt.figure(figsize=(oct_image.shape[1] / 100, oct_image.shape[0] / 100))
                     plt.imshow(oct_image, cmap=plt.cm.gray)
                     plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
                     plt.axis("off")
-                    plt.savefig(gt_mask_name, bbox_inches='tight', pad_inches=0)
+                    plt.savefig(gt_mask_name, bbox_inches="tight", pad_inches=0)
 
                     # Closes the figure
                     plt.clf()

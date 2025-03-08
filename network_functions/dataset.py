@@ -611,7 +611,8 @@ class TestDataset(Dataset):
         if self.model == "UNet3":
             mask = ((mask == self.fluid).astype(int) * self.fluid)
 
-        # The shape of the test images is handled
+        # The shape of the test images is handled in different ways depending 
+        # whether it was done using patches or not
         if self.patch:
             scan, mask = handle_test_images(scan, mask, roi, patch_shape=(256, 512))
 
