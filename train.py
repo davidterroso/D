@@ -336,6 +336,8 @@ def train_model (
             val_volumes=val_volumes, batch_size=batch_size, 
             patch_dropping=patch_dropping, drop_prob=drop_prob)
 
+    # Initiates the counter of patience
+    patience_counter = 0
     # Initiates the best validation loss as an infinite value
     best_val_loss = float("inf")
     # Initiates the global step counter
@@ -355,8 +357,6 @@ def train_model (
         model.train()
         # Initiates the loss of the current epoch as 0
         epoch_loss = 0
-        # Initiates the counter of patience
-        patience_counter = 0
 
         print(f"Training Epoch {epoch}")
         # Creates a progress bar using tqdm. The limit is when all the images in training are 
