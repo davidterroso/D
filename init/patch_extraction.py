@@ -434,7 +434,7 @@ def extract_patches(folder_path: str, patch_shape: tuple, n_pos: int,
     images_path = folder_path + "\\OCT_images\\segmentation\\slices\\int32\\"
     masks_path = folder_path + "\\OCT_images\\segmentation\\masks\\int8\\"
     ROI_path = folder_path + "\\OCT_images\\segmentation\\roi\\int8\\"
-    save_patches_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\slices_test\\"
+    save_patches_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\slices\\"
     save_patches_masks_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\masks\\"
     save_patches_rois_path_uint8 = folder_path + "\\OCT_images\\segmentation\\patches\\2D\\roi\\"
 
@@ -497,11 +497,9 @@ def extract_patches(folder_path: str, patch_shape: tuple, n_pos: int,
                     # Indicates the name of the patches
                     vol_name = slice_path.split("\\")[-1][:-5]
                     patch_name = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + ".tiff"
-                    patch_name_test = vol_name + "_" + label + "_patch_" + str(patch_counter).zfill(2) + "_test.tiff"
 
                     # Indicates the name of the slice patch
                     slice_patch_name_uint8 = save_patches_path_uint8 + patch_name
-                    slice_patch_name_uint8_test = save_patches_path_uint8 + patch_name_test
 
                     # Indicates the name of the mask patch
                     mask_patch_name_uint8 = save_patches_masks_path_uint8 + patch_name
@@ -510,8 +508,6 @@ def extract_patches(folder_path: str, patch_shape: tuple, n_pos: int,
                     roi_patch_name_uint8 = save_patches_rois_path_uint8 + patch_name
                     
                     # Saves each slice patch as uint8 after resizing it to match the patch shape
-                    slice_uint8_test = Image.fromarray(tmp_slice.astype(np.uint8))
-                    slice_uint8_test.save(slice_patch_name_uint8_test)
                     tmp_slice = resize(tmp_slice.astype(np.uint8), patch_shape, order=0, preserve_range=True).astype('uint8')
                     slice_uint8 = Image.fromarray(tmp_slice)
                     slice_uint8.save(slice_patch_name_uint8)
