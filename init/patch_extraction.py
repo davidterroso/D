@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 from IPython import get_ipython
 from os import walk, makedirs
 from os.path import isfile, exists
@@ -712,6 +714,9 @@ def extract_big_patches(folder_path: str, save_folder: str):
             images are stored        
         save_folder (str): Path indicating where the 
             patches will be saved
+
+    Returns:
+        None
     """    
     # In case the folder to save the images does not exist, it is created
     complete_save_folder = save_folder + "\\OCT_images\\segmentation\\big_patches\\"
@@ -836,6 +841,254 @@ def extract_big_patches(folder_path: str, save_folder: str):
                                         
                                         patch.save(save_name_patch)
                                         patch_mask.save(save_name_patch_mask)
+                                # Updates the progress bar
+                                progress_bar.update(1)
+    
+    print("All patches have been extracted.")
+    print("EOF.")
+
+def save_images(oct_image: np.ndarray, mask: np.ndarray, 
+                    save_folder: str, image_save_name: str):
+    """
+    Function to save the resized images 
+    with an overlay of the fluid masks
+
+    Args:
+        oct_image (NumPy array): B-scan resized
+        mask (NumPy array): fluid masks of the same slice
+        save_folder (str): folder where the images will be saved
+        image_save_name (str): name of the image that will be saved
+
+    Returns:
+        None
+    """
+    # Declares the path on which the images will be saved
+    folder = save_folder + "\\OCT_images\\segmentation\\vertical_patches_resized\\"
+    # Declares the name under which the masks will be saved and writes the path to the original B-scan
+    resized_image_name = folder + image_save_name.split("""\\""")[-1]
+
+    # Converts each voxel classified as background to 
+    # NaN so that it will not appear in the overlaying
+    # mask
+    mask[mask == 0] = np.nan
+
+    # The voxels classified in "IRF", "SRF", and "PED" 
+    # will be converted to color as Red for IRF, green 
+    # for SRF, and blue for PED
+    fluid_colors = ["red", "green", "blue"]
+    fluid_cmap = mcolors.ListedColormap(fluid_colors)
+    # Declares in which part of the color bar each
+    # label is going to be placed
+    fluid_bounds = [1, 2, 3, 4]
+    # Normalizes the color map according to the 
+    # bounds declared.
+    fluid_norm = mcolors.BoundaryNorm(fluid_bounds, fluid_cmap.N)
+
+    # Saves the OCT scan with an overlay of the ground-truth masks
+    plt.figure(figsize=(oct_image.shape[1] / 100, oct_image.shape[0] / 100))
+    plt.imshow(oct_image, cmap=plt.cm.gray)
+    plt.imshow(mask, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+    plt.axis("off")
+    plt.savefig(resized_image_name, bbox_inches='tight', pad_inches=0)
+
+    # Closes the figure
+    plt.clf()
+    plt.close("all")
+
+def extract_vertical_patches(folder_path: str, save_folder: str, 
+                             random: bool, num_patches: int=4, 
+                             save_resized_images: bool=False):
+    """
+    In this function, the original images are all resized to the 
+    same shape (496x512 (H,W)) independently of the vendor. Then, 
+    vertical patches are extracted from the original image. These 
+    patches preserve the height of this resized patch while having 
+    a quarter of the original width (512 / 4 = 128). The patches 
+    can be extracted from random horizontal locations or can be 
+    disjoint, with a maximum number of patches per scan being 4
+    
+    Args:
+        folder_path (str): path to the RETOUCH dataset
+        save_folder (str): path to the folder where the images 
+            will be saved
+        random (bool): flag that indicates whether the patches 
+            will be extracted from random horizontal coordinates
+            or not
+        num_patches (int): the number of patches desired to 
+            extract from the scan. This parameter can only be 
+            changed from 4 in case it is not random
+        save_resized_images (bool): flag that indicates whether 
+            the resized images will be saved or not. Since this 
+            option is more oriented to debugging and makes the
+            patch extraction slower, its default will be False   
+            
+    Return:
+        None
+    """
+    # Ensures that the number of patches in case they
+    # are not randomly extracted from the volumes is 4
+    if not random: num_patches = 4
+
+    if save_resized_images:
+        folder = save_folder + "\\OCT_images\\segmentation\\vertical_patches_resized\\"
+        if exists(folder):
+            rmtree(folder)
+        makedirs(folder)
+
+    # In case the folder to save the images does not exist, it is created
+    complete_save_folder = save_folder + "\\OCT_images\\segmentation\\vertical_patches\\"
+    complete_mask_save_folder = save_folder + "\\OCT_images\\segmentation\\vertical_masks\\"
+
+    if ((not exists(complete_save_folder)) and (not exists(complete_mask_save_folder))):
+        makedirs(complete_save_folder)
+        makedirs(complete_mask_save_folder)
+    else:
+        rmtree(complete_save_folder)
+        makedirs(complete_save_folder)
+        rmtree(complete_mask_save_folder)
+        makedirs(complete_mask_save_folder)
+
+    # Loads a Spectralis file to check what is the patch size desired
+    spectralis_path = folder_path + "\RETOUCH-TrainingSet-Spectralis\TRAIN025\oct.mhd"
+    img, _, _ = load_oct_image(spectralis_path)
+    # Saves the desired shape as a tuple
+    spectralis_shape = (img.shape[1], img.shape[2])
+    # Defines the shape of the patches
+    patch_shape = (spectralis_shape[0], int(spectralis_shape[1] / 4))
+
+    # Initiates the variable that will 
+    # count the progress of volumes 
+    # whose slices are being extracted
+    volume = 0
+
+    # Iterates through all the folders in the RETOUCH dataset
+    for (root, _, files) in walk(folder_path):
+        # Gets if the volume is from the test or training of the dataset
+        train_or_test = root.split("-")
+        # Only procedes to the folders in training
+        if ((len(train_or_test) == 3) and (train_or_test[1] == "TrainingSet")):
+            # Gets the name of the vendor and the volume from 
+            # the name of the folder
+            vendor_volume = train_or_test[2].split("""\\""")
+            # Only iterates in the folders that contains 
+            # the files and not other folders
+            if len(vendor_volume) == 2:
+                # Gets the name of the vendor
+                vendor = vendor_volume[0]
+                # Gets the number of the volume
+                volume_name = vendor_volume[1]
+                # Gets the name of the vendors and the name under which the 
+                # patches will be saved
+                vendor_volume = vendor + "_" + volume_name
+                save_name = complete_save_folder + vendor_volume
+                save_name_mask = complete_mask_save_folder + vendor_volume
+                # Iterates through to the subfolders and reads the oct.mhd file to 
+                # extract the images
+                # Iterates through the files and only accesses 
+                # one file of the folder (oct.mhd)
+                for filename in files:
+                    if filename == "oct.mhd":
+                        # Registers the number of the volumes 
+                        # iterated
+                        volume += 1
+                        # Declares the path to the OCT scan file 
+                        # and to the masks
+                        file_path = root + """\\""" + filename
+                        mask_path = root + "\\reference.mhd"
+                        # Loads the OCT volume
+                        img, _, _ = load_oct_image(file_path)
+                        # Loads the fluid mask
+                        mask, _, _ = load_oct_mask(mask_path)
+                        # Gets the number of slices in the volume 
+                        # to update the volume progress bar
+                        num_slices = img.shape[0]
+                        # Creates a progress bar
+                        with tqdm(total=num_slices, desc=f"{vendor_volume}: Volume {volume}/70", unit="img", leave=True, position=0) as progress_bar:
+                            # Iterates through the slices to save each slice with 
+                            # an identifiable name and saves it in uint8
+                            for slice_num in range(num_slices):
+                                im_slice = img[slice_num,:,:]
+                                im_mask = mask[slice_num,:,:]
+                                # Normalizes the image to uint8 and in 
+                                # range 0 to 255 so that it can be 
+                                # visualized in the computer
+                                im_slice_uint8 = int32_to_uint8(im_slice)
+                                # In case the volume from 
+                                # the Spectralis vendor,
+                                # the image will not be 
+                                # patched and will be 
+                                # saved entirely
+                                if vendor == "Spectralis":
+                                    # In case the patch extraction 
+                                    # is not random
+                                    if not random:
+                                        # Sets the initial index as 0 and the final index 
+                                        # as the horizontal size of the patch defined 
+                                        # previously
+                                        initial_index = 0
+                                        end_index = patch_shape[1]
+                                        # Iterates through the number of patches available
+                                        for patch_index in range(num_patches):
+                                            # Slices the patch from the original image
+                                            patch = im_slice_uint8[:,initial_index:end_index]
+                                            # Slices the patch from the original mask
+                                            patch_mask = im_mask[:,initial_index:end_index]
+                                            # Updates the indexes from which the new patch 
+                                            # will be extracted
+                                            initial_index = initial_index + patch_shape[1]
+                                            end_index = end_index + patch_shape[1]
+                                            # Declares the name under which the patch will be saved
+                                            save_name_patch = save_name + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
+                                            # Declares the name under which the mask will be saved
+                                            save_name_patch_mask = save_name_mask + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
+                                            # Passes the patches from a NumPy array to a Pillow object to save
+                                            patch = Image.fromarray(patch)
+                                            patch_mask = Image.fromarray(patch_mask)
+                                            # Saves the patch
+                                            patch.save(save_name_patch)
+                                            # Saves the mask
+                                            patch_mask.save(save_name_patch_mask)
+                                # In case the images are 
+                                # not from the Spectralis 
+                                # vendor, the patches are 
+                                # extracted
+                                else:
+                                    # Resizes the images to the shape of the Spectralis scan
+                                    im_slice_resized = resize(im_slice_uint8, spectralis_shape, anti_aliasing=True)
+                                    im_mask_resized = resize(im_mask, spectralis_shape, anti_aliasing=True)
+                                    # Saves the resized images
+                                    if save_resized_images:
+                                        # Declares the name under which the resized images will be saved
+                                        save_name_resized_images = save_name + "_" + str(slice_num).zfill(3) + ".tiff"
+                                        save_images(im_slice_resized, im_mask_resized, save_folder, save_name_resized_images)
+                                    # Sets the initial index as 0 and the final index 
+                                    # as the horizontal size of the patch defined 
+                                    # previously
+                                    initial_index = 0
+                                    end_index = patch_shape[1]
+                                    # In case the patches are not extracted randomly
+                                    if not random:
+                                        # Iterates through the number of patches to extract
+                                        for patch_index in range(num_patches):
+                                            # Slices the patch from the original image
+                                            patch = im_slice_resized[:,initial_index:end_index]
+                                            # Slices the patch from the original mask
+                                            patch_mask = im_mask_resized[:,initial_index:end_index]
+                                            # Updates the indexes from which the new patch 
+                                            # will be extracted
+                                            initial_index = initial_index + patch_shape[1]
+                                            end_index = end_index + patch_shape[1]
+                                            # Declares the name under which the patch will be saved
+                                            save_name_patch = save_name + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
+                                            # Declares the name under which the mask will be saved
+                                            save_name_patch_mask = save_name_mask + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
+                                            # Passes the patches from a NumPy array to a Pillow object to save
+                                            patch = Image.fromarray(patch)
+                                            patch_mask = Image.fromarray(patch_mask)
+                                            # Saves the patch
+                                            patch.save(save_name_patch)
+                                            # Saves the mask
+                                            patch_mask.save(save_name_patch_mask)
                                 # Updates the progress bar
                                 progress_bar.update(1)
     
