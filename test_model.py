@@ -313,7 +313,7 @@ def test_model (
     # Creates the TestDataset and DataLoader object with the test volumes
     # Number of workers was set to the most optimal
     test_dataset = TestDataset(test_volumes, model_name, patch_type)
-    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=10, collate_fn=collate_fn)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=12, collate_fn=collate_fn)
     
     # Initiates the list that will 
     # store the results of the slices 
@@ -549,10 +549,11 @@ if __name__ == "__main__":
     test_model(
         fold_test=2,
         model_name="UNet",
-        weights_name="Run6_UNet_best_model.pth",
+        weights_name="Run1000_UNet_best_model.pth",
         number_of_channels=1,
         number_of_classes=4,
         device_name="GPU",
         batch_size=1,
+        patch_type="small",
         save_images=False
     )

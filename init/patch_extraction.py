@@ -177,7 +177,7 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
     else:
         path_to_check_image = IMAGES_PATH + f"\\OCT_images\\segmentation\\{patch_type}_patches\\"
         path_to_check_mask = IMAGES_PATH + f"\\OCT_images\\segmentation\\{patch_type}_masks\\"
-        assert (not (exists(path_to_check_image) and exists(path_to_check_mask))),\
+        assert (exists(path_to_check_image) and exists(path_to_check_mask)),\
             f"The {patch_type} patches must be extracted first"
 
     # Creates the train and validation Dataset objects
@@ -193,7 +193,7 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
     # Using the Dataset object, creates a DataLoader object 
     # which will be used to train the model in batches
     begin = time()
-    loader_args = dict(batch_size=batch_size, num_workers=10, pin_memory=True)
+    loader_args = dict(batch_size=batch_size, num_workers=12, pin_memory=True)
     print("Loading Training Data.")
     train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
     print("Loading Validation Data.")

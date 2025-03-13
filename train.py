@@ -341,7 +341,7 @@ def train_model (
             print(patch_type_name)
 
     # In case patch extraction is done before training and of type small
-    if (assyncronous_patch_extraction and patch_type=="small"):
+    if (assyncronous_patch_extraction):
         train_loader, val_loader, n_train = extract_patches_wrapper(
             model_name=model_name, patch_type=patch_type, patch_shape=patch_shape, n_pos=n_pos, 
             n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
@@ -636,7 +636,7 @@ if __name__ == "__main__":
         weight_decay=0.0001,
         gradient_clipping=1.0,
         scheduler=False,
-        patch=False,
+        patch_type="small",
         number_of_classes=4,
         number_of_channels=1,
         fold_test=1,
