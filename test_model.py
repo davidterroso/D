@@ -229,7 +229,7 @@ def test_model (
         number_of_channels: int,
         number_of_classes: int,
         batch_size: int,
-        patch: bool,
+        patch_type: str,
         save_images: bool
     ):
     """
@@ -248,8 +248,12 @@ def test_model (
         number_of_classes (int): number of classes the 
             output will present
         batch_size (int): size of the batch used in testing
-        patch (bool): flag that indicates whether the 
-            training was done using patches or not
+        patch_type (str): string that indicates what type of patches 
+            will be used. Can be "small", where patches of size 
+            256x128 are extracted using the extract_patches function,
+            "big", where patches of shape 496x512 are extracted from 
+            each image, and patches of shape 496x128 are extracted from
+            the slices
         save_images (bool): flag that indicates whether the 
             predicted images will be saved or not
 
@@ -308,7 +312,7 @@ def test_model (
 
     # Creates the TestDataset and DataLoader object with the test volumes
     # Number of workers was set to the most optimal
-    test_dataset = TestDataset(test_volumes, model_name, patch)
+    test_dataset = TestDataset(test_volumes, model_name, patch_type)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=10, collate_fn=collate_fn)
     
     # Initiates the list that will 
