@@ -366,8 +366,6 @@ def test_model (
                 # the predicted mask 
                 dice_scores, voxel_counts, union_counts, intersection_counts = dice_coefficient(model_name, preds, true_masks, number_of_classes)
                 # Gets the information from the slice's name
-                if patch:
-                    image_name = image_name[0]
                 vendor, volume, slice_number = image_name[:-5].split("_")
                 volume_name = f"{vendor}_{volume}"
                 
