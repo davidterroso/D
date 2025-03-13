@@ -158,7 +158,7 @@ def drop_patches(prob: float, volumes_list: list, model: str):
                                 remove(str(patches_mask_path + patch[:-5] + "_after.tiff"))
                                 remove(str(patches_roi_path + patch[:-5] + "_after.tiff"))
 
-def patches_from_volumes(volumes_list: list, model: str, patch: bool):
+def patches_from_volumes(volumes_list: list, model: str, patch_type: str):
     """
     Used to return the list of all the patches that are available to 
     train the network, knowing which volumes will be used
@@ -167,28 +167,31 @@ def patches_from_volumes(volumes_list: list, model: str, patch: bool):
         volumes_list (List[float]): list of the OCT volume's identifier 
             that will be used in training
         model (str): name of the model that will be trained
-        patch (bool): flag that indicates whether the 
-            training will be done using patches or not
+        patch_type (str): string that indicates what type of patches 
+            will be used. Can be "small", where patches of size 
+            256x128 are extracted using the extract_patches function,
+            "big", where patches of shape 496x512 are extracted from 
+            each image, and patches of shape 496x128 are extracted from
+            the slices
 
     Return:
         patches_list (List[str]): list of the name of the patches that 
             will be used to train the model
     """
     # The path to the patches is dependent on the model selected
-    if patch:
+    if patch_type == "small":
         if model == "2.5D":
-            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\"
+            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\slices\\"
         else:
-            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\"
+            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\slices\\"
     else:
-        images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\big_patches\\"
+        images_folder = IMAGES_PATH + f"\\OCT_images\\segmentation\\{patch_type}_patches\\"
 
     # Iterates through the available patches
     # and registers the name of those that are 
     # from the volumes that will be used in 
     # training, returning that list
     patches_list = []
-    if patch: images_folder = images_folder + "slices\\"
     for patch_name in listdir(images_folder):
         volume = patch_name.split("_")[1][-3:]
         volume = int(volume)
@@ -231,7 +234,7 @@ class TrainDataset(Dataset):
     process
     """
     def __init__(self, train_volumes: list, model: str, 
-                 patch: bool, fluid: int=None):
+                 patch_type: str, fluid: int=None):
         """
         Initiates the Dataset object and gets the possible 
         names of the patches that will be used in training
@@ -240,8 +243,13 @@ class TrainDataset(Dataset):
             train_volumes(List[float]): list of the training 
                 volumes that will be used to train the model
             model (str): name of the model that will be trained
-            patch (bool): flag that indicates whether the 
-                training will be done using patches or not
+            patch_type (str): string that indicates what type 
+                of patches will be used. Can be "small", where 
+                patches of size 256x128 are extracted using the
+                extract_patches function, "big", where patches 
+                of shape 496x512 are extracted from each image,
+                and patches of shape 496x128 are extracted from
+                the slices
             fluid (int): label of fluid that is expected to 
                 segment. Optional because it is only used in
                 one network
@@ -254,9 +262,9 @@ class TrainDataset(Dataset):
         # applied to the images, and the fluid to segment in 
         # case it is used
         super().__init__()        
-        self.patch = patch
+        self.patch_type = patch_type
         self.model = model
-        self.images_names = patches_from_volumes(train_volumes, model, patch)
+        self.images_names = patches_from_volumes(train_volumes, model, patch_type)
 
         # Random Rotation has a probability of 0.5 of rotating 
         # the image between 0 and 10 degrees
@@ -300,7 +308,7 @@ class TrainDataset(Dataset):
             index = index.tolist()
 
         # The path to read the images is different depending on the model
-        if self.patch:
+        if self.patch_type == "small":
             if self.model == "2.5D":
                 images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\"
             else:
@@ -313,8 +321,8 @@ class TrainDataset(Dataset):
             images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\"
             # Indicates the path to the image depending on the index given,
             # which is associated with the image name
-            slice_name = images_folder + "big_patches\\" + self.images_names[index]
-            mask_name = images_folder + "big_masks\\" + self.images_names[index]
+            slice_name = images_folder + f"{self.patch_type}_patches\\" + self.images_names[index]
+            mask_name = images_folder + f"{self.patch_type}_masks\\" + self.images_names[index]
 
         # Reads the image and the
         # fluid mask
@@ -388,7 +396,7 @@ class ValidationDataset(Dataset):
     process
     """
     def __init__(self, val_volumes: list, model: str,
-                 patch: bool, fluid: int=None):
+                 patch_type: str, fluid: int=None):
         """
         Initiates the Dataset object and gets the possible 
         names of the patches that will be used in validation
@@ -397,8 +405,13 @@ class ValidationDataset(Dataset):
             val_volumes(List[float]): list of the validation 
                 volumes that will be used to validate the model
             model (str): name of the model that will be trained
-            patch (bool): flag that indicates whether the 
-                training will be done using patches or not
+            patch_type (str): string that indicates what type 
+                of patches will be used. Can be "small", where 
+                patches of size 256x128 are extracted using the
+                extract_patches function, "big", where patches 
+                of shape 496x512 are extracted from each image,
+                and patches of shape 496x128 are extracted from
+                the slices
             fluid (int): label of fluid that is expected to 
                 segment. Optional because it is only used in
                 one network
@@ -411,9 +424,9 @@ class ValidationDataset(Dataset):
         # applied to the images, and the fluid to segment in 
         # case it is used
         super().__init__()        
-        self.patch = patch
+        self.patch_type = patch_type
         self.model = model
-        self.images_names = patches_from_volumes(val_volumes, model, patch)
+        self.images_names = patches_from_volumes(val_volumes, model, patch_type)
         self.fluid = fluid
 
     def __len__(self):
@@ -448,7 +461,7 @@ class ValidationDataset(Dataset):
             index = index.tolist()
 
         # The path to read the images is different depending on the model
-        if self.patch:
+        if self.patch_type == "small":
             if self.model == "2.5D":
                 images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2.5D\\"
             else:
@@ -461,8 +474,8 @@ class ValidationDataset(Dataset):
             images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\"
             # Indicates the path to the image depending on the index given,
             # which is associated with the image name
-            slice_name = images_folder + "big_patches\\" + self.images_names[index]
-            mask_name = images_folder + "big_masks\\" + self.images_names[index]
+            slice_name = images_folder + f"{self.patch_type}_patches\\" + self.images_names[index]
+            mask_name = images_folder + f"{self.patch_type}_masks\\" + self.images_names[index]
 
         # Reads the image and the
         # fluid mask
@@ -503,7 +516,7 @@ class TestDataset(Dataset):
     process
     """
     def __init__(self, test_volumes: list, model: str, 
-                 patch: bool, fluid: int=None):
+                 patch_type: str, fluid: int=None):
         """
         Initiates the Dataset object and gets the possible 
         names of the images that will be used in testing
@@ -512,8 +525,13 @@ class TestDataset(Dataset):
             test_volumes(List[float]): list of the test 
                 volumes that will be used to test the model
             model (str): name of the model that will be trained
-            patch (bool): flag that indicates whether the 
-                training will be done using patches or not
+            patch_type (str): string that indicates what type of 
+                patches will be used. Can be "small", where 
+                patches of size 256x128 are extracted using the 
+                extract_patches function, "big", where patches 
+                of shape 496x512 are extracted from each image,
+                and patches of shape 496x128 are extracted from
+                the slices
             fluid (int): label of fluid that is expected to 
                 segment. Optional because it is only used in
                 one network
@@ -526,7 +544,7 @@ class TestDataset(Dataset):
         # applied to the images, and the fluid to segment in 
         # case it is used
         super().__init__()
-        self.patch = patch
+        self.patch_type = patch_type
         self.model = model
         self.images_names = images_from_volumes(test_volumes)
         self.fluid = fluid
@@ -615,7 +633,7 @@ class TestDataset(Dataset):
 
         # The shape of the test images is handled in different ways depending 
         # whether it was done using patches or not
-        if self.patch:
+        if self.patch == "small":
             scan, mask = handle_test_images(scan, mask, roi, patch_shape=(256, 512))
 
         # Z-Score Normalization / Standardization

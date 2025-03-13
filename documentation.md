@@ -9,11 +9,13 @@
 - [models](#models)
 - [network\_functions](#network_functions)
 - [networks](#networks)
-- [preliminary\_imgs](#preliminary_imgs)
 - [results](#results)
 - [splits](#splits)
+- [unet\_big\_imgs](#unet_big_imgs)
+- [unet\_preliminary\_imgs](#unet_preliminary_imgs)
 - [unet\_random\_imgs](#unet_random_imgs)
-- [unet\_imgs](#unet_imgs)
+- [unet\_random\_improved\_imgs](#unet_random_improved_imgs)
+- [unet\_vertical\_imgs](#unet_vertical_imgs)
 - [wandb](#wandb)
 - [paths.py](#pathspy)
 - [pipeline.ipynb](#pipelineipynb)
@@ -21,9 +23,10 @@
 - [README.md](#readmemd)
 - [test\_model.py](#test_modelpy)
 - [train.py](#trainpy)
+- [unet\_big.ipynb](#unet_bigipynb)
 - [unet\_preliminary.ipynb](#unet_preliminaryipynb)
 - [unet\_random\_patches.ipynb](#unet_random_patchesipynb)
-- [unet.ipynb](#unetipynb)
+- [unet\_vertical.ipynb](#unet_verticalipynb)
 - [visualize\_scans.py](#visualize_scanspy)
 - [Libraries](#libraries)
 - [RETOUCH Folder Structure](#retouch-folder-structure)
@@ -71,8 +74,20 @@ D
  ┃ ┗ requirements.txt # Contains the necessary packages for this project and their respective versions, 
  ┃                    # without including PyTorch or Tensorflow packages, which are installed manually 
  ┃                    # as described in the README.md file
- ┣ imgs # Folder that contains the relevant images output from other functions called in this project
+ ┣ unet_big_imgs # Folder that contains the relevant images output from the unet_big.ipynb file
+ ┃ ┣ Run013_training_error.png # PNG file which contains the plots of the training and evaluation error in Run013  
+ ┃ ┗ ... 
+ ┣ unet_preliminar_imgs # Folder that contains the relevant images output from the unet_preliminar.ipynb file
  ┃ ┣ Run1_training_error.png # PNG file which contains the plots of the training and evaluation error in Run1  
+ ┃ ┗ ... 
+ ┣ unet_random_imgs # Folder that contains the relevant images output from the unet_random.ipynb file
+ ┃ ┣ Run001_training_error.png # PNG file which contains the plots of the training and evaluation error in Run001  
+ ┃ ┗ ... 
+ ┣ unet_random_improved_imgs # Folder that contains the relevant images output from the unet_random_improved.ipynb file
+ ┃ ┣ Run021_training_error.png # PNG file which contains the plots of the training and evaluation error in Run021  
+ ┃ ┗ ...
+ ┣ unet_vertical_imgs # Folder that contains the relevant images output from the unet_vertical.ipynb file
+ ┃ ┣ Run024_training_error.png # PNG file which contains the plots of the training and evaluation error in Run024  
  ┃ ┗ ...
  ┣ init # Folder that contains the Python files that are used before training the networks, to prepare the data
  ┃ ┣ __init__.py # Despite not having code in it, marks the folder as a possible library and allows its use in Jupyter
@@ -86,8 +101,7 @@ D
  ┃ ┗ Run1_training_log_batch.csv # CSV file which saves the training error in each batch of a run
  ┣ models # Folder that contains the PyTorch file of the best models in each run
  ┃ ┣ Run1_UNet_best_model.pth # PyTorch file of the best model in Run1, which performs multi-class fluid segmentation
- ┃ ┃ ...
- ┃ ┗ Run3_UNet_IRF_best_model.pth # PyTorch file of the best model in Run3, which performs binary segmentation on IRF
+ ┃ ┗ ...
  ┣ network_functions # Folder that contains the Python files that contain the functions used in training
  ┃ ┣ __init__.py # Despite not having code in it, marks the folder as a possible library and allows its use in Jupyter
  ┃ ┣ dataset.py # Creates the PyTorch Dataset objects that will be used in train, test, and validation of the models
@@ -97,42 +111,12 @@ D
  ┃ ┣ loss.py # Contains the loss functions that will be used to train and evaluate the models
  ┃ ┗ unet.py # U-Net model in PyTorch
  ┣ splits # Will contain all the train-test splits
- ┃ ┣ competitive_errors_fold0.csv # Contains the errors obtained in fold 0 of the competitive fold split
- ┃ ┃ ...
- ┃ ┣ competitive_errors_fold4.csv # Contains the errors obtained in fold 4 of the competitive fold split
- ┃ ┣ competitive_errors_mean.csv # Contains the mean of the errors obtained in the competitive fold split
- ┃ ┣ competitive_errors_std.csv # Contains the standard deviation of the errors obtained in the competitive fold split
  ┃ ┣ competitive_fold_selection.csv # Contains the fold split obtained using the competitive fold split
- ┃ ┣ factorial_errors_fold0.csv # Contains the errors obtained in fold 0 of the factorial fold split
- ┃ ┃ ...
- ┃ ┣ factorial_errors_fold4.csv # Contains the errors obtained in fold 4 of the factorial fold split
- ┃ ┣ factorial_errors_mean.csv # Contains the mean of the errors obtained in the factorial fold split
- ┃ ┣ factorial_errors_std.csv # Contains the standard deviation of the errors obtained in the factorial fold split
- ┃ ┣ factorial_fold_selection.csv # Contains the fold split obtained using the factorial fold split
  ┃ ┣ folds_selection.xlsx # Excel file where a manual analysis was made to determine which fold split was optimal
- ┃ ┣ generation_test_splits.csv # Contains the index of the volumes that will be used in the testing of the generative models
- ┃ ┣ generation_train_splits.csv # Contains the index of the volumes that will be used in the training of the generative 
- ┃ ┃                             # models
- ┃ ┣ manual_errors_fold0.csv # Contains the errors obtained in fold 0 of the fold split obtained manually
- ┃ ┃ ...
- ┃ ┣ manual_errors_fold4.csv # Contains the errors obtained in fold 4 of the fold split obtained manually
- ┃ ┣ manual_errors_mean.csv # Contains the mean of the errors obtained in the fold split obtained manually
- ┃ ┣ manual_errors_std.csv # Contains the standard deviation of the errors obtained in the fold split obtained manually
- ┃ ┣ manual_fold_selection.csv # Contains the fold split obtained using the fold split obtained manually
- ┃ ┣ segmentation_test_splits.csv # Contains the index of the volumes that will be used in the testing of 
- ┃ ┃                              # the segmentation models
- ┃ ┣ segmentation_train_splits.csv # Contains the index of the volumes that will be used in the training of 
+ ┃ ┣ generation_fold_selection.csv # Contains the index of the volumes that will be used in the testing of the generative models
  ┃ ┃                               # the segmentation models
- ┃ ┣ sortedfactorial_errors_fold0.csv # Contains the errors obtained in fold 0 of the factorial fold split, with the volumes  
- ┃ ┃ ...                              # sorted by the quantity of fluid voxels
- ┃ ┣ sortedfactorial_errors_fold4.csv # Contains the errors obtained in fold 4 of the factorial fold split, with the volumes 
- ┃ ┃                                  # sorted by the quantity of fluid voxels
- ┃ ┣ sortedfactorial_errors_mean.csv # Contains the mean of the errors obtained in the factorial fold split, with the volumes 
- ┃ ┃                                 # sorted by the quantity of fluid voxels
- ┃ ┣ sortedfactorial_errors_std.csv # Contains the standard deviation of the errors obtained in the factorial fold split, with
- ┃ ┃                                # the volumes sorted by the quantity of fluid voxels
- ┃ ┣ sortedfactorial_fold_selection.csv # Contains the fold split obtained using the factorial fold split, with the volumes 
- ┃ ┃                                    # sorted by the quantity of fluid voxels
+ ┃ ┣ segmentation_fold_selection.csv # Contains the index of the volumes that will be used in the training, validation  
+ ┃ ┃                                 # and testing of the segmentation models
  ┃ ┗ volumes_info.csv # Contains the number of voxels per fluid class of each volume, with their respective vendor and ordered 
  ┃                    # by their index
  ┣ .gitignore # Declares the files that must not be updated to git
@@ -141,9 +125,10 @@ D
  ┣ plot_logs.py # Plots the training and validation errors of a run
  ┣ README.md # Front page of the project, used to orient the user
  ┣ train.py # File used to train the networks
+ ┣ unet_big.ipynb # Training of the U-Net with big patches not extracted randomly
  ┣ unet_preliminary.ipynb # Training of the U-Net made preliminary, with random fold split
  ┣ unet_random_patches.ipynb # Training of the U-Net with randomly extracted patches
- ┣ unet.ipynb # Training of the final U-Net with patches not extracted randomly
+ ┣ unet_vertical.ipynb # Training of the U-Net with patches that are bigger vertically and not extracted randomly
  ┗ visualize_scans.py # Simple UI for the user to visualize what is happening to the images in the processing
  ```
 
@@ -165,20 +150,26 @@ Folder that contains functions that are used to support the training ane testing
 ## [networks](networks/)
 In this folder, the PyTorch modules of each network trained is presented, as well as the loss functions used to train or evaluate the network.
 
-## [preliminary_imgs](preliminary_imgs/)
-Folder that contains all the images produced in the [unet_preliminary.ipynb](unet_preliminary.ipynb) code is when it is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
-
 ## [results](results/)
 Contains the results obtained by each network using the Dice metric to evaluate it. The results are grouped per OCT volume, per OCT vendor, per class, and per slice in each validation volume.
 
 ## [splits](splits/)
 Stores the resulting k-fold split performed using [this file](init/folds_split.py) or [this file](init/mip_split.py). In order to organize the files, most of the results from this split have been deleted but can still be seen [here](https://github.com/davidterroso/D/tree/75cb535ff11b4c26af551f263346cad0e74612d5/splits).
 
+## [unet_big_imgs](unet_big_imgs/)
+Folder that contains all the images produced in the [unet_big.ipynb](unet_big.ipynb) code is when it is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
+
+## [unet_preliminary_imgs](unet_preliminary_imgs/)
+Folder that contains all the images produced in the [unet_preliminary.ipynb](unet_preliminary.ipynb) code is when it is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
+
 ## [unet_random_imgs](unet_random_imgs/)
 Folder that contains all the images produced in the [unet_random_patches.ipynb](unet_random_patches.ipynb) code is when it is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
 
-## [unet_imgs](unet_imgs/)
-Folder that contains all the images produced in the [unet.ipynb](unet.ipynb) code is when it is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
+## [unet_random_improved_imgs](unet_random_improved_imgs/)
+Folder that contains all the images produced in the [unet_random_patches_improved.ipynb](unet_random_patches_improved.ipynb) code is when it is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
+
+## [unet_vertical_imgs](unet_vertical_imgs/)
+Folder that contains all the images produced in the [unet_vertical.ipynb](unet_vertical.ipynb) code is when it is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
 
 ## [wandb](wandb/)
 Folder created when running the training file, by using the Weights and Bias library. In this folder, each run is stored with the name referring to the date and time of the run, as well as a code. It stores a .wandb file with code of the run that contains the statistics of the run and everything visualized in their website through the link printed in the console. It also contains a folder named files where every output of the console is stored, the requirements file, that contains all the imports used in this run, the metadata of the run, stored in .json file, another .json file where the values of each weight is being stored, and a config.yml file that contains information of the run configurations. In case images are being saved, in the folder files\media the images will be stored, identified by the number of the image and an hash code. There is also the logs folder, that stores two .log files that can be used to debug and understand what is being done during the wandb initialization.
@@ -205,14 +196,17 @@ In this file, the functions that test the previously trained neural networks are
 ## [train.py](train.py)
 In this file, the functions that train the implemented neural networks are presented.
 
+## [unet_big.ipynb](unet_big.ipynb)
+Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the training of the U-Net was performed patches not extracted randomly nor resized and its results are presented in the same file. 
+
 ## [unet_preliminary.ipynb](unet_preliminary.ipynb)
 Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the first runs were made, where the data split was random and different from what was implemented in the final version.
 
 ## [unet_random_patches.ipynb](unet_random_patches.ipynb)
 Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the training of the U-Net was performed with randomly extracted patches and its results are presented in the same file. 
 
-## [unet.ipynb](unet.ipynb)
-Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the training of the U-Net was performed patches not extracted randomly and its results are presented in the same file. 
+## [unet_vertical.ipynb](unet_vertical.ipynb)
+Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the training of the U-Net was performed patches not extracted randomly from resized images and its results are presented in the same file. The patches are much bigger vertically (496px) than horizontally (128px), hence the name.
 
 ## [visualize_scans.py](visualize_scans.py)
 File that, when ran, shows an UI that allows the user to select B-scans from the volumes in the training set of the RETOUCH dataset to visualize, showcasing the unaltered slice, the fluid masks, the entropy mask, and the ROI mask. 

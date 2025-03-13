@@ -29,15 +29,20 @@ else:
 # for each device, identified by the height of the image
 SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
 
-def extract_patches_wrapper(model_name: str, patch: bool,  patch_shape: tuple, n_pos: int,
-                             n_neg: int, pos: int, neg: int, train_volumes: list, 
-                             val_volumes: list, batch_size: int, 
-                             patch_dropping: bool, drop_prob: float):
+def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tuple, 
+                             n_pos: int, n_neg: int, pos: int, neg: int, 
+                             train_volumes: list, val_volumes: list, 
+                             batch_size: int, patch_dropping: bool, drop_prob: float):
     """
     Args:
         model_name (str): name of the model desired to train
-        patch (bool): flag that indicates whether the 
-            training will be done using patches or not
+        patch_type (str): string that indicates what type 
+            of patches will be used. Can be "small", where 
+            patches of size 256x128 are extracted using the
+            extract_patches function, "big", where patches 
+            of shape 496x512 are extracted from each image,
+            and patches of shape 496x128 are extracted from
+            the slices
         patch_shape (tuple): indicates what is the shape of 
             the patches that will be extracted from the B-scans
         n_pos (int): number of patches that will be extracted 
@@ -75,7 +80,7 @@ def extract_patches_wrapper(model_name: str, patch: bool,  patch_shape: tuple, n
     # Starts timing the patch extraction
     begin = time()
 
-    if patch:
+    if patch_type == "small":
         # Eliminates the previous patches and saves 
         # new patches to train and validate the model, 
         # but only for the volumes that will be used 
@@ -166,10 +171,18 @@ def extract_patches_wrapper(model_name: str, patch: bool,  patch_shape: tuple, n
             end = time()
             print(f"Patch dropping took {end - begin} seconds.")
 
+    # In case the patches are not small, which are extracted every train iteration randomly, 
+    # checks if the patches to use have been extracted
+    else:
+        path_to_check_image = IMAGES_PATH + f"\\OCT_images\\segmentation\\{patch_type}_patches\\"
+        path_to_check_mask = IMAGES_PATH + f"\\OCT_images\\segmentation\\{patch_type}_masks\\"
+        assert (not (exists(path_to_check_image) and exists(path_to_check_mask))),\
+            f"The {patch_type} patches must be extracted first"
+
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations
-    train_set = TrainDataset(train_volumes, model_name, patch)
-    val_set = ValidationDataset(val_volumes, model_name, patch)
+    train_set = TrainDataset(train_volumes, model_name, patch_type)
+    val_set = ValidationDataset(val_volumes, model_name, patch_type)
 
     # Calculates the total number of images used in train
     n_train = len(train_set)
