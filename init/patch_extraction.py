@@ -1082,7 +1082,8 @@ def extract_vertical_patches(folder_path: str, save_folder: str,
                                 # extracted
                                 else:
                                     # Resizes the images to the shape of the Spectralis scan
-                                    im_slice_resized = resize(im_slice_uint8, spectralis_shape, anti_aliasing=True)
+                                    im_slice_resized = resize(im_slice_uint8, spectralis_shape, preserve_range=True, 
+                                                              anti_aliasing=True)
                                     im_mask_resized = resize(im_mask, spectralis_shape, order=0, preserve_range=True, 
                                                              anti_aliasing=False)
                                     # Saves the resized images

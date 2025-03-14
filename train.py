@@ -386,6 +386,40 @@ def train_model (
                 # and the GT mask
                 images, true_masks = batch["scan"], batch["mask"]
 
+                ######## USED TO DISPLAY IMAGES WHEN DEBUGGING #########
+                # Iterates through the images in the batch
+                # for im in range(batch_size):
+                #     oct_image = images.numpy()[im][0]
+                #     mask = true_masks.numpy()[im][0]
+                #     # Converts each voxel classified as background to 
+                #     # NaN so that it will not appear in the overlaying
+                #     # mask
+                #     mask = mask.astype(float)
+                #     mask[mask == 0] = np.nan
+
+                #     # The voxels classified in "IRF", "SRF", and "PED" 
+                #     # will be converted to color as Red for IRF, green 
+                #     # for SRF, and blue for PED
+                #     fluid_colors = ["red", "green", "blue"]
+                #     fluid_cmap = mcolors.ListedColormap(fluid_colors)
+                #     # Declares in which part of the color bar each
+                #     # label is going to be placed
+                #     fluid_bounds = [1, 2, 3, 4]
+                #     # Normalizes the color map according to the 
+                #     # bounds declared.
+                #     fluid_norm = mcolors.BoundaryNorm(fluid_bounds, fluid_cmap.N)
+
+                #     # Saves the OCT scan with an overlay of the ground-truth masks
+                #     plt.figure(figsize=(oct_image.shape[1] / 100, oct_image.shape[0] / 100))
+                #     plt.imshow(oct_image, cmap=plt.cm.gray)
+                #     plt.imshow(mask, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+                #     plt.axis("off")
+                #     plt.show()
+
+                #     # Closes the figure
+                #     plt.clf()
+                #     plt.close("all")
+
                 # Checks if the number of channels given as input matches the number of 
                 # images read with the dataloader
                 assert images[0].shape[0] == model.n_channels, \
