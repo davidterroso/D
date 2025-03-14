@@ -438,7 +438,7 @@ class TrainDataset(Dataset):
         # Initial Scan Shape: 1 x H x W / 3 x H x W
         # Initial Mask Shape: 1 x H x W
         # Resulting Shape: 2 x H x W / 4 x H x W
-        resulting_stack = torch.cat([scan, mask], dim=0)
+        resulting_stack = torch.cat([scan.float(), mask.long()], dim=0)
 
         # Applies the transfomration to the stack
         transformed = self.transforms(resulting_stack, self.model)
@@ -449,7 +449,7 @@ class TrainDataset(Dataset):
             scan, mask = transformed[0], transformed[1]
         # Handles it differently for the 2.5D model, ensuring the correct order of slices 
         else:
-            scan = torch.cat([transformed[0], transformed[1], transformed[2]], dim=0)
+            scan = torch.cat([transformed[0].float(), transformed[1].float(), transformed[2].float()], dim=0)
             mask = transformed[3]
 
         # Z-Score Normalization / Standardization
