@@ -14,6 +14,10 @@ from networks.unet25D import TennakoonUNet
 from networks.loss import multiclass_balanced_cross_entropy_loss
 from networks.unet import UNet
 
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+
 # Imports tqdm depending on whether 
 # it is being called from the 
 # Notebook or from this file
@@ -408,7 +412,7 @@ def train_model (
                     # Permute changes the images from channels first to channels last
                     masks_pred_prob = masks_pred_prob_bchw.permute(0, 2, 3, 1)
                     # Performs one hot encoding on the true masks, in channels last format
-                    masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float()
+                    masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float().squeeze(1)
 
                     # Calculates the balanced loss for the background mask
                     loss = multiclass_balanced_cross_entropy_loss(

@@ -6,6 +6,7 @@ from os.path import exists
 from paths import IMAGES_PATH
 from skimage.io import imread
 from skimage.transform import resize
+from torchvision.transforms.functional import hflip, rotate
 from torchvision.transforms.v2 import Compose, RandomApply, RandomHorizontalFlip, RandomRotation, InterpolationMode
 from torch.utils.data import Dataset
 
@@ -227,6 +228,85 @@ def images_from_volumes(volumes_list: list):
             images_list.append(image_name)
     return images_list
 
+class CustomTransform:
+    """
+    Creates a PyTorch custom transformation since 
+    the mask and the scan need to be handled
+    differently 
+    """
+    def __init__(self, p=0.5):
+        """
+        CustomTransform class constructor that 
+        receives as argument the probability of 
+        a transformation occuring
+
+        Args:
+            self (CustomTransform object): the 
+                CustomTransform object itself
+                to create
+            p (float): probability of a 
+                transformation being applied
+
+        Returns:
+            None
+        """
+        self.p = p
+
+    def __call__(self, sample, model):
+        """
+        Function that will apply the transformations to the received sample
+        which consists of the scan and the fluid mask
+
+        Args:
+            self (CustomTransform object): the CustomTransform object itself
+                that contains the probability of a transformation
+            sample (PyTorch Tensor): tensor of shape (2xHxW) if the model is 
+                not 2.5D and (4xHxW) if the model is 2.5D
+            model (str): name of the model that is being used
+
+        Return:
+            (PyTorch Tensor) tensor of shape (2xHxW) if the model is 
+                not 2.5D and (4xHxW) if the model is 2.5D after the 
+                transformations have been applied
+        """
+        # Extracts the scan and the mask from the sample
+        if model != "2.5D":
+            scan, mask = sample[0,:,:], sample[1,:,:]
+        else:
+            scan, mask = torch.stack(sample[0:3]), sample[3]
+
+        # Leaves the scan with shape 1xHxW
+        scan = scan.unsqueeze(0) 
+        mask = mask.unsqueeze(0)
+        # In case the probability 
+        # is below the threshold, 
+        # executes the rotation 
+        # transformation
+        if torch.rand(1) < self.p:
+            # The rotation is done independently because two different 
+            # interpolation modes are being used
+            # Calculates the random rotation angle that will be the same for both 
+            # transformations
+            angle = torch.randint(0, 10, (1,)).item()  
+            # Applies the rotation with bilinear interpolation to the scan
+            if model != "2.5D":
+                scan = rotate(scan, angle, interpolation=InterpolationMode.BILINEAR) 
+            else:
+                scan = torch.stack([rotate(scan[i], angle, interpolation=InterpolationMode.BILINEAR) for i in range(3)]) 
+            # Applies the rotation with nearest interpolation to the mask
+            mask = rotate(mask, angle, interpolation=InterpolationMode.NEAREST)  
+
+        # In case the probability 
+        # is below the threshold, 
+        # executes the horizontal 
+        # flip transformation
+        if torch.rand(1) < self.p:
+            scan = hflip(scan)
+            mask = hflip(mask)
+
+        # Returns the result, stacked
+        return torch.stack([scan, mask])
+
 class TrainDataset(Dataset):
     """
     Initiates the PyTorch object Dataset called TrainDataset 
@@ -272,9 +352,7 @@ class TrainDataset(Dataset):
         # flipping the image horizontally
         # Interpolation is set to nearest to minimize errors 
         # in categorical data
-        self.transforms = Compose([
-            RandomApply([RandomRotation(degrees=[0,10], interpolation=InterpolationMode.NEAREST)], p=0.5),
-            RandomHorizontalFlip(p=0.5)])
+        self.transforms = CustomTransform(p=0.5)
         self.fluid = fluid
 
     def __len__(self):
@@ -342,10 +420,6 @@ class TrainDataset(Dataset):
         if self.model == "UNet3":
             mask = ((mask == self.fluid).astype(int) * self.fluid)
 
-        # Z-Score Normalization / Standardization
-        # Mean of 0 and SD of 1
-        scan = (scan - 128.) / 128.
-
         # Expands the scan dimentions to 
         # include an extra channel of value 1
         # as the first channel
@@ -367,20 +441,20 @@ class TrainDataset(Dataset):
         resulting_stack = torch.cat([scan, mask], dim=0)
 
         # Applies the transfomration to the stack
-        transformed = self.transforms(resulting_stack)
+        transformed = self.transforms(resulting_stack, self.model)
 
         # Separate the scan and the mask from the stack
         # Keeps the extra dimension on the slice but not on the mask
         if self.model != "2.5D":
-            scan, mask = transformed[0].unsqueeze(0), transformed[1]
+            scan, mask = transformed[0], transformed[1]
         # Handles it differently for the 2.5D model, ensuring the correct order of slices 
         else:
             scan = torch.cat([transformed[0], transformed[1], transformed[2]], dim=0)
             mask = transformed[3]
 
-        # Converts the scans back to NumPy
-        scan = scan.numpy()
-        mask = mask.numpy()
+        # Z-Score Normalization / Standardization
+        # Mean of 0 and SD of 1
+        scan = (scan - 128.) / 128.
 
         # Declares a sample as a dictionary that 
         # to the keyword "scan" associates the 
@@ -633,7 +707,7 @@ class TestDataset(Dataset):
 
         # The shape of the test images is handled in different ways depending 
         # whether it was done using patches or not
-        if self.patch == "small":
+        if self.patch_type == "small":
             scan, mask = handle_test_images(scan, mask, roi, patch_shape=(256, 512))
 
         # Z-Score Normalization / Standardization
