@@ -15,7 +15,7 @@ from networks.loss import dice_coefficient
 from networks.unet25D import TennakoonUNet
 from networks.unet import UNet
 from network_functions.dataset import TestDataset
-from paths import IMAGES_PATH
+from paths import IMAGES_PATH, RETOUCH_PATH
 
 # Imports tqdm depending on whether 
 # it is being called from the 
@@ -334,7 +334,7 @@ def test_model (
     # Saves the desired output shape from the resizing
     if resize_images:
         # Loads a Spectralis file to check what is the patch size desired
-        spectralis_path = IMAGES_PATH + "\RETOUCH-TrainingSet-Spectralis\TRAIN025\oct.mhd"
+        spectralis_path = RETOUCH_PATH + "\RETOUCH-TrainingSet-Spectralis\TRAIN025\oct.mhd"
         img, _, _ = load_oct_image(spectralis_path)
         # Saves the desired shape as a tuple
         resize_shape = (img.shape[1], img.shape[2])
@@ -359,13 +359,22 @@ def test_model (
 
     # Declares the name of the folder in which the images will be saved
     if save_images:
-        # In case the folder to save exists, it is deleted and created again
-        folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}\\"
-        if exists(folder_to_save):
-            rmtree(folder_to_save)
-            makedirs(folder_to_save)
+        if not resize_images:
+            # In case the folder to save exists, it is deleted and created again
+            folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}\\"
+            if exists(folder_to_save):
+                rmtree(folder_to_save)
+                makedirs(folder_to_save)
+            else:
+                makedirs(folder_to_save)
         else:
-            makedirs(folder_to_save)
+            # In case the folder to save exists, it is deleted and created again
+            folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized\\"
+            if exists(folder_to_save):
+                rmtree(folder_to_save)
+                makedirs(folder_to_save)
+            else:
+                makedirs(folder_to_save)
     
     # Informs that no backward propagation will be calculated 
     # because it is an inference, thus reducing memory consumption
