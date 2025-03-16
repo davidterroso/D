@@ -230,7 +230,8 @@ def test_model (
         number_of_classes: int,
         batch_size: int,
         patch_type: str,
-        save_images: bool
+        save_images: bool,
+        resize_images: bool=False
     ):
     """
     Function used to test the trained models
@@ -256,7 +257,9 @@ def test_model (
             the slices
         save_images (bool): flag that indicates whether the 
             predicted images will be saved or not
-
+        resize_images (bool): flag that indicates whether the images 
+            will be resized or not in testing 
+            
     Return:
         None
     """
@@ -312,7 +315,7 @@ def test_model (
 
     # Creates the TestDataset and DataLoader object with the test volumes
     # Number of workers was set to the most optimal
-    test_dataset = TestDataset(test_volumes, model_name, patch_type)
+    test_dataset = TestDataset(test_volumes, model_name, patch_type, resize_images)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=12, collate_fn=collate_fn)
     
     # Initiates the list that will 
@@ -555,5 +558,6 @@ if __name__ == "__main__":
         device_name="GPU",
         batch_size=1,
         patch_type="small",
-        save_images=False
+        save_images=False,
+        resize_images=False
     )

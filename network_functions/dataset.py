@@ -590,7 +590,8 @@ class TestDataset(Dataset):
     process
     """
     def __init__(self, test_volumes: list, model: str, 
-                 patch_type: str, fluid: int=None):
+                 patch_type: str, resize_images: bool, 
+                 fluid: int=None):
         """
         Initiates the Dataset object and gets the possible 
         names of the images that will be used in testing
@@ -606,6 +607,8 @@ class TestDataset(Dataset):
                 of shape 496x512 are extracted from each image,
                 and patches of shape 496x128 are extracted from
                 the slices
+            resize_images (bool): flag that indicates whether 
+                the images will be resized or not in testing 
             fluid (int): label of fluid that is expected to 
                 segment. Optional because it is only used in
                 one network
@@ -622,6 +625,7 @@ class TestDataset(Dataset):
         self.model = model
         self.images_names = images_from_volumes(test_volumes)
         self.fluid = fluid
+        self.resize = resize_images 
 
     def __len__(self):
         """
@@ -709,6 +713,14 @@ class TestDataset(Dataset):
         # whether it was done using patches or not
         if self.patch_type == "small":
             scan, mask = handle_test_images(scan, mask, roi, patch_shape=(256, 512))
+
+        # If the images are desirerd to be resized
+        if self.resize:
+            # Resizes the images to the shape of the Spectralis scan
+            scan = resize(scan, (496, 512), preserve_range=True, 
+                                        anti_aliasing=True)
+            mask = resize(mask, (496, 512), order=0, preserve_range=True, 
+                                        anti_aliasing=False)
 
         # Z-Score Normalization / Standardization
         # Mean of 0 and SD of 1
