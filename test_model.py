@@ -10,6 +10,7 @@ from pandas import DataFrame, read_csv
 from torch.nn.functional import pad
 from torch.utils.data import DataLoader
 from shutil import rmtree
+from init.read_oct import load_oct_image
 from networks.loss import dice_coefficient
 from networks.unet25D import TennakoonUNet
 from networks.unet import UNet
@@ -94,7 +95,8 @@ def collate_fn(batch):
     return {'scan': scan, 'mask': mask, 'image_name': sample['image_name']}
 
 
-def folds_results(first_run_name: str, iteration: int, k: int=5):
+def folds_results(first_run_name: str, iteration: int, k: int=5, 
+                  resized_images: bool=False):
     """
     Function used to compare the results obtained in the k folds,
     calculating the mean and standard deviation of the results 
@@ -111,6 +113,8 @@ def folds_results(first_run_name: str, iteration: int, k: int=5):
         iteration (int): number of the iteration that comprises 
             the k - 1 runs
         k (int): number of folds used in this iteration
+        resized_images (bool): flag that indicates whether the 
+            images were resized or not
 
     Return: 
         None
@@ -127,12 +131,20 @@ def folds_results(first_run_name: str, iteration: int, k: int=5):
         # Gets the name of the run from the fold number
         # e.g. fold=3 -> run_name="Run003"
         run_name = "Run" + str(fold).zfill(3)
-        # Indicates the name of the file that will store the Dice 
-        # per class
-        class_file_name = f".\\results\\{run_name}_class_dice.csv"
-        # Indicates the name of the file that will store the Dice 
-        # per vendor
-        vendor_file_name = f".\\results\\{run_name}_vendor_dice.csv"
+        if not resized_images:
+            # Indicates the name of the file that stores the Dice 
+            # per class
+            class_file_name = f".\\results\\{run_name}_class_dice.csv"
+            # Indicates the name of the file that stores the Dice 
+            # per vendor
+            vendor_file_name = f".\\results\\{run_name}_vendor_dice.csv"
+        else:
+            # Indicates the name of the file that stores the Dice 
+            # per class
+            class_file_name = f".\\results\\{run_name}_class_dice_resized.csv"
+            # Indicates the name of the file that stores the Dice 
+            # per vendor
+            vendor_file_name = f".\\results\\{run_name}_vendor_dice_resized.csv"
         # Reads the DataFrame that handles the data per class
         class_df = read_csv(class_file_name)
         # Reads the DataFrame that handles the data per vendor
@@ -186,7 +198,10 @@ def folds_results(first_run_name: str, iteration: int, k: int=5):
     # DataFrame to the name of the vendors
     vendor_df = vendor_df.set_axis(vendors)
     # Saves the DataFrame with a name refering to the iteration
-    vendor_df.to_csv(f".\\results\\Iteration{iteration}_vendors_results.csv")
+    if not resized_images:
+        vendor_df.to_csv(f".\\results\\Iteration{iteration}_vendors_results.csv")
+    else:
+        vendor_df.to_csv(f".\\results\\Iteration{iteration}_vendors_results_resized.csv")
 
     # Initiates the DataFrame with the name 
     # of the fluids as the columns names for 
@@ -219,7 +234,10 @@ def folds_results(first_run_name: str, iteration: int, k: int=5):
     # Appends the results in a row to the DataFrame
     class_df.loc[len(class_df)] = values
     # Saves the DataFrame with a name refering to the iteration, not including the index
-    class_df.to_csv(f".\\results\\Iteration{iteration}_classes_results.csv", index=False)
+    if not resized_images:
+        class_df.to_csv(f".\\results\\Iteration{iteration}_classes_results.csv", index=False)
+    else:
+        class_df.to_csv(f".\\results\\Iteration{iteration}_classes_results_resized.csv", index=False)
 
 def test_model (
         fold_test: int,
@@ -313,9 +331,17 @@ def test_model (
     model.load_state_dict(torch.load(weights_path, weights_only=True, map_location=device))
     model.eval()
 
+    # Saves the desired output shape from the resizing
+    if resize_images:
+        # Loads a Spectralis file to check what is the patch size desired
+        spectralis_path = IMAGES_PATH + "\RETOUCH-TrainingSet-Spectralis\TRAIN025\oct.mhd"
+        img, _, _ = load_oct_image(spectralis_path)
+        # Saves the desired shape as a tuple
+        resize_shape = (img.shape[1], img.shape[2])
+
     # Creates the TestDataset and DataLoader object with the test volumes
     # Number of workers was set to the most optimal
-    test_dataset = TestDataset(test_volumes, model_name, patch_type, resize_images)
+    test_dataset = TestDataset(test_volumes, model_name, patch_type, resize_images, resize_shape)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=12, collate_fn=collate_fn)
     
     # Initiates the list that will 
@@ -444,7 +470,10 @@ def test_model (
                                 *[f"union_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
                                 *[f"intersection_{label_to_fluids.get(i)}" for i in range(number_of_classes)]])
     
-    slice_df.to_csv(f"results/{run_name}_slice_dice.csv", index=False)
+    if not resize_images:
+        slice_df.to_csv(f"results/{run_name}_slice_dice.csv", index=False)
+    else:
+        slice_df.to_csv(f"results/{run_name}_slice_dice_resized.csv", index=False)
 
     # Creates a list with all the Dices associated with a volume
     volume_dice_results = []
@@ -480,7 +509,10 @@ def test_model (
     # Adds the Dice values to the Pandas DataFrame
     volume_df = DataFrame(volume_dice_results, columns=columns)
     # Saves it as CSV
-    volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=False)    
+    if not resize_images:
+        volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=False)
+    else:
+        volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=False)
     
     # Initiates a list that will have the count of the union, the 
     # count of the intersection, and the Dice values per class
@@ -510,7 +542,10 @@ def test_model (
     # Creates a Pandas DataFrame with the column names and its respective values 
     class_df = DataFrame([overall_dice_per_class], columns=columns)
     # Converts this DataFrame to a CSV file 
-    class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
+    if not resize_images:
+        class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
+    else:
+        class_df.to_csv(f"results/{run_name}_class_dice_resized.csv", index=False)
 
     # Dictionary to store accumulated union and intersection counts per vendor
     vendor_union = defaultdict(lambda: [0] * number_of_classes)
@@ -542,8 +577,11 @@ def test_model (
     columns = ["vendor"] + [f"Dice_{label_to_fluids.get(i, f'Class_{i}')}" for i in range(number_of_classes)]
     # Creates the DataFrame
     vendor_df = DataFrame(vendor_dice_results, columns=columns)
-    vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=False)
     # Save the DataFrame as CSV
+    if not resize_images:
+        vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=False)
+    else:
+        vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=False)
 
 # In case it is preferred to run 
 # directly in this file, here lays 
