@@ -35,7 +35,8 @@ SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
 def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tuple, 
                              n_pos: int, n_neg: int, pos: int, neg: int, 
                              train_volumes: list, val_volumes: list, 
-                             batch_size: int, patch_dropping: bool, drop_prob: float):
+                             batch_size: int, patch_dropping: bool, drop_prob: float,
+                             num_patches: int):
     """
     Args:
         model_name (str): name of the model desired to train
@@ -68,6 +69,9 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
             dropping will be used or not
         drop_prob (float): probability of a non-pathogenic patch
             being dropped
+        num_patches (int): number of patches extracted from the 
+            images during vertical patch extraction to train the
+            model
 
     Return:
         train_loader (PyTorch DataLoader object): DataLoader 
@@ -184,8 +188,8 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
 
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations
-    train_set = TrainDataset(train_volumes, model_name, patch_type)
-    val_set = ValidationDataset(val_volumes, model_name, patch_type)
+    train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches)
+    val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches)
 
     # Calculates the total number of images used in train
     n_train = len(train_set)

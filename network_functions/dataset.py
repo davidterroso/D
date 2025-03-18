@@ -314,7 +314,8 @@ class TrainDataset(Dataset):
     process
     """
     def __init__(self, train_volumes: list, model: str, 
-                 patch_type: str, fluid: int=None):
+                 patch_type: str, num_patches: int, 
+                 fluid: int=None):
         """
         Initiates the Dataset object and gets the possible 
         names of the patches that will be used in training
@@ -333,17 +334,21 @@ class TrainDataset(Dataset):
             fluid (int): label of fluid that is expected to 
                 segment. Optional because it is only used in
                 one network
+            num_patches (int): number of patches extracted from
+                the images during vertical patch extraction to 
+                train the model
                 
         Return:
             None
         """
         # Initiates the model, gets the name of the slices that
         # compose the dataset, the transformations that will be 
-        # applied to the images, and the fluid to segment in 
-        # case it is used
+        # applied to the images, the number of patches extracted
+        # and the fluid to segment in case it is used
         super().__init__()        
         self.patch_type = patch_type
         self.model = model
+        self.num_patches = num_patches
         self.images_names = patches_from_volumes(train_volumes, model, patch_type)
 
         # Random Rotation has a probability of 0.5 of rotating 
@@ -401,6 +406,9 @@ class TrainDataset(Dataset):
             # which is associated with the image name
             slice_name = images_folder + f"{self.patch_type}_patches\\" + self.images_names[index]
             mask_name = images_folder + f"{self.patch_type}_masks\\" + self.images_names[index]
+            if self.patch_type == "vertical" and self.num_patches != 4:
+                slice_name = images_folder + f"{self.patch_type}_patches_overlap_{self.num_patches}\\" + self.images_names[index]
+                mask_name = images_folder + f"{self.patch_type}_masks\\" + self.images_names[index]
 
         # Reads the image and the
         # fluid mask

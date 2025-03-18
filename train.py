@@ -55,6 +55,7 @@ def train_model (
         assyncronous_patch_extraction: bool,
         patch_dropping: bool,
         drop_prob: float,
+        num_patches: int=4,
         fluid: str=None
 ):
     """
@@ -123,6 +124,9 @@ def train_model (
             dropping will be used or not
         drop_prob (float): probability of a non-pathogenic patch
             being dropped
+        num_patches (int): number of patches extracted from the 
+            images during vertical patch extraction to train the
+            model
         fluid (str): name of the fluid that is desired to segment 
             in the triple U-Net framework. Default is None because 
             it is not required in other models
@@ -350,7 +354,8 @@ def train_model (
             model_name=model_name, patch_type=patch_type, patch_shape=patch_shape, n_pos=n_pos, 
             n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
             val_volumes=val_volumes, batch_size=batch_size, 
-            patch_dropping=patch_dropping, drop_prob=drop_prob)
+            patch_dropping=patch_dropping, drop_prob=drop_prob, 
+            num_patches=num_patches)
 
     # Initiates the counter of patience
     patience_counter = 0
