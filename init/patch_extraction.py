@@ -1067,7 +1067,7 @@ def extract_vertical_patches(folder_path: str, save_folder: str,
                                         if overlap:
                                             vertical_patches_resized_folder_name = f"vertical_patches_overlay_overlap_{num_patches}"
                                         else:
-                                            vertical_patches_resized_folder_name = "vertical_patches_overlay_overlap"
+                                            vertical_patches_resized_folder_name = "vertical_patches_overlay"
                                         save_images(oct_image=im_slice_uint8, mask=im_mask, 
                                                     save_folder=save_folder, image_save_name=save_name_resized_images,
                                                     folder_name=vertical_patches_resized_folder_name)
@@ -1091,7 +1091,7 @@ def extract_vertical_patches(folder_path: str, save_folder: str,
                                     if overlap:
                                         vertical_patches_overlay_folder_name = f"vertical_patches_overlay_overlap_{num_patches}"
                                     else:
-                                        vertical_patches_overlay_folder_name = "vertical_patches_overlay_overlap"
+                                        vertical_patches_overlay_folder_name = "vertical_patches_overlay"
                                     save_images(oct_image=patch, mask=patch_mask, 
                                                 save_folder=save_folder, image_save_name=save_name_patch,
                                                 folder_name=vertical_patches_overlay_folder_name)
