@@ -1,4 +1,5 @@
 from multiprocessing import active_children
+from re import I
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
@@ -7,6 +8,7 @@ from os import walk, makedirs
 from os.path import isfile, exists
 from shutil import rmtree
 from PIL import Image
+from requests import patch
 from skimage.io import imread
 from skimage.util import img_as_float
 from skimage.morphology import disk, binary_closing
@@ -914,7 +916,7 @@ def save_images(oct_image: np.ndarray, mask: np.ndarray,
     plt.close("all")
 
 def extract_vertical_patches(folder_path: str, save_folder: str, 
-                             random: bool, num_patches: int=4, 
+                             overlap: bool, num_patches: int=4, 
                              save_resized_images: bool=False):
     """
     In this function, the original images are all resized to the 
@@ -922,19 +924,18 @@ def extract_vertical_patches(folder_path: str, save_folder: str,
     vertical patches are extracted from the original image. These 
     patches preserve the height of this resized patch while having 
     a quarter of the original width (512 / 4 = 128). The patches 
-    can be extracted from random horizontal locations or can be 
-    disjoint, with a maximum number of patches per scan being 4
+    can be extracted from overlapping horizontal locations or can 
+    be disjoint, with a maximum number of patches per scan being 4
     
     Args:
         folder_path (str): path to the RETOUCH dataset
         save_folder (str): path to the folder where the images 
             will be saved
-        random (bool): flag that indicates whether the patches 
-            will be extracted from random horizontal coordinates
-            or not
+        overlap (bool): flag that indicates whether the patches 
+            will overlap when extracted or not
         num_patches (int): the number of patches desired to 
             extract from the scan. This parameter can only be 
-            changed from 4 in case it is not random
+            changed from 4 in case overlapping is allowed
         save_resized_images (bool): flag that indicates whether 
             the resized images will be saved or not. Since this 
             option is more oriented to debugging and makes the
@@ -945,8 +946,10 @@ def extract_vertical_patches(folder_path: str, save_folder: str,
     """
     # Ensures that the number of patches in case they
     # are not randomly extracted from the volumes is 4
-    if not random: num_patches = 4
+    if not overlap: num_patches = 4 
 
+    # Indicates where the resized 
+    # images will be stored 
     if save_resized_images:
         folder = save_folder + "\\OCT_images\\segmentation\\vertical_patches_resized\\"
         if exists(folder):
@@ -954,9 +957,14 @@ def extract_vertical_patches(folder_path: str, save_folder: str,
         makedirs(folder)
 
     # In case the folder to save the images does not exist, it is created
-    complete_save_folder = save_folder + "\\OCT_images\\segmentation\\vertical_patches\\"
-    complete_mask_save_folder = save_folder + "\\OCT_images\\segmentation\\vertical_masks\\"
-    complete_overlay_save_folder = save_folder + "\\OCT_images\\segmentation\\vertical_patches_overlay\\"
+    if not overlap:
+        complete_save_folder = save_folder + "\\OCT_images\\segmentation\\vertical_patches\\"
+        complete_mask_save_folder = save_folder + "\\OCT_images\\segmentation\\vertical_masks\\"
+        complete_overlay_save_folder = save_folder + "\\OCT_images\\segmentation\\vertical_patches_overlay\\"
+    else:
+        complete_save_folder = save_folder + f"\\OCT_images\\segmentation\\vertical_patches_overlap_{num_patches}\\"
+        complete_mask_save_folder = save_folder + f"\\OCT_images\\segmentation\\vertical_masks_overlap_{num_patches}\\"
+        complete_overlay_save_folder = save_folder + f"\\OCT_images\\segmentation\\vertical_patches_overlay_overlap_{num_patches}\\"
 
     if ((not exists(complete_save_folder))\
         and (not exists(complete_mask_save_folder))\
@@ -965,11 +973,11 @@ def extract_vertical_patches(folder_path: str, save_folder: str,
         makedirs(complete_mask_save_folder)
         makedirs(complete_overlay_save_folder)
     else:
-        rmtree(complete_save_folder)
+        rmtree(complete_save_folder, ignore_errors=True)
         makedirs(complete_save_folder)
-        rmtree(complete_mask_save_folder)
+        rmtree(complete_mask_save_folder, ignore_errors=True)
         makedirs(complete_mask_save_folder)        
-        rmtree(complete_overlay_save_folder)
+        rmtree(complete_overlay_save_folder, ignore_errors=True)
         makedirs(complete_overlay_save_folder)
 
     # Loads a Spectralis file to check what is the patch size desired
@@ -979,6 +987,8 @@ def extract_vertical_patches(folder_path: str, save_folder: str,
     spectralis_shape = (img.shape[1], img.shape[2])
     # Defines the shape of the patches
     patch_shape = (spectralis_shape[0], int(spectralis_shape[1] / 4))
+
+    starting_indexes = np.linspace(start=0, stop=(spectralis_shape[1] - patch_shape[1]), num=num_patches).astype(int)
 
     # Initiates the variable that will 
     # count the progress of volumes 
@@ -1037,94 +1047,57 @@ def extract_vertical_patches(folder_path: str, save_folder: str,
                                 # range 0 to 255 so that it can be 
                                 # visualized in the computer
                                 im_slice_uint8 = int32_to_uint8(im_slice)
-                                # In case the volume from 
-                                # the Spectralis vendor,
-                                # the image will not be 
-                                # patched and will be 
-                                # saved entirely
-                                if vendor == "Spectralis":
-                                    # In case the patch extraction 
-                                    # is not random
-                                    if not random:
-                                        # Sets the initial index as 0 and the final index 
-                                        # as the horizontal size of the patch defined 
-                                        # previously
-                                        initial_index = 0
-                                        end_index = patch_shape[1]
-                                        # Iterates through the number of patches available
-                                        for patch_index in range(num_patches):
-                                            # Slices the patch from the original image
-                                            patch = im_slice_uint8[:,initial_index:end_index]
-                                            # Slices the patch from the original mask
-                                            patch_mask = im_mask[:,initial_index:end_index]
-                                            # Updates the indexes from which the new patch 
-                                            # will be extracted
-                                            initial_index = initial_index + patch_shape[1]
-                                            end_index = end_index + patch_shape[1]
-                                            # Declares the name under which the patch will be saved
-                                            save_name_patch = save_name + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
-                                            # Declares the name under which the mask will be saved
-                                            save_name_patch_mask = save_name_mask + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
-                                            # Saves an image with the scan below the fluid
-                                            save_images(oct_image=patch, mask=patch_mask, 
-                                                        save_folder=save_folder, image_save_name=save_name_patch,
-                                                        folder_name="vertical_patches_overlay")
-                                            # Passes the patches from a NumPy array to a Pillow object to save
-                                            patch = Image.fromarray(patch)
-                                            patch_mask = Image.fromarray(patch_mask)
-                                            # Saves the patch
-                                            patch.save(save_name_patch)
-                                            # Saves the mask
-                                            patch_mask.save(save_name_patch_mask)
-                                # In case the images are 
-                                # not from the Spectralis 
-                                # vendor, the patches are 
-                                # extracted
-                                else:
+                                # In case the volume is not 
+                                # from the Spectralis vendor,
+                                # the image will be resized
+                                if vendor != "Spectralis":
                                     # Resizes the images to the shape of the Spectralis scan
-                                    im_slice_resized = resize(im_slice_uint8, spectralis_shape, preserve_range=True, 
-                                                              anti_aliasing=True)
-                                    im_mask_resized = resize(im_mask, spectralis_shape, order=0, preserve_range=True, 
-                                                             anti_aliasing=False)
+                                    im_slice_uint8 = resize(im_slice_uint8, spectralis_shape, preserve_range=True, 
+                                                              anti_aliasing=True).astype(np.uint8)
+                                    im_mask = resize(im_mask, spectralis_shape, order=0, preserve_range=True, 
+                                                             anti_aliasing=False).astype(np.int8)
                                     # Saves the resized images
                                     if save_resized_images:
                                         # Declares the name under which the resized images will be saved
                                         save_name_resized_images = save_name + "_" + str(slice_num).zfill(3) + ".tiff"
-                                        save_images(oct_image=im_slice_resized, mask=im_mask_resized, 
+                                        if overlap:
+                                            vertical_patches_resized_folder_name = f"vertical_patches_overlay_overlap_{num_patches}"
+                                        else:
+                                            vertical_patches_resized_folder_name = "vertical_patches_overlay_overlap"
+                                        save_images(oct_image=im_slice_uint8, mask=im_mask, 
                                                     save_folder=save_folder, image_save_name=save_name_resized_images,
-                                                    folder_name="vertical_patches_resized")
-                                    # Sets the initial index as 0 and the final index 
-                                    # as the horizontal size of the patch defined 
-                                    # previously
-                                    initial_index = 0
-                                    end_index = patch_shape[1]
-                                    # In case the patches are not extracted randomly
-                                    if not random:
-                                        # Iterates through the number of patches to extract
-                                        for patch_index in range(num_patches):
-                                            # Slices the patch from the original image
-                                            patch = im_slice_resized[:,initial_index:end_index]
-                                            # Slices the patch from the original mask
-                                            patch_mask = im_mask_resized[:,initial_index:end_index]
-                                            # Updates the indexes from which the new patch 
-                                            # will be extracted
-                                            initial_index = initial_index + patch_shape[1]
-                                            end_index = end_index + patch_shape[1]
-                                            # Declares the name under which the patch will be saved
-                                            save_name_patch = save_name + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
-                                            # Declares the name under which the mask will be saved
-                                            save_name_patch_mask = save_name_mask + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
-                                            # Saves an image with the scan below the fluid
-                                            save_images(oct_image=patch, mask=patch_mask, 
-                                                        save_folder=save_folder, image_save_name=save_name_patch,
-                                                        folder_name="vertical_patches_overlay")
-                                            # Passes the patches from a NumPy array to a Pillow object to save
-                                            patch = Image.fromarray(patch)
-                                            patch_mask = Image.fromarray(patch_mask)
-                                            # Saves the patch
-                                            patch.save(save_name_patch)
-                                            # Saves the mask
-                                            patch_mask.save(save_name_patch_mask)
+                                                    folder_name=vertical_patches_resized_folder_name)
+                                # Iterates through the number of patches available
+                                for patch_index in range(num_patches):
+                                    # Gets the initial index from the list and the 
+                                    # final index as the horizontal size of the 
+                                    # patch defined previously plus the initial
+                                    # index
+                                    initial_index = starting_indexes[patch_index]
+                                    end_index = initial_index + patch_shape[1]
+                                    # Slices the patch from the original image
+                                    patch = im_slice_uint8[:,initial_index:end_index]
+                                    # Slices the patch from the original mask
+                                    patch_mask = im_mask[:,initial_index:end_index]
+                                    # Declares the name under which the patch will be saved
+                                    save_name_patch = save_name + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
+                                    # Declares the name under which the mask will be saved
+                                    save_name_patch_mask = save_name_mask + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
+                                    # Saves an image with the scan below the fluid
+                                    if overlap:
+                                        vertical_patches_overlay_folder_name = f"vertical_patches_overlay_overlap_{num_patches}"
+                                    else:
+                                        vertical_patches_overlay_folder_name = "vertical_patches_overlay_overlap"
+                                    save_images(oct_image=patch, mask=patch_mask, 
+                                                save_folder=save_folder, image_save_name=save_name_patch,
+                                                folder_name=vertical_patches_overlay_folder_name)
+                                    # Passes the patches from a NumPy array to a Pillow object to save
+                                    patch = Image.fromarray(patch)
+                                    patch_mask = Image.fromarray(patch_mask)
+                                    # Saves the patch
+                                    patch.save(save_name_patch)
+                                    # Saves the mask
+                                    patch_mask.save(save_name_patch_mask)
                                 # Updates the progress bar
                                 progress_bar.update(1)
     
