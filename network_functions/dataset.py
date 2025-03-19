@@ -514,12 +514,12 @@ class ValidationDataset(Dataset):
             None
         """
         # Initiates the model, gets the name of the slices that
-        # compose the dataset, the transformations that will be 
-        # applied to the images, and the fluid to segment in 
-        # case it is used
+        # compose the dataset, the number of vertical patches, 
+        # and the fluid to segment in case it is used
         super().__init__()        
         self.patch_type = patch_type
         self.model = model
+        self.num_patches = num_patches
         self.images_names = patches_from_volumes(val_volumes, model, 
                                                  patch_type, num_patches)
         self.fluid = fluid
