@@ -159,7 +159,8 @@ def drop_patches(prob: float, volumes_list: list, model: str):
                                 remove(str(patches_mask_path + patch[:-5] + "_after.tiff"))
                                 remove(str(patches_roi_path + patch[:-5] + "_after.tiff"))
 
-def patches_from_volumes(volumes_list: list, model: str, patch_type: str):
+def patches_from_volumes(volumes_list: list, model: str, 
+                         patch_type: str, num_patches: int):
     """
     Used to return the list of all the patches that are available to 
     train the network, knowing which volumes will be used
@@ -174,6 +175,9 @@ def patches_from_volumes(volumes_list: list, model: str, patch_type: str):
             "big", where patches of shape 496x512 are extracted from 
             each image, and patches of shape 496x128 are extracted from
             the slices
+        num_patches (int): number of patches extracted from
+            the images during vertical patch extraction to 
+            train the model
 
     Return:
         patches_list (List[str]): list of the name of the patches that 
@@ -187,6 +191,8 @@ def patches_from_volumes(volumes_list: list, model: str, patch_type: str):
             images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\patches\\2D\\slices\\"
     else:
         images_folder = IMAGES_PATH + f"\\OCT_images\\segmentation\\{patch_type}_patches\\"
+        if ((patch_type == "vertical") and (num_patches > 4)):
+            images_folder = IMAGES_PATH + f"\\OCT_images\\segmentation\\{patch_type}_patches_overlap_{num_patches}\\"
 
     # Iterates through the available patches
     # and registers the name of those that are 
@@ -331,12 +337,12 @@ class TrainDataset(Dataset):
                 of shape 496x512 are extracted from each image,
                 and patches of shape 496x128 are extracted from
                 the slices
-            fluid (int): label of fluid that is expected to 
-                segment. Optional because it is only used in
-                one network
             num_patches (int): number of patches extracted from
                 the images during vertical patch extraction to 
                 train the model
+            fluid (int): label of fluid that is expected to 
+                segment. Optional because it is only used in
+                one network
                 
         Return:
             None
@@ -349,7 +355,9 @@ class TrainDataset(Dataset):
         self.patch_type = patch_type
         self.model = model
         self.num_patches = num_patches
-        self.images_names = patches_from_volumes(train_volumes, model, patch_type)
+        self.images_names = patches_from_volumes(train_volumes, 
+                                                 model, patch_type,
+                                                 num_patches)
 
         # Random Rotation has a probability of 0.5 of rotating 
         # the image between 0 and 10 degrees
@@ -406,9 +414,9 @@ class TrainDataset(Dataset):
             # which is associated with the image name
             slice_name = images_folder + f"{self.patch_type}_patches\\" + self.images_names[index]
             mask_name = images_folder + f"{self.patch_type}_masks\\" + self.images_names[index]
-            if self.patch_type == "vertical" and self.num_patches != 4:
+            if ((self.patch_type == "vertical") and (self.num_patches > 4)):
                 slice_name = images_folder + f"{self.patch_type}_patches_overlap_{self.num_patches}\\" + self.images_names[index]
-                mask_name = images_folder + f"{self.patch_type}_masks\\" + self.images_names[index]
+                mask_name = images_folder + f"{self.patch_type}_masks_overlap_{self.num_patches}\\" + self.images_names[index]
 
         # Reads the image and the
         # fluid mask
@@ -478,7 +486,8 @@ class ValidationDataset(Dataset):
     process
     """
     def __init__(self, val_volumes: list, model: str,
-                 patch_type: str, fluid: int=None):
+                 patch_type: str, num_patches: int, 
+                 fluid: int=None):
         """
         Initiates the Dataset object and gets the possible 
         names of the patches that will be used in validation
@@ -494,6 +503,9 @@ class ValidationDataset(Dataset):
                 of shape 496x512 are extracted from each image,
                 and patches of shape 496x128 are extracted from
                 the slices
+            num_patches (int): number of patches extracted from
+                the images during vertical patch extraction to 
+                train the model
             fluid (int): label of fluid that is expected to 
                 segment. Optional because it is only used in
                 one network
@@ -508,7 +520,8 @@ class ValidationDataset(Dataset):
         super().__init__()        
         self.patch_type = patch_type
         self.model = model
-        self.images_names = patches_from_volumes(val_volumes, model, patch_type)
+        self.images_names = patches_from_volumes(val_volumes, model, 
+                                                 patch_type, num_patches)
         self.fluid = fluid
 
     def __len__(self):
@@ -558,6 +571,9 @@ class ValidationDataset(Dataset):
             # which is associated with the image name
             slice_name = images_folder + f"{self.patch_type}_patches\\" + self.images_names[index]
             mask_name = images_folder + f"{self.patch_type}_masks\\" + self.images_names[index]
+            if ((self.patch_type == "vertical") and (self.num_patches > 4)):
+                slice_name = images_folder + f"{self.patch_type}_patches_overlap_{self.num_patches}\\" + self.images_names[index]
+                mask_name = images_folder + f"{self.patch_type}_masks_overlap_{self.num_patches}\\" + self.images_names[index]
 
         # Reads the image and the
         # fluid mask

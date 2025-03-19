@@ -348,7 +348,7 @@ def train_model (
         for patch_type_name in ["small", "big", "vertical"]:
             print(patch_type_name)
 
-    # In case patch extraction is done before training and of type small
+    # In case patch extraction is done before training
     if (assyncronous_patch_extraction):
         train_loader, val_loader, n_train = extract_patches_wrapper(
             model_name=model_name, patch_type=patch_type, patch_shape=patch_shape, n_pos=n_pos, 
