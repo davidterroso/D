@@ -16,6 +16,7 @@
 - [unet\_random\_imgs](#unet_random_imgs)
 - [unet\_random\_improved\_imgs](#unet_random_improved_imgs)
 - [unet\_vertical\_imgs](#unet_vertical_imgs)
+- [unet\_vertical\_imgs](#unet_vertical_imgs-1)
 - [wandb](#wandb)
 - [paths.py](#pathspy)
 - [pipeline.ipynb](#pipelineipynb)
@@ -26,6 +27,7 @@
 - [unet\_big.ipynb](#unet_bigipynb)
 - [unet\_preliminary.ipynb](#unet_preliminaryipynb)
 - [unet\_random\_patches.ipynb](#unet_random_patchesipynb)
+- [unet\_vertical\_variability.ipynb](#unet_vertical_variabilityipynb)
 - [unet\_vertical.ipynb](#unet_verticalipynb)
 - [visualize\_scans.py](#visualize_scanspy)
 - [Libraries](#libraries)
@@ -86,6 +88,9 @@ D
  ┣ unet_random_improved_imgs # Folder that contains the relevant images output from the unet_random_improved.ipynb file
  ┃ ┣ Run021_training_error.png # PNG file which contains the plots of the training and evaluation error in Run021  
  ┃ ┗ ...
+ ┣ unet_vertical_variability_imgs # Folder that contains the relevant images output from the unet_vertical_variability.ipynb file
+ ┃ ┣ Run024_training_error.png # PNG file which contains the plots of the training and evaluation error in Run024  
+ ┃ ┗ ...
  ┣ unet_vertical_imgs # Folder that contains the relevant images output from the unet_vertical.ipynb file
  ┃ ┣ Run024_training_error.png # PNG file which contains the plots of the training and evaluation error in Run024  
  ┃ ┗ ...
@@ -128,6 +133,8 @@ D
  ┣ unet_big.ipynb # Training of the U-Net with big patches not extracted randomly
  ┣ unet_preliminary.ipynb # Training of the U-Net made preliminary, with random fold split
  ┣ unet_random_patches.ipynb # Training of the U-Net with randomly extracted patches
+ ┣ unet_vertical_variability.ipynb # Training of the U-Net with patches that are bigger vertically and not extracted 
+ ┃                     # randomly, to test the model variability
  ┣ unet_vertical.ipynb # Training of the U-Net with patches that are bigger vertically and not extracted randomly
  ┗ visualize_scans.py # Simple UI for the user to visualize what is happening to the images in the processing
  ```
@@ -169,6 +176,9 @@ Folder that contains all the images produced in the [unet_random_patches.ipynb](
 Folder that contains all the images produced in the [unet_random_patches_improved.ipynb](unet_random_patches_improved.ipynb) code is when it is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
 
 ## [unet_vertical_imgs](unet_vertical_imgs/)
+Folder that contains all the images produced in the [unet_vertical_variability.ipynb](unet_vertical_variability.ipynb) code is when it is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
+
+## [unet_vertical_imgs](unet_vertical_imgs/)
 Folder that contains all the images produced in the [unet_vertical.ipynb](unet_vertical.ipynb) code is when it is ran that are relevant to this repository and help its understanding. It does not include images related to the dataset used.
 
 ## [wandb](wandb/)
@@ -204,6 +214,9 @@ Jupyter notebook that contains the functions that will be used to train, test, a
 
 ## [unet_random_patches.ipynb](unet_random_patches.ipynb)
 Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the training of the U-Net was performed with randomly extracted patches and its results are presented in the same file. 
+
+## [unet_vertical_variability.ipynb](unet_vertical_variability.ipynb)
+Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the training of the U-Net was performed patches not extracted randomly from resized images and its results are presented in the same file. The patches are much bigger vertically (496px) than horizontally (128px), hence the name. The difference between this file and the [unet_vertical_variability.ipynb](unet_vertical_variability.ipynb) is that this will perform five runs on the same data to understand the variability associated with the randomization in the training file (such as the weights initialization and the dataloader shuffling).
 
 ## [unet_vertical.ipynb](unet_vertical.ipynb)
 Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the training of the U-Net was performed patches not extracted randomly from resized images and its results are presented in the same file. The patches are much bigger vertically (496px) than horizontally (128px), hence the name.
