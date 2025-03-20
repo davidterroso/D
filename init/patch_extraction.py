@@ -959,7 +959,10 @@ def extract_vertical_patches(folder_path: str, save_folder: str,
     # Indicates where the resized 
     # images will be stored 
     if save_resized_images:
-        folder = save_folder + "\\OCT_images\\segmentation\\vertical_patches_resized\\"
+        if not overlap:
+            folder = save_folder + "\\OCT_images\\segmentation\\vertical_patches_resized\\"
+        else:
+            folder = save_folder + f"\\OCT_images\\segmentation\\vertical_patches_resized_overlap_{num_patches}\\"
         if exists(folder):
             rmtree(folder)
         makedirs(folder)
