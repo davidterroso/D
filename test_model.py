@@ -205,9 +205,10 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
 
     # Initiates the DataFrame with the name 
     # of the fluids as the columns names for 
-    # the class data
+    # the class data and a column named vendor
     # e.g. of a column name: Dice_IRF
-    class_df = DataFrame(columns=fluids)
+    cols = ["vendor"] + fluids
+    class_df = DataFrame(columns=cols)
     # Initiates a list that will store the 
     # values of the classes 
     values = []
