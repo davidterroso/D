@@ -197,6 +197,7 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
     # Sets the name of the axis in the 
     # DataFrame to the name of the vendors
     vendor_df = vendor_df.set_axis(vendors)
+    vendor_df = vendor_df.rename_axis("vendors")
     # Saves the DataFrame with a name refering to the iteration
     if not resized_images:
         vendor_df.to_csv(f".\\results\\Iteration{iteration}_vendors_results.csv")
@@ -205,10 +206,9 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
 
     # Initiates the DataFrame with the name 
     # of the fluids as the columns names for 
-    # the class data and a column named vendor
+    # the class data
     # e.g. of a column name: Dice_IRF
-    cols = ["vendor"] + fluids
-    class_df = DataFrame(columns=cols)
+    class_df = DataFrame(columns=fluids)
     # Initiates a list that will store the 
     # values of the classes 
     values = []
