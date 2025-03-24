@@ -56,7 +56,8 @@ def train_model (
         patch_dropping: bool,
         drop_prob: float,
         num_patches: int=4,
-        fluid: str=None
+        fluid: str=None,
+        random: bool=True 
 ):
     """
     Function that trains the deep learning models.
@@ -129,7 +130,10 @@ def train_model (
             model
         fluid (str): name of the fluid that is desired to segment 
             in the triple U-Net framework. Default is None because 
-            it is not required in other models
+            it is not required in other models        
+        random (bool): indicates whether the shuffling in the 
+            DataLoader and the random weight initialization is 
+            done using a fixed seed or a random seed
         
     Return:
         None
@@ -355,7 +359,7 @@ def train_model (
             n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
             val_volumes=val_volumes, batch_size=batch_size, 
             patch_dropping=patch_dropping, drop_prob=drop_prob, 
-            num_patches=num_patches)
+            num_patches=num_patches, random=random)
 
     # Initiates the counter of patience
     patience_counter = 0
@@ -372,7 +376,7 @@ def train_model (
                 model_name=model_name, patch_type=patch_type, patch_shape=patch_shape, n_pos=n_pos, 
                 n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
                 val_volumes=val_volumes, batch_size=batch_size, 
-                patch_dropping=patch_dropping, drop_prob=drop_prob)
+                patch_dropping=patch_dropping, drop_prob=drop_prob, random=random)
 
         # Indicates the model that it is going to be trained
         model.train()

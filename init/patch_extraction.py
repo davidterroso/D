@@ -15,6 +15,7 @@ from skimage.morphology import disk, binary_closing
 from skimage.filters.rank import entropy
 from skimage.transform import resize
 from time import time
+from torch import manual_seed
 from torch.utils.data import DataLoader
 from network_functions.dataset import TrainDataset, ValidationDataset, drop_patches
 from paths import IMAGES_PATH
@@ -36,7 +37,7 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
                              n_pos: int, n_neg: int, pos: int, neg: int, 
                              train_volumes: list, val_volumes: list, 
                              batch_size: int, patch_dropping: bool, drop_prob: float,
-                             num_patches: int):
+                             num_patches: int, random: bool):
     """
     Args:
         model_name (str): name of the model desired to train
@@ -72,6 +73,9 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
         num_patches (int): number of patches extracted from the 
             images during vertical patch extraction to train the
             model
+        random (bool): indicates whether the shuffling in the 
+            DataLoader and the random weight initialization is 
+            done using a fixed seed or a random seed
 
     Return:
         train_loader (PyTorch DataLoader object): DataLoader 
@@ -83,11 +87,11 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
         n_train (int): number of images that will be used to train 
             the model
     """
-    print("Extracting Patches")
-    # Starts timing the patch extraction
-    begin = time()
 
     if patch_type == "small":
+        print("Extracting Patches")
+        # Starts timing the patch extraction
+        begin = time()
         # Eliminates the previous patches and saves 
         # new patches to train and validate the model, 
         # but only for the volumes that will be used 
@@ -192,8 +196,8 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
             f"The {num_patches} overlapping {patch_type} patches must be extracted first"
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations
-    train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches)
-    val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches)
+    train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, random)
+    val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, random)
 
     # Calculates the total number of images used in train
     n_train = len(train_set)
@@ -203,7 +207,11 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
     # Using the Dataset object, creates a DataLoader object 
     # which will be used to train the model in batches
     begin = time()
-    loader_args = dict(batch_size=batch_size, num_workers=12, pin_memory=True)
+    if random:
+        loader_args = dict(batch_size=batch_size, num_workers=12, pin_memory=True)
+    else:
+        loader_args = dict(batch_size=batch_size, num_workers=12, pin_memory=True, 
+                           worker_init_fn=lambda worker_id: manual_seed(0))
     print("Loading Training Data.")
     train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
     print("Loading Validation Data.")
