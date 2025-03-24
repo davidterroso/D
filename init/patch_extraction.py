@@ -1,21 +1,18 @@
-from multiprocessing import active_children
-from re import I
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+import torch
 from IPython import get_ipython
 from os import walk, makedirs
 from os.path import isfile, exists
 from shutil import rmtree
 from PIL import Image
-from requests import patch
 from skimage.io import imread
 from skimage.util import img_as_float
 from skimage.morphology import disk, binary_closing
 from skimage.filters.rank import entropy
 from skimage.transform import resize
 from time import time
-from torch import manual_seed
 from torch.utils.data import DataLoader
 from network_functions.dataset import TrainDataset, ValidationDataset, drop_patches
 from paths import IMAGES_PATH
@@ -32,6 +29,19 @@ else:
 # Declares the multiplication factor to obtain the correct patch height 
 # for each device, identified by the height of the image
 SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
+
+def seed_worker(worker_id):
+    """
+    Declares the seed for the use of multiple workers
+
+    Args:
+        worker_id (int): ID of the worker
+    
+    Return:
+        None
+    """
+    torch.manual_seed(0)
+    torch.cuda.manual_seed(0)
 
 def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tuple, 
                              n_pos: int, n_neg: int, pos: int, neg: int, 
@@ -211,7 +221,7 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
         loader_args = dict(batch_size=batch_size, num_workers=12, pin_memory=True)
     else:
         loader_args = dict(batch_size=batch_size, num_workers=12, pin_memory=True, 
-                           worker_init_fn=lambda worker_id: manual_seed(0))
+                           worker_init_fn=seed_worker)
     print("Loading Training Data.")
     train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
     print("Loading Validation Data.")
