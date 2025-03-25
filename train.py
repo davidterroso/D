@@ -1,5 +1,6 @@
 import csv
 import logging
+import random
 import torch
 import wandb
 from IPython import get_ipython
@@ -15,8 +16,8 @@ from networks.loss import multiclass_balanced_cross_entropy_loss
 from networks.unet import UNet
 
 import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+import matplotlib.pyplot as plt
 
 # Imports tqdm depending on whether 
 # it is being called from the 
@@ -57,7 +58,7 @@ def train_model (
         drop_prob: float,
         num_patches: int=4,
         fluid: str=None,
-        random: bool=True 
+        seed: int=None 
 ):
     """
     Function that trains the deep learning models.
@@ -131,9 +132,10 @@ def train_model (
         fluid (str): name of the fluid that is desired to segment 
             in the triple U-Net framework. Default is None because 
             it is not required in other models        
-        random (bool): indicates whether the shuffling in the 
-            DataLoader and the random weight initialization is 
-            done using a fixed seed or a random seed
+        seed (int): indicates the seed that will be used in the 
+            random operations of the training. When seed is not
+            indicated, the default value is None and the seed is
+            not fixed 
         
     Return:
         None
@@ -153,6 +155,14 @@ def train_model (
         2: "SRF",
         3: "PED"
     }
+
+    # Fixes the seed in case it is declared
+    if seed is not None:
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+        np.random.seed(seed)
+        random.seed(seed)
 
     # Restrictions for the triple U-Net framework
     # Has to be done before model initiation in case the number of 
@@ -259,6 +269,7 @@ def train_model (
         Learning rate:   {learning_rate}
         Device:          {device.type}
         Mixed Precision: {amp}
+        Seed:            {seed}
     """)
 
     # Dictionary that contains the optimizers 
@@ -359,7 +370,7 @@ def train_model (
             n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
             val_volumes=val_volumes, batch_size=batch_size, 
             patch_dropping=patch_dropping, drop_prob=drop_prob, 
-            num_patches=num_patches, random=random)
+            num_patches=num_patches, seed=seed)
 
     # Initiates the counter of patience
     patience_counter = 0
@@ -376,7 +387,7 @@ def train_model (
                 model_name=model_name, patch_type=patch_type, patch_shape=patch_shape, n_pos=n_pos, 
                 n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
                 val_volumes=val_volumes, batch_size=batch_size, 
-                patch_dropping=patch_dropping, drop_prob=drop_prob, random=random)
+                patch_dropping=patch_dropping, drop_prob=drop_prob, seed=seed)
 
         # Indicates the model that it is going to be trained
         model.train()
