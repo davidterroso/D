@@ -332,6 +332,10 @@ def test_model (
     model.load_state_dict(torch.load(weights_path, weights_only=True, map_location=device))
     model.eval()
 
+    # Initiates resize shape for the cases where 
+    # resize_images is False to not raise the error 
+    # of calling an unassigned variable 
+    resize_shape = (0,0)
     # Saves the desired output shape from the resizing
     if resize_images:
         # Loads a Spectralis file to check what is the patch size desired
