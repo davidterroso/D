@@ -1034,7 +1034,7 @@ def extract_vertical_patches(folder_path: str, save_folder: str,
     # Initiates the variable that will 
     # count the progress of volumes 
     # whose slices are being extracted
-    volume = 0
+    volume = start_on 
 
     # Iterates through all the folders in the RETOUCH dataset
     for (root, _, files) in walk(folder_path):
