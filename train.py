@@ -58,7 +58,8 @@ def train_model (
         drop_prob: float,
         num_patches: int=4,
         fluid: str=None,
-        seed: int=None 
+        seed: int=None,
+        patience_after_n: int=0
 ):
     """
     Function that trains the deep learning models.
@@ -136,6 +137,9 @@ def train_model (
             random operations of the training. When seed is not
             indicated, the default value is None and the seed is
             not fixed 
+        patience_after_n (int): number of epochs needed to wait 
+            before starting to count the patience. The default 
+            value is 0
         
     Return:
         None
@@ -581,9 +585,14 @@ def train_model (
         # patience value, the model stops training
         # Only when tuning is being done, the
         # early stopage can be triggered
-        if patience_counter >= patience and tuning:
+        if patience_counter >= patience and tuning and epoch > patience_after_n:
             logging.info("Early stopping triggered.")
             break
+        
+        # Resets the patience counter every epoch 
+        # below the number after which it starts counting
+        if epoch <= patience_after_n:
+            patience_counter = 0
 
         # This section of the code is commented because, after implementation, 
         # no real use was given to the output images and was only slowing down 
