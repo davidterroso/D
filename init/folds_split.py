@@ -6,6 +6,8 @@ from math import ceil, isnan
 from os import walk
 from random import shuffle
 
+from zmq import EVENT_CLOSE_FAILED
+
 #############################################
 # Volumes from Topcon T-1000 with 64 slices:# 
 # Training - 056, 062                       #
@@ -294,7 +296,8 @@ def iterate_permutations(sample, expected, errors):
             min_error = final_error
     return best_distribution, best_errors
 
-def factorial_k_fold_segmentation(k: int=5, random=True):
+def factorial_k_fold_segmentation(k: int=5, random: bool=True, 
+                                  fluid: str=None, test_fold: int=1):
     """
     In this function, a sample with the size of the number of folds 
     is extracted from the available volumes and all the k! possible 
@@ -308,6 +311,17 @@ def factorial_k_fold_segmentation(k: int=5, random=True):
         random (bool): flag that indicates whether the volumes are 
             extracted randomly from the DataFrame or by decreasing 
             order in total number of voxels
+        fluid (str): string that indicates for which fluid the fold 
+            split will be performed. Must be IRF, SRF, or PED. The 
+            default is None
+        test_fold (int): when a fold split is done to all the fluids, 
+            one fold is being held out for comparison between different 
+            implementations. Therefore, none of the volumes contained 
+            in this fold can be used in training of other implementations
+            (e.g. implementations that perform binary segmentation on a 
+            specific fluid). The default value is one because that is 
+            the fold that was not used in training or validation of the
+            U-Net model
 
     Return:
         None
@@ -318,6 +332,20 @@ def factorial_k_fold_segmentation(k: int=5, random=True):
     vendors_names = df["Vendor"].unique()
     # Creates the dictionary on which it will be added the desired volumes
     selected_volumes = {i: [] for i in range(k)}
+    if fluid is not None:
+        # Checks if the input fluid name is available
+        fluids_list = ["IRF","SRF","PED"]
+        assert fluid in fluids_list,\
+            f"Invalid fluid: {fluid}. Available fluids: {', '.join(fluids_list)}"
+        # Reads the competitive fold selection 
+        # and records the prohibited volumes
+        full_split = pd.read_csv(".\\splits\\competitive_fold_selection.csv")
+        # Gets the list of all the volumes in the test fold
+        prohibited_vols = full_split[str(test_fold)].to_list()
+        # Removes the prohibited volumes from the available volumes DataFrame
+        df = df[~df["VolumeNumber"].isin(prohibited_vols)]
+        # Removes the fold being used in testing from the dictionary 
+        selected_volumes.pop(test_fold)
     # Iterates through the vendors
     for vendor in vendors_names:
         # Initiates the array that will store the errors 
@@ -335,18 +363,31 @@ def factorial_k_fold_segmentation(k: int=5, random=True):
         # Defines the expected value for each class as the
         # maximum number of volumes of a vendor in a fold
         # and the mean of voxel counts in this vendor
-        irf_expected = df_vendor.loc[:, "IRF"].mean() * ceil(df_vendor.shape[0] / k)
-        srf_expected = df_vendor.loc[:, "SRF"].mean() * ceil(df_vendor.shape[0] / k)
-        ped_expected = df_vendor.loc[:, "PED"].mean() * ceil(df_vendor.shape[0] / k)
-        expected = [irf_expected, srf_expected, ped_expected]
+        if fluid is None:
+            irf_expected = df_vendor.loc[:, "IRF"].mean() * ceil(df_vendor.shape[0] / k)
+            srf_expected = df_vendor.loc[:, "SRF"].mean() * ceil(df_vendor.shape[0] / k)
+            ped_expected = df_vendor.loc[:, "PED"].mean() * ceil(df_vendor.shape[0] / k)
+            expected = [irf_expected, srf_expected, ped_expected]
+        else:
+            fluid_expected = df_vendor.loc[:, fluid].mean() * ceil(df_vendor.shape[0] / (k - 1))
+            expected = [fluid_expected]
+
         while df_vendor.shape[0] != 0:
             # Gets one row for each fold 
-            while df_vendor.shape[0] < k:
-                df_vendor.loc[df_vendor.shape[0]] = [0,0,0,0,0]
-            if random:
-                sample = df_vendor.sample(k)
+            if fluid is None:
+                while df_vendor.shape[0] < k:
+                    df_vendor.loc[df_vendor.shape[0]] = [0,0,0,0,0]
+                if random:
+                    sample = df_vendor.sample(k)
+                else:
+                    sample = df_vendor.head(k)
             else:
-                sample = df_vendor.head(k)
+                while df_vendor.shape[0] < (k - 1):
+                    df_vendor.loc[df_vendor.shape[0]] = [0,0,0,0,0]
+                if random:
+                    sample = df_vendor.sample(k - 1)
+                else:
+                    sample = df_vendor.head(k - 1)
 
             # Iterates through the possible permutations of the sample, determining which 
             # is the best possible distribution and the best errors
@@ -356,13 +397,23 @@ def factorial_k_fold_segmentation(k: int=5, random=True):
             for index, error in enumerate(best_errors):
                 errors[index] = errors[index] + error
             # Adds the volumes to the dictionary
-            for key in selected_volumes.keys():
+            for index, key in enumerate(selected_volumes.keys()):
                 if best_distribution != []:
-                    selected_volumes[key].append(best_distribution[key])
+                    selected_volumes[key].append(best_distribution[index])
             # Drops the volumes that already have been selected
             for index, row in df_vendor.iterrows():
                 if row["VolumeNumber"] in best_distribution:
                     df_vendor = df_vendor.drop(index)
+
+    if fluid is not None:
+        # Re-adds the prohibited volumes to 
+        # the list
+        dict_keys = list(selected_volumes.keys())
+        dict_values = list(selected_volumes.values())
+        keys_index = dict_keys.index(test_fold - 1)
+        new_keys = dict_keys[:keys_index + 1] + [test_fold] + dict_keys[keys_index + 1:]
+        new_values = dict_values[:keys_index + 1] + [prohibited_vols] + dict_values[keys_index + 1:]
+        selected_volumes = dict(zip(new_keys, new_values))
 
     # Initiates an empty DataFrame that 
     # will store the volumes selected 
@@ -382,10 +433,16 @@ def factorial_k_fold_segmentation(k: int=5, random=True):
     options_df.columns = selected_volumes.keys()
     # Saves the DataFrame as a CSV file with no index with a name according to 
     # whether the volumes were randomly sampled or not
-    if random:
-        options_df.to_csv(".\\splits\\factorial_fold_selection.csv", index=False)
+    if fluid is None:
+        if random:
+            options_df.to_csv(".\\splits\\factorial_fold_selection.csv", index=False)
+        else:
+            options_df.to_csv(".\\splits\\sorted_factorial_fold_selection.csv", index=False)
     else:
-        options_df.to_csv(".\\splits\\sorted_factorial_fold_selection.csv", index=False)
+        if random:
+            options_df.to_csv(f".\\splits\\factorial_fold_selection_{fluid}.csv", index=False)
+        else:
+            options_df.to_csv(f".\\splits\\sorted_factorial_fold_selection_{fluid}.csv", index=False)
 
 def competitive_k_fold_segmentation(k: int=5, fluid: str=None, test_fold: int=1):
     """
@@ -623,9 +680,9 @@ def calculate_error(path: str):
         backslash = "\\"
         underscore = "_"
         # Saves the DataFrame as a CSV file
-        pd.DataFrame(results_df).to_csv(path_or_buf=f".\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold{fold}.csv")
+        pd.DataFrame(results_df).to_csv(path_or_buf=f".\\splits\\{path.split(backslash)[1].split(underscore)[0]}_errors_fold{fold}.csv")
     # Calls the function that will present the average error and its standard deviation
-    quantify_errors(file_name=f".\\splits\\{path.split(backslash)[2].split(underscore)[0]}_errors_fold", k=df.shape[1])
+    quantify_errors(file_name=f".\\splits\\{path.split(backslash)[1].split(underscore)[0]}_errors_fold", k=df.shape[1])
 
 def quantify_errors(file_name: str, k: int=5):
     """
