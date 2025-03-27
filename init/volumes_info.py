@@ -1,7 +1,7 @@
 import numpy as np
+import pandas as pd
 from IPython import get_ipython
 from os import walk
-from pandas import DataFrame
 from read_oct import load_oct_mask
 
 # Imports tqdm depending on whether 
@@ -41,9 +41,7 @@ def volumes_info(oct_folder: str):
     # Indicates the name of the columns in the DataFrame
     columns=["VolumeNumber", "Vendor", "IRF", "SRF", "PED"]
     # Creates the dataframe that will later be converted into a CSV file
-    df = DataFrame(columns=columns)
-
-    values = []
+    df = pd.DataFrame(columns=columns)
 
     # Iterates through the folders to read the OCT volumes used in segmentation
     # and saves them both in int32 for better manipulation and in uint8 for
@@ -93,3 +91,20 @@ def volumes_info(oct_folder: str):
 
     print("All voxels have been counted.")
     print("EOF.")
+
+def volumes_resumed_info(file_path: str="..\splits\\volumes_info.csv"):
+    """
+    Reads the CSV file "volumes_info.csv" and calculates the total 
+    number of voxels and their mean per vendor
+    
+    Args:
+        file_path (str): path to the "volumes_info.csv" CSV file
+
+    Return:
+        None
+    """
+    df = pd.read_csv(file_path)
+    resulting_df = df.groupby("Vendor").mean().drop("VolumeNumber", axis=1).round(2)
+    resulting_df.to_csv("..\splits\\volumes_mean.csv", index=False)
+    resulting_df = df.groupby("Vendor").sum().drop("VolumeNumber", axis=1).round(2)
+    resulting_df.to_csv("..\splits\\volumes_sum.csv", index=False)
