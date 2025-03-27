@@ -1,12 +1,9 @@
-from traceback import print_tb
 import numpy as np
 import pandas as pd
 from itertools import permutations
 from math import ceil, isnan
 from os import walk
 from random import shuffle
-
-from zmq import EVENT_CLOSE_FAILED
 
 #############################################
 # Volumes from Topcon T-1000 with 64 slices:# 
@@ -905,3 +902,60 @@ def folds_information(file_name: str):
     complete_df.to_csv(name_to_save + "_overall.csv")
     fluid_df.to_csv(name_to_save + "_fluid.csv")
     volumes_slices_df.to_csv(name_to_save + "_volslices.csv")
+
+def split_info(file_name: str):
+    """
+    Receives the name of a fold split and calculates 
+    the total number of voxels per class per fold
+
+    Args:
+        file_name (str): name of the fold split to 
+            calculate the values
+    Returns:
+        None
+    """
+    # Gets the split identifier
+    split_identifier = file_name.split("\\")[2].split("_")[0]
+    if len(file_name.split("\\")[2].split("_")) == 4:
+        fluid_identifier = file_name.split("\\")[2].split("_")[-1].split(".")[0]
+    # Reads as a DataFrame the CSV file 
+    # that contains the volume in each split
+    df = pd.read_csv(file_name)
+    # Reads as a DataFrame the CSV file that contains all the 
+    # information of the volumes
+    volumes_info_df = pd.read_csv("..\\splits\\volumes_info.csv")
+
+    # Initiates the DataFrame to save
+    mean_std_df = pd.DataFrame()
+    sum_df = pd.DataFrame()
+
+    # Iterates through the folds 
+    # in the splits dataframe
+    for column in df.columns:
+        # Gets the information 
+        # from the desired column
+        column_df = df[column]
+        # Merges the two DataFrames on the condition of having the same number of volume
+        merged_df = volumes_info_df.merge(column_df, left_on="VolumeNumber", right_on=column)
+        # Resumes the information calculating its mean and standard deviation
+        merged_df_mean = merged_df.groupby("Vendor").mean().drop([column, "VolumeNumber"], axis=1).round(2)
+        merged_df_std = merged_df.groupby("Vendor").std().drop([column, "VolumeNumber"], axis=1).round(2)
+        # Resumes the information in one single table
+        merged_df_mean_std = merged_df_mean.astype(str) + " (" + merged_df_std.astype(str) + ")"
+        # Concatenates the DataFrame into a single DataFrame vertically
+        mean_std_df = pd.concat([mean_std_df, merged_df_mean_std], ignore_index=False, axis=0) 
+        # Resumes the information calculating its sum
+        merged_df_sum = merged_df.groupby("Vendor").sum().drop([column, "VolumeNumber"], axis=1).round(2)
+        # Concatenates the DataFrame into a single DataFrame vertically
+        sum_df = pd.concat([sum_df, merged_df_sum], ignore_index=False, axis=0)
+
+    # Declares the name under which the DataFrames will be saved
+    if "fluid_identifier" in locals():
+        save_name = f"..\splits\\{split_identifier}_{fluid_identifier}_volumes"
+    else:
+        save_name = f"..\splits\\{split_identifier}_volumes"
+    mean_std_save_name = save_name + "_mean.csv"
+    sum_save_name = save_name + "_sum.csv"
+    # Saves the DataFrames
+    mean_std_df.to_csv(mean_std_save_name)
+    sum_df.to_csv(sum_save_name)

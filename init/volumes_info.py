@@ -103,11 +103,19 @@ def volumes_resumed_info(file_path: str="..\splits\\volumes_info.csv"):
     Return:
         None
     """
+    # Reads as a DataFrame file the 
+    # split desired to analyse
     df = pd.read_csv(file_path)
+    # Calculates the mean and standard deviation of each fluid for each vendor
     resulting_df_mean = df.groupby("Vendor").mean().drop("VolumeNumber", axis=1).round(2)
     resulting_df_std = df.groupby("Vendor").std().drop("VolumeNumber", axis=1).round(2)
+    # Combines both tables in a single table that is organized by having the mean followed 
+    # by the standard deviation in brackets (e.g. mean (std))
     resulting_df = resulting_df_mean.astype(str) + " (" + resulting_df_std.astype(str) + ")"
+    # Saves the DataFrame as a CSV file
     resulting_df.to_csv("..\splits\\volumes_mean_std.csv", index=False)
 
+    # Calculates the sum of each fluid for each vendor
     resulting_df_sum = df.groupby("Vendor").sum().drop("VolumeNumber", axis=1).round(2)
+    # Saves the DataFrame as a CSV file
     resulting_df_sum.to_csv("..\splits\\volumes_sum.csv", index=False)
