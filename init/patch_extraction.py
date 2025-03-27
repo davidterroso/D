@@ -30,7 +30,7 @@ else:
 # for each device, identified by the height of the image
 SHAPE_MULT = {1024: 2., 496: 1., 650: 0.004 / 0.0035, 885: 0.004 / 0.0026}
 
-def seed_worker(worker_id, seed):
+def seed_worker(worker_id):
     """
     Declares the seed for the use of multiple workers
 
@@ -44,8 +44,8 @@ def seed_worker(worker_id, seed):
     Return:
         None
     """
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
+    torch.manual_seed(0)
+    torch.cuda.manual_seed(0)
 
 def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tuple, 
                              n_pos: int, n_neg: int, pos: int, neg: int, 
@@ -226,7 +226,7 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
         loader_args = dict(batch_size=batch_size, num_workers=12, pin_memory=True)
     else:
         loader_args = dict(batch_size=batch_size, num_workers=12, pin_memory=True, 
-                           worker_init_fn=seed_worker(seed=seed))
+                           worker_init_fn=seed_worker)
     print("Loading Training Data.")
     train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
     print("Loading Validation Data.")
