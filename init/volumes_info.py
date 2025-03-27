@@ -104,7 +104,10 @@ def volumes_resumed_info(file_path: str="..\splits\\volumes_info.csv"):
         None
     """
     df = pd.read_csv(file_path)
-    resulting_df = df.groupby("Vendor").mean().drop("VolumeNumber", axis=1).round(2)
-    resulting_df.to_csv("..\splits\\volumes_mean.csv", index=False)
-    resulting_df = df.groupby("Vendor").sum().drop("VolumeNumber", axis=1).round(2)
-    resulting_df.to_csv("..\splits\\volumes_sum.csv", index=False)
+    resulting_df_mean = df.groupby("Vendor").mean().drop("VolumeNumber", axis=1).round(2)
+    resulting_df_std = df.groupby("Vendor").std().drop("VolumeNumber", axis=1).round(2)
+    resulting_df = resulting_df_mean.astype(str) + " (" + resulting_df_std.astype(str) + ")"
+    resulting_df.to_csv("..\splits\\volumes_mean_std.csv", index=False)
+
+    resulting_df_sum = df.groupby("Vendor").sum().drop("VolumeNumber", axis=1).round(2)
+    resulting_df_sum.to_csv("..\splits\\volumes_sum.csv", index=False)
