@@ -14,7 +14,7 @@ from skimage.filters.rank import entropy
 from skimage.transform import resize
 from time import time
 from torch.utils.data import DataLoader
-from network_functions.dataset import TrainDataset, ValidationDataset, drop_patches
+from network_functions.dataset import TrainDataset, ValidationDataset, TrainDatasetLMDB, ValidationDatasetLMDB, drop_patches
 from paths import IMAGES_PATH
 from .read_oct import int32_to_uint8, load_oct_image, load_oct_mask
 
@@ -51,7 +51,7 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
                              n_pos: int, n_neg: int, pos: int, neg: int, 
                              train_volumes: list, val_volumes: list, 
                              batch_size: int, patch_dropping: bool, drop_prob: float,
-                             num_patches: int, seed: int):
+                             num_patches: int, seed: int, fold_val: int, fold_test: int=1):
     """
     Args:
         model_name (str): name of the model desired to train
@@ -91,6 +91,10 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
             random operations of the training. When seed is not
             indicated, the default value is None and the seed is
             not fixed
+        fold_val (int): fold used by the model in validation
+        fold_test (int): fold used by the model in testing. 
+            The default value is 1 because that is the fold 
+            that we are using in testing
 
     Return:
         train_loader (PyTorch DataLoader object): DataLoader 
@@ -211,8 +215,14 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
             f"The {num_patches} overlapping {patch_type} patches must be extracted first"
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations
-    train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, seed)
-    val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, seed)
+    if num_patches <= 7:
+        train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, seed)
+        val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, seed)
+    else:
+        img_path_to_lmdb = f".\\lmdb\\train_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
+        val_path_to_lmdb = f".\\lmdb\\val_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
+        train_set = TrainDatasetLMDB(model_name, num_patches, img_path_to_lmdb, val_path_to_lmdb)
+        val_set = ValidationDatasetLMDB(model_name, num_patches, img_path_to_lmdb, val_path_to_lmdb)
 
     # Calculates the total number of images used in train
     n_train = len(train_set)

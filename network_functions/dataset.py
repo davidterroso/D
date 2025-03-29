@@ -1,13 +1,17 @@
+import numpy as np
+import lmdb
 import torch
+from io import BytesIO
 from numpy import any, expand_dims, max, min, nonzero, stack, sum, int8, uint8, ndarray
 from numpy.random import random_sample
 from os import listdir, remove
 from os.path import exists
 from paths import IMAGES_PATH
+from PIL import Image
 from skimage.io import imread
 from skimage.transform import resize
 from torchvision.transforms.functional import hflip, rotate
-from torchvision.transforms.v2 import Compose, RandomApply, RandomHorizontalFlip, RandomRotation, InterpolationMode
+from torchvision.transforms.v2 import InterpolationMode
 from torch.utils.data import Dataset
 
 # Dictionary for the patch multiplication depending on the height of the image
@@ -759,3 +763,189 @@ class TestDataset(Dataset):
         # associates the fluid mask
         sample = {"scan": scan, "mask": mask, "image_name": self.images_names[index]}
         return sample
+
+class TrainDatasetLMDB(Dataset):
+    """
+    PyTorch Dataset for loading images and masks from LMDB for segmentation tasks.
+    """
+    def __init__(self, model: str, num_patches: int, 
+                 img_lmdb_path: str, mask_lmdb_path: str, 
+                 fluid: int=None):
+        """
+        Initializes the dataset and reads image keys from LMDB.
+
+        Args: 
+            model (str): Model type (e.g., "2.5D", "UNet3").
+            num_patches (int): Number of vertical patches.
+            img_lmdb_path (str): Path to the LMDB file with images.
+            mask_lmdb_path (str): Path to the LMDB file with masks.
+            fluid (int): Specific fluid class for segmentation.
+
+        Returns:
+            None
+        """
+        super().__init__()
+        self.model = model
+        self.num_patches = num_patches
+        self.fluid = fluid
+        self.transforms = CustomTransform(p=0.5)
+
+        # Open LMDB databases
+        self.img_env = lmdb.open(img_lmdb_path, readonly=True, lock=False)
+        self.mask_env = lmdb.open(mask_lmdb_path, readonly=True, lock=False)
+
+        # Get dataset length
+        with self.img_env.begin() as txn:
+            self.length = sum(1 for _ in txn.cursor())
+
+    def __len__(self):
+        return self.length
+
+    def __getitem__(self, index):
+        """
+        Retrieves an image-mask pair from LMDB based on index.
+        """
+        with self.img_env.begin() as img_txn, self.mask_env.begin() as mask_txn:
+            # Load Image
+            img_key = f"img_{index}".encode()
+            img_bytes = img_txn.get(img_key)
+            img = Image.open(BytesIO(img_bytes)).convert("L")
+
+            # Load Mask
+            mask_key = f"mask_{index}".encode()
+            mask_bytes = mask_txn.get(mask_key)
+            mask = Image.open(BytesIO(mask_bytes)).convert("L")  # Convert to grayscale
+
+        # Convert to numpy array
+        img = np.array(img)
+        mask = np.array(mask)
+
+        # Handle 2.5D Model (Stack previous & next slices)
+        if self.model == "2.5D":
+            with self.img_env.begin() as img_txn:
+                before_key = f"img_{max(0, index - 1)}".encode()
+                after_key = f"img_{min(self.length - 1, index + 1)}".encode()
+
+                before_bytes = img_txn.get(before_key)
+                after_bytes = img_txn.get(after_key)
+
+                scan_before = np.array(Image.open(BytesIO(before_bytes)).convert("L")) if before_bytes else np.zeros_like(img)
+                scan_after = np.array(Image.open(BytesIO(after_bytes)).convert("L")) if after_bytes else np.zeros_like(img)
+
+            img = np.stack([scan_before, img, scan_after], axis=0)  # Shape: (3, H, W)
+
+        # Filter mask for specific fluid segmentation (if using UNet3)
+        if self.model == "UNet3":
+            mask = ((mask == self.fluid).astype(int) * self.fluid)
+
+        # Expand dimensions if not 2.5D
+        if self.model != "2.5D":
+            img = np.expand_dims(img, axis=0)  # Shape: (1, H, W)
+        mask = np.expand_dims(mask, axis=0)  # Shape: (1, H, W)
+
+        # Convert to PyTorch tensors
+        img = torch.from_numpy(img).float()
+        mask = torch.from_numpy(mask).long()
+
+        # Apply transformations
+        if self.transforms:
+            transformed = self.transforms(torch.cat([img, mask], dim=0), self.model)
+            img, mask = transformed[:-1], transformed[-1]
+
+        # Z-Score Normalization (Mean 0, SD 1)
+        img = (img - 128.) / 128.
+
+        return {"scan": img, "mask": mask}
+
+class ValidationDatasetLMDB(Dataset):
+    """
+    PyTorch Dataset for loading validation images and masks from LMDB.
+    """
+    def __init__(self, val_volumes: list, model: str, 
+                 patch_type: str, num_patches: int, 
+                 img_lmdb_path: str, mask_lmdb_path: str, 
+                 fluid: int=None):
+        """
+        Initializes the dataset and reads image keys from LMDB.
+
+        Args: 
+            val_volumes (list): List of validation volumes.
+            model (str): Model type (e.g., "2.5D", "UNet3").
+            patch_type (str): Patch type ("small", "big", "vertical").
+            num_patches (int): Number of vertical patches.
+            img_lmdb_path (str): Path to LMDB file with images.
+            mask_lmdb_path (str): Path to LMDB file with masks.
+            fluid (int, optional): Specific fluid class for segmentation.
+
+        Returns:
+            None
+        """
+        super().__init__()
+        self.model = model
+        self.num_patches = num_patches
+        self.fluid = fluid
+
+        # Get image names from validation volumes
+        self.images_names = patches_from_volumes(val_volumes, model, patch_type, num_patches)
+
+        # Open LMDB databases
+        self.img_env = lmdb.open(img_lmdb_path, readonly=True, lock=False)
+        self.mask_env = lmdb.open(mask_lmdb_path, readonly=True, lock=False)
+
+        # Get dataset length
+        with self.img_env.begin() as txn:
+            self.length = sum(1 for _ in txn.cursor())
+
+    def __len__(self):
+        return self.length
+
+    def __getitem__(self, index):
+        """
+        Retrieves an image-mask pair from LMDB based on index.
+        """
+        with self.img_env.begin() as img_txn, self.mask_env.begin() as mask_txn:
+            # Load Image
+            img_key = f"img_{index}".encode()
+            img_bytes = img_txn.get(img_key)
+            img = Image.open(BytesIO(img_bytes)).convert("L")
+
+            # Load Mask
+            mask_key = f"mask_{index}".encode()
+            mask_bytes = mask_txn.get(mask_key)
+            mask = Image.open(BytesIO(mask_bytes)).convert("L")  # Convert to grayscale
+
+        # Convert to numpy array
+        img = np.array(img)
+        mask = np.array(mask)
+
+        # Handle 2.5D Model (Stack previous & next slices)
+        if self.model == "2.5D":
+            with self.img_env.begin() as img_txn:
+                before_key = f"img_{max(0, index - 1)}".encode()
+                after_key = f"img_{min(self.length - 1, index + 1)}".encode()
+
+                before_bytes = img_txn.get(before_key)
+                after_bytes = img_txn.get(after_key)
+
+                scan_before = np.array(Image.open(BytesIO(before_bytes)).convert("L")) if before_bytes else np.zeros_like(img)
+                scan_after = np.array(Image.open(BytesIO(after_bytes)).convert("L")) if after_bytes else np.zeros_like(img)
+
+            img = np.stack([scan_before, img, scan_after], axis=0)  # Shape: (3, H, W)
+
+        # Filter mask for specific fluid segmentation (if using UNet3)
+        if self.model == "UNet3":
+            mask = ((mask == self.fluid).astype(int) * self.fluid)
+
+        # Expand dimensions if not 2.5D
+        if self.model != "2.5D":
+            img = np.expand_dims(img, axis=0)  # Shape: (1, H, W)
+        mask = np.expand_dims(mask, axis=0)  # Shape: (1, H, W)
+
+        # Convert to PyTorch tensors
+        img = torch.from_numpy(img).float()
+        mask = torch.from_numpy(mask).long()
+
+        # Z-Score Normalization (Mean 0, SD 1)
+        img = (img - 128.) / 128.
+
+        return {"scan": img, "mask": mask}
