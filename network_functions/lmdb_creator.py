@@ -34,8 +34,8 @@ def save_to_lmdb(image_list, img_folder, mask_folder, img_lmdb_path, mask_lmdb_p
         """
         # Creates two lmdb environments, one for the images 
         # and one for the masks
-        env_img = lmdb.open(img_lmdb_path, map_size=int(1e9))
-        env_mask = lmdb.open(mask_lmdb_path, map_size=int(1e9))
+        env_img = lmdb.open(img_lmdb_path, map_size=int(40e9))
+        env_mask = lmdb.open(mask_lmdb_path, map_size=int(40e9))
 
         # In each respective environment, files will be written
         with env_img.begin(write=True) as txn_img, env_mask.begin(write=True) as txn_mask:
@@ -61,6 +61,9 @@ def save_to_lmdb(image_list, img_folder, mask_folder, img_lmdb_path, mask_lmdb_p
                 # Stores the image in the respective LMDB file
                 txn_img.put(f"img_{i}".encode(), img_bytes.getvalue())
                 txn_mask.put(f"mask_{i}".encode(), mask_bytes.getvalue())
+
+            txn_img.put(b'num_samples', str(len(image_list)).encode())
+            txn_mask.put(b'num_samples', str(len(image_list)).encode())
 
         print(f"LMDB dataset saved: {img_lmdb_path} and {mask_lmdb_path}")
 

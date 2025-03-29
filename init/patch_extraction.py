@@ -219,10 +219,14 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
         train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, seed)
         val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, seed)
     else:
-        img_path_to_lmdb = f".\\lmdb\\train_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
-        val_path_to_lmdb = f".\\lmdb\\val_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
-        train_set = TrainDatasetLMDB(model_name, num_patches, img_path_to_lmdb, val_path_to_lmdb)
-        val_set = ValidationDatasetLMDB(model_name, num_patches, img_path_to_lmdb, val_path_to_lmdb)
+        train_img_path_to_lmdb = f".\\lmdb\\train_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
+        train_mask_path_to_lmdb = f".\\lmdb\\train_masks_{num_patches}_{fold_test}_{fold_val}.lmdb"
+        val_img_path_to_lmdb = f".\\lmdb\\val_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
+        val_mask_path_to_lmdb = f".\\lmdb\\val_masks_{num_patches}_{fold_test}_{fold_val}.lmdb"
+        train_set = TrainDatasetLMDB(model=model_name, num_patches=num_patches, 
+                                     img_lmdb_path=train_img_path_to_lmdb, mask_lmdb_path=train_mask_path_to_lmdb)
+        val_set = ValidationDatasetLMDB(model=model_name, num_patches=num_patches, 
+                                        img_lmdb_path=val_img_path_to_lmdb, mask_lmdb_path=val_mask_path_to_lmdb)
 
     # Calculates the total number of images used in train
     n_train = len(train_set)

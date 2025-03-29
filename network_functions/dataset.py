@@ -766,37 +766,22 @@ class TestDataset(Dataset):
 
 class TrainDatasetLMDB(Dataset):
     """
-    PyTorch Dataset for loading images and masks from LMDB for segmentation tasks.
+    PyTorch Dataset for loading training images and masks from LMDB.
     """
-    def __init__(self, model: str, num_patches: int, 
-                 img_lmdb_path: str, mask_lmdb_path: str, 
-                 fluid: int=None):
-        """
-        Initializes the dataset and reads image keys from LMDB.
-
-        Args: 
-            model (str): Model type (e.g., "2.5D", "UNet3").
-            num_patches (int): Number of vertical patches.
-            img_lmdb_path (str): Path to the LMDB file with images.
-            mask_lmdb_path (str): Path to the LMDB file with masks.
-            fluid (int): Specific fluid class for segmentation.
-
-        Returns:
-            None
-        """
+    def __init__(self, model: str, num_patches: int, img_lmdb_path: str, mask_lmdb_path: str):
         super().__init__()
         self.model = model
         self.num_patches = num_patches
-        self.fluid = fluid
-        self.transforms = CustomTransform(p=0.5)
+        self.img_lmdb_path = img_lmdb_path
+        self.mask_lmdb_path = mask_lmdb_path
 
-        # Open LMDB databases
-        self.img_env = lmdb.open(img_lmdb_path, readonly=True, lock=False)
-        self.mask_env = lmdb.open(mask_lmdb_path, readonly=True, lock=False)
-
-        # Get dataset length
-        with self.img_env.begin() as txn:
-            self.length = sum(1 for _ in txn.cursor())
+        # Open LMDB environment and check if num_samples exists
+        with lmdb.open(self.img_lmdb_path, readonly=True, lock=False) as img_env:
+            with img_env.begin() as txn:
+                num_samples = txn.get(b'num_samples')
+                if num_samples is None:
+                    raise ValueError(f"LMDB error: 'num_samples' key not found in {self.img_lmdb_path}")
+                self.length = int(num_samples.decode())
 
     def __len__(self):
         return self.length
@@ -805,16 +790,23 @@ class TrainDatasetLMDB(Dataset):
         """
         Retrieves an image-mask pair from LMDB based on index.
         """
-        with self.img_env.begin() as img_txn, self.mask_env.begin() as mask_txn:
-            # Load Image
-            img_key = f"img_{index}".encode()
-            img_bytes = img_txn.get(img_key)
-            img = Image.open(BytesIO(img_bytes)).convert("L")
+        # Open LMDB inside __getitem__ to avoid pickling issues
+        with lmdb.open(self.img_lmdb_path, readonly=True, lock=False) as img_env, \
+             lmdb.open(self.mask_lmdb_path, readonly=True, lock=False) as mask_env:
+             
+            with img_env.begin() as img_txn, mask_env.begin() as mask_txn:
+                # Load Image
+                img_key = f"img_{index}".encode()
+                img_bytes = img_txn.get(img_key)
+                img = Image.open(BytesIO(img_bytes)).convert("L") if img_bytes else None
 
-            # Load Mask
-            mask_key = f"mask_{index}".encode()
-            mask_bytes = mask_txn.get(mask_key)
-            mask = Image.open(BytesIO(mask_bytes)).convert("L")  # Convert to grayscale
+                # Load Mask
+                mask_key = f"mask_{index}".encode()
+                mask_bytes = mask_txn.get(mask_key)
+                mask = Image.open(BytesIO(mask_bytes)).convert("L") if mask_bytes else None
+
+        if img is None or mask is None:
+            raise ValueError(f"Missing data for index {index}")
 
         # Convert to numpy array
         img = np.array(img)
@@ -822,21 +814,20 @@ class TrainDatasetLMDB(Dataset):
 
         # Handle 2.5D Model (Stack previous & next slices)
         if self.model == "2.5D":
-            with self.img_env.begin() as img_txn:
-                before_key = f"img_{max(0, index - 1)}".encode()
-                after_key = f"img_{min(self.length - 1, index + 1)}".encode()
+            img_before, img_after = np.zeros_like(img), np.zeros_like(img)
 
-                before_bytes = img_txn.get(before_key)
-                after_bytes = img_txn.get(after_key)
+            with lmdb.open(self.img_lmdb_path, readonly=True, lock=False) as img_env:
+                with img_env.begin() as img_txn:
+                    before_key = f"img_{max(0, index - 1)}".encode()
+                    after_key = f"img_{min(self.length - 1, index + 1)}".encode()
 
-                scan_before = np.array(Image.open(BytesIO(before_bytes)).convert("L")) if before_bytes else np.zeros_like(img)
-                scan_after = np.array(Image.open(BytesIO(after_bytes)).convert("L")) if after_bytes else np.zeros_like(img)
+                    before_bytes = img_txn.get(before_key)
+                    after_bytes = img_txn.get(after_key)
 
-            img = np.stack([scan_before, img, scan_after], axis=0)  # Shape: (3, H, W)
+                    img_before = np.array(Image.open(BytesIO(before_bytes)).convert("L")) if before_bytes else np.zeros_like(img)
+                    img_after = np.array(Image.open(BytesIO(after_bytes)).convert("L")) if after_bytes else np.zeros_like(img)
 
-        # Filter mask for specific fluid segmentation (if using UNet3)
-        if self.model == "UNet3":
-            mask = ((mask == self.fluid).astype(int) * self.fluid)
+            img = np.stack([img_before, img, img_after], axis=0)  # Shape: (3, H, W)
 
         # Expand dimensions if not 2.5D
         if self.model != "2.5D":
@@ -846,11 +837,6 @@ class TrainDatasetLMDB(Dataset):
         # Convert to PyTorch tensors
         img = torch.from_numpy(img).float()
         mask = torch.from_numpy(mask).long()
-
-        # Apply transformations
-        if self.transforms:
-            transformed = self.transforms(torch.cat([img, mask], dim=0), self.model)
-            img, mask = transformed[:-1], transformed[-1]
 
         # Z-Score Normalization (Mean 0, SD 1)
         img = (img - 128.) / 128.
@@ -861,40 +847,23 @@ class ValidationDatasetLMDB(Dataset):
     """
     PyTorch Dataset for loading validation images and masks from LMDB.
     """
-    def __init__(self, val_volumes: list, model: str, 
-                 patch_type: str, num_patches: int, 
+    def __init__(self, model: str, num_patches: int, 
                  img_lmdb_path: str, mask_lmdb_path: str, 
                  fluid: int=None):
-        """
-        Initializes the dataset and reads image keys from LMDB.
-
-        Args: 
-            val_volumes (list): List of validation volumes.
-            model (str): Model type (e.g., "2.5D", "UNet3").
-            patch_type (str): Patch type ("small", "big", "vertical").
-            num_patches (int): Number of vertical patches.
-            img_lmdb_path (str): Path to LMDB file with images.
-            mask_lmdb_path (str): Path to LMDB file with masks.
-            fluid (int, optional): Specific fluid class for segmentation.
-
-        Returns:
-            None
-        """
         super().__init__()
         self.model = model
         self.num_patches = num_patches
         self.fluid = fluid
+        self.img_lmdb_path = img_lmdb_path
+        self.mask_lmdb_path = mask_lmdb_path
 
-        # Get image names from validation volumes
-        self.images_names = patches_from_volumes(val_volumes, model, patch_type, num_patches)
-
-        # Open LMDB databases
-        self.img_env = lmdb.open(img_lmdb_path, readonly=True, lock=False)
-        self.mask_env = lmdb.open(mask_lmdb_path, readonly=True, lock=False)
-
-        # Get dataset length
-        with self.img_env.begin() as txn:
-            self.length = sum(1 for _ in txn.cursor())
+        # Open LMDB environment and check if num_samples exists
+        with lmdb.open(self.img_lmdb_path, readonly=True, lock=False) as img_env:
+            with img_env.begin() as txn:
+                num_samples = txn.get(b'num_samples')
+                if num_samples is None:
+                    raise ValueError(f"LMDB error: 'num_samples' key not found in {self.img_lmdb_path}")
+                self.length = int(num_samples.decode())
 
     def __len__(self):
         return self.length
@@ -903,16 +872,23 @@ class ValidationDatasetLMDB(Dataset):
         """
         Retrieves an image-mask pair from LMDB based on index.
         """
-        with self.img_env.begin() as img_txn, self.mask_env.begin() as mask_txn:
-            # Load Image
-            img_key = f"img_{index}".encode()
-            img_bytes = img_txn.get(img_key)
-            img = Image.open(BytesIO(img_bytes)).convert("L")
+        # Open LMDB inside __getitem__ (so it's not pickled)
+        with lmdb.open(self.img_lmdb_path, readonly=True, lock=False) as img_env, \
+            lmdb.open(self.mask_lmdb_path, readonly=True, lock=False) as mask_env:
 
-            # Load Mask
-            mask_key = f"mask_{index}".encode()
-            mask_bytes = mask_txn.get(mask_key)
-            mask = Image.open(BytesIO(mask_bytes)).convert("L")  # Convert to grayscale
+            with img_env.begin() as img_txn, mask_env.begin() as mask_txn:
+                # Load Image
+                img_key = f"img_{index}".encode()
+                img_bytes = img_txn.get(img_key)
+                img = Image.open(BytesIO(img_bytes)).convert("L") if img_bytes else None
+
+                # Load Mask
+                mask_key = f"mask_{index}".encode()
+                mask_bytes = mask_txn.get(mask_key)
+                mask = Image.open(BytesIO(mask_bytes)).convert("L") if mask_bytes else None
+
+        if img is None or mask is None:
+            raise ValueError(f"Missing data for index {index}")
 
         # Convert to numpy array
         img = np.array(img)
@@ -920,30 +896,32 @@ class ValidationDatasetLMDB(Dataset):
 
         # Handle 2.5D Model (Stack previous & next slices)
         if self.model == "2.5D":
-            with self.img_env.begin() as img_txn:
-                before_key = f"img_{max(0, index - 1)}".encode()
-                after_key = f"img_{min(self.length - 1, index + 1)}".encode()
+            img_before, img_after = np.zeros_like(img), np.zeros_like(img)
 
-                before_bytes = img_txn.get(before_key)
-                after_bytes = img_txn.get(after_key)
+            with lmdb.open(self.img_lmdb_path, readonly=True, lock=False) as img_env:
+                with img_env.begin() as img_txn:
+                    before_key = f"img_{max(0, index - 1)}".encode()
+                    after_key = f"img_{min(len(self.images_names) - 1, index + 1)}".encode()
 
-                scan_before = np.array(Image.open(BytesIO(before_bytes)).convert("L")) if before_bytes else np.zeros_like(img)
-                scan_after = np.array(Image.open(BytesIO(after_bytes)).convert("L")) if after_bytes else np.zeros_like(img)
+                    before_bytes = img_txn.get(before_key)
+                    after_bytes = img_txn.get(after_key)
 
-            img = np.stack([scan_before, img, scan_after], axis=0)  # Shape: (3, H, W)
+                    img_before = np.array(Image.open(BytesIO(before_bytes)).convert("L")) if before_bytes else np.zeros_like(img)
+                    img_after = np.array(Image.open(BytesIO(after_bytes)).convert("L")) if after_bytes else np.zeros_like(img)
 
-        # Filter mask for specific fluid segmentation (if using UNet3)
-        if self.model == "UNet3":
-            mask = ((mask == self.fluid).astype(int) * self.fluid)
+            img = np.stack([img_before, img, img_after], axis=0)  # Shape: (3, H, W)
 
         # Expand dimensions if not 2.5D
         if self.model != "2.5D":
             img = np.expand_dims(img, axis=0)  # Shape: (1, H, W)
-        mask = np.expand_dims(mask, axis=0)  # Shape: (1, H, W)
+
+        # Check if the mask is already a tensor
+        if not isinstance(mask, torch.Tensor):
+            mask = torch.from_numpy(mask).long()  # Convert mask to tensor if it's not already a tensor
 
         # Convert to PyTorch tensors
         img = torch.from_numpy(img).float()
-        mask = torch.from_numpy(mask).long()
+        mask = mask.long()  # Ensure mask is of type long, it's already a tensor here
 
         # Z-Score Normalization (Mean 0, SD 1)
         img = (img - 128.) / 128.
