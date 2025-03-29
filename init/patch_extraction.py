@@ -238,10 +238,11 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
     begin = time()
     if seed is not None:
         loader_args = dict(batch_size=batch_size, num_workers=12, pin_memory=True, 
-                           persistent_workers=True)
+                           persistent_workers=True, prefetch_factor=12)
     else:
         loader_args = dict(batch_size=batch_size, num_workers=12, pin_memory=True, 
-                           persistent_workers=True, worker_init_fn=seed_worker)
+                           persistent_workers=True, prefetch_factor=12,
+                           worker_init_fn=seed_worker)
     print("Loading Training Data.")
     train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
     print("Loading Validation Data.")
