@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from os import fsdecode, fsencode, listdir
 from skimage.io import imread
 from init.read_oct import load_oct_image
@@ -21,6 +22,9 @@ def estimate_volume(folder_path: str):
     Returns:
         None
     """
+    # Creates the DataFrame that will store the information 
+    # of all slices
+    slices_df = pd.DataFrame(columns=["Set", "Vendor", "VolumeNumber", "SliceNumber","IRF", "SRF", "PED"])
     # Encodes the path of the folder 
     # in bytes
     directory = fsencode(folder_path)
@@ -34,7 +38,8 @@ def estimate_volume(folder_path: str):
         vendor_vol = fsdecode(file).split("_")[:2]
         # Indicates the path to the oct.mhd file that contains the volume metadata
         # As of now, this is only to test with a few images, so every set will be of training
-        vol_path = RETOUCH_PATH + f"\\RETOUCH-TrainingSet-{vendor_vol[0]}\\{vendor_vol[1]}\\oct.mhd"
+        belonging_set = "TrainingSet"
+        vol_path = RETOUCH_PATH + f"\\RETOUCH-{belonging_set}-{vendor_vol[0]}\\{vendor_vol[1]}\\oct.mhd"
         # Reads the OCT volume that contains the slice 
         # that is being iterated and gets the origin 
         # coordinates, the spacing, and the volume as a
@@ -49,9 +54,34 @@ def estimate_volume(folder_path: str):
         fluids = fluids[1:]
         counts = counts[1:]
         
-        # Handles the differences in shape of the input slices
+        # In case the image has been reshaped, seen by 
+        # the image not being of the height of the 
+        # smallest images (496), the spacing is adjusted 
+        # to match the real dimensions of the image 
+        # having in mind the reshaping factor
+        if vol.shape[1] != 496:
+            spacing[0] = vol.shape[1] / 496 * spacing[0]
         
-        return
+        # The real area of each voxel is calculated by 
+        # the height of the voxel times its width
+        voxel_area = spacing[0] * spacing[1]
 
+        # The volume of the voxel is calculated by multiplying 
+        # the area of each voxel by the distance between slices
+        # in the non-edge slices and half the distance between 
+        # slices in the edge slices (first and last slice)
+        if int(slice_num) == 0 or int(slice_num) == vol.shape[0]:
+            voxel_volume = voxel_area * 0.5 * spacing[2]
+        else:
+            voxel_volume = voxel_area * spacing[2]
+        # The volume of each fluid in the slice is calculated 
+        # by the multiplication of the voxel volume by the 
+        # number of voxels present in the fluid mask
+        fluid_volumes = (counts * voxel_volume)
+        fluid_volumes_results = np.zeros(3)
+        for label in fluids:
+            fluid_volumes_results[label - 1] = fluid_volumes[label - 1]
+        # Appends the results of the slice to the DataFrame 
+        slices_df.loc[len(slices_df)] = [belonging_set, vendor_vol[0], vendor_vol[1], slice_num] + fluid_volumes_results.tolist()
 
 estimate_volume("D:\D\OCT_images\segmentation\masks\int8\\")
