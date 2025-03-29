@@ -374,7 +374,8 @@ def train_model (
             n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
             val_volumes=val_volumes, batch_size=batch_size, 
             patch_dropping=patch_dropping, drop_prob=drop_prob, 
-            num_patches=num_patches, seed=seed)
+            num_patches=num_patches, seed=seed, fold_val=fold_val, 
+            fold_test=fold_test)
 
     # Initiates the counter of patience
     patience_counter = 0
@@ -391,7 +392,8 @@ def train_model (
                 model_name=model_name, patch_type=patch_type, patch_shape=patch_shape, n_pos=n_pos, 
                 n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
                 val_volumes=val_volumes, batch_size=batch_size, 
-                patch_dropping=patch_dropping, drop_prob=drop_prob, seed=seed)
+                patch_dropping=patch_dropping, drop_prob=drop_prob, seed=seed, fold_val=fold_val, 
+                fold_test=fold_test)
 
         # Indicates the model that it is going to be trained
         model.train()
