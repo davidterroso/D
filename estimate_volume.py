@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from os import fsdecode, fsencode, listdir
+from os import fsdecode, fsencode, listdir, makedirs
 from skimage.io import imread
 from init.read_oct import load_oct_image
 from paths import RETOUCH_PATH
@@ -83,5 +83,18 @@ def estimate_volume(folder_path: str):
             fluid_volumes_results[label - 1] = fluid_volumes[label - 1]
         # Appends the results of the slice to the DataFrame 
         slices_df.loc[len(slices_df)] = [belonging_set, vendor_vol[0], vendor_vol[1], slice_num] + fluid_volumes_results.tolist()
-
-estimate_volume("D:\D\OCT_images\segmentation\masks\int8\\")
+        if int(slice_num) == 3:
+            break
+    # Groups the the DataFrame according to the OCT volume and the vendor
+    volumes_df = slices_df.drop("SliceNumber", axis=1).groupby(["Set","VolumeNumber"]).sum()
+    vendors_df = slices_df.drop(["SliceNumber", "Set", "VolumeNumber"], axis=1).groupby("Vendor").sum()
+    # Creates the folder in which the files 
+    # will be saved
+    makedirs("fluid_volumes", exist_ok=True)
+    # Declares the backslash as a 
+    # variable to be understood 
+    # by split function
+    backslash = "\\"
+    # Saves the DataFrames in CSV files
+    volumes_df.to_csv(f".\\fluid_volumes\\{folder_path.split(backslash)[-2]}_volumes.csv")
+    vendors_df.to_csv(f".\\fluid_volumes\\{folder_path.split(backslash)[-2]}_vendors.csv")
