@@ -18,6 +18,7 @@
 - [unet\_vertical\_imgs](#unet_vertical_imgs)
 - [unet\_vertical\_imgs](#unet_vertical_imgs-1)
 - [wandb](#wandb)
+- [estimate\_volume](#estimate_volume)
 - [paths.py](#pathspy)
 - [pipeline.ipynb](#pipelineipynb)
 - [plot\_logs.py](#plot_logspy)
@@ -76,41 +77,34 @@ D
  ┃ ┗ requirements.txt # Contains the necessary packages for this project and their respective versions, 
  ┃                    # without including PyTorch or Tensorflow packages, which are installed manually 
  ┃                    # as described in the README.md file
- ┣ unet_big_imgs # Folder that contains the relevant images output from the unet_big.ipynb file
- ┃ ┣ Run013_training_error.png # PNG file which contains the plots of the training and evaluation error in Run013  
- ┃ ┗ ... 
- ┣ unet_preliminar_imgs # Folder that contains the relevant images output from the unet_preliminar.ipynb file
- ┃ ┣ Run1_training_error.png # PNG file which contains the plots of the training and evaluation error in Run1  
- ┃ ┗ ... 
- ┣ unet_random_imgs # Folder that contains the relevant images output from the unet_random.ipynb file
- ┃ ┣ Run001_training_error.png # PNG file which contains the plots of the training and evaluation error in Run001  
- ┃ ┗ ... 
- ┣ unet_random_improved_imgs # Folder that contains the relevant images output from the unet_random_improved.ipynb file
- ┃ ┣ Run021_training_error.png # PNG file which contains the plots of the training and evaluation error in Run021  
- ┃ ┗ ...
- ┣ unet_vertical_variability_imgs # Folder that contains the relevant images output from the unet_vertical_variability.ipynb file
- ┃ ┣ Run024_training_error.png # PNG file which contains the plots of the training and evaluation error in Run024  
- ┃ ┗ ...
- ┣ unet_vertical_imgs # Folder that contains the relevant images output from the unet_vertical.ipynb file
- ┃ ┣ Run024_training_error.png # PNG file which contains the plots of the training and evaluation error in Run024  
- ┃ ┗ ...
  ┣ init # Folder that contains the Python files that are used before training the networks, to prepare the data
  ┃ ┣ __init__.py # Despite not having code in it, marks the folder as a possible library and allows its use in Jupyter
  ┃ ┣ folds_split.py # Has functions that perform k-fold-split on the RETOUCH dataset, according to the project needs
  ┃ ┣ mip_split.py # Using integer programming, attempts to determine the best fold split
  ┃ ┣ patch_extraction.py # Has functions extract the patches later used to train the networks
  ┃ ┗ read_oct.py # Reads and saves the OCT's B-scans so that it can be saved in the user's computer
+ ┣ lmdb # Folder that contains the LMDB datasets
+ ┃ ┣ train_masks_13_1_2.lmdb # LMDB file that contains the training masks of the dataset that has 13 patches per 
+ ┃ ┃                         # scan, the testing fold is fold 1 and the validation fold is fold 2 
+ ┃ ┣ train_patches_13_1_2.lmdb # LMDB file that contains the training patches of the dataset that has 13 patches per 
+ ┃ ┃                           # scan, the testing fold is fold 1 and the validation fold is fold 2 
+ ┃ ┣ val_masks_13_1_2.lmdb   # LMDB file that contains the validation masks of the dataset that has 13 patches per 
+ ┃ ┃                         # scan, the testing fold is fold 1 and the validation fold is fold 2
+ ┃ ┣ val_patches_13_1_2.lmdb # LMDB file that contains the validation patches of the dataset that has 13 patches per 
+ ┃ ┃                         # scan, the testing fold is fold 1 and the validation fold is fold 2
+ ┃ ┗ ...
  ┣ logs # Folder that contains the error logs of the runs
  ┃ ┣ Run1_training_log_epoch.csv # CSV file which saves the training and validation error in each epoch of a run
  ┃ ┃ ...
  ┃ ┗ Run1_training_log_batch.csv # CSV file which saves the training error in each batch of a run
  ┣ models # Folder that contains the PyTorch file of the best models in each run
  ┃ ┣ Run1_UNet_best_model.pth # PyTorch file of the best model in Run1, which performs multi-class fluid segmentation
- ┃ ┗ ...
+ ┃ ┗ ... 
  ┣ network_functions # Folder that contains the Python files that contain the functions used in training
  ┃ ┣ __init__.py # Despite not having code in it, marks the folder as a possible library and allows its use in Jupyter
  ┃ ┣ dataset.py # Creates the PyTorch Dataset objects that will be used in train, test, and validation of the models
- ┃ ┗ evaluate.py # Function called to evaluate the model in each epoch
+ ┃ ┣ evaluate.py # Function called to evaluate the model in each epoch
+ ┃ ┗ lmdb_creator.py # File that is used to transform the datasets into LMDB files
  ┣ networks # Folder that contains the Python files that contain the CNNs used in this project
  ┃ ┣ __init__.py # Despite not having code in it, marks the folder as a possible library and allows its use in Jupyter
  ┃ ┣ loss.py # Contains the loss functions that will be used to train and evaluate the models
@@ -124,8 +118,28 @@ D
  ┃ ┃                                 # and testing of the segmentation models
  ┃ ┗ volumes_info.csv # Contains the number of voxels per fluid class of each volume, with their respective vendor and ordered 
  ┃                    # by their index
+ ┣ unet_big_imgs # Folder that contains the relevant images output from the unet_big.ipynb file
+ ┃ ┣ Run013_training_error.png # PNG file which contains the plots of the training and evaluation error in Run013  
+ ┃ ┗ ... 
+ ┣ unet_preliminar_imgs # Folder that contains the relevant images output from the unet_preliminar.ipynb file
+ ┃ ┣ Run1_training_error.png # PNG file which contains the plots of the training and evaluation error in Run1  
+ ┃ ┗ ... 
+ ┣ unet_random_imgs # Folder that contains the relevant images output from the unet_random.ipynb file
+ ┃ ┣ Run001_training_error.png # PNG file which contains the plots of the training and evaluation error in Run001  
+ ┃ ┗ ... 
+ ┣ unet_random_improved_imgs # Folder that contains the relevant images output from the unet_random_improved.ipynb file
+ ┃ ┣ Run021_training_error.png # PNG file which contains the plots of the training and evaluation error in Run021  
+ ┃ ┗ ...
+ ┣ unet_vertical_imgs # Folder that contains the relevant images output from the unet_vertical.ipynb file
+ ┃ ┣ Run024_training_error.png # PNG file which contains the plots of the training and evaluation error in Run024  
+ ┃ ┗ ...
+ ┣ unet_vertical_variability_imgs # Folder that contains the relevant images output from the unet_vertical_variability.ipynb file
+ ┃ ┣ Run035_training_error.png # PNG file which contains the plots of the training and evaluation error in Run024  
+ ┃ ┗ ...
  ┣ .gitignore # Declares the files that must not be updated to git
  ┣ documentation.md # Project documentation
+ ┣ estimate_volume.py # Code used to estimate the volume of each fluid in the infered masks
+ ┣ paths.py # File that contains the paths to relevant folders. This file is not updated.
  ┣ pipeline.ipynb # Project's pre-processing pipeline code, before training the networks
  ┣ plot_logs.py # Plots the training and validation errors of a run
  ┣ README.md # Front page of the project, used to orient the user
@@ -184,6 +198,9 @@ Folder that contains all the images produced in the [unet_vertical.ipynb](unet_v
 ## [wandb](wandb/)
 Folder created when running the training file, by using the Weights and Bias library. In this folder, each run is stored with the name referring to the date and time of the run, as well as a code. It stores a .wandb file with code of the run that contains the statistics of the run and everything visualized in their website through the link printed in the console. It also contains a folder named files where every output of the console is stored, the requirements file, that contains all the imports used in this run, the metadata of the run, stored in .json file, another .json file where the values of each weight is being stored, and a config.yml file that contains information of the run configurations. In case images are being saved, in the folder files\media the images will be stored, identified by the number of the image and an hash code. There is also the logs folder, that stores two .log files that can be used to debug and understand what is being done during the wandb initialization.
 
+## [estimate_volume](estimate_volume.py)
+File that estimates the volume of each fluid for each predicted mask. 
+
 ## [paths.py](paths.py)
 File with the absolute paths required for this project. This changes from device to device and when changed, the following line must be ran in the Git Bash console to prevent it from updating in the repository.
 
@@ -226,6 +243,7 @@ File that, when ran, shows an UI that allows the user to select B-scans from the
 
 ## Libraries
 In this project, nine libraries were used (their versions can be checked in [this file](environment/requirements.txt)):
+- lmdb, a library used to create datasets in the form of LMDB (Lightning Memory-Mapped Database). This is useful for large datasets that do not fit into the RAM and when using a HDD. Since the transfer speed between HDD and RAM is slow, LMDB helps to mitigate this issue.
 - Matplotlib, which is used in the plotting of graphs (such as loss after training), and to save images with an overlay of predicted and ground-truth masks, as done when evaluating the model.
 - NumPy, which is used to handle every sort of arrays, images that are converted to arrays, and calculations.
 - OR-Tools, an operation research library that was used to design the fold split as a linear programming problem. Since this was not implemented because of the high computational costs, the library is not required to import in this project.
