@@ -331,6 +331,8 @@ class TrainDataset(Dataset):
         names of the patches that will be used in training
 
         Args: 
+            self (PyTorch Dataset): the PyTorch Dataset object 
+                itself
             train_volumes(List[float]): list of the training 
                 volumes that will be used to train the model
             model (str): name of the model that will be trained
@@ -381,7 +383,7 @@ class TrainDataset(Dataset):
             self (PyTorch Dataset): the PyTorch Dataset object itself
 
         Return:
-            None
+            (int): size of the dataset
         """
         return len(self.images_names)
 
@@ -395,7 +397,9 @@ class TrainDataset(Dataset):
             index (int): index of the dataset to get the image from
 
         Return:
-            None
+            (dict{str: PyTorch Tensor, str: PyTorch Tensor}): returns the
+                training image and the training mask, associated with 
+                the names "scan" and "mask", respectively
         """
         # In case the index is a tensor,
         # converts it to a list
@@ -486,7 +490,7 @@ class TrainDataset(Dataset):
 class ValidationDataset(Dataset):
     """
     Initiates the PyTorch object Dataset called ValidationDataset 
-    with the available images, thus simplifying the training
+    with the available images, thus simplifying the validation
     process
     """
     def __init__(self, val_volumes: list, model: str,
@@ -497,6 +501,8 @@ class ValidationDataset(Dataset):
         names of the patches that will be used in validation
 
         Args: 
+            self (PyTorch Dataset): the PyTorch Dataset object 
+                itself
             val_volumes(List[float]): list of the validation 
                 volumes that will be used to validate the model
             model (str): name of the model that will be trained
@@ -537,7 +543,7 @@ class ValidationDataset(Dataset):
             self (PyTorch Dataset): the PyTorch Dataset object itself
 
         Return:
-            None
+            (int): size of the dataset
         """
         return len(self.images_names)
 
@@ -552,7 +558,9 @@ class ValidationDataset(Dataset):
             index (int): index of the dataset to get the image from
 
         Return:
-            None
+            (dict{str: PyTorch Tensor, str: PyTorch Tensor}): returns the
+                training image and the training mask, associated with 
+                the names "scan" and "mask", respectively
         """
         # In case the index is a tensor,
         # converts it to a list
@@ -614,7 +622,7 @@ class ValidationDataset(Dataset):
 class TestDataset(Dataset):
     """
     Initiates the PyTorch object Dataset called TestDataset 
-    with the available images, thus simplifying the training
+    with the available images, thus simplifying the testing
     process
     """
     def __init__(self, test_volumes: list, model: str, 
@@ -625,6 +633,8 @@ class TestDataset(Dataset):
         names of the images that will be used in testing
 
         Args: 
+            self (PyTorch Dataset): the PyTorch Dataset object 
+                itself
             test_volumes(List[float]): list of the test 
                 volumes that will be used to test the model
             model (str): name of the model that will be trained
@@ -667,7 +677,7 @@ class TestDataset(Dataset):
             self (PyTorch Dataset): the PyTorch Dataset object itself
 
         Return:
-            None
+            (int): size of the dataset
         """
         return len(self.images_names)
 
@@ -682,7 +692,10 @@ class TestDataset(Dataset):
             index (int): index of the dataset to get the image from
 
         Return:
-            None
+            (dict{str: PyTorch Tensor, str: PyTorch Tensor}): returns the
+                training image, the training mask, and the name of the 
+                image associated with the names "scan", "mask", and 
+                "image_name", respectively
         """
         # In case the index is a tensor,
         # converts it to a list
@@ -766,164 +779,316 @@ class TestDataset(Dataset):
 
 class TrainDatasetLMDB(Dataset):
     """
-    PyTorch Dataset for loading training images and masks from LMDB.
+    Initiates the PyTorch object Dataset called TrainDatasetLMDB 
+    with the available images, thus simplifying the training
+    process. In this case, to allow faster transitions 
+    between the HDD and the RAM, we are handling the data as 
+    a LMDB file.
     """
-    def __init__(self, model: str, num_patches: int, img_lmdb_path: str, mask_lmdb_path: str):
+    def __init__(self, model: str, num_patches: int, 
+                 img_lmdb_path: str, mask_lmdb_path: str):
+        """
+        Initiates the Dataset object and gets the path to the 
+        LMDB dataset
+
+        Args:
+            self (PyTorch Dataset): the PyTorch dataset object
+                itself 
+            model (str): name of the model that will be trained
+            num_patches (int): number of patches per image 
+                extracted 
+            img_lmdb_path (str): path to the LMDB dataset with 
+                the images            
+            mask_lmdb_path (str): path to the LMDB dataset with 
+                the masks
+                
+        Return:
+            None
+        """
+        # Initiates the Dataset object
         super().__init__()
+        # Saves in the object the name of 
+        # the model, the number of patches
+        # the path to the LMDB dataset with 
+        # the patches and with the masks 
         self.model = model
         self.num_patches = num_patches
         self.img_lmdb_path = img_lmdb_path
         self.mask_lmdb_path = mask_lmdb_path
 
-        # Open LMDB environment and check if num_samples exists
+        # Opens the LMDB environment and check if num_samples exists
         with lmdb.open(self.img_lmdb_path, readonly=True, lock=False) as img_env:
             with img_env.begin() as txn:
                 num_samples = txn.get(b'num_samples')
                 if num_samples is None:
                     raise ValueError(f"LMDB error: 'num_samples' key not found in {self.img_lmdb_path}")
+                # Saves the number of samples available 
+                # in the object
                 self.length = int(num_samples.decode())
 
     def __len__(self):
+        """
+        Function required in the Dataset object that returns the length 
+        of the images used in training
+
+        Args:
+            self (PyTorch Dataset): the PyTorch Dataset object itself
+
+        Return:
+            (int): size of the dataset
+        """
         return self.length
 
     def __getitem__(self, index):
         """
-        Retrieves an image-mask pair from LMDB based on index.
+        Gets an image and the respective mask from the list of 
+        images that can be used in training when an index is given, 
+        utilized to access the LMDB dataset
+        
+        Args:
+            self (PyTorch Dataset): the PyTorch Dataset object itself
+            index (int): index of the dataset to get the image from
+
+        Return:
+            (dict{str: PyTorch Tensor, str: PyTorch Tensor}): returns 
+                the training image and the training mask, associated 
+                with the names "scan" and "mask", respectively
         """
-        # Open LMDB inside __getitem__ to avoid pickling issues
+        # Opens the LMDB environment for the images and the masks datasets
         with lmdb.open(self.img_lmdb_path, readonly=True, lock=False) as img_env, \
              lmdb.open(self.mask_lmdb_path, readonly=True, lock=False) as mask_env:
-             
+            # With the same index, accesses the encoded images and masks 
+            # and reads them as a PIL object
             with img_env.begin() as img_txn, mask_env.begin() as mask_txn:
-                # Load Image
+                # Load the patch
                 img_key = f"img_{index}".encode()
                 img_bytes = img_txn.get(img_key)
                 img = Image.open(BytesIO(img_bytes)).convert("L") if img_bytes else None
 
-                # Load Mask
+                # Load the segmentation mask
                 mask_key = f"mask_{index}".encode()
                 mask_bytes = mask_txn.get(mask_key)
                 mask = Image.open(BytesIO(mask_bytes)).convert("L") if mask_bytes else None
 
+        # In case the index does not find any image for the 
+        # index, raises an error
         if img is None or mask is None:
             raise ValueError(f"Missing data for index {index}")
 
-        # Convert to numpy array
+        # Converts the PIL 
+        # object to a NumPy
+        #  array
         img = np.array(img)
         mask = np.array(mask)
 
-        # Handle 2.5D Model (Stack previous & next slices)
+        # Handles the cases for 2.5D 
+        # segmentation 
         if self.model == "2.5D":
+            # Loads the previous and following image as an array of zeros 
+            # with the same shape
             img_before, img_after = np.zeros_like(img), np.zeros_like(img)
-
+            # Opens the environment once again to load the previous and following 
+            # images and masks
             with lmdb.open(self.img_lmdb_path, readonly=True, lock=False) as img_env:
                 with img_env.begin() as img_txn:
+                    # Gets the encoded previous and after image
                     before_key = f"img_{max(0, index - 1)}".encode()
                     after_key = f"img_{min(self.length - 1, index + 1)}".encode()
 
+                    # Gets the encoded previous and after mask
                     before_bytes = img_txn.get(before_key)
                     after_bytes = img_txn.get(after_key)
 
+                    # Loads the previous and following image as a NumPy array
                     img_before = np.array(Image.open(BytesIO(before_bytes)).convert("L")) if before_bytes else np.zeros_like(img)
                     img_after = np.array(Image.open(BytesIO(after_bytes)).convert("L")) if after_bytes else np.zeros_like(img)
+            # Stacks the images together, ending with shape (3, H, W)
+            img = np.stack([img_before, img, img_after], axis=0)
 
-            img = np.stack([img_before, img, img_after], axis=0)  # Shape: (3, H, W)
-
-        # Expand dimensions if not 2.5D
+        # Expands the dimensions of the image 
+        # and the mask to include the channel 
+        # dimension. In the image, it only 
+        # happens if it is not 2.5D
         if self.model != "2.5D":
-            img = np.expand_dims(img, axis=0)  # Shape: (1, H, W)
-        mask = np.expand_dims(mask, axis=0)  # Shape: (1, H, W)
+            # Shape: (1, H, W)
+            img = np.expand_dims(img, axis=0)
+        # Shape: (1, H, W)
+        mask = np.expand_dims(mask, axis=0)
 
-        # Convert to PyTorch tensors
+        # Converts the images to PyTorch Tensors
         img = torch.from_numpy(img).float()
         mask = torch.from_numpy(mask).long()
 
-        # Z-Score Normalization (Mean 0, SD 1)
+        # Performs Z-Score normalization 
+        # in the images
         img = (img - 128.) / 128.
 
         return {"scan": img, "mask": mask}
 
 class ValidationDatasetLMDB(Dataset):
     """
-    PyTorch Dataset for loading validation images and masks from LMDB.
+    Initiates the PyTorch object Dataset called TrainDatasetLMDB 
+    with the available images, thus simplifying the training
+    process. In this case, to allow faster transitions 
+    between the HDD and the RAM, we are handling the data as 
+    a LMDB file.
     """
     def __init__(self, model: str, num_patches: int, 
                  img_lmdb_path: str, mask_lmdb_path: str, 
                  fluid: int=None):
+        """
+        Initiates the Dataset object and gets the path to the 
+        LMDB dataset
+
+        Args:
+            self (PyTorch Dataset): the PyTorch dataset object
+                itself 
+            model (str): name of the model that will be trained
+            num_patches (int): number of patches per image 
+                extracted 
+            img_lmdb_path (str): path to the LMDB dataset with 
+                the images            
+            mask_lmdb_path (str): path to the LMDB dataset with 
+                the masks
+            fluid (int): label of fluid that is expected to 
+                segment. Optional because it is only used in
+                one network    
+                
+        Return:
+            None
+        """
+        # Initiates the Dataset object
         super().__init__()
+        # Saves in the object the name of 
+        # the model, the number of patches,
+        # the number of the fluid the path 
+        # to the LMDB dataset with the 
+        # patches and with the masks 
         self.model = model
         self.num_patches = num_patches
         self.fluid = fluid
         self.img_lmdb_path = img_lmdb_path
         self.mask_lmdb_path = mask_lmdb_path
 
-        # Open LMDB environment and check if num_samples exists
+        # Opens the LMDB environment and checks if num_samples exists
         with lmdb.open(self.img_lmdb_path, readonly=True, lock=False) as img_env:
             with img_env.begin() as txn:
+                # Gets the number of samples from the 
+                # LMDB environment
                 num_samples = txn.get(b'num_samples')
                 if num_samples is None:
                     raise ValueError(f"LMDB error: 'num_samples' key not found in {self.img_lmdb_path}")
+                # Saves the number of samples available 
+                # in the Dataset object
                 self.length = int(num_samples.decode())
 
     def __len__(self):
+        """
+        Function required in the Dataset object that returns the length 
+        of the images used in validation
+
+        Args:
+            self (PyTorch Dataset): the PyTorch Dataset object itself
+
+        Return:
+            (int): size of the dataset
+        """
         return self.length
 
     def __getitem__(self, index):
         """
-        Retrieves an image-mask pair from LMDB based on index.
+        Gets an image and the respective mask from the list of 
+        images that can be used in validation when an index is 
+        given, utilized to access the LMDB dataset
+        
+        Args:
+            self (PyTorch Dataset): the PyTorch Dataset object itself
+            index (int): index of the dataset to get the image from
+
+        Return:
+            (dict{str: PyTorch Tensor, str: PyTorch Tensor}): returns 
+                the validation image and the validation mask, associated 
+                with the names "scan" and "mask", respectively
         """
-        # Open LMDB inside __getitem__ (so it's not pickled)
+        # Opens the LMDB environment
         with lmdb.open(self.img_lmdb_path, readonly=True, lock=False) as img_env, \
             lmdb.open(self.mask_lmdb_path, readonly=True, lock=False) as mask_env:
-
+            # With the same index, accesses the encoded images and masks 
+            # and reads them as a PIL object
             with img_env.begin() as img_txn, mask_env.begin() as mask_txn:
-                # Load Image
+                # Loads the image bytes from the 
+                # LMDB train file for the 
+                # respetive index
                 img_key = f"img_{index}".encode()
                 img_bytes = img_txn.get(img_key)
+                # Saves the bytes as a PIL image
                 img = Image.open(BytesIO(img_bytes)).convert("L") if img_bytes else None
 
-                # Load Mask
+                # Loads the mask bytes from the 
+                # LMDB train file for the 
+                # respetive index
                 mask_key = f"mask_{index}".encode()
                 mask_bytes = mask_txn.get(mask_key)
                 mask = Image.open(BytesIO(mask_bytes)).convert("L") if mask_bytes else None
 
+        # If no image or mask is found 
+        # for the current index, a error 
+        # is raised
         if img is None or mask is None:
             raise ValueError(f"Missing data for index {index}")
 
-        # Convert to numpy array
+        # Converts the PIL Image 
+        # object to a NumPy array
         img = np.array(img)
         mask = np.array(mask)
 
-        # Handle 2.5D Model (Stack previous & next slices)
+        # Handles the cases for 
+        # 2.5D Model
         if self.model == "2.5D":
+            # Initiates the image that is located previous and after the 
+            # current image as a matrix of zeros
             img_before, img_after = np.zeros_like(img), np.zeros_like(img)
-
+            # Opens the LMDB environment that contains the validation patches
             with lmdb.open(self.img_lmdb_path, readonly=True, lock=False) as img_env:
                 with img_env.begin() as img_txn:
+                    # Gets the previous and the following index 
+                    # encoded in bytes 
                     before_key = f"img_{max(0, index - 1)}".encode()
                     after_key = f"img_{min(len(self.images_names) - 1, index + 1)}".encode()
-
+                    # Gets the bytes of the previous and 
+                    # following slices 
                     before_bytes = img_txn.get(before_key)
                     after_bytes = img_txn.get(after_key)
-
+                    # Saves the image before and after as a NumPy array after loading it as a PIL Image object
                     img_before = np.array(Image.open(BytesIO(before_bytes)).convert("L")) if before_bytes else np.zeros_like(img)
                     img_after = np.array(Image.open(BytesIO(after_bytes)).convert("L")) if after_bytes else np.zeros_like(img)
+            # Stacks the middle with the previous and following 
+            # images, attaining a shape of (3, H, W) 
+            img = np.stack([img_before, img, img_after], axis=0)
 
-            img = np.stack([img_before, img, img_after], axis=0)  # Shape: (3, H, W)
-
-        # Expand dimensions if not 2.5D
+        # Expands the image 
+        # dimensions if not 2.5D
         if self.model != "2.5D":
-            img = np.expand_dims(img, axis=0)  # Shape: (1, H, W)
+            # Adds the channel dimension to 
+            # the image, attaining a shape of (1, H, W)
+            img = np.expand_dims(img, axis=0) 
 
-        # Check if the mask is already a tensor
+        # In case the image is not already a 
+        # PyTorch Tensor
         if not isinstance(mask, torch.Tensor):
-            mask = torch.from_numpy(mask).long()  # Convert mask to tensor if it's not already a tensor
+            # Converts the mask to a PyTorch 
+            # Tensor of type long
+            mask = torch.from_numpy(mask).long()
 
-        # Convert to PyTorch tensors
+        # Converts the image to a PyTorch 
+        # tensor of type float
         img = torch.from_numpy(img).float()
-        mask = mask.long()  # Ensure mask is of type long, it's already a tensor here
+        # Ensures the mask 
+        # is of type long
+        mask = mask.long()
 
-        # Z-Score Normalization (Mean 0, SD 1)
+        # Performs Z-Score normalization 
+        # in the image
         img = (img - 128.) / 128.
 
         return {"scan": img, "mask": mask}
