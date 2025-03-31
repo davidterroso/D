@@ -237,16 +237,15 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
     # which will be used to train the model in batches
     begin = time()
     if seed is not None:
-        loader_args = dict(batch_size=batch_size, num_workers=12, pin_memory=True, 
-                           persistent_workers=True, prefetch_factor=12)
+        loader_args = dict(batch_size=batch_size, pin_memory=True)
     else:
-        loader_args = dict(batch_size=batch_size, num_workers=12, pin_memory=True, 
-                           persistent_workers=True, prefetch_factor=12,
-                           worker_init_fn=seed_worker)
+        loader_args = dict(batch_size=batch_size, pin_memory=True, worker_init_fn=seed_worker)
     print("Loading Training Data.")
-    train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
+    train_loader = DataLoader(train_set, shuffle=True, drop_last=True, num_workers=6, 
+                              prefetch_factor=12, persistent_workers=True, **loader_args)
     print("Loading Validation Data.")
-    val_loader = DataLoader(val_set, shuffle=True, drop_last=True, **loader_args)
+    val_loader = DataLoader(val_set, shuffle=True, drop_last=True, num_workers=4, 
+                            persistent_workers=True, prefetch_factor=8,**loader_args)
     end = time()
     print(f"Data loading took {end - begin} seconds.")
 
