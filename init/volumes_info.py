@@ -113,9 +113,9 @@ def volumes_resumed_info(file_path: str="..\splits\\volumes_info.csv"):
     # by the standard deviation in brackets (e.g. mean (std))
     resulting_df = resulting_df_mean.astype(str) + " (" + resulting_df_std.astype(str) + ")"
     # Saves the DataFrame as a CSV file
-    resulting_df.to_csv("..\splits\\volumes_mean_std.csv", index=False)
+    resulting_df.to_csv("..\splits\\volumes_mean_std.csv", index=True)
 
     # Calculates the sum of each fluid for each vendor
     resulting_df_sum = df.groupby("Vendor").sum().drop("VolumeNumber", axis=1).round(2)
     # Saves the DataFrame as a CSV file
-    resulting_df_sum.to_csv("..\splits\\volumes_sum.csv", index=False)
+    resulting_df_sum.to_csv("..\splits\\volumes_sum.csv", index=True)
