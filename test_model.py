@@ -148,7 +148,7 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
         # Reads the DataFrame that handles the data per class
         class_df = read_csv(class_file_name)
         # Reads the DataFrame that handles the data per vendor
-        vendor_df = read_csv(vendor_file_name, index_col="vendor")
+        vendor_df = read_csv(vendor_file_name, index_col="Vendor")
         # Removes the name of the column that has the table's index
         vendor_df.index.name = None
         # Saves, to the corresponding fold in the 
@@ -183,7 +183,7 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
                 # The DataFrame that is being handled is the 
                 # one that comprises information about classes
                 # and vendors
-                results.append(tuple_df[1].at[vendor, fluid])
+                results.append(float(tuple_df[1].at[vendor, fluid].split(" ")[0]))
             # Calculates the mean across all folds
             mean = np.array(results).mean()
             # Calculates the standard deviation across all folds
@@ -223,7 +223,7 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
             # the current vendor and fluid
             # The DataFrame that is now being handled 
             # comprises information of the classes
-            results.append(tuple_df[0].at[0, fluid])
+            results.append(float(tuple_df[0].at[0, fluid].split(" ")[0]))
         # Calculates the mean across all folds
         mean = np.array(results).mean()
         # Calculates the standard deviation across all folds
@@ -488,54 +488,44 @@ def test_model (
         slice_df.to_csv(f"results/{run_name}_slice_dice_resized.csv", index=False)
 
     slice_df[['vendor', 'volume', 'slice_number']] = slice_df['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
-
-    volume_df_mean = slice_df[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").mean()
-    volume_df_mean.index.name = "Volume"
-    volume_df_std = slice_df[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").std()
-    volume_df_std.index.name = "Volume"
-    resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
-
-    vendor_df_mean = slice_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
-    vendor_df_mean.index.name = "Vendor"
-    vendor_df_std = slice_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").std()
-    vendor_df_std.index.name = "Vendor"
-    resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
-
-    class_df_mean = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
-    class_df_std = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
-    resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
+    volume_df = slice_df[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").mean()
+    volume_df.index.name = "Volume"
+    vendor_df = slice_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
+    vendor_df.index.name = "Vendor"
+    class_df = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
 
     # Saves the DataFrame that contains the values for each volume
     if not resize_images:
-        resulting_volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
+        volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
     else:
-        resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
+        volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
     
     # Saves the DataFrame that contains the values for each class
     if not resize_images:
-        resulting_class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
+        class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
     else:
-        resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized.csv", index=False)
+        class_df.to_csv(f"results/{run_name}_class_dice_resized.csv", index=False)
 
     # Saves the DataFrame that contains the values for each vendor
     if not resize_images:
-        resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
+        vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
     else:
-        resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)
+        vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)
 
 # In case it is preferred to run 
 # directly in this file, here lays 
 # an example
 if __name__ == "__main__":
-    test_model(
-        fold_test=2,
-        model_name="UNet",
-        weights_name="Run1000_UNet_best_model.pth",
-        number_of_channels=1,
-        number_of_classes=4,
-        device_name="GPU",
-        batch_size=1,
-        patch_type="small",
-        save_images=False,
-        resize_images=False
-    )
+    # test_model(
+    #     fold_test=2,
+    #     model_name="UNet",
+    #     weights_name="Run1000_UNet_best_model.pth",
+    #     number_of_channels=1,
+    #     number_of_classes=4,
+    #     device_name="GPU",
+    #     batch_size=1,
+    #     patch_type="small",
+    #     save_images=False,
+    #     resize_images=False
+    # )
+    folds_results(first_run_name="Run023", iteration=9, k=5, resized_images=True)
