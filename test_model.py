@@ -46,6 +46,13 @@ def pad_to_nearest_16(image):
     operations are performed in the encoding path
     thus if the dimensions are divisible by 2^4, 
     no shape mismatch will happen)
+
+    Args:
+        image (PyTorch Tensor): PyTorch Tensor 
+            that contains is going to be handled
+
+    Returns:
+        (PyTorch Tensor): processed image  
     """
     # Gets the height and width of the image
     h, w = image.shape[-2:]
@@ -352,11 +359,6 @@ def test_model (
     # Initiates the list that will 
     # store the results of the slices 
     slice_results = []
-    # Initiates the dictionary that will 
-    # store the results per volume, per 
-    # vendor, and per class
-    volume_results = defaultdict(list)
-    vendor_results = defaultdict(list)
 
     # Extracts the name of the run from 
     # the name of the weights file
@@ -412,10 +414,7 @@ def test_model (
                 # Calculates the Dice coefficient of the predicted mask, and gets the result of the union and intersection between the GT and 
                 # the predicted mask 
                 dice_scores, voxel_counts, union_counts, intersection_counts = dice_coefficient(model_name, preds, true_masks, number_of_classes)
-                # Gets the information from the slice's name
-                vendor, volume, slice_number = image_name[:-5].split("_")
-                volume_name = f"{vendor}_{volume}"
-                
+
                 # Appends the results per slice, per volume, and per vendor
                 slice_results.append([image_name, *dice_scores, *voxel_counts, *union_counts, *intersection_counts])
 
@@ -487,19 +486,23 @@ def test_model (
     else:
         slice_df.to_csv(f"results/{run_name}_slice_dice_resized.csv", index=False)
 
+    # Adds the vendor, volume, and number of the slice information to the DataFrame
     slice_df[['vendor', 'volume', 'slice_number']] = slice_df['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
+    # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
     volume_df_mean = slice_df[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").mean()
     volume_df_mean.index.name = "Volume"
     volume_df_std = slice_df[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").std()
     volume_df_std.index.name = "Volume"
     resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
 
+    # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
     vendor_df_mean = slice_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
     vendor_df_mean.index.name = "Vendor"
     vendor_df_std = slice_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").std()
     vendor_df_std.index.name = "Vendor"
     resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
 
+    # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
     class_df_mean = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
     class_df_std = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
     resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
@@ -521,6 +524,52 @@ def test_model (
         resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
     else:
         resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)
+
+    # Handles the information only on the slices that have the fluid
+    slice_df_wf = slice_df.copy()
+    # Iterates through all the classes available
+    for i in range(number_of_classes):
+        # Gets the DataFrame that
+        slice_df_wf.loc[slice_df_wf[f"voxels_{label_to_fluids.get(i)}"] == 0, f"dice_{label_to_fluids.get(i)}"] = np.nan
+
+    # Adds the vendor, volume, and number of the slice information to the DataFrame
+    slice_df_wf[['vendor', 'volume', 'slice_number']] = slice_df_wf['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
+    # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
+    volume_df_mean = slice_df_wf[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").mean()
+    volume_df_mean.index.name = "Volume"
+    volume_df_std = slice_df_wf[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").std()
+    volume_df_std.index.name = "Volume"
+    resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
+
+    # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
+    vendor_df_mean = slice_df_wf[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
+    vendor_df_mean.index.name = "Vendor"
+    vendor_df_std = slice_df_wf[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").std()
+    vendor_df_std.index.name = "Vendor"
+    resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
+
+    # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
+    class_df_mean = slice_df_wf[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
+    class_df_std = slice_df_wf[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
+    resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
+
+    # Saves the DataFrame that contains the values for each volume
+    if not resize_images:
+        resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid.csv", index=True)
+    else:
+        resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid.csv", index=True)
+
+    # Saves the DataFrame that contains the values for each class
+    if not resize_images:
+        resulting_class_df.to_csv(f"results/{run_name}_class_dice_wfluid.csv", index=False)
+    else:
+        resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wfluid.csv", index=False)
+
+    # Saves the DataFrame that contains the values for each vendor
+    if not resize_images:
+        resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid.csv", index=True)
+    else:
+        resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid.csv", index=True)
 
 # In case it is preferred to run 
 # directly in this file, here lays 
