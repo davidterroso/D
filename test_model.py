@@ -488,29 +488,40 @@ def test_model (
         slice_df.to_csv(f"results/{run_name}_slice_dice_resized.csv", index=False)
 
     slice_df[['vendor', 'volume', 'slice_number']] = slice_df['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
-    volume_df = slice_df[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").mean()
-    volume_df.index.name = "Volume"
-    vendor_df = slice_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
-    vendor_df.index.name = "Vendor"
-    class_df = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
+
+    volume_df_mean = slice_df[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").mean()
+    volume_df_mean.index.name = "Volume"
+    volume_df_std = slice_df[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").std()
+    volume_df_std.index.name = "Volume"
+    resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
+
+    vendor_df_mean = slice_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
+    vendor_df_mean.index.name = "Vendor"
+    vendor_df_std = slice_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").std()
+    vendor_df_std.index.name = "Vendor"
+    resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
+
+    class_df_mean = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
+    class_df_std = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
+    resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
 
     # Saves the DataFrame that contains the values for each volume
     if not resize_images:
-        volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
+        resulting_volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
     else:
-        volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
+        resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
     
     # Saves the DataFrame that contains the values for each class
     if not resize_images:
-        class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
+        resulting_class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
     else:
-        class_df.to_csv(f"results/{run_name}_class_dice_resized.csv", index=False)
+        resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized.csv", index=False)
 
     # Saves the DataFrame that contains the values for each vendor
     if not resize_images:
-        vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
+        resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
     else:
-        vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)
+        resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)
 
 # In case it is preferred to run 
 # directly in this file, here lays 
