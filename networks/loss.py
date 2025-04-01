@@ -128,8 +128,7 @@ def multiclass_balanced_cross_entropy_loss(model_name: str,
     return loss
 
 def dice_coefficient(model_name: str, prediction: torch.Tensor,
-                      target: torch.Tensor, num_classes: int, 
-                      epsilon: float=1e-6):
+                      target: torch.Tensor, num_classes: int):
     """
     Calculates the dice coefficient for the slices received
 
@@ -138,7 +137,6 @@ def dice_coefficient(model_name: str, prediction: torch.Tensor,
         prediction (PyTorch tensor): images predicted by the model
         target (PyTorch tensor): corresponding ground-truth
         num_classes (int): total number of possible classes
-        epsilon (float): small value to avoid division by zero
 
     Return:
         dice_scores (List[float]): List with all the calculated 
@@ -190,9 +188,11 @@ def dice_coefficient(model_name: str, prediction: torch.Tensor,
         intersection = (pred_class * target_class).sum()
         # Calculates the union of classes
         union = pred_class.sum() + target_class.sum()
-        # Calculates the Dice coeficient, with epsilon to avoid 
-        # division by zero 
-        dice = (2. * intersection + epsilon) / (union + epsilon)
+        # Calculates the Dice coeficient
+        if (intersection == 0) and (union == 0):
+            dice = 1.
+        else:
+            dice = (2. * intersection) / (union)
         # Appends the value of the Dice coefficient to a list
         dice_scores.append(dice.item())
         # Appends the value of the number of voxels to a list

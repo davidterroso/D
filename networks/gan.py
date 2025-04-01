@@ -1,32 +1,34 @@
-from torch.nn import BatchNorm1d, Module, LeakyReLU, Linear, Sequential, Sigmoid, Tanh
+from torch.nn import Module, LeakyReLU, Linear, ReLU, Sequential, Sigmoid, Tanh
 from numpy import prod
+from torchvision import models
 
 class Generator(Module):
     def __init__(self, latent_dim, img_shape):
         super(Generator, self).__init__()
 
         self.img_shape = img_shape
+        self.encoder = models.resnet18(pretrained=True)
+        self.encoder.fc = Linear(512, latent_dim)
 
-        def block(in_feat, out_feat, normalize=True):
-            layers=[Linear(in_feat, out_feat)]
-            if normalize:
-                layers.append(BatchNorm1d(out_feat, 0.8))
-            layers.append(LeakyReLU(0.2, inplace=True))
-            return layers
-        
-        self.model = Sequential(
-            *block(latent_dim, 128, normalize=False)
-            *block(128, 256),
-            *block(256, 512),
-            *block(512, 1024),
-            Linear(1024, int(prod(img_shape))),
+        self.decoder = Sequential(
+            Linear(latent_dim, 128),
+            LeakyReLU(0.2, inplace=True),
+            Linear(128, 256),
+            LeakyReLU(0.2, inplace=True),
+            Linear(256, 512),
+            LeakyReLU(0.2, inplace=True),
+            Linear(512, 1024),
+            ReLU(),
+            Linear(1024, 3 * prod(img_shape)),
             Tanh()
         )
 
-    def forward(self, z):
-        img = self.model(z)
-        img = img.view(img.size(0), *self.img_shape)
-        return img
+    def forward(self, img_before, img_after, z):
+        latent_before = self.encoder(img_before)
+        latent_after = self.encoder(img_after)
+        interpolated = 0.5 * latent_before + 0.5 * latent_after + z 
+        output = self.decoder(interpolated)
+        return output.view(-1, 3, self.img_shape)
     
 class Discriminator(Module):
     def __init__(self, img_shape):
