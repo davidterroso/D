@@ -292,19 +292,19 @@ class CustomTransform:
         # is below the threshold, 
         # executes the rotation 
         # transformation
-        if torch.rand(1) < self.p:
-            # The rotation is done independently because two different 
-            # interpolation modes are being used
-            # Calculates the random rotation angle that will be the same for both 
-            # transformations
-            angle = torch.randint(0, 10, (1,)).item()  
-            # Applies the rotation with bilinear interpolation to the scan
-            if model != "2.5D":
-                scan = rotate(scan, angle, interpolation=InterpolationMode.BILINEAR) 
-            else:
-                scan = torch.stack([rotate(scan[i], angle, interpolation=InterpolationMode.BILINEAR) for i in range(3)]) 
-            # Applies the rotation with nearest interpolation to the mask
-            mask = rotate(mask, angle, interpolation=InterpolationMode.NEAREST)  
+        # if torch.rand(1) < self.p:
+        #     # The rotation is done independently because two different 
+        #     # interpolation modes are being used
+        #     # Calculates the random rotation angle that will be the same for both 
+        #     # transformations
+        #     angle = torch.randint(0, 10, (1,)).item()  
+        #     # Applies the rotation with bilinear interpolation to the scan
+        #     if model != "2.5D":
+        #         scan = rotate(scan, angle, interpolation=InterpolationMode.BILINEAR) 
+        #     else:
+        #         scan = torch.stack([rotate(scan[i], angle, interpolation=InterpolationMode.BILINEAR) for i in range(3)]) 
+        #     # Applies the rotation with nearest interpolation to the mask
+        #     mask = rotate(mask, angle, interpolation=InterpolationMode.NEAREST)  
 
         # In case the probability 
         # is below the threshold, 
