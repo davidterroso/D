@@ -489,14 +489,16 @@ def test_model (
 
     slice_df[['vendor', 'volume', 'slice_number']] = slice_df['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
     volume_df = slice_df[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").mean()
+    volume_df.index.name = "Volume"
     vendor_df = slice_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
-    class_df = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].mean()
+    vendor_df.index.name = "Vendor"
+    class_df = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
 
     # Saves the DataFrame that contains the values for each volume
     if not resize_images:
-        volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=False)
+        volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
     else:
-        volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=False)
+        volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
     
     # Saves the DataFrame that contains the values for each class
     if not resize_images:
@@ -506,9 +508,9 @@ def test_model (
 
     # Saves the DataFrame that contains the values for each vendor
     if not resize_images:
-        vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=False)
+        vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
     else:
-        vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=False)
+        vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)
 
 # In case it is preferred to run 
 # directly in this file, here lays 

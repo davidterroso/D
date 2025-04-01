@@ -194,7 +194,7 @@ def dice_coefficient(model_name: str, prediction: torch.Tensor,
         else:
             dice = (2. * intersection) / (union)
         # Appends the value of the Dice coefficient to a list
-        dice_scores.append(dice.item())
+        dice_scores.append(float(dice))
         # Appends the value of the number of voxels to a list
         voxel_counts.append(int(target_class.sum().item()))
         # Appends the union value to a list
