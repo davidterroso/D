@@ -2,11 +2,10 @@ import numpy as np
 import torch
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
-from collections import defaultdict
 from IPython import get_ipython
 from os import makedirs
 from os.path import exists
-from pandas import DataFrame, read_csv
+from pandas import DataFrame, read_csv, Series
 from torch.nn.functional import pad
 from torch.utils.data import DataLoader
 from shutil import rmtree
@@ -471,10 +470,10 @@ def test_model (
                 
                 # Calculates the Dice coefficient of the predicted mask, and gets the result of the union and intersection between the GT and 
                 # the predicted mask 
-                dice_scores, voxel_counts, union_counts, intersection_counts = dice_coefficient(model_name, preds, true_masks, number_of_classes)
+                dice_scores, voxel_counts, union_counts, intersection_counts, binary_dice = dice_coefficient(model_name, preds, true_masks, number_of_classes)
 
                 # Appends the results per slice, per volume, and per vendor
-                slice_results.append([image_name, *dice_scores, *voxel_counts, *union_counts, *intersection_counts])
+                slice_results.append([image_name, *dice_scores, *voxel_counts, *union_counts, *intersection_counts, binary_dice])
 
                 # Saves the predicted masks and the GT, in case it is desired
                 if save_images:
@@ -537,7 +536,8 @@ def test_model (
                                 *[f"dice_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
                                 *[f"voxels_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
                                 *[f"union_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
-                                *[f"intersection_{label_to_fluids.get(i)}" for i in range(number_of_classes)]])
+                                *[f"intersection_{label_to_fluids.get(i)}" for i in range(number_of_classes)],
+                                "binary_dice"])
     
     if not resize_images:
         slice_df.to_csv(f"results/{run_name}_slice_dice.csv", index=False)
@@ -564,6 +564,10 @@ def test_model (
     class_df_mean = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
     class_df_std = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
     resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
+
+    # Appends the binary Dice coefficient to a list that holds them
+    binary_dices = []
+    binary_dices.append(slice_df["binary_dice"].mean()[0])
 
     # Saves the DataFrame that contains the values for each volume, class, and vendor
     if not resize_images:
@@ -612,6 +616,10 @@ def test_model (
         resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid.csv", index=True)
         resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wfluid.csv", index=False)
         resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid.csv", index=True)
+    
+    # Appends the binary Dice coefficient to a list that holds 
+    # them of the slices that have fluid
+    binary_dices.append(slice_df_wf["binary_dice"].mean()[0])
 
     # Handles the information only on the slices that do not have fluid
     slice_df_wof = slice_df.copy()
@@ -650,6 +658,10 @@ def test_model (
         resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid.csv", index=True)
         resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wofluid.csv", index=False)
         resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid.csv", index=True)
+    # Appends the binary Dice coefficient to a list that holds 
+    # them of the slices that have fluid
+    binary_dices.append(slice_df_wof["binary_dice"].mean()[0])
+    Series(binary_dices, axis=["overall", "fluid", "no_fluid"]).to_frame().T.to_csv(f"results/{run_name}_fluid_dice.csv", index=False)
 
 # In case it is preferred to run 
 # directly in this file, here lays 
