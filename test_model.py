@@ -654,14 +654,16 @@ def test_model (
         resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid.csv", index=True)
         resulting_class_df.to_csv(f"results/{run_name}_class_dice_wofluid.csv", index=False)
         resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid.csv", index=True)
+        binary_dices_name = "fluid_dice"
     else:
         resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid.csv", index=True)
         resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wofluid.csv", index=False)
         resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid.csv", index=True)
+        binary_dices_name = "fluid_dice_resized"
     # Appends the binary Dice coefficient to a list that holds 
     # them of the slices that have fluid
     binary_dices.append(slice_df_wof["binary_dice"].mean()[0])
-    Series(binary_dices, axis=["overall", "fluid", "no_fluid"]).to_frame().T.to_csv(f"results/{run_name}_fluid_dice.csv", index=False)
+    Series(binary_dices, axis=["overall", "fluid", "no_fluid"]).to_frame().T.to_csv(f"results/{run_name}_{binary_dices_name}.csv", index=False)
 
 # In case it is preferred to run 
 # directly in this file, here lays 

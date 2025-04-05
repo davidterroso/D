@@ -23,6 +23,7 @@
 - [pipeline.ipynb](#pipelineipynb)
 - [plot\_logs.py](#plot_logspy)
 - [README.md](#readmemd)
+- [resume\_results.py](#resume_resultspy)
 - [test\_model.py](#test_modelpy)
 - [train.py](#trainpy)
 - [unet\_big.ipynb](#unet_bigipynb)
@@ -143,7 +144,9 @@ D
  ┣ pipeline.ipynb # Project's pre-processing pipeline code, before training the networks
  ┣ plot_logs.py # Plots the training and validation errors of a run
  ┣ README.md # Front page of the project, used to orient the user
- ┣ train.py # File used to train the networks
+ ┣ train.py # File used to test the networks
+ ┣ resume_results.py # File used to resume all the results from runs into a single CSV file 
+ ┣ test_model.py # File used to train the networks
  ┣ unet_big.ipynb # Training of the U-Net with big patches not extracted randomly
  ┣ unet_preliminary.ipynb # Training of the U-Net made preliminary, with random fold split
  ┣ unet_random_patches.ipynb # Training of the U-Net with randomly extracted patches
@@ -216,6 +219,9 @@ Python script that plots and saves the loss in the training and validation of a 
 
 ## [README.md](README.md)
 Markdown file that introduces and orients the user in this project, introducing where to navigate to better understand it.
+
+## [resume_results.py](resume_results.py)
+File used to resume all the different files that result from a run into a single one.
 
 ## [test_model.py](test_model.py)
 In this file, the functions that test the previously trained neural networks are presented.
