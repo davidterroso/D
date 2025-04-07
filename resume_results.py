@@ -60,7 +60,7 @@ def runs_resume(prefix: str, starting_run: int,
         run_number = str(run_number).zfill(3)
         # Initiates the results 
         # with the number of the run 
-        results = [run_number]
+        results = [prefix + run_number]
         # Declares the path to each file
         files_paths = [folder + prefix + run_number + "_" + fn + 
                        ".csv" for fn in files_to_load]
@@ -112,7 +112,7 @@ def runs_resume(prefix: str, starting_run: int,
             
             # Iterates through the values and 
             # appends them to the list of results
-            for value in fluid_dice.values():
+            for value in fluid_dice:
                 results.append(value)
 
             # Saves the results as a CSV file that will contain the 
@@ -181,5 +181,5 @@ def combine_csvs_to_excel(folder_path, output_excel_path):
         combined_run_df.to_excel(writer, sheet_name="Runs", index=False, header=False)
         combined_iteration_df.to_excel(writer, sheet_name="Iterations", index=False, header=False)
 
-runs_resume(starting_run=1, ending_run=56, folder=".\\results\\")
-combine_csvs_to_excel(folder_path=".\\results\\", output_excel_path=".\\results\\")
+runs_resume(starting_run=1, ending_run=63, folder=".\\results\\", prefix="Run")
+combine_csvs_to_excel(folder_path=".\\results\\", output_excel_path=".\\results\\combined_output.xlsx")
