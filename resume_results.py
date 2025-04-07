@@ -1,4 +1,4 @@
-from pandas import concat, DataFrame, ExcelWriter, read_csv, Series
+from pandas import DataFrame, ExcelWriter, read_csv, Series
 from os.path import exists, join
 from os import listdir
 
@@ -25,6 +25,10 @@ def runs_resume(prefix: str, starting_run: int,
     """
     # Declares the name of the files that will be handled,
     # depending on which the images have been resized or not
+
+    assert prefix in ["Run", "Iteration"],\
+    """ Invalid Prefix: select "Run" or "Iteration" """
+    
     files_names = ["vendor_dice", 
                    "vendor_dice_wfluid", 
                    "vendor_dice_wofluid", 
@@ -39,9 +43,6 @@ def runs_resume(prefix: str, starting_run: int,
                            "class_dice_resized_wfluid", 
                            "class_dice_resized_wofluid", 
                            "fluid_dice_resized"]
-
-    assert prefix in ["Run", "Iteration"],\
-    """ Invalid Prefix: select "Run" or "Iteration" """
 
     # Iterates through all the runs that were indicated
     for run_number in range(starting_run, ending_run + 1):
@@ -108,7 +109,7 @@ def runs_resume(prefix: str, starting_run: int,
             # Reads the file that contains the Dice 
             # resulting from the binarization of 
             # the fluid masks
-            fluid_dice = read_csv(files_paths[6])
+            fluid_dice = read_csv(files_paths[6], header=None, index_col=False).iloc[1].tolist()
             
             # Iterates through the values and 
             # appends them to the list of results
@@ -152,8 +153,8 @@ def combine_csvs_to_excel(folder_path, output_excel_path):
     """
     # Initiates the data list that will contain the 
     # different DataFrames from the runs and iterations
-    run_data = []
-    iteration_data = []
+    run_rows = []
+    iteration_rows = []
 
     # Iterates through the files in the 
     # folder that is being iterated
@@ -163,23 +164,27 @@ def combine_csvs_to_excel(folder_path, output_excel_path):
         if filename.endswith("_resumed.csv"):
             # Reads the CSV file as a DataFrame
             filepath = join(folder_path, filename)
-            df = read_csv(filepath, header=None)
+            df = read_csv(filepath, header=None, index_col=False)
+
+            # Gets the data from the CSV file
+            row = df.iloc[-1].tolist()
 
             # Appends the results to the 
             # respective list
             if filename.startswith("Run"):
-                run_data.append(df)
+                run_rows.append(row)
             elif filename.startswith("Iteration"):
-                iteration_data.append(df)
+                iteration_rows.append(row)
 
     # Combines all the DataFrames in a single one for each group
-    combined_run_df = concat(run_data, ignore_index=True) if run_data else DataFrame()
-    combined_iteration_df = concat(iteration_data, ignore_index=True) if iteration_data else DataFrame()
+    run_df = DataFrame(run_rows)
+    iteration_df = DataFrame(iteration_rows)
 
     # Saves the DataFrames to separate Excel sheets
     with ExcelWriter(output_excel_path) as writer:
-        combined_run_df.to_excel(writer, sheet_name="Runs", index=False, header=False)
-        combined_iteration_df.to_excel(writer, sheet_name="Iterations", index=False, header=False)
+        run_df.to_excel(writer, sheet_name="Runs", index=False, header=False)
+        iteration_df.to_excel(writer, sheet_name="Iterations", index=False, header=False)
 
 runs_resume(starting_run=1, ending_run=63, folder=".\\results\\", prefix="Run")
+runs_resume(starting_run=1, ending_run=19, folder=".\\results\\", prefix="Iteration")
 combine_csvs_to_excel(folder_path=".\\results\\", output_excel_path=".\\results\\combined_output.xlsx")
