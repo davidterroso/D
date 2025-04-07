@@ -565,10 +565,6 @@ def test_model (
     class_df_std = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
     resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
 
-    # Appends the binary Dice coefficient to a list that holds them
-    binary_dices = []
-    binary_dices.append(slice_df["binary_dice"].mean()[0])
-
     # Saves the DataFrame that contains the values for each volume, class, and vendor
     if not resize_images:
         resulting_volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
@@ -583,7 +579,7 @@ def test_model (
     slice_df_wf = slice_df.copy()
     # Iterates through all the classes available
     for i in range(number_of_classes):
-        # Gets the DataFrame that
+        # Sets the Dice values to NaN whenever there is no fluid of that type
         slice_df_wf.loc[slice_df_wf[f"voxels_{label_to_fluids.get(i)}"] == 0, f"dice_{label_to_fluids.get(i)}"] = np.nan
 
     # Adds the vendor, volume, and number of the slice information to the DataFrame
@@ -617,15 +613,11 @@ def test_model (
         resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wfluid.csv", index=False)
         resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid.csv", index=True)
     
-    # Appends the binary Dice coefficient to a list that holds 
-    # them of the slices that have fluid
-    binary_dices.append(slice_df_wf["binary_dice"].mean()[0])
-
     # Handles the information only on the slices that do not have fluid
     slice_df_wof = slice_df.copy()
     # Iterates through all the classes available
     for i in range(number_of_classes):
-        # Gets the DataFrame that
+        # Gets the DataFrame that contains a non-negative number of voxels for each column
         slice_df_wof.loc[slice_df_wof[f"voxels_{label_to_fluids.get(i)}"] > 0, f"dice_{label_to_fluids.get(i)}"] = np.nan
 
     # Adds the vendor, volume, and number of the slice information to the DataFrame
@@ -662,8 +654,28 @@ def test_model (
         binary_dices_name = "fluid_dice_resized"
     # Appends the binary Dice coefficient to a list that holds 
     # them of the slices that have fluid
-    binary_dices.append(slice_df_wof["binary_dice"].mean()[0])
-    Series(binary_dices, axis=["overall", "fluid", "no_fluid"]).to_frame().T.to_csv(f"results/{run_name}_{binary_dices_name}.csv", index=False)
+    binary_dices = []
+    
+    binary_dices.append(f"{slice_df['binary_dice'].mean()} ({slice_df['binary_dice'].std()})")
+
+    # Get the fluid voxel column names (i = 1, 2, 3)
+    fluid_voxel_cols = [f"voxels_{label_to_fluids[i]}" for i in [1, 2, 3]]
+
+    slice_df_wf = slice_df.copy()
+    slice_df_wof = slice_df.copy()
+
+    # For 'with fluid' slice_df: drop slices that don't have any IRF/SRF/PED
+    slice_df_wf.loc[slice_df_wf[fluid_voxel_cols].sum(axis=1) == 0, 'binary_dice'] = np.nan
+
+    # For 'without fluid' slice_df: drop slices that *do* have IRF/SRF/PED
+    slice_df_wof.loc[slice_df_wof[fluid_voxel_cols].sum(axis=1) > 0, 'binary_dice'] = np.nan
+
+    binary_dices.append(f"{slice_df_wf['binary_dice'].mean()} ({slice_df_wf['binary_dice'].std()})")
+    binary_dices.append(f"{slice_df_wof['binary_dice'].mean()} ({slice_df_wof['binary_dice'].std()})")
+
+    df = Series(binary_dices).to_frame().T
+    df.columns = ["AllSlices", "SlicesWithFLuid", "SlicesWithoutFluid"]
+    df.to_csv(f"results/{run_name}_{binary_dices_name}.csv", index=False)
 
 # In case it is preferred to run 
 # directly in this file, here lays 

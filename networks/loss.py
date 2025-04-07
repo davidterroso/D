@@ -216,5 +216,6 @@ def dice_coefficient(model_name: str, prediction: torch.Tensor,
         binary_dice = 1.
     else:
         binary_dice = (2. * intersection) / (union)
+        binary_dice = binary_dice.item()
         
-    return dice_scores, voxel_counts, union_counts, intersection_counts, binary_dice 
+    return dice_scores, voxel_counts, union_counts, intersection_counts, binary_dice
