@@ -2,11 +2,10 @@ import numpy as np
 import torch
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
-from collections import defaultdict
 from IPython import get_ipython
 from os import makedirs
 from os.path import exists
-from pandas import DataFrame, read_csv
+from pandas import DataFrame, read_csv, Series
 from torch.nn.functional import pad
 from torch.utils.data import DataLoader
 from shutil import rmtree
@@ -159,14 +158,19 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
         # Reads the DataFrame that handles the data per class
         class_df_wf = read_csv(class_file_name[:-4] + "_wfluid.csv")
         # Reads the DataFrame that handles the data per vendor
-        vendor_df_wf = read_csv(vendor_file_name[:-4] + "_wfluid.csv", index_col="Vendor")
+        vendor_df_wf = read_csv(vendor_file_name[:-4] + "_wfluid.csv", index_col="Vendor")        
+        # Reads the DataFrame that handles the data per class
+        class_df_wof = read_csv(class_file_name[:-4] + "_wofluid.csv")
+        # Reads the DataFrame that handles the data per vendor
+        vendor_df_wof = read_csv(vendor_file_name[:-4] + "_wofluid.csv", index_col="Vendor")
         # Removes the name of the column that has the table's index
         vendor_df.index.name = None
         vendor_df_wf.index.name = None
+        vendor_df_wof.index.name = None
         # Saves, to the corresponding fold in the 
         # dictionary, the two DataFrames as a 
         # single tuple
-        df_dict[fold] = (class_df, vendor_df, class_df_wf, vendor_df_wf)
+        df_dict[fold] = (class_df, vendor_df, class_df_wf, vendor_df_wf, class_df_wof, vendor_df_wof)
     # Gets the list of vendors and fluids
     vendors = vendor_df.index.to_list()
     fluids = class_df.columns.to_list()
@@ -177,6 +181,7 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
     # e.g. of a column name: Dice_IRF
     vendor_df = DataFrame(columns=fluids)
     vendor_df_wf = DataFrame(columns=fluids)
+    vendor_df_wof = DataFrame(columns=fluids)
     # Iterates through the 
     # vendors in the DataFrame
     # (rows)
@@ -185,12 +190,14 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
         # that will later be inserted as a row
         values = []
         values_wf = []
+        values_wof = []
         # Iterates through the fluids
         for fluid in fluids:
             # Initiates a list that will store the 
             # results across all folds
             results = []
             results_wf = []
+            results_wof = []
             # Iterates across all folds in the dictionary
             for fold, tuple_df in df_dict.items():
                 # Appends to the results list, the value at 
@@ -200,34 +207,44 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
                 # and vendors
                 results.append(float(tuple_df[1].at[vendor, fluid].split(" ")[0]))
                 results_wf.append(float(tuple_df[3].at[vendor, fluid].split(" ")[0]))
+                results_wof.append(float(tuple_df[5].at[vendor, fluid].split(" ")[0]))
             # Calculates the mean across all folds
             mean = np.array(results).mean()
             mean_wf = np.array(results_wf).mean()
+            mean_wof = np.array(results_wof).mean()
             # Calculates the standard deviation across all folds
             std = np.array(results).std()
             std_wf = np.array(results_wf).std()
+            std_wof = np.array(results_wof).std()
             # Saves the value as "mean (std)"
             value = f"{mean:.2f} ({std:.2f})"
             value_wf = f"{mean_wf:.2f} ({std_wf:.2f})"
+            value_wof = f"{mean_wof:.2f} ({std_wof:.2f})"
             # Appends the value to the list that will form a row
             values.append(value)
             values_wf.append(value_wf)
+            values_wof.append(value_wof)
         # Appends the results in a row to the DataFrame
         vendor_df.loc[len(vendor_df)] = values
         vendor_df_wf.loc[len(vendor_df_wf)] = values_wf
+        vendor_df_wof.loc[len(vendor_df_wf)] = values_wf
     # Sets the name of the axis in the 
     # DataFrame to the name of the vendors
     vendor_df = vendor_df.set_axis(vendors)
     vendor_df = vendor_df.rename_axis("vendors")
     vendor_df_wf = vendor_df_wf.set_axis(vendors)
-    vendor_df_wf = vendor_df_wf.rename_axis("vendors")
+    vendor_df_wf = vendor_df_wf.rename_axis("vendors") 
+    vendor_df_wof = vendor_df_wof.set_axis(vendors)
+    vendor_df_wof = vendor_df_wof.rename_axis("vendors")
     # Saves the DataFrame with a name refering to the iteration
     if not resized_images:
         vendor_df.to_csv(f".\\results\\Iteration{iteration}_vendors_results.csv")
         vendor_df_wf.to_csv(f".\\results\\Iteration{iteration}_vendors_results_wfluid.csv")
+        vendor_df_wof.to_csv(f".\\results\\Iteration{iteration}_vendors_results_wofluid.csv")
     else:
         vendor_df.to_csv(f".\\results\\Iteration{iteration}_vendors_results_resized.csv")
         vendor_df_wf.to_csv(f".\\results\\Iteration{iteration}_vendors_results_resized_wfluid.csv")
+        vendor_df_wof.to_csv(f".\\results\\Iteration{iteration}_vendors_results_resized_wofluid.csv")
 
     # Initiates the DataFrame with the name 
     # of the fluids as the columns names for 
@@ -235,16 +252,19 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
     # e.g. of a column name: Dice_IRF
     class_df = DataFrame(columns=fluids)
     class_df_wf = DataFrame(columns=fluids)
+    class_df_wof = DataFrame(columns=fluids)
     # Initiates a list that will store the 
     # values of the classes 
     values = []
     values_wf = []
+    values_wof = []
     # Iterates through the fluids
     for fluid in fluids:
         # Initiates a list that will store the 
         # results across all folds
         results = []
         results_wf = []
+        results_wof = []
         # Iterates across all folds in the dictionary
         for fold, tuple_df in df_dict.items():
             # Appends to the results list, the value at 
@@ -253,28 +273,36 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
             # comprises information of the classes
             results.append(float(tuple_df[0].at[0, fluid].split(" ")[0]))
             results_wf.append(float(tuple_df[2].at[0, fluid].split(" ")[0]))
+            results_wof.append(float(tuple_df[4].at[0, fluid].split(" ")[0]))
         # Calculates the mean across all folds
         mean = np.array(results).mean()
         mean_wf = np.array(results_wf).mean()
+        mean_wof = np.array(results_wof).mean()
         # Calculates the standard deviation across all folds
         std = np.array(results).std()
         std_wf = np.array(results_wf).std()
+        std_wof = np.array(results_wof).std()
         # Saves the value as "mean (std)"
         value = f"{mean:.2f} ({std:.2f})"
         value_wf = f"{mean_wf:.2f} ({std_wf:.2f})"
+        value_wof = f"{mean_wof:.2f} ({std_wof:.2f})"
         # Appends the value to the list that will form a row
         values.append(value)
         values_wf.append(value_wf)
+        values_wof.append(value_wof)
     # Appends the results in a row to the DataFrame
     class_df.loc[len(class_df)] = values
     class_df_wf.loc[len(class_df_wf)] = values
+    class_df_wof.loc[len(class_df_wof)] = values
     # Saves the DataFrame with a name refering to the iteration, not including the index
     if not resized_images:
         class_df.to_csv(f".\\results\\Iteration{iteration}_classes_results.csv", index=False)
         class_df_wf.to_csv(f".\\results\\Iteration{iteration}_classes_results_wfluid.csv", index=False)
+        class_df_wof.to_csv(f".\\results\\Iteration{iteration}_classes_results_wofluid.csv", index=False)
     else:
         class_df.to_csv(f".\\results\\Iteration{iteration}_classes_results_resized.csv", index=False)
         class_df_wf.to_csv(f".\\results\\Iteration{iteration}_classes_results_resized_wfluid.csv", index=False)
+        class_df_wof.to_csv(f".\\results\\Iteration{iteration}_classes_results_resized_wofluid.csv", index=False)
 
 def test_model (
         fold_test: int,
@@ -442,10 +470,10 @@ def test_model (
                 
                 # Calculates the Dice coefficient of the predicted mask, and gets the result of the union and intersection between the GT and 
                 # the predicted mask 
-                dice_scores, voxel_counts, union_counts, intersection_counts = dice_coefficient(model_name, preds, true_masks, number_of_classes)
+                dice_scores, voxel_counts, union_counts, intersection_counts, binary_dice = dice_coefficient(model_name, preds, true_masks, number_of_classes)
 
                 # Appends the results per slice, per volume, and per vendor
-                slice_results.append([image_name, *dice_scores, *voxel_counts, *union_counts, *intersection_counts])
+                slice_results.append([image_name, *dice_scores, *voxel_counts, *union_counts, *intersection_counts, binary_dice])
 
                 # Saves the predicted masks and the GT, in case it is desired
                 if save_images:
@@ -508,7 +536,8 @@ def test_model (
                                 *[f"dice_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
                                 *[f"voxels_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
                                 *[f"union_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
-                                *[f"intersection_{label_to_fluids.get(i)}" for i in range(number_of_classes)]])
+                                *[f"intersection_{label_to_fluids.get(i)}" for i in range(number_of_classes)],
+                                "binary_dice"])
     
     if not resize_images:
         slice_df.to_csv(f"results/{run_name}_slice_dice.csv", index=False)
@@ -536,22 +565,18 @@ def test_model (
     class_df_std = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
     resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
 
-    # Saves the DataFrame that contains the values for each volume
+    # Appends the binary Dice coefficient to a list that holds them
+    binary_dices = []
+    binary_dices.append(slice_df["binary_dice"].mean()[0])
+
+    # Saves the DataFrame that contains the values for each volume, class, and vendor
     if not resize_images:
         resulting_volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
-    else:
-        resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
-
-    # Saves the DataFrame that contains the values for each class
-    if not resize_images:
         resulting_class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
-    else:
-        resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized.csv", index=False)
-
-    # Saves the DataFrame that contains the values for each vendor
-    if not resize_images:
         resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
     else:
+        resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
+        resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized.csv", index=False)
         resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)
 
     # Handles the information only on the slices that have the fluid
@@ -582,23 +607,63 @@ def test_model (
     class_df_std = slice_df_wf[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
     resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
 
-    # Saves the DataFrame that contains the values for each volume
+    # Saves the DataFrame that contains the values for each volume, class, and vendor
     if not resize_images:
         resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid.csv", index=True)
-    else:
-        resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid.csv", index=True)
-
-    # Saves the DataFrame that contains the values for each class
-    if not resize_images:
         resulting_class_df.to_csv(f"results/{run_name}_class_dice_wfluid.csv", index=False)
-    else:
-        resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wfluid.csv", index=False)
-
-    # Saves the DataFrame that contains the values for each vendor
-    if not resize_images:
         resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid.csv", index=True)
     else:
+        resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid.csv", index=True)
+        resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wfluid.csv", index=False)
         resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid.csv", index=True)
+    
+    # Appends the binary Dice coefficient to a list that holds 
+    # them of the slices that have fluid
+    binary_dices.append(slice_df_wf["binary_dice"].mean()[0])
+
+    # Handles the information only on the slices that do not have fluid
+    slice_df_wof = slice_df.copy()
+    # Iterates through all the classes available
+    for i in range(number_of_classes):
+        # Gets the DataFrame that
+        slice_df_wof.loc[slice_df_wof[f"voxels_{label_to_fluids.get(i)}"] > 0, f"dice_{label_to_fluids.get(i)}"] = np.nan
+
+    # Adds the vendor, volume, and number of the slice information to the DataFrame
+    slice_df_wof[['vendor', 'volume', 'slice_number']] = slice_df_wof['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
+    # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
+    volume_df_mean = slice_df_wof[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").mean()
+    volume_df_mean.index.name = "Volume"
+    volume_df_std = slice_df_wof[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").std()
+    volume_df_std.index.name = "Volume"
+    resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
+
+    # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
+    vendor_df_mean = slice_df_wof[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
+    vendor_df_mean.index.name = "Vendor"
+    vendor_df_std = slice_df_wof[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").std()
+    vendor_df_std.index.name = "Vendor"
+    resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
+
+    # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
+    class_df_mean = slice_df_wof[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
+    class_df_std = slice_df_wof[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
+    resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
+
+    # Saves the DataFrame that contains the values for each volume, class, and vendor
+    if not resize_images:
+        resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid.csv", index=True)
+        resulting_class_df.to_csv(f"results/{run_name}_class_dice_wofluid.csv", index=False)
+        resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid.csv", index=True)
+        binary_dices_name = "fluid_dice"
+    else:
+        resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid.csv", index=True)
+        resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wofluid.csv", index=False)
+        resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid.csv", index=True)
+        binary_dices_name = "fluid_dice_resized"
+    # Appends the binary Dice coefficient to a list that holds 
+    # them of the slices that have fluid
+    binary_dices.append(slice_df_wof["binary_dice"].mean()[0])
+    Series(binary_dices, axis=["overall", "fluid", "no_fluid"]).to_frame().T.to_csv(f"results/{run_name}_{binary_dices_name}.csv", index=False)
 
 # In case it is preferred to run 
 # directly in this file, here lays 

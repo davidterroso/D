@@ -201,5 +201,20 @@ def dice_coefficient(model_name: str, prediction: torch.Tensor,
         union_counts.append(int(union.item()))
         # Appends the intersection value to a list
         intersection_counts.append(int(intersection.item()))
+
+    # Binarizes the prediction 
+    # and target mask
+    prediction = (prediction !=0).float()
+    target = (target !=0).float()
+    # Calculates the sum of the intersections in the 
+    # binary mask
+    intersection = (prediction * target).sum()
+    # Calculates the union of classes
+    union = prediction.sum() + target.sum()
+    # Calculates the Dice coeficient
+    if (intersection == 0) and (union == 0):
+        binary_dice = 1.
+    else:
+        binary_dice = (2. * intersection) / (union)
         
-    return dice_scores, voxel_counts, union_counts, intersection_counts 
+    return dice_scores, voxel_counts, union_counts, intersection_counts, binary_dice 
