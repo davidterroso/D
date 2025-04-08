@@ -51,7 +51,8 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
                              n_pos: int, n_neg: int, pos: int, neg: int, 
                              train_volumes: list, val_volumes: list, 
                              batch_size: int, patch_dropping: bool, drop_prob: float,
-                             num_patches: int, seed: int, fold_val: int, fold_test: int=1):
+                             num_patches: int, seed: int, fold_val: int, 
+                             fluid: int=None, fold_test: int=1):
     """
     Args:
         model_name (str): name of the model desired to train
@@ -92,6 +93,7 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
             indicated, the default value is None and the seed is
             not fixed
         fold_val (int): fold used by the model in validation
+        fluid (int): label of the fluid to segment
         fold_test (int): fold used by the model in testing. 
             The default value is 1 because that is the fold 
             that we are using in testing
@@ -216,8 +218,8 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations
     if num_patches <= 7:
-        train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, seed)
-        val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, seed)
+        train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, fluid)
+        val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, fluid)
     else:
         train_img_path_to_lmdb = f".\\lmdb\\train_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
         train_mask_path_to_lmdb = f".\\lmdb\\train_masks_{num_patches}_{fold_test}_{fold_val}.lmdb"

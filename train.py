@@ -375,7 +375,7 @@ def train_model (
             val_volumes=val_volumes, batch_size=batch_size, 
             patch_dropping=patch_dropping, drop_prob=drop_prob, 
             num_patches=num_patches, seed=seed, fold_val=fold_val, 
-            fold_test=fold_test)
+            fold_test=fold_test, fluid=fluid)
 
     # Initiates the counter of patience
     patience_counter = 0
@@ -393,7 +393,7 @@ def train_model (
                 n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
                 val_volumes=val_volumes, batch_size=batch_size, 
                 patch_dropping=patch_dropping, drop_prob=drop_prob, seed=seed, fold_val=fold_val, 
-                fold_test=fold_test)
+                fold_test=fold_test, fluid=fluid)
 
         # Indicates the model that it is going to be trained
         model.train()
@@ -413,7 +413,7 @@ def train_model (
                 images, true_masks = batch["scan"], batch["mask"]
 
                 ######## USED TO DISPLAY IMAGES WHEN DEBUGGING #########
-                # Iterates through the images in the batch
+                # # Iterates through the images in the batch
                 # for im in range(batch_size):
                 #     oct_image = images.numpy()[im][0]
                 #     mask = true_masks.numpy()[im][0]

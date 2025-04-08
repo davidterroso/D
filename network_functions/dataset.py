@@ -442,7 +442,7 @@ class TrainDataset(Dataset):
         # In case the model selected is the UNet3, all the labels 
         # that are not the one desired to segment are set to 0
         if self.model == "UNet3":
-            mask = ((mask == self.fluid).astype(int) * self.fluid)
+            mask = ((mask == int(self.fluid)).astype(np.uint8))
 
         # Expands the scan dimentions to 
         # include an extra channel of value 1
@@ -591,6 +591,11 @@ class ValidationDataset(Dataset):
         # fluid mask
         scan = imread(slice_name)
         mask = imread(mask_name)
+
+        # In case the model selected is the UNet3, all the labels 
+        # that are not the one desired to segment are set to 0
+        if self.model == "UNet3":
+            mask = ((mask == self.fluid).astype(np.uint8))
 
         # Z-Score Normalization / Standardization
         # Mean of 0 and SD of 1
