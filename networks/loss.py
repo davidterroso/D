@@ -216,8 +216,8 @@ def dice_coefficient(model_name: str, prediction: torch.Tensor,
 
     # Binarizes the prediction 
     # and target mask
-    prediction = (prediction !=0).float()
-    target = (target !=0).float()
+    prediction = (prediction != 0).float()
+    target = (target != 0).float()
     # Calculates the sum of the intersections in the 
     # binary mask
     intersection = (prediction * target).sum()

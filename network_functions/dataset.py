@@ -756,7 +756,7 @@ class TestDataset(Dataset):
         # In case the model selected is the UNet3, all the labels 
         # that are not the one desired to segment are set to 0
         if self.model == "UNet3":
-            mask = ((mask == self.fluid).astype(int) * self.fluid)
+            mask = ((mask == self.fluid).astype(np.uint8))
 
         # The shape of the test images is handled in different ways depending 
         # whether it was done using patches or not
