@@ -23,27 +23,42 @@ def runs_resume(prefix: str, starting_run: int,
     Return:
         None
     """
-    # Declares the name of the files that will be handled,
-    # depending on which the images have been resized or not
 
     assert prefix in ["Run", "Iteration"],\
     """ Invalid Prefix: select "Run" or "Iteration" """
-    
-    files_names = ["vendor_dice", 
-                   "vendor_dice_wfluid", 
-                   "vendor_dice_wofluid", 
-                   "class_dice", 
-                   "class_dice_wfluid", 
-                   "class_dice_wofluid", 
-                   "fluid_dice"]
-    files_names_resized = ["vendor_dice_resized", 
-                           "vendor_dice_resized_wfluid", 
-                           "vendor_dice_resized_wofluid", 
-                           "class_dice_resized", 
-                           "class_dice_resized_wfluid", 
-                           "class_dice_resized_wofluid", 
-                           "fluid_dice_resized"]
 
+    # Declares the name of the files that will be handled,
+    # depending on which the images have been resized or not
+    if prefix == "Run":
+        files_names = ["vendor_dice", 
+                    "vendor_dice_wfluid", 
+                    "vendor_dice_wofluid", 
+                    "class_dice", 
+                    "class_dice_wfluid", 
+                    "class_dice_wofluid", 
+                    "fluid_dice"]
+        files_names_resized = ["vendor_dice_resized", 
+                            "vendor_dice_resized_wfluid", 
+                            "vendor_dice_resized_wofluid", 
+                            "class_dice_resized", 
+                            "class_dice_resized_wfluid", 
+                            "class_dice_resized_wofluid", 
+                            "fluid_dice_resized"]
+    else:
+        files_names = ["vendors_results", 
+                    "vendors_results_wfluid", 
+                    "vendors_results_wofluid", 
+                    "classes_results", 
+                    "classes_results_wfluid", 
+                    "classes_results_wofluid", 
+                    "fluid_dice"]
+        files_names_resized = ["vendors_results_resized", 
+                            "vendors_results_resized_wfluid", 
+                            "vendors_results_resized_wofluid", 
+                            "classes_results_resized", 
+                            "classes_results_resized_wfluid", 
+                            "classes_results_resized_wofluid", 
+                            "fluid_dice_resized"]
     # Iterates through all the runs that were indicated
     for run_number in range(starting_run, ending_run + 1):
         # Sets the name of the files 
@@ -52,10 +67,17 @@ def runs_resume(prefix: str, starting_run: int,
         # run number higher than 23 
         # have been extracted in 
         # resized images
-        if run_number < 23:
-            files_to_load = files_names
+        if prefix == "Run":
+            if run_number < 23:
+                files_to_load = files_names
+            else:
+                files_to_load = files_names_resized            
         else:
-            files_to_load = files_names_resized
+            if run_number < 5:
+                files_to_load = files_names
+            else:
+                files_to_load = files_names_resized
+
         # Changes the number to match the one 
         # used in the files (e.g. 1 -> 001)
         run_number = str(run_number).zfill(3)
