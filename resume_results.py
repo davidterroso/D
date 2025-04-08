@@ -51,14 +51,14 @@ def runs_resume(prefix: str, starting_run: int,
                     "classes_results", 
                     "classes_results_wfluid", 
                     "classes_results_wofluid", 
-                    "fluid_dice"]
+                    "fluids_results"]
         files_names_resized = ["vendors_results_resized", 
                             "vendors_results_resized_wfluid", 
                             "vendors_results_resized_wofluid", 
                             "classes_results_resized", 
                             "classes_results_resized_wfluid", 
                             "classes_results_resized_wofluid", 
-                            "fluid_dice_resized"]
+                            "fluids_results_resized"]
     # Iterates through all the runs that were indicated
     for run_number in range(starting_run, ending_run + 1):
         # Sets the name of the files 
@@ -80,7 +80,10 @@ def runs_resume(prefix: str, starting_run: int,
 
         # Changes the number to match the one 
         # used in the files (e.g. 1 -> 001)
-        run_number = str(run_number).zfill(3)
+        if prefix == 'Run':
+            run_number = str(run_number).zfill(3)
+        else:
+            run_number = str(run_number)
         # Initiates the results 
         # with the number of the run 
         results = [prefix + run_number]
@@ -109,7 +112,9 @@ def runs_resume(prefix: str, starting_run: int,
             vendor_dice_wofluid = read_csv(files_paths[2])
             # Iterates through all the vendors and fluids and 
             # appends the values to the results array
-            for idx, vendor in enumerate(vendor_dice["Vendor"]):
+            if prefix == "Run": iter_vendor_dice = vendor_dice["Vendor"]
+            else: iter_vendor_dice = vendor_dice["vendors"]
+            for idx, vendor in enumerate(iter_vendor_dice):
                 for fluid in vendor_dice.columns[1:]:
                     results.append(vendor_dice.at[idx, fluid]) 
                     results.append(vendor_dice_wfluid.at[idx, fluid])
@@ -137,6 +142,28 @@ def runs_resume(prefix: str, starting_run: int,
             # appends them to the list of results
             for value in fluid_dice:
                 results.append(value)
+
+            # In case Runs are being handled, 
+            # the number of decimal cases 
+            # will be reduced
+            if prefix == "Run":
+                # The first value is unchanged 
+                # because it is a string
+                results_simple = [results[0]]
+                # Iterates through the results
+                for result in results[1:]:
+                    # Splits the value by separating the 
+                    # part that corresponds to the mean 
+                    # and to the standard deviation  
+                    mean_part, std_part = result.split("(")
+                    # Removes any remaining whitespaces 
+                    # or brackets and converts the values 
+                    # to float
+                    mean = float(mean_part.strip())
+                    std = float(std_part.strip(" )"))
+                    # Keeps only three decimal places of the values
+                    results_simple.append(f"{mean:.3f} ({std:.3f})")
+                results = results_simple
 
             # Saves the results as a CSV file that will contain the 
             # Dice values in the following order:
