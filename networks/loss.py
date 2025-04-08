@@ -68,6 +68,18 @@ def multiclass_balanced_cross_entropy_loss(model_name: str,
     Return:
         (float): loss of the background segmentation
     """
+    # Check to verify that the probabilities in one class correspond 
+    # to 1 - the other, when dealing with two classes
+    if n_classes == 2:
+        # Calculates the difference between the values explained
+        diff = torch.abs((1.0 - y_pred[..., 0]) - y_pred[..., 1])
+        max_diff = torch.max(diff)
+        # If the difference is above a threshold, an error is raised
+        # (a requirement to be exactly the same would likely cause 
+        # crashes due to minor approximations or floating point)
+        if max_diff > 1e-4:
+            raise ValueError(f"Softmax channel sum check failed. Max difference: {max_diff.item():.6f}")
+        
     # In case the model is 2.5D, 
     # it needs to crop the images 
     # to evaluate, since the output 
