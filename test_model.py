@@ -244,7 +244,7 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
         # Appends the results in a row to the DataFrame
         vendor_df.loc[len(vendor_df)] = values
         vendor_df_wf.loc[len(vendor_df_wf)] = values_wf
-        vendor_df_wof.loc[len(vendor_df_wf)] = values_wf
+        vendor_df_wof.loc[len(vendor_df_wf)] = values_wof
     # Sets the name of the axis in the 
     # DataFrame to the name of the vendors
     vendor_df = vendor_df.set_axis(vendors)
@@ -309,8 +309,8 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
         values_wof.append(value_wof)
     # Appends the results in a row to the DataFrame
     class_df.loc[len(class_df)] = values
-    class_df_wf.loc[len(class_df_wf)] = values
-    class_df_wof.loc[len(class_df_wof)] = values
+    class_df_wf.loc[len(class_df_wf)] = values_wf
+    class_df_wof.loc[len(class_df_wof)] = values_wof
     # Saves the DataFrame with a name refering to the iteration, not including the index
     if not resized_images:
         class_df.to_csv(f".\\results\\Iteration{iteration}_classes_results.csv", index=False)
