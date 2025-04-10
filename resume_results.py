@@ -72,6 +72,11 @@ def runs_resume(prefix: str, starting_run: int,
                 files_to_load = files_names
             else:
                 files_to_load = files_names_resized            
+                if run_number > 62:
+                    if "class_dice_resized_wfluid" in files_to_load: files_to_load.remove("class_dice_resized_wfluid")
+                    if "class_dice_resized_wofluid" in files_to_load: files_to_load.remove("class_dice_resized_wofluid")
+                    if "fluid_dice_resized" in files_to_load: files_to_load.remove("fluid_dice_resized")
+
         else:
             if run_number < 5:
                 files_to_load = files_names
@@ -123,25 +128,28 @@ def runs_resume(prefix: str, starting_run: int,
             # Loads the CSV files that contain the Dice 
             # coefficient for each class
             class_dice = read_csv(files_paths[3])
-            class_dice_wfluid = read_csv(files_paths[4])
-            class_dice_wofluid = read_csv(files_paths[5])
+            if int(run_number) < 63:
+                class_dice_wfluid = read_csv(files_paths[4])
+                class_dice_wofluid = read_csv(files_paths[5])
 
             # Iterates through the fluids in the class files and 
             # appends them to the results list
             for fluid in class_dice.columns:
                 results.append(class_dice.at[0, fluid])
-                results.append(class_dice_wfluid.at[0, fluid])
-                results.append(class_dice_wofluid.at[0, fluid])
+                if int(run_number) < 63:    
+                    results.append(class_dice_wfluid.at[0, fluid])
+                    results.append(class_dice_wofluid.at[0, fluid])
 
-            # Reads the file that contains the Dice 
-            # resulting from the binarization of 
-            # the fluid masks
-            fluid_dice = read_csv(files_paths[6], header=None, index_col=False).iloc[1].tolist()
-            
-            # Iterates through the values and 
-            # appends them to the list of results
-            for value in fluid_dice:
-                results.append(value)
+            if int(run_number) < 63:
+                # Reads the file that contains the Dice 
+                # resulting from the binarization of 
+                # the fluid masks
+                fluid_dice = read_csv(files_paths[6], header=None, index_col=False).iloc[1].tolist()
+                
+                # Iterates through the values and 
+                # appends them to the list of results
+                for value in fluid_dice:
+                    results.append(value)
 
             # In case Runs are being handled, 
             # the number of decimal cases 
