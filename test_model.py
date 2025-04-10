@@ -476,7 +476,7 @@ def test_model (
 
     # Creates the TestDataset and DataLoader object with the test volumes
     # Number of workers was set to the most optimal
-    test_dataset = TestDataset(test_volumes, model_name, patch_type, resize_images, resize_shape)
+    test_dataset = TestDataset(test_volumes, model_name, patch_type, resize_images, resize_shape, fluids_to_label.get(fluid))
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=12, collate_fn=collate_fn)
     
     # Initiates the list that will 
@@ -581,7 +581,10 @@ def test_model (
                     # Saves the OCT scan with an overlay of the ground-truth masks
                     plt.figure(figsize=(oct_image.shape[1] / 100, oct_image.shape[0] / 100))
                     plt.imshow(oct_image, cmap=plt.cm.gray)
-                    plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+                    if model_name == "UNet3":
+                        plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap)
+                    else:
+                        plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
                     plt.axis("off")
                     plt.savefig(gt_mask_name, bbox_inches="tight", pad_inches=0)
 
@@ -608,10 +611,10 @@ def test_model (
     else:
         slice_df = DataFrame(slice_results, 
                     columns=["slice", 
-                            *[f"dice_{label_to_fluids.get(i)}" for i in [fluids_to_label.get("Background"), fluids_to_label.get(fluid)]], 
-                            *[f"voxels_{label_to_fluids.get(i)}" for i in [fluids_to_label.get("Background"), fluids_to_label.get(fluid)]], 
-                            *[f"union_{label_to_fluids.get(i)}" for i in [fluids_to_label.get("Background"), fluids_to_label.get(fluid)]], 
-                            *[f"intersection_{label_to_fluids.get(i)}" for i in [fluids_to_label.get("Background"), fluids_to_label.get(fluid)]],
+                            *[f"dice_{label_to_fluids.get(i)}" for i in [0, fluids_to_label.get(fluid)]], 
+                            *[f"voxels_{label_to_fluids.get(i)}" for i in [0, fluids_to_label.get(fluid)]], 
+                            *[f"union_{label_to_fluids.get(i)}" for i in [0, fluids_to_label.get(fluid)]], 
+                            *[f"intersection_{label_to_fluids.get(i)}" for i in [0, fluids_to_label.get(fluid)]],
                             "binary_dice"])
     
     # Declares the name under which the DataFrame will be saved 
@@ -859,44 +862,10 @@ def test_model (
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid.csv", index=True)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid.csv", index=True)
             classes_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
-            binary_dices_name = "fluid_dice"
         else:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid.csv", index=True)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid.csv", index=True)
             classes_df.to_csv(f"results/{run_name}_class_dice_resized.csv", index=False)
-            binary_dices_name = "fluid_dice_resized"
-        # Appends the binary Dice coefficient to a list that holds 
-        # them of the slices that have fluid
-        binary_dices = []
-        
-        # Appends the binary Dice coefficient to a list that holds these values
-        binary_dices.append(f"{slice_df['binary_dice'].mean()} ({slice_df['binary_dice'].std()})")
-
-        # Get the fluid voxel column names for 
-        # the segmented fluid
-        fluid_voxel_cols = [f"voxels_{fluid}"]
-
-        # Copies the original DataFrame 
-        # on which changes will be applied
-        slice_df_wf = slice_df.copy()
-        slice_df_wof = slice_df.copy()
-
-        # For the 'with fluid' DataFrame, the slices with no fluid will be set to NaN in the 
-        # column that contains the binary Dice 
-        slice_df_wf.loc[slice_df_wf[fluid_voxel_cols].sum(axis=1) == 0, 'binary_dice'] = np.nan
-
-        # For the 'without fluid' DataFrame, the slices with any fluid will be set to NaN in the 
-        # column that contains the binary Dice
-        slice_df_wof.loc[slice_df_wof[fluid_voxel_cols].sum(axis=1) > 0, 'binary_dice'] = np.nan
-
-        # The mean and std of each column is added to a list that contains the results in binary conditions
-        binary_dices.append(f"{slice_df_wf['binary_dice'].mean()} ({slice_df_wf['binary_dice'].std()})")
-        binary_dices.append(f"{slice_df_wof['binary_dice'].mean()} ({slice_df_wof['binary_dice'].std()})")
-
-        # Saves the results as a DataFrame
-        df = Series(binary_dices).to_frame().T
-        df.columns = ["AllSlices", "SlicesWithFluid", "SlicesWithoutFluid"]
-        df.to_csv(f"results/{run_name}_{binary_dices_name}.csv", index=False)
         
 # In case it is preferred to run 
 # directly in this file, here lays 
