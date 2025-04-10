@@ -378,7 +378,8 @@ def test_model (
         patch_type: str,
         save_images: bool,
         resize_images: bool=False,
-        fluid: int=None
+        fluid: int=None,
+        final_test: bool=False
     ):
     """
     Function used to test the trained models
@@ -408,6 +409,9 @@ def test_model (
             will be resized or not in testing 
         fluid (int): integer that is associated with the label desired 
             to segment
+        final_test (bool): indicates that the final test will be 
+            performed, changing the name of the saved files. Since final
+            testing is rare, the default value is False 
             
     Return:
         None
@@ -490,16 +494,22 @@ def test_model (
     # Declares the name of the folder in which the images will be saved
     if save_images:
         if not resize_images:
+            if final_test: 
+                folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final\\"
             # In case the folder to save exists, it is deleted and created again
-            folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}\\"
+            else:
+                folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}\\"
             if exists(folder_to_save):
                 rmtree(folder_to_save)
                 makedirs(folder_to_save)
             else:
                 makedirs(folder_to_save)
         else:
+            if final_test:
+                folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_final\\"
+            else:
+                folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized\\"
             # In case the folder to save exists, it is deleted and created again
-            folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized\\"
             if exists(folder_to_save):
                 rmtree(folder_to_save)
                 makedirs(folder_to_save)
@@ -618,10 +628,16 @@ def test_model (
                             "binary_dice"])
     
     # Declares the name under which the DataFrame will be saved 
-    if not resize_images:
-        slice_df.to_csv(f"results/{run_name}_slice_dice.csv", index=False)
+    if not final_test:
+        if not resize_images:
+            slice_df.to_csv(f"results/{run_name}_slice_dice.csv", index=False)
+        else:
+            slice_df.to_csv(f"results/{run_name}_slice_dice_resized.csv", index=False)        
     else:
-        slice_df.to_csv(f"results/{run_name}_slice_dice_resized.csv", index=False)
+        if not resize_images:
+            slice_df.to_csv(f"results/{run_name}_slice_dice_final.csv", index=False)
+        else:
+            slice_df.to_csv(f"results/{run_name}_slice_dice_resized_final.csv", index=False)
 
     if model_name != "UNet3":
         # Adds the vendor, volume, and number of the slice information to the DataFrame
@@ -650,10 +666,14 @@ def test_model (
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
             resulting_class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
-        else:
+        elif not final_test:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
             resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized.csv", index=False)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)
+            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)            
+        else:
+            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_final.csv", index=True)
+            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_final.csv", index=False)
+            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_final.csv", index=True)
 
         # Handles the information only on the slices that have the fluid
         slice_df_wf = slice_df.copy()
@@ -688,10 +708,14 @@ def test_model (
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid.csv", index=True)
             resulting_class_df.to_csv(f"results/{run_name}_class_dice_wfluid.csv", index=False)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid.csv", index=True)
-        else:
+        elif not final_test:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid.csv", index=True)
             resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wfluid.csv", index=False)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid.csv", index=True)
+        else:
+            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid_final.csv", index=True)
+            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wfluid_final.csv", index=False)
+            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid_final.csv", index=True)
         
         # Handles the information only on the slices that do not have fluid
         slice_df_wof = slice_df.copy()
@@ -727,11 +751,17 @@ def test_model (
             resulting_class_df.to_csv(f"results/{run_name}_class_dice_wofluid.csv", index=False)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid.csv", index=True)
             binary_dices_name = "fluid_dice"
-        else:
+        elif not final_test:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid.csv", index=True)
             resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wofluid.csv", index=False)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid.csv", index=True)
             binary_dices_name = "fluid_dice_resized"
+        else:
+            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid_final.csv", index=True)
+            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wofluid_final.csv", index=False)
+            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid_final.csv", index=True)
+            binary_dices_name = "fluid_dice_resized_final"
+
         # Initializes a list that will hold the results for the binary case
         binary_dices = []
         # Appends the binary Dice coefficient to a list that holds these values
