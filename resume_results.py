@@ -81,7 +81,7 @@ def runs_resume(prefix: str, starting_run: int,
         # Changes the number to match the one 
         # used in the files (e.g. 1 -> 001)
         if prefix == 'Run':
-            run_number = str(run_number)
+            run_number = str(run_number).zfill(3)
         else:
             run_number = str(run_number)
         # Initiates the results 
@@ -235,5 +235,5 @@ def combine_csvs_to_excel(folder_path, output_excel_path):
         iteration_df.to_excel(writer, sheet_name="Iterations", index=False, header=False)
 
 runs_resume(starting_run=1, ending_run=63, folder=".\\results\\", prefix="Run")
-# runs_resume(starting_run=1, ending_run=19, folder=".\\results\\", prefix="Iteration")
+runs_resume(starting_run=1, ending_run=19, folder=".\\results\\", prefix="Iteration")
 combine_csvs_to_excel(folder_path=".\\results\\", output_excel_path=".\\results\\combined_output.xlsx")
