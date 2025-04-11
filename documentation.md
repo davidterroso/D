@@ -31,6 +31,9 @@
 - [unet\_random\_patches.ipynb](#unet_random_patchesipynb)
 - [unet\_vertical\_variability.ipynb](#unet_vertical_variabilityipynb)
 - [unet\_vertical.ipynb](#unet_verticalipynb)
+- [unet3\_irf.ipynb](#unet3_irfipynb)
+- [unet3\_ped.ipynb](#unet3_pedipynb)
+- [unet3\_srf.ipynb](#unet3_srfipynb)
 - [visualize\_scans.py](#visualize_scanspy)
 - [Libraries](#libraries)
 - [RETOUCH Folder Structure](#retouch-folder-structure)
@@ -135,7 +138,16 @@ D
  ┃ ┣ Run024_training_error.png # PNG file which contains the plots of the training and evaluation error in Run024  
  ┃ ┗ ...
  ┣ unet_vertical_variability_imgs # Folder that contains the relevant images output from the unet_vertical_variability.ipynb file
- ┃ ┣ Run035_training_error.png # PNG file which contains the plots of the training and evaluation error in Run024  
+ ┃ ┣ Run035_training_error.png # PNG file which contains the plots of the training and evaluation error in Run035  
+ ┃ ┗ ...
+ ┣ unet3_irf_imgs # Folder that contains the relevant images output from the unet3_irf.ipynb file
+ ┃ ┣ Run063_training_error.png # PNG file which contains the plots of the training and evaluation error in Run063  
+ ┃ ┗ ...
+ ┣ unet3_ped_imgs # Folder that contains the relevant images output from the unet3_ped.ipynb file
+ ┃ ┣ Run071_training_error.png # PNG file which contains the plots of the training and evaluation error in Run071
+ ┃ ┗ ...
+ ┣ unet3_srf_imgs # Folder that contains the relevant images output from the unet3_srf.ipynb file
+ ┃ ┣ Run067_training_error.png # PNG file which contains the plots of the training and evaluation error in Run067
  ┃ ┗ ...
  ┣ .gitignore # Declares the files that must not be updated to git
  ┣ documentation.md # Project documentation
@@ -153,6 +165,9 @@ D
  ┣ unet_vertical_variability.ipynb # Training of the U-Net with patches that are bigger vertically and not extracted 
  ┃                     # randomly, to test the model variability
  ┣ unet_vertical.ipynb # Training of the U-Net with patches that are bigger vertically and not extracted randomly
+ ┣ unet3_irf.ipynb # Training of the U-Net with patches that are bigger vertically and not extracted randomly, for IRF segmentation
+ ┣ unet3_ped.ipynb # Training of the U-Net with patches that are bigger vertically and not extracted randomly, for PED segmentation
+ ┣ unet3_srf.ipynb # Training of the U-Net with patches that are bigger vertically and not extracted randomly, for SRF segmentation
  ┗ visualize_scans.py # Simple UI for the user to visualize what is happening to the images in the processing
  ```
 
@@ -243,6 +258,15 @@ Jupyter notebook that contains the functions that will be used to train, test, a
 
 ## [unet_vertical.ipynb](unet_vertical.ipynb)
 Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the training of the U-Net was performed patches not extracted randomly from resized images and its results are presented in the same file. The patches are much bigger vertically (496px) than horizontally (128px), hence the name.
+
+## [unet3_irf.ipynb](unet3_irf.ipynb)
+Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the training of the U-Net was performed patches not extracted randomly from resized images and its results are presented in the same file. The patches are much bigger vertically (496px) than horizontally (128px), hence the name. The segmentation performed is binary and will only be done in the IRF fluid. The training will be performed for two different splits, to also see the differences between them.
+
+## [unet3_ped.ipynb](unet3_ped.ipynb)
+Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the training of the U-Net was performed patches not extracted randomly from resized images and its results are presented in the same file. The patches are much bigger vertically (496px) than horizontally (128px), hence the name. The segmentation performed is binary and will only be done in the PED fluid. The training will be performed for two different splits, to also see the differences between them.
+
+## [unet3_srf.ipynb](unet3_srf.ipynb)
+Jupyter notebook that contains the functions that will be used to train, test, and plot the errors of the training process of the U-Net. In this file, the training of the U-Net was performed patches not extracted randomly from resized images and its results are presented in the same file. The patches are much bigger vertically (496px) than horizontally (128px), hence the name. The segmentation performed is binary and will only be done in the SRF fluid. The training will be performed for two different splits, to also see the differences between them.
 
 ## [visualize_scans.py](visualize_scans.py)
 File that, when ran, shows an UI that allows the user to select B-scans from the volumes in the training set of the RETOUCH dataset to visualize, showcasing the unaltered slice, the fluid masks, the entropy mask, and the ROI mask. 
