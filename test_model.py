@@ -109,7 +109,8 @@ def collate_fn(batch):
 
 
 def folds_results(first_run_name: str, iteration: int, k: int=5, 
-                  resized_images: bool=False):
+                  resized_images: bool=False, 
+                  binary_segmentation: bool=False):
     """
     Function used to compare the results obtained in the k folds,
     calculating the mean and standard deviation of the results 
@@ -128,6 +129,12 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
         k (int): number of folds used in this iteration
         resized_images (bool): flag that indicates whether the 
             images were resized or not
+        binary_segmentation (bool): flag that indicates that the 
+            models were trained for a binary segmentation task.
+            This is relevant because the name of the files are 
+            not the same as in the other runs. Since most runs
+            are in fact multi-class, the default value of this
+            argument is False
 
     Return: 
         None
@@ -167,30 +174,38 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
         # Reads the DataFrame that handles the data per class
         class_df = read_csv(class_file_name)
         # Reads the DataFrame that handles the data per vendor
-        vendor_df = read_csv(vendor_file_name, index_col="Vendor")        
-        # Reads the DataFrame that handles the data per class
-        class_df_wf = read_csv(class_file_name[:-4] + "_wfluid.csv")
+        vendor_df = read_csv(vendor_file_name, index_col="Vendor")
+        if not binary_segmentation:
+            # Reads the DataFrame that handles the data per class
+            class_df_wf = read_csv(class_file_name[:-4] + "_wfluid.csv")
+            # Reads the DataFrame that handles the data per class
+            class_df_wof = read_csv(class_file_name[:-4] + "_wofluid.csv")
+            # Reads the DataFrame that handles 
+            # the overall fluid
+            fluid_df = read_csv(fluid_file_name)
+            fluid_file_middle_name = "fluids"
+        else:
+            fluid_df = class_df
+            fluid_file_middle_name = "classes"
         # Reads the DataFrame that handles the data per vendor
         vendor_df_wf = read_csv(vendor_file_name[:-4] + "_wfluid.csv", index_col="Vendor")        
-        # Reads the DataFrame that handles the data per class
-        class_df_wof = read_csv(class_file_name[:-4] + "_wofluid.csv")
         # Reads the DataFrame that handles the data per vendor
         vendor_df_wof = read_csv(vendor_file_name[:-4] + "_wofluid.csv", index_col="Vendor")
         # Removes the name of the column that has the table's index
         vendor_df.index.name = None
         vendor_df_wf.index.name = None
         vendor_df_wof.index.name = None
-        # Reads the DataFrame that handles 
-        # the overall fluid
-        fluid_df = read_csv(fluid_file_name)
 
         # Saves, to the corresponding fold in the 
         # dictionary, the two DataFrames as a 
         # single tuple
-        df_dict[fold] = (class_df, vendor_df, class_df_wf, vendor_df_wf, class_df_wof, vendor_df_wof, fluid_df)
+        if not binary_segmentation:
+            df_dict[fold] = (vendor_df, vendor_df_wf, vendor_df_wof, class_df, class_df_wf, class_df_wof, fluid_df)
+        else:
+            df_dict[fold] = (vendor_df, vendor_df_wf, vendor_df_wof, fluid_df)
     # Gets the list of vendors and fluids
     vendors = vendor_df.index.to_list()
-    fluids = class_df.columns.to_list()
+    fluids = vendor_df.columns.to_list()
 
     # Initiates the DataFrame with the name 
     # of the fluids as the columns names for 
@@ -222,9 +237,9 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
                 # The DataFrame that is being handled is the 
                 # one that comprises information about classes
                 # and vendors
-                results.append(float(tuple_df[1].at[vendor, fluid].split(" ")[0]))
-                results_wf.append(float(tuple_df[3].at[vendor, fluid].split(" ")[0]))
-                results_wof.append(float(tuple_df[5].at[vendor, fluid].split(" ")[0]))
+                results.append(float(tuple_df[0].at[vendor, fluid].split(" ")[0]))
+                results_wf.append(float(tuple_df[1].at[vendor, fluid].split(" ")[0]))
+                results_wof.append(float(tuple_df[2].at[vendor, fluid].split(" ")[0]))
             # Calculates the mean across all folds
             mean = np.array(results).mean()
             mean_wf = np.array(results_wf).mean()
@@ -263,63 +278,64 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
         vendor_df_wf.to_csv(f".\\results\\Iteration{iteration}_vendors_results_resized_wfluid.csv")
         vendor_df_wof.to_csv(f".\\results\\Iteration{iteration}_vendors_results_resized_wofluid.csv")
 
-    # Initiates the DataFrame with the name 
-    # of the fluids as the columns names for 
-    # the class data
-    # e.g. of a column name: Dice_IRF
-    class_df = DataFrame(columns=fluids)
-    class_df_wf = DataFrame(columns=fluids)
-    class_df_wof = DataFrame(columns=fluids)
-    # Initiates a list that will store the 
-    # values of the classes 
-    values = []
-    values_wf = []
-    values_wof = []
-    # Iterates through the fluids
-    for fluid in fluids:
+    if not binary_segmentation:
+        # Initiates the DataFrame with the name 
+        # of the fluids as the columns names for 
+        # the class data
+        # e.g. of a column name: Dice_IRF
+        class_df = DataFrame(columns=fluids)
+        class_df_wf = DataFrame(columns=fluids)
+        class_df_wof = DataFrame(columns=fluids)
         # Initiates a list that will store the 
-        # results across all folds
-        results = []
-        results_wf = []
-        results_wof = []
-        # Iterates across all folds in the dictionary
-        for fold, tuple_df in df_dict.items():
-            # Appends to the results list, the value at 
-            # the current vendor and fluid
-            # The DataFrame that is now being handled 
-            # comprises information of the classes
-            results.append(float(tuple_df[0].at[0, fluid].split(" ")[0]))
-            results_wf.append(float(tuple_df[2].at[0, fluid].split(" ")[0]))
-            results_wof.append(float(tuple_df[4].at[0, fluid].split(" ")[0]))
-        # Calculates the mean across all folds
-        mean = np.array(results).mean()
-        mean_wf = np.array(results_wf).mean()
-        mean_wof = np.array(results_wof).mean()
-        # Calculates the standard deviation across all folds
-        std = np.array(results).std()
-        std_wf = np.array(results_wf).std()
-        std_wof = np.array(results_wof).std()
-        # Saves the value as "mean (std)"
-        value = f"{mean:.2f} ({std:.2f})"
-        value_wf = f"{mean_wf:.2f} ({std_wf:.2f})"
-        value_wof = f"{mean_wof:.2f} ({std_wof:.2f})"
-        # Appends the value to the list that will form a row
-        values.append(value)
-        values_wf.append(value_wf)
-        values_wof.append(value_wof)
-    # Appends the results in a row to the DataFrame
-    class_df.loc[len(class_df)] = values
-    class_df_wf.loc[len(class_df_wf)] = values_wf
-    class_df_wof.loc[len(class_df_wof)] = values_wof
-    # Saves the DataFrame with a name refering to the iteration, not including the index
-    if not resized_images:
-        class_df.to_csv(f".\\results\\Iteration{iteration}_classes_results.csv", index=False)
-        class_df_wf.to_csv(f".\\results\\Iteration{iteration}_classes_results_wfluid.csv", index=False)
-        class_df_wof.to_csv(f".\\results\\Iteration{iteration}_classes_results_wofluid.csv", index=False)
-    else:
-        class_df.to_csv(f".\\results\\Iteration{iteration}_classes_results_resized.csv", index=False)
-        class_df_wf.to_csv(f".\\results\\Iteration{iteration}_classes_results_resized_wfluid.csv", index=False)
-        class_df_wof.to_csv(f".\\results\\Iteration{iteration}_classes_results_resized_wofluid.csv", index=False)
+        # values of the classes 
+        values = []
+        values_wf = []
+        values_wof = []
+        # Iterates through the fluids
+        for fluid in fluids:
+            # Initiates a list that will store the 
+            # results across all folds
+            results = []
+            results_wf = []
+            results_wof = []
+            # Iterates across all folds in the dictionary
+            for fold, tuple_df in df_dict.items():
+                # Appends to the results list, the value at 
+                # the current vendor and fluid
+                # The DataFrame that is now being handled 
+                # comprises information of the classes
+                results.append(float(tuple_df[3].at[0, fluid].split(" ")[0]))
+                results_wf.append(float(tuple_df[4].at[0, fluid].split(" ")[0]))
+                results_wof.append(float(tuple_df[5].at[0, fluid].split(" ")[0]))
+            # Calculates the mean across all folds
+            mean = np.array(results).mean()
+            mean_wf = np.array(results_wf).mean()
+            mean_wof = np.array(results_wof).mean()
+            # Calculates the standard deviation across all folds
+            std = np.array(results).std()
+            std_wf = np.array(results_wf).std()
+            std_wof = np.array(results_wof).std()
+            # Saves the value as "mean (std)"
+            value = f"{mean:.2f} ({std:.2f})"
+            value_wf = f"{mean_wf:.2f} ({std_wf:.2f})"
+            value_wof = f"{mean_wof:.2f} ({std_wof:.2f})"
+            # Appends the value to the list that will form a row
+            values.append(value)
+            values_wf.append(value_wf)
+            values_wof.append(value_wof)
+        # Appends the results in a row to the DataFrame
+        class_df.loc[len(class_df)] = values
+        class_df_wf.loc[len(class_df_wf)] = values_wf
+        class_df_wof.loc[len(class_df_wof)] = values_wof
+        # Saves the DataFrame with a name refering to the iteration, not including the index
+        if not resized_images:
+            class_df.to_csv(f".\\results\\Iteration{iteration}_classes_results.csv", index=False)
+            class_df_wf.to_csv(f".\\results\\Iteration{iteration}_classes_results_wfluid.csv", index=False)
+            class_df_wof.to_csv(f".\\results\\Iteration{iteration}_classes_results_wofluid.csv", index=False)
+        else:
+            class_df.to_csv(f".\\results\\Iteration{iteration}_classes_results_resized.csv", index=False)
+            class_df_wf.to_csv(f".\\results\\Iteration{iteration}_classes_results_resized_wfluid.csv", index=False)
+            class_df_wof.to_csv(f".\\results\\Iteration{iteration}_classes_results_resized_wofluid.csv", index=False)
 
     # Initiates the DataFrame with the name of the columns
     fluid_df = DataFrame(columns=["AllSlices", "SlicesWithFluid", "SlicesWithoutFluid"])
@@ -338,9 +354,9 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
         # The DataFrame that is being handled is the 
         # one that comprises information about classes
         # and vendors
-        results.append(float(tuple_df[6].iat[0, 0].split(" ")[0]))
-        results_wf.append(float(tuple_df[6].iat[0, 1].split(" ")[0]))
-        results_wof.append(float(tuple_df[6].iat[0, 2].split(" ")[0]))
+        results.append(float(tuple_df[-1].iat[0, 0].split(" ")[0]))
+        results_wf.append(float(tuple_df[-1].iat[0, 1].split(" ")[0]))
+        results_wof.append(float(tuple_df[-1].iat[0, 2].split(" ")[0]))
 
     # Calculates the mean across all folds
     mean = np.array(results).mean()
@@ -363,9 +379,9 @@ def folds_results(first_run_name: str, iteration: int, k: int=5,
 
     # Saves the new DataFrame as a CSV file
     if not resized_images:
-        fluid_df.to_csv(f".\\results\\Iteration{iteration}_fluids_results.csv", index=False)
+        fluid_df.to_csv(f".\\results\\Iteration{iteration}_{fluid_file_middle_name}_results.csv", index=False)
     else:
-        fluid_df.to_csv(f".\\results\\Iteration{iteration}_fluids_results_resized.csv", index=False)
+        fluid_df.to_csv(f".\\results\\Iteration{iteration}_{fluid_file_middle_name}_results_resized.csv", index=False)
 
 def test_model (
         fold_test: int,
