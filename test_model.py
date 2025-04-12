@@ -387,15 +387,15 @@ def test_model (
         fold_test: int,
         model_name: str,
         weights_name: str,
-        device_name: str,
-        number_of_channels: int,
-        number_of_classes: int,
-        batch_size: int,
-        patch_type: str,
-        save_images: bool,
-        resize_images: bool=False,
+        batch_size: int=1,
+        device_name: str="GPU",
+        final_test: bool=False,
         fluid: int=None,
-        final_test: bool=False
+        number_of_channels: int=1,
+        number_of_classes: int=4,
+        patch_type: str="vertical",
+        resize_images: bool=False,
+        save_images: bool=True
     ):
     """
     Function used to test the trained models
@@ -406,28 +406,28 @@ def test_model (
         model_name (str): name of the model that will be 
             evaluated         
         weights_name (str): path to the model's weight file
+        batch_size (int): size of the batch used in testing
         device_name (str): indicates whether the network will 
             be trained using the CPU or the GPU
+        final_test (bool): indicates that the final test will be 
+            performed, changing the name of the saved files. Since final
+            testing is rare, the default value is False 
+        fluid (int): integer that is associated with the label desired 
+            to segment
         number_of_channels (int): number of channels the 
             input will present
         number_of_classes (int): number of classes the 
             output will present
-        batch_size (int): size of the batch used in testing
         patch_type (str): string that indicates what type of patches 
             will be used. Can be "small", where patches of size 
             256x128 are extracted using the extract_patches function,
             "big", where patches of shape 496x512 are extracted from 
             each image, and patches of shape 496x128 are extracted from
             the slices
-        save_images (bool): flag that indicates whether the 
-            predicted images will be saved or not
         resize_images (bool): flag that indicates whether the images 
             will be resized or not in testing 
-        fluid (int): integer that is associated with the label desired 
-            to segment
-        final_test (bool): indicates that the final test will be 
-            performed, changing the name of the saved files. Since final
-            testing is rare, the default value is False 
+        save_images (bool): flag that indicates whether the 
+            predicted images will be saved or not
             
     Return:
         None
