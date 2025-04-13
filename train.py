@@ -91,7 +91,7 @@ def train_model (
         gradient_clipping (float): threshold after which it
             scales the gradient down, to prevent gradient 
             exploding
-        learning_rate (int): learning rate of the 
+        learning_rate (float): learning rate of the 
             optimization function
         model_name (str): name of the model desired to train
         momentum (float): momentum of the optimization 

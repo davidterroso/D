@@ -1,6 +1,7 @@
 import numpy as np
 import lmdb
 import torch
+from collections import defaultdict
 from io import BytesIO
 from numpy import any, expand_dims, max, min, nonzero, stack, sum, int8, uint8, ndarray
 from numpy.random import random_sample
@@ -209,6 +210,50 @@ def patches_from_volumes(volumes_list: list, model: str,
         if volume in volumes_list:
             patches_list.append(patch_name)
     return patches_list
+
+def generation_images_from_volumes(volumes_list: list):
+    """
+    Used to return the list of all the patches that are available to 
+    train the GAN, knowing which volumes will be used
+
+    Args:
+        volumes_list (List[float]): list of the OCT volume's identifier 
+            that will be used in training
+
+    Return:
+        patches_list (List[str]): list of the name of the patches that 
+            will be used to train the model
+    """
+    # Sets the path to the images that will be used to train the GAN
+    images_folder = IMAGES_PATH + "\\OCT_images\\generation\\uint8\\"
+
+    # Iterates through the available images
+    # and registers the name of those that are 
+    # from the volumes that will be used in 
+    # training, returning that list
+    images_list = []
+    for patch_name in listdir(images_folder):
+        volume_name = patch_name.split("_")[1][-3:]
+        volume_set = volume_name[:-3].lower()
+        volume_number = int(volume_name[-3:])
+        volume = f"{volume_number}_{volume_set}"
+        if volume in volumes_list:
+            images_list.append(patch_name)
+
+    volume_dict = defaultdict(list)
+    for path in images_list:
+        # Extract volume identifier (everything before the last underscore)
+        volume_id = "_".join(path.split("_")[:-1])
+        volume_dict[volume_id].append(path)
+
+    # Remove the first (000) and last slice for each volume
+    filtered_paths = []
+    for volume_id, paths in volume_dict.items():
+        # Sort paths to ensure correct order
+        paths.sort(key=lambda x: int(x.split("_")[-1]))
+        # Exclude the first and last slices
+        filtered_paths.extend(paths[1:-1])
+    return images_list
 
 def images_from_volumes(volumes_list: list):
     """
@@ -1097,3 +1142,21 @@ class ValidationDatasetLMDB(Dataset):
         img = (img - 128.) / 128.
 
         return {"scan": img, "mask": mask}
+
+class TrainDatasetGAN(Dataset):
+    def __init__(self, train_volumes: list):
+        super().__init__()
+        self.images_names = generation_images_from_volumes(train_volumes)
+
+    def __getitem__(self, index):
+        image_path = self.images_names[index]
+
+        img = imread(image_path)
+        img_number = int(image_path.split(".")[0][-3:])
+        prev_img_path = image_path.split(".")[0][-3:] + str(img_number - 1).zfill(3) + ".tiff"
+        next_img_path = image_path.split(".")[0][-3:] + str(img_number + 1).zfill(3) + ".tiff"
+
+        prev_img = imread(prev_img_path)
+        next_img = imread(next_img_path)
+
+        return torch.stack(prev_img, img, next_img, axis=0)
