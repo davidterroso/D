@@ -1148,6 +1148,32 @@ class TrainDatasetGAN(Dataset):
         super().__init__()
         self.images_names = generation_images_from_volumes(train_volumes)
 
+    def __len__(self):
+        return len(self.images_names)
+
+    def __getitem__(self, index):
+        image_path = self.images_names[index]
+
+        img = imread(image_path)
+        img_number = int(image_path.split(".")[0][-3:])
+        prev_img_path = image_path.split(".")[0][-3:] + str(img_number - 1).zfill(3) + ".tiff"
+        next_img_path = image_path.split(".")[0][-3:] + str(img_number + 1).zfill(3) + ".tiff"
+
+        prev_img = imread(prev_img_path)
+        next_img = imread(next_img_path)
+
+        sample = {"stack": torch.stack(prev_img, img, next_img, axis=0)}
+
+        return sample
+
+class ValidationDatasetGAN(Dataset):
+    def __init__(self, val_volumes: list):
+        super().__init__()
+        self.images_names = generation_images_from_volumes(val_volumes)
+
+    def __len__(self):
+        return len(self.images_names)
+
     def __getitem__(self, index):
         image_path = self.images_names[index]
 

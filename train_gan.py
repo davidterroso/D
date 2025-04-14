@@ -1,15 +1,25 @@
 import csv
 import logging
 import torch
+from IPython import get_ipython
 from os import makedirs, remove
 from os.path import exists
 from pandas import read_csv
+from network_functions.dataset import TrainDatasetGAN, ValidationDatasetGAN
+from network_functions.evaluate import evaluate_gan
 from networks.gan import Discriminator, Generator
+
+# Imports tqdm depending on whether 
+# it is being called from the 
+# Notebook or from this file
+if (get_ipython() is not None):
+    from tqdm import tqdm_notebook as tqdm
+else:
+    from tqdm.auto import tqdm
 
 def train_gan(
         run_name: str,
         fold_val: int,
-        amp: bool=True,
         batch_size: int=8,
         beta_1: float=0.5,
         beta_2: float=0.999,
@@ -88,14 +98,15 @@ def train_gan(
         Batch size:      {batch_size}
         Learning rate:   {learning_rate}
         Device:          {device.type}
-        Mixed precision: {amp}
     """
     )
-    optimizer = torch.optim.Adam(lr=learning_rate, 
+    optimizer_G = torch.optim.Adam(lr=learning_rate, 
                                  betas=(beta_1, beta_2), 
                                  foreach=True)
     
-    grad_scaler = torch.amp.GradScaler(enabled=amp)
+    optimizer_D = torch.optim.Adam(lr=learning_rate, 
+                                betas=(beta_1, beta_2), 
+                                foreach=True)
 
     csv_epoch_filename = f"logs\{run_name}_training_log_epoch.csv"
     csv_batch_filename = f"logs\{run_name}_training_log_batch.csv"
@@ -105,20 +116,121 @@ def train_gan(
     if not (exists(csv_epoch_filename) and exists(csv_batch_filename)):
         with open(csv_epoch_filename, mode="w", newline="") as file:
             writer = csv.writer(file)
-            writer.writerow(["Epoch", "Epoch Training Loss", "Epoch Validation Loss"])
+            writer.writerow(["Epoch", "Adversarial Loss", 
+                             "Generator Loss", "Batch Real Loss", 
+                             "Batch Fake Loss", "Batch Discriminator Loss", 
+                             "Epoch Validation SSMI"])
         
         with open(csv_batch_filename, mode="w", newline="") as file:
             writer = csv.writer(file)
-            writer.writerow(["Epoch", "Batch", "Batch Training Loss"])
+            writer.writerow(["Epoch", "Batch", "Adversarial Loss", 
+                             "Generator Loss", "Batch Real Loss", 
+                             "Batch Fake Loss", "Batch Discriminator Loss"])
     else:
         remove(csv_epoch_filename)
         remove(csv_batch_filename)
         with open(csv_epoch_filename, mode="w", newline="") as file:
             writer = csv.writer(file)
-            writer.writerow(["Epoch", "Epoch Training Loss", "Epoch Validation Loss"])
+            writer.writerow(["Epoch", "Adversarial Loss", 
+                             "Generator Loss", "Batch Real Loss", 
+                             "Batch Fake Loss", "Batch Discriminator Loss", 
+                             "Epoch Validation SSMI"])
         
         with open(csv_batch_filename, mode="w", newline="") as file:
             writer = csv.writer(file)
-            writer.writerow(["Epoch", "Batch", "Batch Training Loss"])
+            writer.writerow(["Epoch", "Batch", "Adversarial Loss", 
+                             "Generator Loss", "Batch Real Loss", 
+                             "Batch Fake Loss", "Batch Discriminator Loss"])
+    train_set = TrainDatasetGAN(train_volumes=train_volumes)
+    val_set = ValidationDatasetGAN(val_volumes=val_volumes)
+    train_loader = torch.utils.data.DataLoader(train_set, shuffle=True, num_workers=12, persistent_workers=True, batch_size=batch_size, pin_memory=True)
+    val_loader = torch.utils.data.DataLoader(val_set, shuffle=True, num_workers=12, persistent_workers=True, batch_size=batch_size, pin_memory=True)
 
-    
+    for epoch in range(1, epochs + 1):
+        generator.train()
+        discriminator.train()
+
+        epoch_adv_loss = 0
+        epoch_g_loss = 0
+        epoch_real_loss = 0
+        epoch_fake_loss = 0
+        epoch_d_loss = 0
+
+        print(f"Training Epoch {epoch}")
+
+        with tqdm(total=len(train_set), desc=f"Epoch {epoch}/{epochs}", unit="img", leave=True, position=0) as progress_bar:
+            for batch_num, batch in enumerate(train_loader):
+                stack = batch["stack"]
+
+                assert stack[0].shape[0] == number_of_channels, \
+                f'Network has been defined with {number_of_channels} input channels, ' \
+                f'but loaded images have {stack[0].shape[0]} channels. Please check if ' \
+                'the images are loaded correctly.'
+
+                valid = torch.autograd.Variable(torch.Tensor(stack.shape[0], 1, 1, 1).fill_(0.95), requires_grad=False)
+                fake = torch.autograd.Variable(torch.Tensor(stack.shape[0], 1, 1, 1).fill_(0.1), requires_grad=False)
+
+                prev_imgs = stack[:,0,:,:].to(device=device)
+                mid_imgs = stack[:,1,:,:].to(device=device)
+                next_imgs = stack[:,2,:,:].to(device=device)
+
+                optimizer_G.zero_grad()
+                gen_imgs = generator(prev_imgs.data, next_imgs.data)
+                adv_loss, g_loss = gen_loss(gen_imgs, mid_imgs, valid)
+                g_loss.backward()
+                optimizer_G.step()
+
+                optimizer_D.zero_grad()
+
+                gt_distingue = discriminator(mid_imgs)
+                fake_distingue = discriminator(gen_imgs.detach())
+                real_loss, fake_loss, d_loss = discriminator_loss(gt_distingue, fake_distingue, valid, fake)
+                d_loss.backward()
+
+                optimizer_D.step()
+
+                progress_bar.update(stack.shape[0])
+
+                epoch_adv_loss += adv_loss.item()
+                epoch_g_loss += g_loss.item()
+                epoch_real_loss += real_loss.item()
+                epoch_fake_loss += fake_loss.item()
+                epoch_d_loss += d_loss.item()
+
+                with open(csv_batch_filename, mode="a", newline="") as file:
+                    writer = csv.writer(file)
+                    writer.writerow([epoch, batch_num, adv_loss.item(), 
+                                     g_loss.item(), real_loss.item(), 
+                                     fake_loss.item(), d_loss.item()])
+                
+        print(f"Validating Epoch {epoch}")
+        val_ssmi = evaluate_gan(generator=generator, dataloader=val_loader, device=device)
+        logging.info(f"Validation Mean Loss: {val_ssmi}")
+
+        with open(csv_epoch_filename, mode="a", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow([epoch, adv_loss.item() / len(val_loader), 
+                            g_loss.item() / len(val_loader), 
+                            real_loss.item() / len(val_loader), 
+                            fake_loss.item() / len(val_loader), 
+                            d_loss.item() / len(val_loader),
+                            val_ssmi / len(val_loader)])
+
+        if val_ssmi > best_val_ssmi:
+            # Creates the folder models in case 
+            # it does not exist yet
+            makedirs("models", exist_ok=True)
+            best_val_ssmi = val_ssmi
+            patience_counter = 0
+            # File is saved with a name that depends on the argument input, the name 
+            # of the model, and fluid desired to segment in case it exists
+            torch.save(generator.state_dict(), 
+                        f"models/{run_name}_generator_best_model.pth")
+            torch.save(discriminator.state_dict(),
+                        f"models/{run_name}_discriminator_best_model.pth")
+            print("Models saved.")
+        # In case the model has not 
+        # obtained a better performance, 
+        # the patience counter increases
+        else:
+            patience_counter += 1

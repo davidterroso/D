@@ -88,3 +88,59 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
     # loss according to the fluid voxels
     # Also avoids division by zero
     return total_loss / max(num_val_batches, 1)
+
+@torch.inference_mode()
+def evaluate_gan(generator: Module, dataloader: DataLoader, device: str):
+    """
+    Function used to evaluate the GAN model
+
+    Args:
+        model_name (str): name of the model used in segmentation
+        model (PyTorch Module object): model that is being 
+            trained
+        dataloader (PyTorch DataLoader object): DataLoader 
+            that contains the training and evaluation data
+        device (str): indicates which PyTorch device is
+            going to be used
+
+    Return:
+        Weighted mean of the loss across the considered 
+        batches
+    """
+    # Sets the network to evaluation mode
+    generator.eval()
+    # Calculates the number of batches 
+    # used to validate the network
+    num_val_batches = len(dataloader)
+    # Initiates the loss as zero
+    total_loss = 0
+
+    with tqdm(dataloader, total=num_val_batches, desc='Validating Epoch', unit='batch', leave=True, position=0) as progress_bar:
+        for batch in dataloader:
+                # Gets the images and the masks from the dataloader
+                stack = batch['stack']
+
+                # Handles the images and masks according to the device, specified data type and memory format
+                stack = stack.to(device=device)
+
+                prev_imgs = stack[:,0,:,:].to(device=device)
+                mid_imgs = stack[:,1,:,:].to(device=device)
+                next_imgs = stack[:,2,:,:].to(device=device)
+
+                gen_imgs = generator(prev_imgs.data, next_imgs.data)
+
+                # Predicts the masks of the received images
+                val_ssim = ssmi(mid_imgs, gen_imgs)
+
+                # Accumulate loss
+                total_loss += val_ssim.item()
+
+                # Updates the progress bar
+                progress_bar.update(1)
+
+    # Sets the model to train mode again
+    generator.train()
+    # Returns the weighted mean of the total 
+    # loss according to the fluid voxels
+    # Also avoids division by zero
+    return total_loss / max(num_val_batches, 1)
