@@ -1,5 +1,6 @@
 import csv
 import logging
+import numpy as np
 import random
 import torch
 import wandb
@@ -15,7 +16,6 @@ from networks.unet25D import TennakoonUNet
 from networks.loss import multiclass_balanced_cross_entropy_loss
 from networks.unet import UNet
 
-import numpy as np
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 
@@ -29,37 +29,37 @@ else:
 
 def train_model (
         run_name: str,
-        model_name: str,
-        device: str,
-        split: str,
-        epochs: int,
-        batch_size: int,
-        learning_rate: float,
-        optimizer_name: str,
-        momentum: float,
-        weight_decay: float,
-        gradient_clipping: float,
-        scheduler: bool,
-        patch_type: str,
-        number_of_classes: int,
-        number_of_channels: int,
-        fold_test: int,
         fold_val: int,
-        tuning: bool,
-        patch_shape: tuple, 
-        n_pos: int, 
-        n_neg: int, 
-        pos: int, 
-        neg: int,
-        amp: bool,
-        patience: int,
-        assyncronous_patch_extraction: bool,
-        patch_dropping: bool,
-        drop_prob: float,
-        num_patches: int=4,
+        amp: bool=True,
+        assyncronous_patch_extraction: bool=True,
+        batch_size: int=32,
+        device: str="GPU",
+        drop_prob: float=0.75,
+        epochs: int=100,
         fluid: str=None,
+        fold_test: int=1,
+        gradient_clipping: float=1.0,
+        learning_rate: float=2e-5,
+        model_name: str="UNet",
+        momentum: float=0.999,
+        n_neg: int=0,
+        n_pos: int=12, 
+        neg: int=0,
+        num_patches: int=4,
+        number_of_channels: int=1,
+        number_of_classes: int=4,
+        optimizer_name: str="Adam",
+        patch_dropping: bool=True,
+        patch_shape: tuple=(256,128), 
+        patch_type: str="vertical",
+        patience: int=200,
+        patience_after_n: int=0,
+        pos: int=1, 
+        scheduler: bool=False,
         seed: int=None,
-        patience_after_n: int=0
+        split: str="competitive_fold_selection.csv",
+        tuning: bool=True,
+        weight_decay: float=0.0001
 ):
     """
     Function that trains the deep learning models.
@@ -67,28 +67,51 @@ def train_model (
     Args:
         run_name (str): name of the run under which the best model
             will be saved
-        model_name (str): name of the model desired to train
-        device (str): indicates whether the network will 
-            be trained using the CPU or the GPU
-        split (str): name of the k-fold split file that will be 
-            used in this run
-        epochs (int): maximum number of epochs the model 
-            will train for
+        fold_val (int): number of the fold that will be used 
+            in the network validation 
+        amp (bool): bool that indicates whether automatic mixed
+            precision is going to be used or not
+        assyncronous_patch_extraction (bool): flag that indicates 
+            whether patch extraction and dropping is done in each 
+            epoch (syncronous) or before the training epochs, 
+            once (assyncronous)
         batch_size (int): size of the batch used in 
             training
-        learning_rate (int): learning rate of the 
-            optimization function
-        optimizer_name (string): optimization function used
-        number_of_classes (int): number of classes the 
-            model is supposed to output
-        momentum (float): momentum of the optimization 
-            algorithm
-        weight_decay (float): optimizer's weight decay value
+        device (str): indicates whether the network will 
+            be trained using the CPU or the GPU
+        drop_prob (float): probability of a non-pathogenic patch
+            being dropped
+        epochs (int): maximum number of epochs the model 
+            will train for
+        fluid (str): name of the fluid that is desired to segment 
+            in the triple U-Net framework. Default is None because 
+            it is not required in other models        
+        fold_test (int): number of the fold that will be used 
+            in the network testing         
         gradient_clipping (float): threshold after which it
             scales the gradient down, to prevent gradient 
             exploding
-        scheduler (bool): flag that indicates whether a 
-            learning rate scheduler will be used or not        
+        learning_rate (float): learning rate of the 
+            optimization function
+        model_name (str): name of the model desired to train
+        momentum (float): momentum of the optimization 
+            algorithm
+        n_neg (int): number of patches that will be extracted 
+            from the outside of the scan ROI
+        n_pos (int): number of patches that will be extracted 
+            from the scan ROI
+        neg (int): indicates what is the value that does not 
+            represent the ROI in the ROI mask
+        num_patches (int): number of patches extracted from the 
+            images during vertical patch extraction to train the
+            model
+        number_of_channels (int): number of channels the 
+            input will present
+        number_of_classes (int): number of classes the 
+            model is supposed to output
+        optimizer_name (string): optimization function used
+        patch_dropping (bool): flag that indicates whether patch
+            dropping will be used or not
         patch_type (str): string that indicates what type 
             of patches will be used. Can be "small", where 
             patches of size 256x128 are extracted using the
@@ -96,50 +119,27 @@ def train_model (
             of shape 496x512 are extracted from each image,
             and patches of shape 496x128 are extracted from
             the slices
-        number_of_channels (int): number of channels the 
-            input will present
-        fold_test (int): number of the fold that will be used 
-            in the network testing         
-        fold_val (int): number of the fold that will be used 
-            in the network validation 
-        tuning (bool): indicates whether this train will
-            be performed to tune the hyperparameters or not
         patch_shape (tuple): indicates what is the shape of 
             the patches that will be extracted from the B-scans 
-        n_pos (int): number of patches that will be extracted 
-            from the scan ROI
-        n_neg (int): number of patches that will be extracted 
-            from the outside of the scan ROI
-        pos (int): indicates what is the value that represents 
-            the ROI in the ROI mask
-        neg (int): indicates what is the value that does not 
-            represent the ROI in the ROI mask
-        amp (bool): bool that indicates whether automatic mixed
-            precision is going to be used or not
         patience (int): number of epochs where the validation 
             errors calculated are worse than the best validation 
             error before terminating training
-        assyncronous_patch_extraction (bool): flag that indicates 
-            whether patch extraction and dropping is done in each 
-            epoch (syncronous) or before the training epochs, 
-            once (assyncronous)
-        patch_dropping (bool): flag that indicates whether patch
-            dropping will be used or not
-        drop_prob (float): probability of a non-pathogenic patch
-            being dropped
-        num_patches (int): number of patches extracted from the 
-            images during vertical patch extraction to train the
-            model
-        fluid (str): name of the fluid that is desired to segment 
-            in the triple U-Net framework. Default is None because 
-            it is not required in other models        
+        patience_after_n (int): number of epochs needed to wait 
+            before starting to count the patience. The default 
+            value is 0
+        pos (int): indicates what is the value that represents 
+            the ROI in the ROI mask
+        scheduler (bool): flag that indicates whether a 
+            learning rate scheduler will be used or not        
         seed (int): indicates the seed that will be used in the 
             random operations of the training. When seed is not
             indicated, the default value is None and the seed is
             not fixed 
-        patience_after_n (int): number of epochs needed to wait 
-            before starting to count the patience. The default 
-            value is 0
+        split (str): name of the k-fold split file that will be 
+            used in this run
+        tuning (bool): indicates whether this train will
+            be performed to tune the hyperparameters or not
+        weight_decay (float): optimizer's weight decay value
         
     Return:
         None
@@ -687,38 +687,3 @@ def train_model (
         #     except:
         #         pass  
     # wandb.finish()
-            
-# In case it is preferred to run 
-# directly in this file, here lays 
-# an example
-if __name__ == "__main__":
-    train_model(
-        run_name="Run1000",
-        model_name="UNet",
-        device="GPU",
-        split="segmentation_fold_selection.csv",
-        epochs=100,
-        batch_size=32,
-        learning_rate=2e-5,
-        optimizer_name="Adam",
-        momentum=0.999,
-        weight_decay=0.0001,
-        gradient_clipping=1.0,
-        scheduler=False,
-        patch_type="small",
-        number_of_classes=4,
-        number_of_channels=1,
-        fold_test=1,
-        fold_val=2,
-        tuning=True,
-        patch_shape=(256,128), 
-        n_pos=12, 
-        n_neg=0, 
-        pos=1, 
-        neg=0,
-        amp=True,
-        assyncronous_patch_extraction=True,
-        patch_dropping=True,
-        drop_prob=0.25,
-        patience=100
-    )
