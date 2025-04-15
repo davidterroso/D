@@ -24,14 +24,14 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
         model (PyTorch Module object): model that is being 
             trained
         dataloader (PyTorch DataLoader object): DataLoader 
-            that contains the training and evaluation data
+            that contains the evaluation data
         device (str): indicates which PyTorch device is
             going to be used
         amp (bool): flag that indicates if automatic 
             mixed precision is being used
 
     Return:
-        Weighted mean of the loss across the considered 
+        (float) mean of the loss across the considered 
         batches
     """
     # Sets the network to evaluation mode
@@ -95,11 +95,10 @@ def evaluate_gan(generator: Module, dataloader: DataLoader, device: str):
     Function used to evaluate the GAN model
 
     Args:
-        model_name (str): name of the model used in segmentation
-        model (PyTorch Module object): model that is being 
+        generator (PyTorch Module object): generator that is being 
             trained
         dataloader (PyTorch DataLoader object): DataLoader 
-            that contains the training and evaluation data
+            that contains the evaluation data
         device (str): indicates which PyTorch device is
             going to be used
 
@@ -107,7 +106,7 @@ def evaluate_gan(generator: Module, dataloader: DataLoader, device: str):
         Weighted mean of the loss across the considered 
         batches
     """
-    # Sets the network to evaluation mode
+    # Sets the generator to evaluation mode
     generator.eval()
     # Calculates the number of batches 
     # used to validate the network
@@ -115,25 +114,35 @@ def evaluate_gan(generator: Module, dataloader: DataLoader, device: str):
     # Initiates the loss as zero
     total_loss = 0
 
+    # Creates a progress bar that tracks the number of batches that are being used in validation 
     with tqdm(dataloader, total=num_val_batches, desc='Validating Epoch', unit='batch', leave=True, position=0) as progress_bar:
+        # Iterates through the batches in the batchloader
         for batch in dataloader:
-                # Gets the images and the masks from the dataloader
+                # Gets the stack from the dataloader
                 stack = batch['stack']
 
-                # Handles the images and masks according to the device, specified data type and memory format
+                # Allocates the stack to the GPU or CPU, 
+                # depending on the device that is being used
                 stack = stack.to(device=device)
 
+                # Splits the stack in three different images:
+                # the previous image, the middle image that we 
+                # aim to generate, and the following image 
                 prev_imgs = stack[:,0,:,:].to(device=device)
                 mid_imgs = stack[:,1,:,:].to(device=device)
                 next_imgs = stack[:,2,:,:].to(device=device)
 
-                gen_imgs = generator(prev_imgs.data, next_imgs.data)
+                # Generates the image using the generator and the 
+                # previous and following images
+                gen_imgs = generator(prev_imgs.detach(), next_imgs.detach())
 
-                # Predicts the masks of the received images
-                ms_ssmi = MS_SSIM().cuda()
-                val_ssim = ms_ssmi(mid_imgs, gen_imgs)
+                # Calculates the MS-SSIM for the original 
+                # image and the generated image
+                ms_ssim = MS_SSIM().to(device)
+                val_ssim = ms_ssim(mid_imgs, gen_imgs)
 
-                # Accumulate loss
+                # Accumulates the loss for this 
+                # validation 
                 total_loss += val_ssim.item()
 
                 # Updates the progress bar
