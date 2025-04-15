@@ -3,7 +3,7 @@ from IPython import get_ipython
 from torch.nn import Module
 from torch.utils.data import DataLoader
 from torch.nn.functional import one_hot, softmax
-from networks.loss import multiclass_balanced_cross_entropy_loss
+from networks.loss import multiclass_balanced_cross_entropy_loss, MS_SSIM
 
 # Imports tqdm depending on whether 
 # it is being called from the 
@@ -130,7 +130,8 @@ def evaluate_gan(generator: Module, dataloader: DataLoader, device: str):
                 gen_imgs = generator(prev_imgs.data, next_imgs.data)
 
                 # Predicts the masks of the received images
-                val_ssim = ssmi(mid_imgs, gen_imgs)
+                ms_ssmi = MS_SSIM().cuda()
+                val_ssim = ms_ssmi(mid_imgs, gen_imgs)
 
                 # Accumulate loss
                 total_loss += val_ssim.item()

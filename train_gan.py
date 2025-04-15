@@ -8,6 +8,7 @@ from pandas import read_csv
 from network_functions.dataset import TrainDatasetGAN, ValidationDatasetGAN
 from network_functions.evaluate import evaluate_gan
 from networks.gan import Discriminator, Generator
+from networks.loss import discriminator_loss, generator_loss
 
 # Imports tqdm depending on whether 
 # it is being called from the 
@@ -25,7 +26,6 @@ def train_gan(
         beta_2: float=0.999,
         device="GPU",
         epochs=400,
-        fluid: str=None,
         fold_test: int=1,
         learning_rate: float=2e-5,
         number_of_channels: int=3,
@@ -35,7 +35,7 @@ def train_gan(
         split: str="generation_fold_selection",
 ):
     """
-    Function that trains the deep learning models.
+    Function that trains the GAN models.
 
     Args:
         run_name (str): name of the run under which the best model
@@ -176,7 +176,7 @@ def train_gan(
 
                 optimizer_G.zero_grad()
                 gen_imgs = generator(prev_imgs.data, next_imgs.data)
-                adv_loss, g_loss = gen_loss(gen_imgs, mid_imgs, valid)
+                adv_loss, g_loss = generator_loss(discriminator, gen_imgs, mid_imgs, valid)
                 g_loss.backward()
                 optimizer_G.step()
 
@@ -234,3 +234,17 @@ def train_gan(
         # the patience counter increases
         else:
             patience_counter += 1
+
+        # In case the number of epochs after which no 
+        # improvement has been made surpasses the 
+        # patience value, the model stops training
+        # Only when tuning is being done, the
+        # early stopage can be triggered
+        if patience_counter >= patience and epoch > patience_after_n:
+            logging.info("Early stopping triggered.")
+            break
+        
+        # Resets the patience counter every epoch 
+        # below the number after which it starts counting
+        if epoch <= patience_after_n:
+            patience_counter = 0

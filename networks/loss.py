@@ -1,5 +1,7 @@
 import torch
-from torch.nn.functional import pad
+from numpy import array, float32
+from torch.nn import BCEWithLogitsLoss, Conv2d, Module, MSELoss, Parameter
+from torch.nn.functional import avg_pool2d, conv2d, pad
 
 def resize_with_crop_or_pad(y_true: torch.Tensor, target_height: int, target_width: int):
     """
@@ -231,3 +233,201 @@ def dice_coefficient(model_name: str, prediction: torch.Tensor,
         binary_dice = binary_dice.item()
         
     return dice_scores, voxel_counts, union_counts, intersection_counts, binary_dice
+
+def _fspecial_gauss_1d(size, sigma):
+    r"""Create 1-D gauss kernel
+    Args:
+        size (int): the size of gauss kernel
+        sigma (float): sigma of normal distribution
+    Returns:
+        torch.Tensor: 1D kernel (1 x 1 x size)
+    """
+    coords = torch.arange(size).to(dtype=torch.float)
+    coords -= size // 2
+
+    g = torch.exp(-(coords ** 2) / (2 * sigma ** 2))
+    g /= g.sum()
+
+    return g.unsqueeze(0).unsqueeze(0)
+
+def gaussian_filter(input, win):
+    r""" Blur input with 1-D kernel
+    Args:
+        input (torch.Tensor): a batch of tensors to be blured
+        window (torch.Tensor): 1-D gauss kernel
+    Returns:
+        torch.Tensor: blured tensors
+    """
+    N, C, H, W = input.shape
+    out = conv2d(input, win, stride=1, padding=0, groups=C)
+    out = conv2d(out, win.transpose(2, 3), stride=1, padding=0, groups=C)
+    return out
+
+def _ssim_tensor(X, Y,
+          data_range,
+          win,
+          K=(0.01, 0.03)):
+          
+    r""" Calculate ssim index for X and Y
+    Args:
+        X (torch.Tensor): images
+        Y (torch.Tensor): images
+        win (torch.Tensor): 1-D gauss kernel
+        data_range (float or int, optional): value range of input images. (usually 1.0 or 255)
+    Returns:
+        torch.Tensor: ssim results.
+    """
+    K1, K2 = K
+    compensation = 1.0
+
+    C1 = (K1 * data_range) ** 2
+    C2 = (K2 * data_range) ** 2
+
+    win = win.to(X.device, dtype=X.dtype)
+
+    mu1 = gaussian_filter(X, win)
+    mu2 = gaussian_filter(Y, win)
+
+    mu1_sq = mu1.pow(2)
+    mu2_sq = mu2.pow(2)
+    mu1_mu2 = mu1 * mu2
+
+    sigma1_sq = compensation * (gaussian_filter(X * X, win) - mu1_sq)
+    sigma2_sq = compensation * (gaussian_filter(Y * Y, win) - mu2_sq)
+    sigma12 = compensation * (gaussian_filter(X * Y, win) - mu1_mu2)
+
+    cs_map = (2 * sigma12 + C2) / (sigma1_sq + sigma2_sq + C2)  # set alpha=beta=gamma=1
+    ssim_map = ((2 * mu1_mu2 + C1) / (mu1_sq + mu2_sq + C1)) * cs_map
+    
+    ssim_per_channel = torch.flatten(ssim_map, 2).mean(-1)
+    cs = torch.flatten(cs_map, 2).mean(-1)
+        
+    return ssim_per_channel, cs
+
+class MS_SSIM(Module):
+    '''
+    Multi scale SSIM loss. Refer from:
+    - https://github.com/jorge-pessoa/pytorch-msssim/blob/master/pytorch_msssim/__init__.py
+    - https://github.com/VainF/pytorch-msssim/blob/master/pytorch_msssim/ssim.py
+    '''
+
+    def __init__(self):
+        super(MS_SSIM, self).__init__()
+        
+    def forward(self, gen_frames, gt_frames):
+        return 1 - self._cal_ms_ssim(gen_frames, gt_frames)
+        
+    def _cal_ms_ssim(self, gen_tensors, gt_tensors):
+        weights = torch.Tensor([0.0448, 0.2856, 0.3001, 0.2363, 0.1333])
+        if torch.cuda.is_available():
+            weights = weights.to('cuda')
+        
+        gen = gen_tensors
+        gt = gt_tensors
+        levels = weights.shape[0]
+        mcs = []
+        win_size = 3 if gen_tensors.shape[3] < 256 else 11
+        win = _fspecial_gauss_1d(size=win_size, sigma=1.5)
+        win = win.repeat(gen.shape[1], 1, 1, 1)
+        
+        for i in range(levels):
+            ssim_per_channel, cs = _ssim_tensor(gen, gt, data_range=1.0, win=win)
+            
+            if i < levels - 1: 
+                mcs.append(torch.relu(cs))
+                padding = (gen.shape[2] % 2, gen.shape[3] % 2)
+                gen = avg_pool2d(gen, kernel_size=2, padding=padding)
+                gt = avg_pool2d(gt, kernel_size=2, padding=padding)
+        
+        ssim_per_channel = torch.relu(ssim_per_channel)  # (batch, channel)
+        mcs_and_ssim = torch.stack(mcs + [ssim_per_channel], dim=0)  # (level, batch, channel)
+        ms_ssim_val = torch.prod(mcs_and_ssim ** weights.view(-1, 1, 1), dim=0)
+    
+        return ms_ssim_val.mean()
+
+def gdl_loss(gen_frames, gt_frames, alpha=2, cuda=True):
+    '''
+    From original version on https://github.com/wileyw/VideoGAN/blob/master/loss_funs.py
+    which was referenced from Deep multi-scale video prediction beyond mean square error paper    
+    :param gen_frames: generated output tensors
+    :param gt_frames: ground truth tensors
+    :param alpha: The power to which each gradient term is raised.
+    '''
+    filter_x_values = array(
+        [
+            [[[-1, 1, 0]], [[0, 0, 0]], [[0, 0, 0]]],
+            [[[0, 0, 0]], [[-1, 1, 0]], [[0, 0, 0]]],
+            [[[0, 0, 0]], [[0, 0, 0]], [[-1, 1, 0]]],
+        ],
+        dtype=float32,
+    )
+    filter_x = Conv2d(3, 3, (1, 3), padding=(0, 1))
+    
+    filter_y_values = array(
+        [
+            [[[-1], [1], [0]], [[0], [0], [0]], [[0], [0], [0]]],
+            [[[0], [0], [0]], [[-1], [1], [0]], [[0], [0], [0]]],
+            [[[0], [0], [0]], [[0], [0], [0]], [[-1], [1], [0]]],
+        ],
+        dtype=float32,
+    )
+    filter_y = Conv2d(3, 3, (3, 1), padding=(1, 0))
+        
+    filter_x.weight = Parameter(torch.from_numpy(filter_x_values))  # @UndefinedVariable
+    filter_y.weight = Parameter(torch.from_numpy(filter_y_values))  # @UndefinedVariable
+    
+    dtype = torch.FloatTensor if not cuda else torch.cuda.FloatTensor  # @UndefinedVariable
+    filter_x = filter_x.type(dtype)
+    filter_y = filter_y.type(dtype)
+    
+    gen_dx = filter_x(gen_frames)
+    gen_dy = filter_y(gen_frames)
+    gt_dx = filter_x(gt_frames)
+    gt_dy = filter_y(gt_frames)
+    
+    grad_diff_x = torch.pow(torch.abs(gt_dx - gen_dx), alpha)  # @UndefinedVariable
+    grad_diff_y = torch.pow(torch.abs(gt_dy - gen_dy), alpha)  # @UndefinedVariable
+    
+    grad_total = torch.stack([grad_diff_x, grad_diff_y])  # @UndefinedVariable
+    
+    return torch.mean(grad_total)  # @UndefinedVariable
+
+class GDL(Module):
+    '''
+    Gradient different loss function
+    Target: reduce motion blur 
+    '''
+    
+    def __init__(self, cuda_used=True):
+        super(GDL, self).__init__()
+        self.cuda_used = torch.cuda.is_available() and cuda_used
+
+    def forward(self, gen_frames, gt_frames):
+        return gdl_loss(gen_frames, gt_frames, cuda=self.cuda_used)
+
+def generator_loss(discriminator, generated_imgs, expected_imgs, valid_label):
+    adv_lambda = 0.05
+    l1_lambda = 1.0
+    gdl_lambda = 1.0
+    ms_ssim_lambda = 6.0
+    gd_loss = GDL().cuda()
+    gd_loss = gd_loss(generated_imgs, expected_imgs)
+    adv_loss = BCEWithLogitsLoss().cuda()
+    adv_loss = adv_loss(discriminator(generated_imgs), valid_label).cuda()
+    l1_loss = MSELoss().cuda()
+    l1_loss = l1_loss(generated_imgs, expected_imgs)
+    ms_ssim_loss = MS_SSIM().cuda()
+    ms_ssim_loss = ms_ssim_loss(generated_imgs, expected_imgs)
+    g_loss = adv_lambda * adv_loss \
+            + l1_lambda * l1_loss \
+            + gdl_lambda * gd_loss \
+            + ms_ssim_lambda * ms_ssim_loss
+
+    return adv_loss, g_loss
+
+def discriminator_loss(ground_truth_distingue, fake_distingue, valid_label, fake_label):
+    adv_loss = BCEWithLogitsLoss().cuda()
+    real_loss = adv_loss(ground_truth_distingue, valid_label)
+    fake_loss = adv_loss(fake_distingue, fake_label)
+
+    return real_loss, fake_loss, (real_loss + fake_loss) / 2
