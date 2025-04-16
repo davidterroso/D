@@ -1,80 +1,7 @@
 from numpy import prod
 from torch import cat
-from torch.nn import Conv2d, Flatten, Module, LeakyReLU, Linear, ReLU, Sequential, Sigmoid, Tanh
-from networks.unet import DoubleConvolution, DownSample
-
-class Encoder(Module):
-    """
-    PyTorch Module that encodes the input image, 
-    originating the latent state. The encoder 
-    corresponds to the U-Net encoder.
-    """
-    def __init__(self, in_channels: int=3):
-        """
-        Initiates the Encoder object, which is 
-        composed of multiple DownSample blocks 
-        used in the U-Net. Each block consists
-        of a double convolution and max pooling. 
-        
-        Args:
-            self (Encoder object): the object 
-                Encoder that will now be defined
-            in_channels (int): Number of channels 
-                that are input in this module. 
-                Since we are handling three 
-                consecutive images, the default 
-                number of channels is 3.
-        
-        Return:
-            None
-        """
-        # Starts the initialization of the 
-        # Encoder object
-        super(Encoder, self).__init__()
-        # Declares the number of input and output channels in 
-        # each convolution module. The final 
-        self.down_convolution_1 = DownSample(in_channels, 64)
-        self.down_convolution_2 = DownSample(64, 128)
-        self.down_convolution_3 = DownSample(128, 256)
-        self.down_convolution_4 = DownSample(256, 512)
-        self.bottle_neck = DoubleConvolution(512, 1024)
-        # Flattens the PyTorch 
-        # tensor to a one 
-        # dimension array
-        self.flatten = Flatten()
-        # Applies a one dimensional linear transformation that transforms the result of the 
-        # convolutions into an array with the expected latent shape
-
-    def forward(self, x):
-        """
-        Forward step of the encoder, 
-        returning its result when 
-        applied to input image
-
-        Args: 
-            self (Encoder object): the 
-                Encoder object which is going
-                to be performed on input x
-            x (PyTorch tensor): input images
-                that will be transformed to its
-                latent state 
-
-        Return:
-            (PyTorch tensor): result of the 
-                operations applied to the 
-                input x
-        """
-        # The modules defined in the 
-        # initialization of the Encoder 
-        # are applied successively 
-        x = self.down_convolution_1(x)
-        x = self.down_convolution_2(x)
-        x = self.down_convolution_3(x)
-        x = self.down_convolution_4(x)
-        x = self.bottle_neck(x)
-        x = self.flatten(x)
-        x = self.fc(x)
-        return x
+from torch.nn.functional import pad
+from torch.nn import BatchNorm2d, Conv2d, ConvTranspose2d, Dropout2d, Module, LeakyReLU, Sequential, Tanh
 
 class Generator(Module):
     """
@@ -92,9 +19,6 @@ class Generator(Module):
         Args:
             self (Generator object): the object 
                 Generator that will now be defined
-            latent_dim (int): size of the latent
-                state array. The default value 
-                is 100
             img_shape (tuple(int,int)): shape of 
                 each input image. The default 
                 shape is the shape of the images
@@ -108,28 +32,38 @@ class Generator(Module):
         # Generator object
         super(Generator, self).__init__()
 
-        # Saves in the object the information of 
-        # the image shape, of the encoder, the 
-        # linear transformation, and the decoder
-        self.img_shape = img_shape
-        self.encoder = Encoder()
-        # This linear transformation changes the shape of the result of the applied encoding to 
-        # the shape expected in the latent dimensions
-        self.fc = Linear(1024 * (img_shape[0] / (2 ** 4)) * (img_shape[1] / (2 ** 4)), latent_dim)
+        self.nfg = 64  # the size of feature map
+        self.c = 1  # output channel
+        filter_size = 4
+        stride_size = 2
 
-        # Decodes the input array into an 
-        # image that has the same shape as 
-        # the input
-        self.decoder = Sequential(
-            Linear(latent_dim, 128),
-            LeakyReLU(0.2, inplace=True),
-            Linear(128, 256),
-            LeakyReLU(0.2, inplace=True),
-            Linear(256, 512),
-            LeakyReLU(0.2, inplace=True),
-            Linear(512, 1024),
-            ReLU(),
-            Linear(1024, prod(img_shape)),
+        
+        self.down_sample_blocks = Sequential(
+            Conv2d(self.c * 2, self.nfg * 2, kernel_size=3, stride=1, padding=1, bias=False),  # size
+            BatchNorm2d(self.nfg * 2),
+            LeakyReLU(0.02, inplace=True),
+            Conv2d(self.nfg * 2, self.nfg * 2, kernel_size=filter_size, stride=stride_size, padding=1, bias=False),  # size/2
+            BatchNorm2d(self.nfg * 2),
+            LeakyReLU(0.02, inplace=True),
+            Conv2d(self.nfg * 2, self.nfg * 4, kernel_size=filter_size, stride=stride_size, padding=1, bias=False),  # size/2
+            BatchNorm2d(self.nfg * 4),
+            LeakyReLU(0.02, inplace=True),
+            Conv2d(self.nfg * 4, self.nfg * 8, kernel_size=filter_size, stride=stride_size, padding=1, bias=False),  # size/2
+            BatchNorm2d(self.nfg * 8),
+            LeakyReLU(0.02, inplace=True)
+        )
+        
+        self.up_sample_block = Sequential(
+            ConvTranspose2d(self.nfg * 8, self.nfg * 4, kernel_size=filter_size, stride=stride_size, padding=1, bias=False),  # size*2
+            BatchNorm2d(self.nfg * 4),
+            LeakyReLU(0.02, inplace=True),
+            ConvTranspose2d(self.nfg * 4, self.nfg * 2, kernel_size=filter_size, stride=stride_size, padding=1, bias=False),  # size*2
+            BatchNorm2d(self.nfg * 2),
+            LeakyReLU(0.02, inplace=True),
+            ConvTranspose2d(self.nfg * 2, self.nfg, kernel_size=filter_size, stride=stride_size, padding=1, bias=False),  # size*2
+            BatchNorm2d(self.nfg),
+            LeakyReLU(0.02, inplace=True),
+            ConvTranspose2d(self.nfg, self.c, kernel_size=3, stride=1, padding=1, bias=False),  # size
             Tanh()
         )
 
@@ -156,19 +90,36 @@ class Generator(Module):
                 operations applied in the 
                 forward step to the input x
         """
-        # Encodes the previous and following images and 
-        # applies the linear information so that it 
-        # matches the expected latent shape
-        latent_before = self.fc(self.encoder(img_before))
-        latent_after = self.fc(self.encoder(img_after))
-        # To the average of the latent space of the image before and 
-        # the image after (a linear interpolation between latent 
-        # spaces), an array of Gaussian noise will be added 
-        interpolated = 0.5 * latent_before + 0.5 * latent_after + z 
-        # The result of the interpolation 
-        # will be decoded
-        output = self.decoder(interpolated)
-        return output.view(-1, self.img_shape)
+        h0 = int(list(tensor0.size())[2])
+        w0 = int(list(tensor0.size())[3])
+        h2 = int(list(tensor2.size())[2])
+        w2 = int(list(tensor2.size())[3])
+
+        h_padded = False
+        w_padded = False
+        if (h0 % 32 != 0 or (h0 - w0) < 0):
+            pad_h = 32 - (h0 % 32) if (h0 - w0) >= 0 else 32 - (h0 % 32) + (w0 - h0)
+            tensor0 = pad(tensor0, (0, 0, 0, pad_h))
+            tensor2 = pad(tensor2, (0, 0, 0, pad_h))
+            h_padded = True
+
+        if (w0 % 32 != 0 or (h0 - w0) > 0):
+            pad_w = 32 - (w0 % 32) if (h0 - w0) <= 0 else 32 - (h0 % 32) + (h0 - w0)
+            tensor0 = pad(tensor0, (0, pad_w, 0, 0))
+            tensor2 = pad(tensor2, (0, pad_w, 0, 0))
+            w_padded = True
+        
+        out = cat((tensor0, tensor2), 1)
+        
+        out_down = self.down_sample_blocks(out)
+        out_up = self.up_sample_block(out_down)
+        
+        if h_padded:
+            out_up = out_up[:, :, 0:h0, :]
+        if w_padded:
+            out_up = out_up[:, :, :, 0:w0]
+          
+        return out_up
     
 class Discriminator(Module):
     """
@@ -205,19 +156,29 @@ class Discriminator(Module):
         # image before converting it, through a linear 
         # transformation to a single value, to which is 
         # applied a sigmoid, resulting in a final prediction
-        self.model = Sequential(
-            Conv2d(3, 64, kernel_size=3, stride=2, padding=1),
+        self.nfg = 64  # the size of feature map
+        self.c = 1  # output channel
+        
+        self.conv_blocks = Sequential(
+            # input is c * 64 * 64
+            Conv2d(self.c, self.nfg, kernel_size=4, stride=2, padding=1, bias=False),
             LeakyReLU(0.2, inplace=True),
-            Conv2d(64, 128, kernel_size=3, stride=2, padding=1),
+            Dropout2d(0.25),
+            # state: nfg * 32 * 32
+            Conv2d(self.nfg, self.nfg * 2, kernel_size=4, stride=2, padding=1, bias=False),
+            BatchNorm2d(self.nfg * 2),
             LeakyReLU(0.2, inplace=True),
-            Conv2d(128, 256, kernel_size=3, stride=2, padding=1),
+            Dropout2d(0.25),
+            Conv2d(self.nfg * 2, self.nfg * 4, kernel_size=4, stride=2, padding=1, bias=False),
+            BatchNorm2d(self.nfg * 4),
             LeakyReLU(0.2, inplace=True),
-            Conv2d(256, 512, kernel_size=3, stride=2, padding=1),
+            Dropout2d(0.25),
+            Conv2d(self.nfg * 4, self.nfg * 8, kernel_size=4, stride=2, padding=1, bias=False),
+            BatchNorm2d(self.nfg * 8),
             LeakyReLU(0.2, inplace=True),
-            Flatten(),
-            Linear(512 * int(img_shape[0] / (2 ** 4)) * int(img_shape[1] / (2 ** 4)), 1),
-            Sigmoid()
-        )
+            Dropout2d(0.25),
+            Conv2d(self.nfg * 8, 1, kernel_size=4, stride=1, padding=0, bias=False)
+            )
 
     def forward(self, img_before, img_mid, 
                 img_after):
@@ -247,5 +208,5 @@ class Discriminator(Module):
         # Concatenates the images along the 
         # now first dimension
         x = cat([img_before, img_mid, img_after], dim=1)
-        return self.model(x)
+        return self.conv_blocks(x)
     
