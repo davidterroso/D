@@ -276,7 +276,7 @@ def train_gan(
                 fake_distingue = discriminator(gen_imgs.detach())
                 # The discriminator loss is calculated for the true image and fake image predicted labels 
                 # and their respective true labels
-                real_loss, fake_loss, d_loss = discriminator_loss(gt_distingue, fake_distingue, valid, fake)
+                real_loss, fake_loss, d_loss = discriminator_loss(device, gt_distingue, fake_distingue, valid, fake)
                 # The backward step is calculated 
                 # for the model according to the 
                 # discriminator loss

@@ -2,6 +2,7 @@ import torch
 from numpy import array, float32
 from torch.nn import BCEWithLogitsLoss, Conv2d, Module, MSELoss, Parameter
 from torch.nn.functional import avg_pool2d, conv2d, pad
+from typing import Optional, Union
 
 def resize_with_crop_or_pad(y_true: torch.Tensor, target_height: int, target_width: int):
     """
@@ -234,125 +235,304 @@ def dice_coefficient(model_name: str, prediction: torch.Tensor,
         
     return dice_scores, voxel_counts, union_counts, intersection_counts, binary_dice
 
-def _fspecial_gauss_1d(size, sigma):
-    r"""Create 1-D gauss kernel
-    Args:
-        size (int): the size of gauss kernel
-        sigma (float): sigma of normal distribution
-    Returns:
-        torch.Tensor: 1D kernel (1 x 1 x size)
+def gaussian_kernel(size, sigma):
     """
+    Function used to create a one-dimensional 
+    Gaussian Kernel
+
+    Args:
+        size (int): size of the Gaussian Kernel
+        sigma (float): sigma of the normal 
+            distribution used
+    
+    Returns:
+        (PyTorch tensor): one-dimensional kernel 
+            with shape (1 x 1 x size)
+    """
+    # Creates a set of coordinates relative to the center
+    # centering them around 0
     coords = torch.arange(size).to(dtype=torch.float)
     coords -= size // 2
 
+    # Computes the Gaussian weights of the filter 
+    # according to the distance to the center
     g = torch.exp(-(coords ** 2) / (2 * sigma ** 2))
+    # Normalizes the kernel values
     g /= g.sum()
 
+    # Reshapes the kernel from shape S, 
+    # where S represents the size to 
+    # 1 x 1 x S
     return g.unsqueeze(0).unsqueeze(0)
 
 def gaussian_filter(input, win):
-    r""" Blur input with 1-D kernel
+    """ 
+    Function used to blur images 
+    that are used as input using 
+    a 1-D kernel
+
     Args:
-        input (torch.Tensor): a batch of tensors to be blured
-        window (torch.Tensor): 1-D gauss kernel
+        input (PyTorch tensor): 
+            a batch of tensors to 
+            be blured
+        win (PyTorch tensor): 1-D 
+            gaussian kernel
+
     Returns:
-        torch.Tensor: blured tensors
+        (PyTorch tensor): blured 
+            input
     """
+    # Gets the number of channels in the image
     N, C, H, W = input.shape
+    # Applies the convolution horizontal wise
     out = conv2d(input, win, stride=1, padding=0, groups=C)
+    # Applies the convolution vertical wise, by transforming the Gaussian 
+    # Kernel into a vertical filter 
     out = conv2d(out, win.transpose(2, 3), stride=1, padding=0, groups=C)
+    # Returns the blured images
     return out
 
-def _ssim_tensor(X, Y,
-          data_range,
-          win,
-          K=(0.01, 0.03)):
+def ssim_tensor(X: torch.Tensor, Y: torch.Tensor,
+          data_range: Optional[Union[int, float]],
+          win: torch.Tensor,
+          K: tuple=(0.01, 0.03)):
           
-    r""" Calculate ssim index for X and Y
+    """ 
+    Function used to calculate the SSIM index 
+    between two images, X and Y, where in this
+    case one is the real image and the other is 
+    a fake image
+    
     Args:
-        X (torch.Tensor): images
-        Y (torch.Tensor): images
-        win (torch.Tensor): 1-D gauss kernel
-        data_range (float or int, optional): value range of input images. (usually 1.0 or 255)
+        X (PyTorch tensor): true or fake image
+        Y (PyTorch tensor): true or fake image
+        win (PyTorch tensor): one-dimensional 
+            Gaussian Kernel window
+        data_range (float or int, optional): 
+            value range of input images (usually
+            1.0 or 255)
+
     Returns:
-        torch.Tensor: ssim results.
+        (PyTorch Tensor): SSIM results for the X 
+            and Y images
     """
-    K1, K2 = K
+    # Definition of the 
+    # compensation variable
     compensation = 1.0
 
+    # Constants to stabilize the division 
+    # in the SSIM formula
+    K1, K2 = K
     C1 = (K1 * data_range) ** 2
     C2 = (K2 * data_range) ** 2
 
+    # Allocates the Gaussian Kernel to the 
+    # right device
     win = win.to(X.device, dtype=X.dtype)
 
+    # Computes the local means of 
+    # the input images using the 
+    # Gaussian Kernel
     mu1 = gaussian_filter(X, win)
     mu2 = gaussian_filter(Y, win)
 
+    # Squares the local means
     mu1_sq = mu1.pow(2)
     mu2_sq = mu2.pow(2)
+    # Multiplies the local means
     mu1_mu2 = mu1 * mu2
 
+    # Computes the X local variance
     sigma1_sq = compensation * (gaussian_filter(X * X, win) - mu1_sq)
+    # Computes the Y local variance
     sigma2_sq = compensation * (gaussian_filter(Y * Y, win) - mu2_sq)
+    # Computes the covariance
     sigma12 = compensation * (gaussian_filter(X * Y, win) - mu1_mu2)
 
+    # Calculates the contrast sensitivity map, checking how well 
+    # the local contrast (variance) of the two images matches
+    # alpha = beta = gamma = 1
     cs_map = (2 * sigma12 + C2) / (sigma1_sq + sigma2_sq + C2)  # set alpha=beta=gamma=1
+    # Computes the SSIM map based on the covariance and the contrast sensitivity 
     ssim_map = ((2 * mu1_mu2 + C1) / (mu1_sq + mu2_sq + C1)) * cs_map
     
+    # The SSIM and contrast sensitivity are averaged across 
+    # the height and width for each channel resulting in a
+    # single value per channel for each image
     ssim_per_channel = torch.flatten(ssim_map, 2).mean(-1)
     cs = torch.flatten(cs_map, 2).mean(-1)
         
     return ssim_per_channel, cs
 
 class MS_SSIM(Module):
-    '''
-    Multi scale SSIM loss. Refer from:
+    """
+    Multi-Scale Structural Similarity Index Measure. This metric
+    is used to analyze the similarity between the generated images 
+    and the true images
+    
+    Refer from:
     - https://github.com/jorge-pessoa/pytorch-msssim/blob/master/pytorch_msssim/__init__.py
     - https://github.com/VainF/pytorch-msssim/blob/master/pytorch_msssim/ssim.py
-    '''
+    - https://github.com/tnquang1416/frame_interpolation_GAN/blob/master/utils/loss.py
+    """
 
     def __init__(self):
+        """
+        Iniates the MS_SSIM as a PyTorch 
+        Module, allowing for computation 
+        on the GPU
+        
+        Args:
+            self (MS_SSIM Module): the
+                MS_SSIM Module itself
+
+        Returns:
+            None
+        """
         super(MS_SSIM, self).__init__()
         
-    def forward(self, gen_frames, gt_frames):
-        return 1 - self._cal_ms_ssim(gen_frames, gt_frames)
+    def forward(self, gen_frames: torch.Tensor, 
+                gt_frames: torch.Tensor):
+        """
+        Calculates the forward step of the 
+        module which corresponds to 1 - MS-SSIM
+        for the generated images and their 
+        corresponding real images
+
+        Args:
+            self (MS_SSIM Module): the
+                MS_SSIM Module itself
+            gen_frames (PyTorch tensor): images 
+                generated by the generator
+            gt_frames (PyTorch tensor): real
+                corresponding images
+
+        Returns:
+            (PyTorch tensor): 1 - MS-SSIM value 
+                for all images
+        """
+        return 1 - self.ms_ssim(gen_frames, gt_frames)
         
-    def _cal_ms_ssim(self, gen_tensors, gt_tensors):
+    def ms_ssim(self, gen_tensors, gt_tensors):
+        """
+        Calculates the MS-SSIM for the received images
+
+        Args:
+            self (MS_SSIM Module): the
+                MS_SSIM Module itself
+            gen_frames (PyTorch tensor): images 
+                generated by the generator
+            gt_frames (PyTorch tensor): matching
+                reak images
+
+        Returns:
+            (PyTorch tensor): mean of the results 
+                across all levels
+        """
+        
+        # Sets the weights for each scale manually, as done in the 
+        # referenced repositories
         weights = torch.Tensor([0.0448, 0.2856, 0.3001, 0.2363, 0.1333])
+        
+        # Assigns the tensor to the GPU 
+        # if it is available
         if torch.cuda.is_available():
             weights = weights.to('cuda')
         
+        # Renames the variables
         gen = gen_tensors
         gt = gt_tensors
+        # Gets the number of weights 
+        # in the weights tensor
         levels = weights.shape[0]
+        
+        # Initates a list that will 
+        # contain the contrast 
+        # sensitivity of each scale
         mcs = []
+        # The window size used in the Gaussian Kernel is
+        # defined according to the size of the image
         win_size = 3 if gen_tensors.shape[3] < 256 else 11
-        win = _fspecial_gauss_1d(size=win_size, sigma=1.5)
+        # The Gaussian Kernel is created receiving as 
+        # arguments the window size and the sigma
+        win = gaussian_kernel(size=win_size, sigma=1.5)
+        # This function is applied repeatedly 
+        # for all the channels that compose the 
+        # images
         win = win.repeat(gen.shape[1], 1, 1, 1)
         
+        # Iterates through the multiple scales/levels
         for i in range(levels):
-            ssim_per_channel, cs = _ssim_tensor(gen, gt, data_range=1.0, win=win)
+            # Calls the function that calculates the SSIM for the current images
+            # It returns the SSIM for each channel and the contrast sensitivity
+            ssim_per_channel, cs = ssim_tensor(gen, gt, data_range=255, win=win)
             
+            # For all the scales, except the
+            # last one, downsampling is performed
             if i < levels - 1: 
+                # Appends the result of applying the ReLU function to 
+                # the contrast sensitivity to the list that holds these values
                 mcs.append(torch.relu(cs))
+                # Calculates the padding needed for the image 
+                # in case its dimensions are not divisible by two
                 padding = (gen.shape[2] % 2, gen.shape[3] % 2)
+                # Performs two-dimensionl average pooling in the 
+                # images, downsampling them
                 gen = avg_pool2d(gen, kernel_size=2, padding=padding)
                 gt = avg_pool2d(gt, kernel_size=2, padding=padding)
         
-        ssim_per_channel = torch.relu(ssim_per_channel)  # (batch, channel)
-        mcs_and_ssim = torch.stack(mcs + [ssim_per_channel], dim=0)  # (level, batch, channel)
+        # Performs the ReLU activation in the SSIM values 
+        # per channel, resulting in a tensor of shape B x C
+        ssim_per_channel = torch.relu(ssim_per_channel)
+        # Stacks the sum of the multiple contrast sensitivity 
+        # and SSIM values of the different levels across the 
+        # first dimension, ending with a tensor of shape L x B x C
+        mcs_and_ssim = torch.stack(mcs + [ssim_per_channel], dim=0)
+        # Calculates the product of all the combined contrast sensitivity and 
+        # SSIM raised to the power of the weights defined previously
         ms_ssim_val = torch.prod(mcs_and_ssim ** weights.view(-1, 1, 1), dim=0)
     
+        # Returns the mean of all 
+        # the values in the tensor
         return ms_ssim_val.mean()
 
 def gdl_loss(gen_frames, gt_frames, alpha=2, cuda=True):
-    '''
-    From original version on https://github.com/wileyw/VideoGAN/blob/master/loss_funs.py
-    which was referenced from Deep multi-scale video prediction beyond mean square error paper    
-    :param gen_frames: generated output tensors
-    :param gt_frames: ground truth tensors
-    :param alpha: The power to which each gradient term is raised.
-    '''
+    """
+    Function used to calculate the gradient differential 
+    loss between two images. Extracted from the original 
+    version on https://github.com/wileyw/VideoGAN/blob/master/loss_funs.py
+    The main goal of this loss is to motivate the network 
+    to also focus on the image's textures and edges 
+    characteristics and not just the pixel differences 
+
+    Args:
+        gen_frames (PyTorch tensor): images generated by 
+            the generator
+    gt_frames (PyTorch tensor): the real ground truth 
+        images that correspond to the fake images 
+    alpha (int): the power to which each gradient term 
+        is raised
+    cuda (bool): indicates whether the network is being 
+        trained on the GPU or not. The default value is 
+        true
+    
+    Returns:
+        (PyTorch tensor): mean of all the gradients in 
+            from different dimensions
+    """
+    # In the following lines of code convolutional 
+    # filters are created that compute spatial 
+    # gradients for each channel. The first filter 
+    # calculates the gradients across the X axis 
+    # (along the width) while the second filter 
+    # calculates the gradients across the Y axis 
+    # (along the height)
+    # What these filters basically do is calculate 
+    # how much the intensity changes between 
+    # neighbouring pixels
+
+    # Initiates the weights of the first convolution 
+    # filter
     filter_x_values = array(
         [
             [[[-1, 1, 0]], [[0, 0, 0]], [[0, 0, 0]]],
@@ -361,8 +541,11 @@ def gdl_loss(gen_frames, gt_frames, alpha=2, cuda=True):
         ],
         dtype=float32,
     )
+    # Initiates the first convolution object
     filter_x = Conv2d(3, 3, (1, 3), padding=(0, 1))
     
+    # Initiates the weights of the second convolution 
+    # filter
     filter_y_values = array(
         [
             [[[-1], [1], [0]], [[0], [0], [0]], [[0], [0], [0]]],
@@ -371,41 +554,98 @@ def gdl_loss(gen_frames, gt_frames, alpha=2, cuda=True):
         ],
         dtype=float32,
     )
+    # Initiates the second convolution object
     filter_y = Conv2d(3, 3, (3, 1), padding=(1, 0))
         
-    filter_x.weight = Parameter(torch.from_numpy(filter_x_values))  # @UndefinedVariable
-    filter_y.weight = Parameter(torch.from_numpy(filter_y_values))  # @UndefinedVariable
+    # Sets the weights of the convolutions to those initialized above
+    filter_x.weight = Parameter(torch.from_numpy(filter_x_values))
+    filter_y.weight = Parameter(torch.from_numpy(filter_y_values))
     
-    dtype = torch.FloatTensor if not cuda else torch.cuda.FloatTensor  # @UndefinedVariable
+    # Attributes the filters to the GPU if available
+    dtype = torch.FloatTensor if not cuda else torch.cuda.FloatTensor
     filter_x = filter_x.type(dtype)
     filter_y = filter_y.type(dtype)
     
+    # Calculates the differences between 
+    # pixels for both generated images 
+    # and real images, across height 
+    # and width
     gen_dx = filter_x(gen_frames)
     gen_dy = filter_y(gen_frames)
     gt_dx = filter_x(gt_frames)
     gt_dy = filter_y(gt_frames)
     
-    grad_diff_x = torch.pow(torch.abs(gt_dx - gen_dx), alpha)  # @UndefinedVariable
-    grad_diff_y = torch.pow(torch.abs(gt_dy - gen_dy), alpha)  # @UndefinedVariable
+    # Raises the difference between gradient matrices to the 
+    # power alpha defined as argument
+    grad_diff_x = torch.pow(torch.abs(gt_dx - gen_dx), alpha)
+    grad_diff_y = torch.pow(torch.abs(gt_dy - gen_dy), alpha)
     
-    grad_total = torch.stack([grad_diff_x, grad_diff_y])  # @UndefinedVariable
+    # Stacks the gradients from both height and width together
+    grad_total = torch.stack([grad_diff_x, grad_diff_y])
     
-    return torch.mean(grad_total)  # @UndefinedVariable
+    # Calculates the mean across 
+    # all channels and batches to 
+    # one single value
+    return torch.mean(grad_total)
 
 class GDL(Module):
-    '''
-    Gradient different loss function
-    Target: reduce motion blur 
-    '''
+    """
+    The main goal of this loss is to motivate the network 
+    to also focus on the image's textures and edges 
+    characteristics and not just the pixel differences 
+    """
     
-    def __init__(self, cuda_used=True):
+    def __init__(self, cuda_used: bool=True):
+        """
+        Initiates the GDL PyTorch module 
+        and saves in the variable if the 
+        GPU is the device being used
+
+        Args:
+            self (GDL Module): the GDL 
+                PyTorch Module itself
+            cuda_used (bool): flag that 
+                indicates if the GPU is 
+                the selected device. The 
+                default value is true
+        
+        Returns:
+            None
+        """
+        # Initiates the PyTorch Module
         super(GDL, self).__init__()
+        # Saves a bool that indicates whether the GPU is being 
+        # used or not
         self.cuda_used = torch.cuda.is_available() and cuda_used
 
     def forward(self, gen_frames, gt_frames):
+        """
+        Calculates the GDL loss between the 
+        generated images and their 
+        corresponding true images
+
+        Args:
+            self (GDL Module): the GDL 
+                PyTorch Module itself
+                gen_frames (PyTorch tensor):
+                    images generated by the 
+                    generator
+                gt_frames (PyTorch tensor):
+                    real images corresponding 
+                    to the fake images received
+
+        Returns:
+            (PyTorch tensor): mean of all the 
+                gradients in from different 
+                dimensions in the received 
+                images
+        """
         return gdl_loss(gen_frames, gt_frames, cuda=self.cuda_used)
 
-def generator_loss(device, discriminator, generated_imgs, expected_imgs, valid_label):
+def generator_loss(device: str, discriminator: Module, 
+                   generated_imgs: torch.Tensor,
+                   expected_imgs: torch.Tensor, 
+                   valid_label: torch.Tensor):
     """
     Calculates the loss of the generator. This loss is composed of four 
     different components, which have their respective weights. The first 
@@ -483,9 +723,49 @@ def generator_loss(device, discriminator, generated_imgs, expected_imgs, valid_l
 
     return adv_loss, g_loss
 
-def discriminator_loss(ground_truth_distingue, fake_distingue, valid_label, fake_label):
-    adv_loss = BCEWithLogitsLoss().cuda()
+def discriminator_loss(device: str, 
+                       ground_truth_distingue: torch.Tensor, 
+                       fake_distingue: torch.Tensor, 
+                       valid_label: torch.Tensor, 
+                       fake_label: torch.Tensor):
+    """
+    This function calculates the loss of the discriminator, 
+    receiving as input the predicted and real images, as well 
+    as their respective true labels, from which it calculates
+    how well the discriminator is at determining whether real 
+    images are real and fake images are fake
+
+    Args:
+        device (str): device in which the loss will be 
+            calculated
+        ground_truth_distingue (PyTorch tensor): probability 
+            of the real image being real, according to the
+            discriminator
+        fake_distingue (PyTorch tensor): probability of the 
+            fake image being real, according to the 
+            discriminator
+        valid_label (PyTorch tensor): labels of the true 
+            images
+        fake_label (PyTorch tensor): labels of the fake 
+            images 
+        
+    Returns:
+        real_loss (PyTorch tensor): BCE loss for the real 
+            images
+        fake_loss (PyTorch tensor): BCE loss for the fake 
+            images
+        (PyTorch tensor): mean of the real_loss and 
+            fake_loss which designates the discriminator
+            loss
+    """
+    # Initiates the BCE loss and allocates it 
+    # to the device that is being used
+    adv_loss = BCEWithLogitsLoss().to(device)
+    # Calculates the BCE for the real images and their 
+    # respective labels
     real_loss = adv_loss(ground_truth_distingue, valid_label)
+    # Calculates the BCE for the fake images and their 
+    # respective labels
     fake_loss = adv_loss(fake_distingue, fake_label)
 
     return real_loss, fake_loss, (real_loss + fake_loss) / 2
