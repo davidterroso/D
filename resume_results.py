@@ -76,12 +76,15 @@ def runs_resume(prefix: str, starting_run: int,
                     if "class_dice_resized_wfluid" in files_to_load: files_to_load.remove("class_dice_resized_wfluid")
                     if "class_dice_resized_wofluid" in files_to_load: files_to_load.remove("class_dice_resized_wofluid")
                     if "fluid_dice_resized" in files_to_load: files_to_load.remove("fluid_dice_resized")
-
         else:
             if run_number < 5:
                 files_to_load = files_names
             else:
                 files_to_load = files_names_resized
+                if run_number > 18:
+                    if "classes_results_resized_wfluid" in files_to_load: files_to_load.remove("classes_results_resized_wfluid")
+                    if "classes_results_resized_wofluid" in files_to_load: files_to_load.remove("classes_results_resized_wofluid")
+                    if "fluids_results_resized" in files_to_load: files_to_load.remove("fluids_results_resized")
 
         # Changes the number to match the one 
         # used in the files (e.g. 1 -> 001)
@@ -128,7 +131,7 @@ def runs_resume(prefix: str, starting_run: int,
             # Loads the CSV files that contain the Dice 
             # coefficient for each class
             class_dice = read_csv(files_paths[3])
-            if int(run_number) < 63:
+            if (int(run_number) < 63 and prefix == "Run") or (int(run_number) < 18 and prefix == "Iteration"):
                 class_dice_wfluid = read_csv(files_paths[4])
                 class_dice_wofluid = read_csv(files_paths[5])
 
@@ -136,11 +139,11 @@ def runs_resume(prefix: str, starting_run: int,
             # appends them to the results list
             for fluid in class_dice.columns:
                 results.append(class_dice.at[0, fluid])
-                if int(run_number) < 63:    
+                if (int(run_number) < 63 and prefix == "Run") or (int(run_number) < 18 and prefix == "Iteration"):    
                     results.append(class_dice_wfluid.at[0, fluid])
                     results.append(class_dice_wofluid.at[0, fluid])
 
-            if int(run_number) < 63:
+            if (int(run_number) < 63 and prefix == "Run") or (int(run_number) < 18 and prefix == "Iteration"):
                 # Reads the file that contains the Dice 
                 # resulting from the binarization of 
                 # the fluid masks
@@ -394,7 +397,7 @@ def combine_csvs_to_excel(folder_path, output_excel_path):
         run_df.to_excel(writer, sheet_name="Runs", index=False, header=False)
         iteration_df.to_excel(writer, sheet_name="Iterations", index=False, header=False)
 
-# runs_resume(starting_run=1, ending_run=63, folder=".\\results\\", prefix="Run")
-# runs_resume(starting_run=1, ending_run=19, folder=".\\results\\", prefix="Iteration")
+runs_resume(starting_run=1, ending_run=75, folder=".\\results\\", prefix="Run")
+runs_resume(starting_run=1, ending_run=22, folder=".\\results\\", prefix="Iteration")
 runs_resume_final(folder=".\\results\\", runs_to_check=100)
 combine_csvs_to_excel(folder_path=".\\results\\", output_excel_path=".\\results\\combined_output.xlsx")
