@@ -6,8 +6,10 @@ from os.path import exists
 from pandas import concat, DataFrame, read_csv
 from PIL import Image
 from shutil import rmtree
+from skimage.metrics import structural_similarity as ssim
 from torch.utils.data import DataLoader
 from networks.gan import Generator
+from networks.loss import psnr
 from network_functions.dataset import TestDatasetGAN
 from paths import IMAGES_PATH
 
@@ -134,13 +136,19 @@ def test_gan(
                 # Generates the middle image
                 gen_imgs = generator(prev_imgs, next_imgs)
 
-                # Calculates the PNSR value
-                img_pnsr = round(pnsr(mid_imgs, gen_imgs), 3)
+                # Calculates the PSNR value
+                img_psnr = round(psnr(mid_imgs, gen_imgs), 3)
                 # Calculates the SSIM value
-                img_ssim = round(ssim(mid_imgs, gen_imgs), 3)
+                img_ssim = round(ssim(
+                                mid_imgs, gen_imgs,
+                                data_range=255,
+                                gaussian_weights=True,
+                                use_sample_covariance=False,
+                                win_size=11
+                            ), 3)
 
                 # Appends the images to the list of results
-                slice_results.append([mid_image_name, img_pnsr, img_ssim])
+                slice_results.append([mid_image_name, img_psnr, img_ssim])
 
                 # Saves the images
                 if save_images:
@@ -158,7 +166,7 @@ def test_gan(
     makedirs("results", exist_ok=True)
 
     # Converts the information into a DataFrame
-    slice_df = DataFrame(slice_results, columns=["Slice", "PNSR", "SSIM"])
+    slice_df = DataFrame(slice_results, columns=["Slice", "PSNR", "SSIM"])
 
     # Saves the DataFrame as a CSV file
     if not final_test:
@@ -198,17 +206,17 @@ def test_gan(
     # Removes the key used to merge
     slice_df = slice_df.drop(columns=["volume_key"])
 
-    # Groups the PNSR and SSIM by the mean of all slices, for each Device
-    device_df_mean = slice_df[["Device", "PNSR", "SSIM"]].groupby("Device").mean()
+    # Groups the PSNR and SSIM by the mean of all slices, for each Device
+    device_df_mean = slice_df[["Device", "PSNR", "SSIM"]].groupby("Device").mean()
     device_df_mean.index.name = "Device"
-    device_df_std = slice_df[["Device", "PNSR", "SSIM"]].groupby("Device").std()
+    device_df_std = slice_df[["Device", "PSNR", "SSIM"]].groupby("Device").std()
     device_df_std.index.name = "Device"
     resulting_device_df = device_df_mean.astype(str) + " (" + device_df_std.astype(str) + ")"
 
-    # Groups the PNSR and SSIM by the mean of all slices
-    slice_df_mean = slice_df[["Device", "PNSR", "SSIM"]].mean().to_frame().T
+    # Groups the PSNR and SSIM by the mean of all slices
+    slice_df_mean = slice_df[["Device", "PSNR", "SSIM"]].mean().to_frame().T
     slice_df_mean.index.name = "Device"
-    slice_df_std = slice_df[["Device", "PNSR", "SSIM"]].std().to_frame().T
+    slice_df_std = slice_df[["Device", "PSNR", "SSIM"]].std().to_frame().T
     slice_df_std.index.name = "Device"
     resulting_slice_df = slice_df_mean.astype(str) + " (" + slice_df_std.astype(str) + ")"
 

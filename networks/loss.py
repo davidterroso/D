@@ -1,5 +1,5 @@
 import torch
-from numpy import array, float32
+from numpy import array, float32, log10
 from torch.nn import BCEWithLogitsLoss, Conv2d, Module, MSELoss, Parameter
 from torch.nn.functional import avg_pool2d, conv2d, pad
 from typing import Optional, Union
@@ -769,3 +769,44 @@ def discriminator_loss(device: str,
     fake_loss = adv_loss(fake_distingue, fake_label)
 
     return real_loss, fake_loss, (real_loss + fake_loss) / 2
+
+def psnr(img1: torch.Tensor, img2: torch.Tensor):
+    """
+    Calculates the Peak Signal-to-Noise Ratio 
+    (PSNR) metric from two tensors of images
+
+    Args:
+    img1 (PyTorch tensor): one of the 
+    images that will be compared, 
+    with range 0-255
+    img2 (PyTorch tensor): the other 
+    image that will be compared, 
+    with range 0-255
+
+    Returns:
+    psnr (PyTorch tensor | float): PSNR for
+    the received images. In case the 
+    images are equal, returns an 
+    infinite float
+
+    """
+    # Calculates the difference 
+    # between the images
+    diff = (img1 - img2)
+    # Squares the difference
+    diff = diff ** 2
+
+    # In case the images have no 
+    # differences returns infinite
+    if diff.sum().item() == 0:
+        return float('inf')
+        
+    # Calculates the mean of the 
+    # values, obtaining the Root 
+    # Mean Squared Error (RMSE)
+    rmse = diff.mean().item()
+
+    # Calculates the PSNR using the RMSE 
+    psnr_value = 20 * log10(255.0) - 10 * log10(rmse)
+
+    return psnr_value
