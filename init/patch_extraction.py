@@ -16,6 +16,7 @@ from time import time
 from torch.utils.data import DataLoader
 from network_functions.dataset import TrainDataset, ValidationDataset, TrainDatasetLMDB, ValidationDatasetLMDB, drop_patches
 from paths import IMAGES_PATH
+import train
 from .read_oct import int32_to_uint8, load_oct_image, load_oct_mask
 
 # Imports tqdm depending on whether 
@@ -1160,5 +1161,120 @@ def extract_vertical_patches(folder_path: str, save_folder: str,
                                     # Updates the progress bar
                                     progress_bar.update(1)
     
+    print("All patches have been extracted.")
+    print("EOF.")
+
+def extract_vertical_patches_relative_distance_maps(
+                             folder_path: str, save_folder: str, 
+                             overlap: bool, num_patches: int=4, 
+                             start_on: int=0):
+    """
+    In this function, the distance maps of the original images 
+    are all resized to the same shape (496x512 (H,W)) 
+    independently of the vendor. Then, vertical patches are 
+    extracted from the original image. These patches preserve 
+    the height of this resized patch while having 
+    a quarter of the original width (512 / 4 = 128). The patches 
+    can be extracted from overlapping horizontal locations or can 
+    be disjoint, with a maximum number of patches per scan being 4
+    
+    Args:
+        folder_path (str): path to the relative distance maps
+        save_folder (str): path to the folder where the images 
+            will be saved
+        overlap (bool): flag that indicates whether the patches 
+            will overlap when extracted or not
+        num_patches (int): the number of patches desired to 
+            extract from the scan. This parameter can only be 
+            changed from 4 in case overlapping is allowed
+        start_on (int): number of the volume in which extraction
+            must start. Since this is a long process, there may be
+            no conditions to do it all in one session. Default is
+            0, since the default case is considered the full 
+            extraction of all the images 
+            
+    Return:
+        None
+    """
+    # Ensures that the number of patches in case they
+    # are not randomly extracted from the volumes is 4
+    if not overlap: num_patches = 4 
+
+    # In case the folder to save the images does not exist, it is created
+    if not overlap:
+        save_path = save_folder + "\\OCT_images\\segmentation\\vertical_dms\\"
+    else:
+        save_path = save_folder + f"\\OCT_images\\segmentation\\vertical_dms_overlap_{num_patches}\\"
+
+    # Creates the folders when the first
+    # volumes are iterated
+    if start_on==0:
+        if ((not exists(save_path))):
+            makedirs(save_path)
+        else:
+            rmtree(save_path, ignore_errors=True)
+            makedirs(save_path)
+
+    # Loads a Spectralis file to check what is the patch size desired
+    spectralis_path = folder_path + "\RETOUCH-TrainingSet-Spectralis\TRAIN025\oct.mhd"
+    img, _, _ = load_oct_image(spectralis_path)
+    # Saves the desired shape as a tuple
+    spectralis_shape = (img.shape[1], img.shape[2])
+    # Defines the shape of the patches
+    patch_shape = (spectralis_shape[0], int(spectralis_shape[1] / 4))
+    # Defines the indexes on which the patches will be extracted
+    starting_indexes = np.linspace(start=0, stop=(spectralis_shape[1] - patch_shape[1]), num=num_patches).astype(int)
+
+    # Creates a progress bar
+    with tqdm(total=len(files), desc=f"Images Patched", unit="img", leave=True, position=0) as progress_bar:
+        # Iterates through all the folders in the 
+        # selected folder
+        for (root, _, files) in walk(folder_path):
+            # Iterates through the files in the folder
+            for filename in files:
+                # Gets the name of the image
+                vendor_volume_slice = filename.split(".")[0]
+                # Gets the name of the vendor
+                vendor = vendor_volume_slice[0]
+                # Gets the number of the volume
+                volume_name = vendor_volume_slice[1]
+                # Gets the number of the slice
+                slice_num = vendor_volume_slice[2]
+                # Initiates the image extraction where 
+                # in the volume selected
+                if int(volume_name[-3:]) >= start_on:   
+                    # Sets the base name for the patches 
+                    # of the same image
+                    save_name = save_path + filename
+                    # Loads the OCT volume
+                    img = imread(str(folder_path + "\\" + filename))
+                    # In case the volume is not 
+                    # from the Spectralis vendor,
+                    # the image will be resized
+                    if vendor != "Spectralis":
+                        # Resizes the images to the shape of the Spectralis scan
+                        img = resize(img, spectralis_shape, preserve_range=True, 
+                                                anti_aliasing=True).astype(np.uint8)
+                    # Iterates through the number of patches available
+                    for patch_index in range(num_patches):
+                        # Gets the initial index from the list and the 
+                        # final index as the horizontal size of the 
+                        # patch defined previously plus the initial
+                        # index
+                        initial_index = starting_indexes[patch_index]
+                        end_index = initial_index + patch_shape[1]
+                        # Slices the patch from the original image
+                        patch = img[:,initial_index:end_index]
+                        # Slices the patch from the original mask
+                        # Declares the name under which the patch will be saved
+                        save_name_patch = save_name + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
+                        # Passes the patches from a NumPy array to a Pillow object to save
+                        patch = Image.fromarray(patch)
+                        # Saves the patch
+                        patch.save(save_name_patch)
+
+                    # Updates the progress bar
+                    progress_bar.update(1)
+
     print("All patches have been extracted.")
     print("EOF.")
