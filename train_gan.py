@@ -32,7 +32,7 @@ def train_gan(
         number_of_classes: int=1,
         patience: int=400,
         patience_after_n: int=0,
-        split: str="generation_fold_selection",
+        split: str="generation_5_fold_split.csv",
 ):
     """
     Function that trains the GAN models.
