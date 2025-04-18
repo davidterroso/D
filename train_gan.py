@@ -79,11 +79,11 @@ def train_gan(
     # Defines the device that will be used to train the network
     device = torch.device("cuda" if torch.cuda.is_available() and device == "GPU" else "cpu")
     # Defines the Discriminator module
-    discriminator = Discriminator()
+    discriminator = Discriminator(number_of_classes)
     # Allocates the Discriminator module to the GPU
     discriminator.to(device=device)
     # Defines the Generator module
-    generator = Generator() 
+    generator = Generator(number_of_classes)
     # Allocates the Generator module to the GPU
     generator.to(device=device)
 

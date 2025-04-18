@@ -1144,45 +1144,232 @@ class ValidationDatasetLMDB(Dataset):
         return {"scan": img, "mask": mask}
 
 class TrainDatasetGAN(Dataset):
+    """
+    Initiates the PyTorch object Dataset called 
+    TrainDatasetGAN with the available image's paths, 
+    thus simplifying the training process
+    """
     def __init__(self, train_volumes: list):
+        """
+        Initiates the Dataset object and gets the possible 
+        names of the images that will be used in training
+
+        Args: 
+            self (PyTorch Dataset): the PyTorch Dataset object 
+                itself
+            train_volumes(List[float]): list of the training 
+                volumes that will be used to validate the model
+                
+        Return:
+            None
+        """
+        # Initiates the Dataset object
         super().__init__()
+        # Gets a list of paths to all the images that will be used to 
+        # train the model
         self.images_names = generation_images_from_volumes(train_volumes)
 
     def __len__(self):
+        """
+        Function required in the Dataset object that returns the length 
+        of the images used in training
+
+        Args:
+            self (PyTorch Dataset): the PyTorch Dataset object itself
+
+        Return:
+            (int): size of the dataset
+        """
         return len(self.images_names)
 
     def __getitem__(self, index):
+        """
+        Gets an image from the list of images that can be used in 
+        validation when an index is given, utilized to access the list 
+        of images
+        
+        Args:
+            self (PyTorch Dataset): the PyTorch Dataset object itself
+            index (int): index of the dataset to get the image from
+
+        Return:
+            sample (dict{str: PyTorch tensor, str: str}): returns the
+                stack of images composed by the previous image, the 
+                middle image and the following image, associated with 
+                the key 'stack'
+        """
+        # Gets the path of the image by the given index
         image_path = self.images_names[index]
 
+        # Reads the middle image as a NumPy array
         img = imread(image_path)
+        # Gets the number of the slice
         img_number = int(image_path.split(".")[0][-3:])
+        # Sets the name of the previous and following images
         prev_img_path = image_path.split(".")[0][-3:] + str(img_number - 1).zfill(3) + ".tiff"
         next_img_path = image_path.split(".")[0][-3:] + str(img_number + 1).zfill(3) + ".tiff"
 
+        # Loads the previous and the 
+        # following images 
         prev_img = imread(prev_img_path)
         next_img = imread(next_img_path)
 
+        # Organizes the data in a dictionary that contains the images 
+        # stacked along the first axis under the key "stack"
         sample = {"stack": torch.stack(prev_img, img, next_img, axis=0)}
 
         return sample
 
 class ValidationDatasetGAN(Dataset):
+    """
+    Initiates the PyTorch object Dataset called 
+    ValidationDatasetGAN with the available image's paths, 
+    thus simplifying the validation process
+    """
     def __init__(self, val_volumes: list):
+        """
+        Initiates the Dataset object and gets the possible 
+        names of the images that will be used in validation
+
+        Args: 
+            self (PyTorch Dataset): the PyTorch Dataset object 
+                itself
+            val_volumes(List[float]): list of the validation 
+                volumes that will be used to validate the model
+                
+        Return:
+            None
+        """
+        # Initiates the Dataset object
         super().__init__()
+        # Gets a list of paths to all the images that will be used to 
+        # validate the model
         self.images_names = generation_images_from_volumes(val_volumes)
 
     def __len__(self):
+        """
+        Function required in the Dataset object that returns the length 
+        of the images used in validation
+
+        Args:
+            self (PyTorch Dataset): the PyTorch Dataset object itself
+
+        Return:
+            (int): size of the dataset
+        """
         return len(self.images_names)
 
     def __getitem__(self, index):
+        """
+        Gets an image from the list of images that can be used in 
+        validation when an index is given, utilized to access the list 
+        of images
+        
+        Args:
+            self (PyTorch Dataset): the PyTorch Dataset object itself
+            index (int): index of the dataset to get the image from
+
+        Return:
+            sample (dict{str: PyTorch tensor, str: str}): returns the
+                stack of images composed by the previous image, the 
+                middle image and the following image, associated with 
+                the key 'stack'
+        """
+        # Gets the path of the image by the given index
         image_path = self.images_names[index]
 
+        # Reads the middle image as a NumPy array
         img = imread(image_path)
+        # Gets the number of the slice
         img_number = int(image_path.split(".")[0][-3:])
+        # Sets the name of the previous and following images
         prev_img_path = image_path.split(".")[0][-3:] + str(img_number - 1).zfill(3) + ".tiff"
         next_img_path = image_path.split(".")[0][-3:] + str(img_number + 1).zfill(3) + ".tiff"
 
+        # Loads the previous and the 
+        # following images 
         prev_img = imread(prev_img_path)
         next_img = imread(next_img_path)
 
-        return torch.stack(prev_img, img, next_img, axis=0)
+        # Organizes the data in a dictionary that contains the images 
+        # stacked along the first axis under the key "stack"
+        sample = {"stack": torch.stack(prev_img, img, next_img, axis=0)}
+
+        return sample
+
+class TestDatasetGAN(Dataset):
+    """
+    Initiates the PyTorch object Dataset called 
+    TestDatasetGAN with the available image's paths, thus 
+    simplifying the testing process
+    """
+    def __init__(self, test_volumes: list):
+        """
+        Initiates the Dataset object and gets the possible 
+        names of the images that will be used in testing
+
+        Args: 
+            self (PyTorch Dataset): the PyTorch Dataset object 
+                itself
+            test_volumes(List[float]): list of the test 
+                volumes that will be used to test the model
+                
+        Return:
+            None
+        """
+        # Initiates the Dataset object
+        super().__init__()
+        # Gets a list of paths to all the images that will be used to 
+        # test the model
+        self.images_names = generation_images_from_volumes(test_volumes)
+
+    def __len__(self):
+        """
+        Function required in the Dataset object that returns the length 
+        of the images used in testing
+
+        Args:
+            self (PyTorch Dataset): the PyTorch Dataset object itself
+
+        Return:
+            (int): size of the dataset
+        """
+        return len(self.images_names)
+
+    def __getitem__(self, index):
+        """
+        Gets an image from the list of images that can be used in testing
+        when an index is given, utilized to access the list of images
+        
+        Args:
+            self (PyTorch Dataset): the PyTorch Dataset object itself
+            index (int): index of the dataset to get the image from
+
+        Return:
+            sample (dict{str: PyTorch tensor, str: str}): returns the
+                stack of images composed by the previous image, the 
+                middle image and the following image, associated with 
+                the key 'stack' and the path to the image, associated 
+                with the key 'image_name', for the given index 
+        """
+        # Gets the path of the image by the given index
+        image_path = self.images_names[index]
+
+        # Reads the middle image as a NumPy array
+        img = imread(image_path)
+        # Gets the number of the slice
+        img_number = int(image_path.split(".")[0][-3:])
+        # Sets the name of the previous and following images
+        prev_img_path = image_path.split(".")[0][-3:] + str(img_number - 1).zfill(3) + ".tiff"
+        next_img_path = image_path.split(".")[0][-3:] + str(img_number + 1).zfill(3) + ".tiff"
+
+        # Loads the previous and the 
+        # following images 
+        prev_img = imread(prev_img_path)
+        next_img = imread(next_img_path)
+
+        # Organizes the data in a dictionary that contains the images stacked along the first axis under the key 
+        # "stack" and the path of the middle image associated with the key "image_name"
+        sample = {"stack": torch.stack(prev_img, img, next_img, axis=0), "image_name": self.images_names[index]}
+
+        return sample

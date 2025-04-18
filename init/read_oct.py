@@ -18,9 +18,11 @@ def int32_to_uint8(image: np.ndarray):
     """
     Receives an int32 NumPy array that represents an image and transforms it into 
     uint8 so that it can be visualized by the PC image viewer
+
     Args:
         image (NumPy int32 array): slice of an OCT scan
-    Return:
+    
+    Returns:
         (NumPy uint8 array): slice of an OCT scan
     """
     return (255 * (image - image.min())/(image.max() - image.min())).astype(np.uint8)
@@ -30,12 +32,14 @@ def int32_to_uint8(image: np.ndarray):
 def load_oct_image(filename: str):
     """
     Loads an .mhd OCT volume using Simple ITK library
+    
     Args:
         filename: name of the image to be loaded
-    Return: 
-        (NumPy int32 array) int32 3D image with voxels range 0-255
-        (NumPy array) the origin of the scan
-        (NumPy array) the scan spacing
+
+    Returns: 
+        (NumPy int32 array): int32 3D image with voxels range 0-255
+        (NumPy array): the origin of the scan
+        (NumPy array): the scan spacing
     """
     # Reads the image using SimpleITK
     itkimage = sitk.ReadImage(filename)
@@ -67,12 +71,14 @@ def load_oct_image(filename: str):
 def load_oct_mask(filename: str):
     """
     Loads an .mhd OCT fluid mask volume using Simple ITK library
+
     Args:
         filename (str): name of the image to be loaded
-    Return: 
-        (NumPy int8 array) int32 3D image with the fluid masks
-        (NumPy array) the origin of the scan
-        (NumPy array) the scan spacing
+
+    Returns: 
+        (NumPy int8 array): int32 3D image with the fluid masks
+        (NumPy array): the origin of the scan
+        (NumPy array): the scan spacing
     """
     # Reads the image using SimpleITK
     itkimage = sitk.ReadImage(filename)
@@ -102,7 +108,7 @@ def save_segmentation_oct_as_tiff(oct_folder: str, save_folder: str):
         save_folder (str): path to where the images are going to
             be stored
 
-    Return:
+    Returns:
         None
     """
     # In case the folder to save the images does not exist, it is created
@@ -183,7 +189,7 @@ def save_segmentation_mask_as_tiff(oct_folder: str, save_folder: str):
         save_folder (str): path to where the images are going to
             be stored
 
-    Return:
+    Returns:
         None
     """
 
@@ -265,7 +271,7 @@ def save_generation_oct_as_tiff(oct_folder: str, save_folder: str):
         save_folder (str): path to where the images are going to
             be stored
 
-    Return:
+    Returns:
         None
     """
     # In case the folder to save the images does not exist, it is created

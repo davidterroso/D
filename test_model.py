@@ -542,7 +542,7 @@ def test_model (
             # In this case, the batches are of size one, 
             # so every batch is handled like a single image
             for batch in test_dataloader:
-                # Gets the images and the masks from the dataloader
+                # Gets the images and the masks from the DataLoader
                 images, true_masks, image_name = batch['scan'], batch['mask'], batch['image_name']
 
                 # Handles the images and masks according to the device, specified data type and memory format

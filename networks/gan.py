@@ -1,6 +1,4 @@
-from numpy import prod
 from torch import cat
-from torch.nn.functional import pad
 from torch.nn import BatchNorm2d, Conv2d, ConvTranspose2d, Dropout2d, Module, LeakyReLU, Sequential, Tanh
 
 class Generator(Module):
@@ -9,7 +7,8 @@ class Generator(Module):
     intermediate image from the input 
     set of images.
     """
-    def __init__(self, latent_dim: int=100, img_shape: tuple=(496,512)):
+    def __init__(self, number_of_channels: int=1, 
+                 feature_map_size: int=64):
         """
         Initiates the Generator object, which 
         encodes the image into its latent state
@@ -18,12 +17,18 @@ class Generator(Module):
         
         Args:
             self (Generator object): the object 
-                Generator that will now be defined
-            img_shape (tuple(int,int)): shape of 
-                each input image. The default 
-                shape is the shape of the images
-                that we are using, which is 
-                (496, 512)
+                Generator that will now be 
+                defined
+            number_of_classes (int): number of 
+                output channels. In the 
+                discriminator, we aim to 
+                generate a grayscale image 
+                from two other grayscale images
+            feature_map_size (int): number of 
+                channels after the first 
+                convolution. The default value 
+                is 64, which was the value being 
+                used in the adapted code  
         
         Return:
             None
@@ -32,42 +37,54 @@ class Generator(Module):
         # Generator object
         super(Generator, self).__init__()
 
-        self.nfg = 64  # the size of feature map
-        self.c = 1  # output channel
-        filter_size = 4
-        stride_size = 2
-
-        
+        # Defines the down-sampling blocks
         self.down_sample_blocks = Sequential(
-            Conv2d(self.c * 2, self.nfg * 2, kernel_size=3, stride=1, padding=1, bias=False),  # size
-            BatchNorm2d(self.nfg * 2),
-            LeakyReLU(0.02, inplace=True),
-            Conv2d(self.nfg * 2, self.nfg * 2, kernel_size=filter_size, stride=stride_size, padding=1, bias=False),  # size/2
-            BatchNorm2d(self.nfg * 2),
-            LeakyReLU(0.02, inplace=True),
-            Conv2d(self.nfg * 2, self.nfg * 4, kernel_size=filter_size, stride=stride_size, padding=1, bias=False),  # size/2
-            BatchNorm2d(self.nfg * 4),
-            LeakyReLU(0.02, inplace=True),
-            Conv2d(self.nfg * 4, self.nfg * 8, kernel_size=filter_size, stride=stride_size, padding=1, bias=False),  # size/2
-            BatchNorm2d(self.nfg * 8),
-            LeakyReLU(0.02, inplace=True)
+            # N = number_of_classes
+            # F = feature_map_size
+            # Input Shape: B x (N * 2) x H x W
+            Conv2d(number_of_channels * 2, feature_map_size * 2, kernel_size=3, stride=1, padding=1, bias=False),
+            # Shape: B x (F * 2) x H x W
+            Conv2d(number_of_channels * 2, feature_map_size * 2, kernel_size=3, stride=1, padding=1, bias=False),
+            # Shape: B x (F * 2) x H x W
+            BatchNorm2d(feature_map_size * 2), # Same shape
+            LeakyReLU(0.02, inplace=True), # Same shape
+            Conv2d(feature_map_size * 2, feature_map_size * 2, kernel_size=4, stride=2, padding=1, bias=False),
+            # Shape: B x (F * 2) x (H / 2) x (W / 2)
+            BatchNorm2d(feature_map_size * 2), # Same shape
+            LeakyReLU(0.02, inplace=True), # Same shape
+            Conv2d(feature_map_size * 2, feature_map_size * 4, kernel_size=4, stride=2, padding=1, bias=False),
+            # Shape: B x (F * 4) x (H / 4) x (W / 4)
+            BatchNorm2d(feature_map_size * 4), # Same shape
+            LeakyReLU(0.02, inplace=True), # Same shape
+            Conv2d(feature_map_size * 4, feature_map_size * 8, kernel_size=4, stride=2, padding=1, bias=False),
+            # Shape: B x (F * 8) x (H / 8) x (W / 8)
+            BatchNorm2d(feature_map_size * 8), # Same shape
+            LeakyReLU(0.02, inplace=True) # Same shape
+            # Final Shape: B x (F * 8) x (H / 8) x (W / 8)
         )
         
+        # Defines the up-sampling blocks
         self.up_sample_block = Sequential(
-            ConvTranspose2d(self.nfg * 8, self.nfg * 4, kernel_size=filter_size, stride=stride_size, padding=1, bias=False),  # size*2
-            BatchNorm2d(self.nfg * 4),
-            LeakyReLU(0.02, inplace=True),
-            ConvTranspose2d(self.nfg * 4, self.nfg * 2, kernel_size=filter_size, stride=stride_size, padding=1, bias=False),  # size*2
-            BatchNorm2d(self.nfg * 2),
-            LeakyReLU(0.02, inplace=True),
-            ConvTranspose2d(self.nfg * 2, self.nfg, kernel_size=filter_size, stride=stride_size, padding=1, bias=False),  # size*2
-            BatchNorm2d(self.nfg),
-            LeakyReLU(0.02, inplace=True),
-            ConvTranspose2d(self.nfg, self.c, kernel_size=3, stride=1, padding=1, bias=False),  # size
-            Tanh()
+            # Input Shape: B x (F * 8) x (H / 8) x (W / 8)
+            ConvTranspose2d(feature_map_size * 8, feature_map_size * 4, kernel_size=4, stride=2, padding=1, bias=False),
+            # Shape: B x (F * 4) x (H / 4) x (W / 4)
+            BatchNorm2d(feature_map_size * 4), # Same shape
+            LeakyReLU(0.02, inplace=True), # Same shape
+            ConvTranspose2d(feature_map_size * 4, feature_map_size * 2, kernel_size=4, stride=2, padding=1, bias=False),
+            # Shape: B x (F * 2) x (H / 2) x (W / 2)
+            BatchNorm2d(feature_map_size * 2), # Same shape
+            LeakyReLU(0.02, inplace=True), # Same shape
+            ConvTranspose2d(feature_map_size * 2, feature_map_size, kernel_size=4, stride=2, padding=1, bias=False),
+            # Shape: B x F x H x W
+            BatchNorm2d(feature_map_size), # Same shape
+            LeakyReLU(0.02, inplace=True), # Same shape
+            ConvTranspose2d(feature_map_size, number_of_channels, kernel_size=3, stride=1, padding=1, bias=False),
+            # Shape: B x N x H x W
+            Tanh() # Same shape
+            # Final Shape: B x N x H x W
         )
 
-    def forward(self, img_before, img_after, z):
+    def forward(self, img_before, img_after):
         """
         Forward step of the generator, 
         returning its result when 
@@ -82,43 +99,19 @@ class Generator(Module):
             img_after (PyTorch tensor): 
                 image before the one we 
                 are looking to generate
-            z (PyTorch tensor): Gaussian
-                noise
 
         Return:
             (PyTorch tensor): result of the 
                 operations applied in the 
                 forward step to the input x
-        """
-        h0 = int(list(tensor0.size())[2])
-        w0 = int(list(tensor0.size())[3])
-        h2 = int(list(tensor2.size())[2])
-        w2 = int(list(tensor2.size())[3])
-
-        h_padded = False
-        w_padded = False
-        if (h0 % 32 != 0 or (h0 - w0) < 0):
-            pad_h = 32 - (h0 % 32) if (h0 - w0) >= 0 else 32 - (h0 % 32) + (w0 - h0)
-            tensor0 = pad(tensor0, (0, 0, 0, pad_h))
-            tensor2 = pad(tensor2, (0, 0, 0, pad_h))
-            h_padded = True
-
-        if (w0 % 32 != 0 or (h0 - w0) > 0):
-            pad_w = 32 - (w0 % 32) if (h0 - w0) <= 0 else 32 - (h0 % 32) + (h0 - w0)
-            tensor0 = pad(tensor0, (0, pad_w, 0, 0))
-            tensor2 = pad(tensor2, (0, pad_w, 0, 0))
-            w_padded = True
-        
-        out = cat((tensor0, tensor2), 1)
-        
-        out_down = self.down_sample_blocks(out)
+        """      
+        # Stacks the previous image and the image after 
+        # along the second dimension
+        input_stack = cat((img_before, img_after), 1)
+        # Performs the down-sampling on the input stack
+        out_down = self.down_sample_blocks(input_stack)
+        # Performs the up-sampling on the input stack
         out_up = self.up_sample_block(out_down)
-        
-        if h_padded:
-            out_up = out_up[:, :, 0:h0, :]
-        if w_padded:
-            out_up = out_up[:, :, :, 0:w0]
-          
         return out_up
     
 class Discriminator(Module):
@@ -127,7 +120,8 @@ class Discriminator(Module):
     the input set of three consecutive images,
     is real or fake.
     """
-    def __init__(self, img_shape):
+    def __init__(self, number_of_classes: int=1, 
+                 feature_map_size: int=64):
         """
         Initiates the Discriminator object, which 
         is composed of multiple convolutions and 
@@ -136,13 +130,23 @@ class Discriminator(Module):
         prediction.
         
         Args:
-            self (Discriminator object): the object 
-                Discriminator that will now be defined
-            img_shape (tuple(int,int)): shape of 
-                each input image. The default 
-                shape is the shape of the images
-                that we are using, which is 
-                (496, 512)
+            self (Discriminator object): the 
+                object Discriminator that will 
+                now be defined
+            number_of_classes (int): number of 
+                input channels. In the 
+                discriminator, we aim to 
+                classify a grayscale image 
+                either as fake or real so the 
+                default value is one. This 
+                value also corresponds to the 
+                number of output channels of 
+                the Generator 
+            feature_map_size (int): number of 
+                channels after the first 
+                convolution. The default value 
+                is 64, which was the value being 
+                used in the adapted code  
         
         Return:
             None
@@ -150,41 +154,48 @@ class Discriminator(Module):
         # Starts the initialization of the 
         # Discriminator object
         super(Discriminator, self).__init__()
-
-        # Defines a sequence of two-dimensional convolutions 
-        # and ReLU activations, that are applied to the input 
-        # image before converting it, through a linear 
-        # transformation to a single value, to which is 
-        # applied a sigmoid, resulting in a final prediction
-        self.nfg = 64  # the size of feature map
-        self.c = 1  # output channel
         
+        # In this part, a series of convolutions, 
+        # combined with dropout, batch normalization, 
+        # and ReLU, are applied to the input image, 
+        # resulting in a prediction of size one
+        # Since this architecture is Fully 
+        # Convolutional (FCN), it is agnostic to the 
+        # input shape and an image of any shape can 
+        # be used to train it
         self.conv_blocks = Sequential(
-            # input is c * 64 * 64
-            Conv2d(self.c, self.nfg, kernel_size=4, stride=2, padding=1, bias=False),
+            # Input shape: C x H x W
+            Conv2d(number_of_classes, feature_map_size, kernel_size=4, stride=2, padding=1, bias=False),
             LeakyReLU(0.2, inplace=True),
             Dropout2d(0.25),
-            # state: nfg * 32 * 32
-            Conv2d(self.nfg, self.nfg * 2, kernel_size=4, stride=2, padding=1, bias=False),
-            BatchNorm2d(self.nfg * 2),
+            # Current shape: feature_map_size x (H / 2) x (W / 2)
+            Conv2d(feature_map_size, feature_map_size * 2, kernel_size=4, stride=2, padding=1, bias=False),
+            BatchNorm2d(feature_map_size * 2),
             LeakyReLU(0.2, inplace=True),
             Dropout2d(0.25),
-            Conv2d(self.nfg * 2, self.nfg * 4, kernel_size=4, stride=2, padding=1, bias=False),
-            BatchNorm2d(self.nfg * 4),
+            # Current shape: (feature_map_size * 2) x (H / 4) x (W / 4)
+            Conv2d(feature_map_size * 2, feature_map_size * 4, kernel_size=4, stride=2, padding=1, bias=False),
+            BatchNorm2d(feature_map_size * 4),
             LeakyReLU(0.2, inplace=True),
             Dropout2d(0.25),
-            Conv2d(self.nfg * 4, self.nfg * 8, kernel_size=4, stride=2, padding=1, bias=False),
-            BatchNorm2d(self.nfg * 8),
+            # Current shape: (feature_map_size * 4) x (H / 8) x (W / 8)
+            Conv2d(feature_map_size * 4, feature_map_size * 8, kernel_size=4, stride=2, padding=1, bias=False),
+            BatchNorm2d(feature_map_size * 8),
             LeakyReLU(0.2, inplace=True),
             Dropout2d(0.25),
-            Conv2d(self.nfg * 8, 1, kernel_size=4, stride=1, padding=0, bias=False)
-            )
+            # Current shape: (feature_map_size * 8) x (H / 16) x (W / 16)
+            Conv2d(feature_map_size * 8, 1, kernel_size=4, stride=1, padding=0, bias=False)
+            # Final shape: 1 x (H / 16 - 3) x (W / 16 - 3)
+            # For an input shape of: 1 x 496 x 512, it would result in an output shape of 
+            # 1 x 28 x 29
+        )
 
     def forward(self, img_before, img_mid, 
                 img_after):
         """
         Forward step of the discriminator, 
-        that returns the probability of the 
+        that returns the logits that 
+        correspond to the probability of the 
         image being real
 
         Args: 
@@ -193,20 +204,20 @@ class Discriminator(Module):
             img_before (PyTorch tensor): 
                 image before the one we 
                 are looking to classify
-            img_mid (PyTorch): image we
-                are looking to classify
+            img_mid (PyTorch tensor): 
+                image we are looking to
+                classify
             img_after (PyTorch tensor): 
                 image before the one we 
                 are looking to classify
-            z (PyTorch tensor): Gaussian
-                noise
 
         Return:
-            (PyTorch tensor): probability 
-                of the image being real
+            (PyTorch tensor): logits that 
+                correspond to the 
+                probability of the image 
+                being real
         """
-        # Concatenates the images along the 
-        # now first dimension
+        # Concatenates the images along the now first dimension
         x = cat([img_before, img_mid, img_after], dim=1)
         return self.conv_blocks(x)
     
