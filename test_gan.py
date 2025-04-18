@@ -122,7 +122,7 @@ def test_gan(
             # so every batch is handled like a single image
             for batch in test_dataloader:
                 # Gets the stack of three images from the DataLoader
-                stack, mid_image_name = batch["stack"]
+                stack, mid_image_name = batch["stack"], batch["image_name"]
 
                 # Separates the stack in the previous image, 
                 # the middle image (the one we aim to predict), 
@@ -212,6 +212,7 @@ def test_gan(
     slice_df_std.index.name = "Device"
     resulting_slice_df = slice_df_mean.astype(str) + " (" + slice_df_std.astype(str) + ")"
 
+    # Saves the DataFrames to a CSV file
     if not final_test:
         slice_df.to_csv(f"results/{run_name}_slice.csv")
         resulting_device_df.to_csv(f"results/{run_name}_device.csv")
