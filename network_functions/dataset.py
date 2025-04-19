@@ -225,7 +225,7 @@ def generation_images_from_volumes(volumes_list: list):
             will be used to train the model
     """
     # Sets the path to the images that will be used to train the GAN
-    images_folder = IMAGES_PATH + "\\OCT_images\\generation\\uint8\\"
+    images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
 
     # Iterates through the available images
     # and registers the name of those that are 

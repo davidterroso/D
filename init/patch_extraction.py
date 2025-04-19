@@ -16,7 +16,6 @@ from time import time
 from torch.utils.data import DataLoader
 from network_functions.dataset import TrainDataset, ValidationDataset, TrainDatasetLMDB, ValidationDatasetLMDB, drop_patches
 from paths import IMAGES_PATH
-import train
 from .read_oct import int32_to_uint8, load_oct_image, load_oct_mask
 
 # Imports tqdm depending on whether 
@@ -1277,4 +1276,112 @@ def extract_vertical_patches_relative_distance_maps(
                     progress_bar.update(1)
 
     print("All patches have been extracted.")
+    print("EOF.")
+
+def save_resized_images(folder_path: str, save_folder: str, 
+                             start_on: int=0):
+    """
+    In this function, the original images are all resized
+    to the same shape (496x512 (H,W)) independently of the 
+    vendor and then saved
+    
+    Args:
+        folder_path (str): path to the RETOUCH dataset
+        save_folder (str): path to the folder where the images 
+            will be saved
+        start_on (int): number of the volume in which extraction
+            must start. Since this is a long process, there may be
+            no conditions to do it all in one session. Default is
+            0, since the default case is considered the full 
+            extraction of all the images 
+            
+    Return:
+        None
+    """
+    # Indicates where the resized 
+    # images will be stored 
+    folder = save_folder + "\\OCT_images\\generation\\slices_resized\\"
+    if exists(folder):
+        rmtree(folder)
+    makedirs(folder) 
+
+    # Loads a Spectralis file to check what is the patch size desired
+    spectralis_path = folder_path + "\RETOUCH-TrainingSet-Spectralis\TRAIN025\oct.mhd"
+    img, _, _ = load_oct_image(spectralis_path)
+    # Saves the desired shape as a tuple
+    spectralis_shape = (img.shape[1], img.shape[2])
+
+    # Initiates the variable that will 
+    # count the progress of volumes 
+    # whose slices are being extracted
+    volume = start_on 
+
+    # Iterates through all the folders in the RETOUCH dataset
+    for (root, _, files) in walk(folder_path):
+        # Gets if the volume is from the test or training of the dataset
+        train_or_test = root.split("-")
+        # Only procedes to the folders in training
+        if (len(train_or_test) == 3):
+            # Gets the name of the vendor and the volume from 
+            # the name of the folder
+            vendor_volume = train_or_test[2].split("""\\""")
+            # Only iterates in the folders that contains 
+            # the files and not other folders
+            if len(vendor_volume) == 2:
+                # Gets the name of the vendor
+                vendor = vendor_volume[0]
+                # Gets the number of the volume
+                volume_name = vendor_volume[1]
+                if int(volume_name[-3:]) >= start_on:   
+                    # Gets the name of the vendors and the name under which the 
+                    # patches will be saved
+                    vendor_volume = vendor + "_" + volume_name
+                    save_name = folder + vendor_volume
+                    # Iterates through to the subfolders and reads the oct.mhd file to 
+                    # extract the images
+                    # Iterates through the files and only accesses 
+                    # one file of the folder (oct.mhd)
+                    for filename in files:
+                        if filename == "oct.mhd":
+                            # Registers the number of the volumes 
+                            # iterated
+                            volume += 1
+                            # Declares the path to the OCT scan file 
+                            # and to the masks
+                            file_path = root + """\\""" + filename
+                            # Loads the OCT volume
+                            img, _, _ = load_oct_image(file_path)
+                            # Gets the number of slices in the volume 
+                            # to update the volume progress bar
+                            num_slices = img.shape[0]
+                            # Creates a progress bar
+                            with tqdm(total=num_slices, desc=f"{vendor_volume}: Volume {volume}/112", unit="img", leave=True, position=0) as progress_bar:
+                                # Iterates through the slices to save each slice with 
+                                # an identifiable name and saves it in uint8
+                                for slice_num in range(num_slices):
+                                    # Gets the slices from the volumes
+                                    im_slice = img[slice_num,:,:]
+
+                                    # Declares the name under which the image that will be saved
+                                    save_name_img_slice = save_name + "_" + str(slice_num).zfill(3) + ".tiff"
+
+                                    # Normalizes the image to uint8 and in 
+                                    # range 0 to 255 so that it can be 
+                                    # visualized in the computer
+                                    im_slice_uint8 = int32_to_uint8(im_slice)
+                                    # In case the volume is not 
+                                    # from the Spectralis vendor,
+                                    # the image will be resized
+                                    # Resizes the images to the shape of the Spectralis scan
+                                    im_slice_uint8 = resize(im_slice_uint8, spectralis_shape, preserve_range=True, 
+                                                            anti_aliasing=True).astype(np.uint8)
+                                    # Passes the patches from a NumPy array to a Pillow object to save
+                                    img_slice = Image.fromarray(im_slice_uint8)
+                                    # Saves the patch
+                                    img_slice.save(save_name_img_slice)
+                                    # Saves the mask
+                                    # Updates the progress bar
+                                    progress_bar.update(1)
+    
+    print("All images have been saved.")
     print("EOF.")
