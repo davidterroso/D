@@ -397,7 +397,7 @@ def combine_csvs_to_excel(folder_path, output_excel_path):
         run_df.to_excel(writer, sheet_name="Runs", index=False, header=False)
         iteration_df.to_excel(writer, sheet_name="Iterations", index=False, header=False)
 
-runs_resume(starting_run=1, ending_run=75, folder=".\\results\\", prefix="Run")
+runs_resume(starting_run=1, ending_run=80, folder=".\\results\\", prefix="Run")
 runs_resume(starting_run=1, ending_run=22, folder=".\\results\\", prefix="Iteration")
 runs_resume_final(folder=".\\results\\", runs_to_check=100)
 combine_csvs_to_excel(folder_path=".\\results\\", output_excel_path=".\\results\\combined_output.xlsx")
