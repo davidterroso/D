@@ -324,4 +324,3 @@ def plot_logs_gan(imgs_folder: str, run_name: str):
     plt.savefig(img_path)
 
     plt.show()
-

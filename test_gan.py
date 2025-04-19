@@ -21,6 +21,147 @@ if (get_ipython() is not None):
 else:
     from tqdm.auto import tqdm
 
+def folds_results_gan(first_run_name: str, iteration: int, k: int=5):
+    """
+    Function used to compare the results obtained in the k folds,
+    calculating the mean and standard deviation of the results 
+    obtained for each vendor and class, from the files output 
+    from the test function
+
+    Args:
+        first_run_name (str): name of the first run of the folds 
+            considered. It is expected that the name of the first 
+            run is something like "Run001" and the runs of the 
+            same iteration but different folds increment one to 
+            run number thus being named "Run002", "Run003", and
+            "Run004", for k=5, for example
+        iteration (int): number of the iteration that comprises 
+            the k - 1 runs
+        k (int): number of folds used in this iteration
+
+    Return: 
+        None
+    """
+
+    # Initiates a dictionary that will store 
+    # the DataFrames from the different runs
+    df_dict = {}
+    # Gets the number of the first run
+    first_run_index = int(first_run_name[3:])
+    # Iterates through the runs corresponding to the folds
+    # Starts in the index of the first run and stops k - 1 
+    # integers after
+    for fold in range(first_run_index, k + first_run_index - 1):
+        # Gets the name of the run from the fold number
+        # e.g. fold=3 -> run_name="Run003"
+        run_name = "Run" + str(fold).zfill(3)
+        # Indicates the name of the file that stores the SSIM 
+        # and PSNR across all slices, grouped by the device 
+        # used to obtain the images
+        device_file_name = f".\\results\\{run_name}_device.csv"
+        # Indicates the name of the file that stores the SSIM 
+        # and PSNR across all slices
+        results_file_name = f".\\results\\{run_name}_results.csv"            
+        # Reads the DataFrame that handles the data per class
+        device_df = read_csv(device_file_name)
+        # Reads the DataFrame that handles the data per vendor
+        results_df = read_csv(results_file_name, index_col="Vendor")
+
+        # Removes the name of the column that has the table's index
+        device_df.index.name = None
+        results_df.index.name = None
+
+        # Saves, to the corresponding fold in the 
+        # dictionary, the two DataFrames as a 
+        # single tuple
+        df_dict[fold] = (device_df, results_df)
+
+    # Gets the list of devices
+    devices = device_df.index.to_list()
+    metrics = device_df.columns.to_list()
+
+    # Initiates the two DataFrames, one for 
+    # the results per device and the other 
+    # for the overall results
+    device_df = DataFrame(columns=metrics)
+    results_df = DataFrame(columns=metrics)
+
+    # Iterates through the 
+    # devices that exist
+    for device in devices:
+        # Initiates the values 
+        # that will be hold for 
+        # each device
+        values = []
+        # Iterates through the 
+        # metrics in the DataFrame 
+        for metric in metrics:
+            # Creates an empty list with the 
+            # results in this specific metric
+            results = []
+            # Iterates through the results in 
+            # multiple folds
+            for fold, tuple_df in df_dict.items():
+                # Appends the values at these coordinates to the list of results
+                results.append(float(tuple_df[1].at[device, metric].split(" ")[0]))
+
+            # Calculates the mean of the 
+            # results
+            mean = array(results).mean()
+            # Calculates the standard 
+            # deviation of the results
+            std = array(results).std()
+            # Organizes the value as a single 
+            # string
+            value = f"{mean:.2f} ({std:.2f})"
+            # Appends the value 
+            # to the list of values
+            values.append(value)
+        # For the same device, appends the list 
+        # of results to the DataFrame in the last 
+        # row
+        device_df.loc[len(device_df)] = values
+    # Sets the axis of the DataFrame as the 
+    # list of possible devices
+    device_df = device_df.set_axis(devices)
+
+    # Saves the device's results in a CSV 
+    device_df.to_csv(f".\\results\\Iteration{iteration}_devices_results_gan.csv")
+
+    # Iterates through all the 
+    # metrics in the DataFrame
+    for metric in metrics:
+        # Initiates an empty 
+        # a list of results
+        # for this metric
+        results = []
+        # Iterates through the multiple folds
+        for fold, tuple_df in df_dict.items():
+            # Appends the values of the different folds to a list of results
+            results.append(float(tuple_df[0].at[0, metric].split(" ")[0]))
+
+        # Calculates the mean and 
+        # standard deviation of the results
+        mean = array(results).mean()
+        std = array(results).std()
+        # Converts the values to a single 
+        # string
+        value = f"{mean:.2f} ({std:.2f})"
+
+        # Appends the values 
+        # to a list
+        values.append(value)
+
+        # Inserts the values as the last row of 
+        # the results DataFrame
+        results_df.loc[len(results_df)] = values
+    # Sets the name of the axis as the list 
+    # of devices
+    results_df = results_df.set_axis(devices)
+
+    # Saves the DataFrame as a CSV file
+    results_df.to_csv(f".\\results\\Iteration{iteration}_results_gan.csv")
+
 def test_gan(
         fold_test: int, 
         weights_name: str, 
