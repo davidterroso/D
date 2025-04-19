@@ -1224,11 +1224,14 @@ def extract_vertical_patches_relative_distance_maps(
     # Defines the indexes on which the patches will be extracted
     starting_indexes = np.linspace(start=0, stop=(spectralis_shape[1] - patch_shape[1]), num=num_patches).astype(int)
 
+    # Declares the folder in which the relative distance maps are stored
+    rdms_path = folder_path + "\\OCT_images\\segmentation\\rdms"
+
     # Creates a progress bar
     with tqdm(total=len(files), desc=f"Images Patched", unit="img", leave=True, position=0) as progress_bar:
         # Iterates through all the folders in the 
         # selected folder
-        for (root, _, files) in walk(folder_path):
+        for (root, _, files) in walk(rdms_path):
             # Iterates through the files in the folder
             for filename in files:
                 # Gets the name of the image
@@ -1246,7 +1249,7 @@ def extract_vertical_patches_relative_distance_maps(
                     # of the same image
                     save_name = save_path + filename
                     # Loads the OCT volume
-                    img = imread(str(folder_path + "\\" + filename))
+                    img = imread(str(rdms_path + "\\" + filename))
                     # In case the volume is not 
                     # from the Spectralis vendor,
                     # the image will be resized
