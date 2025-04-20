@@ -370,7 +370,7 @@ class TrainDataset(Dataset):
     """
     def __init__(self, train_volumes: list, model: str, 
                  patch_type: str, num_patches: int, 
-                 fluid: int=None):
+                 fluid: int=None, number_of_channels: int=1):
         """
         Initiates the Dataset object and gets the possible 
         names of the patches that will be used in training
@@ -394,6 +394,10 @@ class TrainDataset(Dataset):
             fluid (int): label of fluid that is expected to 
                 segment. Optional because it is only used in
                 one network
+            number_of_channels (int): number of input channels
+                in the network. The default value is 1 but can 
+                also be 2 in case there is relative distance 
+                maps, for example
                 
         Return:
             None
@@ -403,6 +407,7 @@ class TrainDataset(Dataset):
         # applied to the images, the number of patches extracted
         # and the fluid to segment in case it is used
         super().__init__()        
+        self.number_of_channels = number_of_channels
         self.patch_type = patch_type
         self.model = model
         self.num_patches = num_patches
@@ -467,14 +472,20 @@ class TrainDataset(Dataset):
             # which is associated with the image name
             slice_name = images_folder + f"{self.patch_type}_patches\\" + self.images_names[index]
             mask_name = images_folder + f"{self.patch_type}_masks\\" + self.images_names[index]
+            rdms_name = images_folder + f"{self.patch_type}_dms\\" + self.images_names[index]
             if ((self.patch_type == "vertical") and (self.num_patches > 4)):
                 slice_name = images_folder + f"{self.patch_type}_patches_overlap_{self.num_patches}\\" + self.images_names[index]
                 mask_name = images_folder + f"{self.patch_type}_masks_overlap_{self.num_patches}\\" + self.images_names[index]
+                rdms_name = images_folder + f"{self.patch_type}_dms_overlap_{self.num_patches}\\" + self.images_names[index]
 
-        # Reads the image and the
-        # fluid mask
+        # Reads the image, the
+        # fluid mask, and the 
+        # relative distance maps
+        # in case it is applicable
         scan = imread(slice_name)
         mask = imread(mask_name)
+        if (self.number_of_channels > 1) and (self.patch_type != "small"):
+            rdm = imread(rdms_name)
 
         # In case the selected model is the 2.5D, also loads the previous
         # and following slice
@@ -494,8 +505,10 @@ class TrainDataset(Dataset):
         # as the first channel
         # The mask dimensions are also expanded 
         # to match
-        if self.model != "2.5D":
+        if (self.model != "2.5D") and (self.number_of_channels == 1):
             scan = expand_dims(scan, axis=0)
+        elif ((self.number_of_channels > 2) and (self.model != "2.5D")):
+            scan = stack(arrays=[scan, rdm], axis=0)
         mask = expand_dims(mask, axis=0)
 
         # Converts the scan and mask 
@@ -522,8 +535,8 @@ class TrainDataset(Dataset):
             mask = transformed[3]
 
         # Z-Score Normalization / Standardization
-        # Mean of 0 and SD of 1
-        scan = (scan - 128.) / 128.
+        # Mean of 0 and SD of 1 of the image
+        scan[0,:,:] = (scan[0,:,:] - 128.) / 128.
 
         # Declares a sample as a dictionary that 
         # to the keyword "scan" associates the 
@@ -540,7 +553,7 @@ class ValidationDataset(Dataset):
     """
     def __init__(self, val_volumes: list, model: str,
                  patch_type: str, num_patches: int, 
-                 fluid: int=None):
+                 fluid: int=None, number_of_channels: int=1):
         """
         Initiates the Dataset object and gets the possible 
         names of the patches that will be used in validation
@@ -564,6 +577,10 @@ class ValidationDataset(Dataset):
             fluid (int): label of fluid that is expected to 
                 segment. Optional because it is only used in
                 one network
+            number_of_channels (int): number of input channels
+                in the network. The default value is 1 but can 
+                also be 2 in case there is relative distance 
+                maps, for example
                 
         Return:
             None
@@ -571,7 +588,8 @@ class ValidationDataset(Dataset):
         # Initiates the model, gets the name of the slices that
         # compose the dataset, the number of vertical patches, 
         # and the fluid to segment in case it is used
-        super().__init__()        
+        super().__init__()   
+        self.number_of_channels = number_of_channels     
         self.patch_type = patch_type
         self.model = model
         self.num_patches = num_patches
@@ -628,14 +646,20 @@ class ValidationDataset(Dataset):
             # which is associated with the image name
             slice_name = images_folder + f"{self.patch_type}_patches\\" + self.images_names[index]
             mask_name = images_folder + f"{self.patch_type}_masks\\" + self.images_names[index]
+            rdms_name = images_folder + f"{self.patch_type}_dms\\" + self.images_names[index]
             if ((self.patch_type == "vertical") and (self.num_patches > 4)):
                 slice_name = images_folder + f"{self.patch_type}_patches_overlap_{self.num_patches}\\" + self.images_names[index]
                 mask_name = images_folder + f"{self.patch_type}_masks_overlap_{self.num_patches}\\" + self.images_names[index]
+                rdms_name = images_folder + f"{self.patch_type}_dms_overlap_{self.num_patches}\\" + self.images_names[index]
 
-        # Reads the image and the
-        # fluid mask
+        # Reads the image, the
+        # fluid mask, and the 
+        # relative distance maps
+        # in case it is applicable
         scan = imread(slice_name)
         mask = imread(mask_name)
+        if (self.number_of_channels > 1) and (self.patch_type != "small"):
+            rdm = imread(rdms_name)
 
         # In case the model selected is the UNet3, all the labels 
         # that are not the one desired to segment are set to 0
@@ -651,8 +675,11 @@ class ValidationDataset(Dataset):
         # as the first channel
         # The mask dimensions are also expanded 
         # to match
-        if self.model != "2.5D":
+        if (self.model != "2.5D") and (self.number_of_channels == 1):
             scan = expand_dims(scan, axis=0)
+        elif ((self.number_of_channels > 2) and (self.model != "2.5D")):
+            scan = stack(arrays=[scan, rdm], axis=0)
+        mask = expand_dims(mask, axis=0)
 
         # In case the selected model is the 2.5D, also loads the previous
         # and following slice
@@ -677,7 +704,8 @@ class TestDataset(Dataset):
     """
     def __init__(self, test_volumes: list, model: str, 
                  patch_type: str, resize_images: bool,
-                 resize_shape: tuple, fluid: int=None):
+                 resize_shape: tuple, fluid: int=None,
+                 number_of_channels: int=1):
         """
         Initiates the Dataset object and gets the possible 
         names of the images that will be used in testing
@@ -702,6 +730,10 @@ class TestDataset(Dataset):
             fluid (int): label of fluid that is expected to 
                 segment. Optional because it is only used in
                 one network
+            number_of_channels (int): number of input channels
+                in the network. The default value is 1 but can 
+                also be 2 in case there is relative distance 
+                maps, for example
                 
         Return:
             None
@@ -711,6 +743,7 @@ class TestDataset(Dataset):
         # applied to the images, and the fluid to segment in 
         # case it is used
         super().__init__()
+        self.number_of_channels = number_of_channels
         self.patch_type = patch_type
         self.model = model
         self.images_names = images_from_volumes(test_volumes)
@@ -758,17 +791,21 @@ class TestDataset(Dataset):
         masks_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\masks\\int8\\"
         # Declares the path to the ROI masks
         rois_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\roi\\int8\\"
+        # Declares the path to the relative distance maps
+        rdms_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\rdms"
 
         # Indicates the path to the image depending on the index given,
         # which is associated with the image name
         slice_name = images_folder + self.images_names[index]
         mask_name = masks_folder + self.images_names[index]
         roi_name = rois_folder + self.images_names[index]
+        rdm_name = rdms_folder + self.images_names[index]
 
         # Reads the image and the
         # fluid mask
         scan = imread(slice_name)
         mask = imread(mask_name)
+        rdm = imread(rdm_name)
         roi = imread(roi_name)
 
         # In case the selected model is the 2.5D, also loads the previous
@@ -795,6 +832,8 @@ class TestDataset(Dataset):
 
             # Creates a stack with all the slices
             scan = stack(arrays=[scan_before, scan, scan_after], axis=-1)
+        elif (self.number_of_channels > 1):
+            scan = stack(arrays=[scan, rdm], axis=-1)
         else:
             scan = expand_dims(scan, axis=-1)
 
@@ -818,7 +857,7 @@ class TestDataset(Dataset):
 
         # Z-Score Normalization / Standardization
         # Mean of 0 and SD of 1
-        scan = (scan - 128.) / 128.
+        scan[:,:,0] = (scan[:,:,0] - 128.) / 128.
 
         # Declares a sample as a dictionary that 
         # to the keyword "scan" associates the 
@@ -961,9 +1000,9 @@ class TrainDatasetLMDB(Dataset):
         # happens if it is not 2.5D
         if self.model != "2.5D":
             # Shape: (1, H, W)
-            img = np.expand_dims(img, axis=0)
+            img = expand_dims(img, axis=0)
         # Shape: (1, H, W)
-        mask = np.expand_dims(mask, axis=0)
+        mask = expand_dims(mask, axis=0)
 
         # Converts the images to PyTorch Tensors
         img = torch.from_numpy(img).float()
@@ -1121,7 +1160,7 @@ class ValidationDatasetLMDB(Dataset):
         if self.model != "2.5D":
             # Adds the channel dimension to 
             # the image, attaining a shape of (1, H, W)
-            img = np.expand_dims(img, axis=0) 
+            img = expand_dims(img, axis=0) 
 
         # In case the image is not already a 
         # PyTorch Tensor
@@ -1216,7 +1255,7 @@ class TrainDatasetGAN(Dataset):
 
         # Organizes the data in a dictionary that contains the images 
         # stacked along the first axis under the key "stack"
-        sample = {"stack": torch.stack(prev_img, img, next_img, axis=0)}
+        sample = {"stack": torch.stack([prev_img, img, next_img], axis=0)}
 
         return sample
 
@@ -1283,8 +1322,8 @@ class ValidationDatasetGAN(Dataset):
         # Gets the number of the slice
         img_number = int(image_path.split(".")[0][-3:])
         # Sets the name of the previous and following images
-        prev_img_path = image_path.split(".")[0][-3:] + str(img_number - 1).zfill(3) + ".tiff"
-        next_img_path = image_path.split(".")[0][-3:] + str(img_number + 1).zfill(3) + ".tiff"
+        prev_img_path = image_path.split(".")[0][:-3] + str(img_number - 1).zfill(3) + ".tiff"
+        next_img_path = image_path.split(".")[0][:-3] + str(img_number + 1).zfill(3) + ".tiff"
 
         # Loads the previous and the 
         # following images 

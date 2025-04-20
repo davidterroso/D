@@ -52,7 +52,7 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
                              train_volumes: list, val_volumes: list, 
                              batch_size: int, patch_dropping: bool, drop_prob: float,
                              num_patches: int, seed: int, fold_val: int, 
-                             fluid: int=None, fold_test: int=1):
+                             fluid: int=None, fold_test: int=1, number_of_channels: int=1):
     """
     Args:
         model_name (str): name of the model desired to train
@@ -97,6 +97,10 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
         fold_test (int): fold used by the model in testing. 
             The default value is 1 because that is the fold 
             that we are using in testing
+        number_of_channels (int): number of the network input 
+            channels. The default value is 1, but can be 2 
+            when using relative distance maps as another 
+            channel, for example
 
     Return:
         train_loader (PyTorch DataLoader object): DataLoader 
@@ -218,8 +222,8 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations
     if num_patches <= 7:
-        train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, fluid)
-        val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, fluid)
+        train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)
+        val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)
     else:
         train_img_path_to_lmdb = f".\\lmdb\\train_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
         train_mask_path_to_lmdb = f".\\lmdb\\train_masks_{num_patches}_{fold_test}_{fold_val}.lmdb"
