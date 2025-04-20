@@ -32,7 +32,7 @@ def train_gan(
         number_of_classes: int=1,
         patience: int=400,
         patience_after_n: int=0,
-        split: str="generation_fold_selection",
+        split: str="generation_5_fold_split.csv",
 ):
     """
     Function that trains the GAN models.
@@ -129,52 +129,34 @@ def train_gan(
 
     # Declares the path to the CSV file on which the logging of 
     # the training and epochs will be made
-    csv_epoch_filename = f"logs\{run_name}_training_log_epoch.csv"
-    csv_batch_filename = f"logs\{run_name}_training_log_batch.csv"
+    csv_epoch_filename = f"logs\{run_name}_training_log_epoch_gan.csv"
+    csv_batch_filename = f"logs\{run_name}_training_log_batch_gan.csv"
     # Creates the folder in case it does not exist
     makedirs("logs", exist_ok=True)
 
     # Creates the logging files in case they do not exist
-    if not (exists(csv_epoch_filename) and exists(csv_batch_filename)):
-        with open(csv_epoch_filename, mode="w", newline="") as file:
-            writer = csv.writer(file)
-            # Declares which information will be saved in the logging file
-            # associated with each epoch
-            writer.writerow(["Epoch", "Adversarial Loss", 
-                             "Generator Loss", "Batch Real Loss", 
-                             "Batch Fake Loss", "Batch Discriminator Loss", 
-                             "Epoch Validation SSIM"])
-        
-            # Declares which information will be saved in the logging file
-            # associated with each batch
-        with open(csv_batch_filename, mode="w", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerow(["Epoch", "Batch", "Adversarial Loss", 
-                             "Generator Loss", "Batch Real Loss", 
-                             "Batch Fake Loss", "Batch Discriminator Loss"])
-    # Deletes the files with the same name and creates the logging files 
-    # from scratch in case one of the files exists with the same name
-    else:
+    if (exists(csv_epoch_filename) and exists(csv_batch_filename)):
         # Deletes the files with 
         # the desired name
         remove(csv_epoch_filename)
         remove(csv_batch_filename)
-        with open(csv_epoch_filename, mode="w", newline="") as file:
-            writer = csv.writer(file)
-            # Declares which information will be saved in the logging file
-            # associated with each epoch
-            writer.writerow(["Epoch", "Adversarial Loss", 
-                             "Generator Loss", "Batch Real Loss", 
-                             "Batch Fake Loss", "Batch Discriminator Loss", 
-                             "Epoch Validation SSIM"])
+
+    with open(csv_epoch_filename, mode="w", newline="") as file:
+        writer = csv.writer(file)
+        # Declares which information will be saved in the logging file
+        # associated with each epoch
+        writer.writerow(["Epoch", "Adversarial Loss", 
+                            "Generator Loss", "Real Loss", 
+                            "Fake Loss", "Discriminator Loss", 
+                            "Epoch Validation MS-SSIM"])
         
-        with open(csv_batch_filename, mode="w", newline="") as file:
-            writer = csv.writer(file)
-            # Declares which information will be saved in the logging file
-            # associated with each batch
-            writer.writerow(["Epoch", "Batch", "Adversarial Loss", 
-                             "Generator Loss", "Batch Real Loss", 
-                             "Batch Fake Loss", "Batch Discriminator Loss"])
+    with open(csv_batch_filename, mode="w", newline="") as file:
+        # Declares which information will be saved in the logging file
+        # associated with each batch
+        writer = csv.writer(file)
+        writer.writerow(["Epoch", "Batch", "Batch Adversarial Loss", 
+                            "Batch Generator Loss", "Batch Real Loss", 
+                            "Batch Fake Loss", "Batch Discriminator Loss"])
             
     # Creates the training and validation set as a PyTorch 
     # Dataset, using the list of OCT volumes that will be 

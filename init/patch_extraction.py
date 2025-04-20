@@ -52,7 +52,7 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
                              train_volumes: list, val_volumes: list, 
                              batch_size: int, patch_dropping: bool, drop_prob: float,
                              num_patches: int, seed: int, fold_val: int, 
-                             fluid: int=None, fold_test: int=1):
+                             fluid: int=None, fold_test: int=1, number_of_channels: int=1):
     """
     Args:
         model_name (str): name of the model desired to train
@@ -97,6 +97,10 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
         fold_test (int): fold used by the model in testing. 
             The default value is 1 because that is the fold 
             that we are using in testing
+        number_of_channels (int): number of the network input 
+            channels. The default value is 1, but can be 2 
+            when using relative distance maps as another 
+            channel, for example
 
     Return:
         train_loader (PyTorch DataLoader object): DataLoader 
@@ -218,8 +222,8 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations
     if num_patches <= 7:
-        train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, fluid)
-        val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, fluid)
+        train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)
+        val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)
     else:
         train_img_path_to_lmdb = f".\\lmdb\\train_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
         train_mask_path_to_lmdb = f".\\lmdb\\train_masks_{num_patches}_{fold_test}_{fold_val}.lmdb"
@@ -1161,4 +1165,230 @@ def extract_vertical_patches(folder_path: str, save_folder: str,
                                     progress_bar.update(1)
     
     print("All patches have been extracted.")
+    print("EOF.")
+
+def extract_vertical_patches_relative_distance_maps(
+                             folder_path: str, save_folder: str, 
+                             overlap: bool, num_patches: int=4, 
+                             start_on: int=0):
+    """
+    In this function, the distance maps of the original images 
+    are all resized to the same shape (496x512 (H,W)) 
+    independently of the vendor. Then, vertical patches are 
+    extracted from the original image. These patches preserve 
+    the height of this resized patch while having 
+    a quarter of the original width (512 / 4 = 128). The patches 
+    can be extracted from overlapping horizontal locations or can 
+    be disjoint, with a maximum number of patches per scan being 4
+    
+    Args:
+        folder_path (str): path to the relative distance maps
+        save_folder (str): path to the folder where the images 
+            will be saved
+        overlap (bool): flag that indicates whether the patches 
+            will overlap when extracted or not
+        num_patches (int): the number of patches desired to 
+            extract from the scan. This parameter can only be 
+            changed from 4 in case overlapping is allowed
+        start_on (int): number of the volume in which extraction
+            must start. Since this is a long process, there may be
+            no conditions to do it all in one session. Default is
+            0, since the default case is considered the full 
+            extraction of all the images 
+            
+    Return:
+        None
+    """
+    # Ensures that the number of patches in case they
+    # are not randomly extracted from the volumes is 4
+    if not overlap: num_patches = 4 
+
+    # In case the folder to save the images does not exist, it is created
+    if not overlap:
+        save_path = save_folder + "\\OCT_images\\segmentation\\vertical_dms\\"
+    else:
+        save_path = save_folder + f"\\OCT_images\\segmentation\\vertical_dms_overlap_{num_patches}\\"
+
+    # Creates the folders when the first
+    # volumes are iterated
+    if start_on==0:
+        if ((not exists(save_path))):
+            makedirs(save_path)
+        else:
+            rmtree(save_path, ignore_errors=True)
+            makedirs(save_path)
+
+    # Loads a Spectralis file to check what is the patch size desired
+    spectralis_path = folder_path + "\RETOUCH-TrainingSet-Spectralis\TRAIN025\oct.mhd"
+    img, _, _ = load_oct_image(spectralis_path)
+    # Saves the desired shape as a tuple
+    spectralis_shape = (img.shape[1], img.shape[2])
+    # Defines the shape of the patches
+    patch_shape = (spectralis_shape[0], int(spectralis_shape[1] / 4))
+    # Defines the indexes on which the patches will be extracted
+    starting_indexes = np.linspace(start=0, stop=(spectralis_shape[1] - patch_shape[1]), num=num_patches).astype(int)
+
+    # Declares the folder in which the relative distance maps are stored
+    rdms_path = folder_path + "\\OCT_images\\segmentation\\rdms"
+
+    # Creates a progress bar
+    with tqdm(total=len(files), desc=f"Images Patched", unit="img", leave=True, position=0) as progress_bar:
+        # Iterates through all the folders in the 
+        # selected folder
+        for (root, _, files) in walk(rdms_path):
+            # Iterates through the files in the folder
+            for filename in files:
+                # Gets the name of the image
+                vendor_volume_slice = filename.split(".")[0]
+                # Gets the name of the vendor
+                vendor = vendor_volume_slice[0]
+                # Gets the number of the volume
+                volume_name = vendor_volume_slice[1]
+                # Gets the number of the slice
+                slice_num = vendor_volume_slice[2]
+                # Initiates the image extraction where 
+                # in the volume selected
+                if int(volume_name[-3:]) >= start_on:   
+                    # Sets the base name for the patches 
+                    # of the same image
+                    save_name = save_path + filename
+                    # Loads the OCT volume
+                    img = imread(str(rdms_path + "\\" + filename))
+                    # In case the volume is not 
+                    # from the Spectralis vendor,
+                    # the image will be resized
+                    if vendor != "Spectralis":
+                        # Resizes the images to the shape of the Spectralis scan
+                        img = resize(img, spectralis_shape, preserve_range=True, 
+                                                anti_aliasing=True).astype(np.uint8)
+                    # Iterates through the number of patches available
+                    for patch_index in range(num_patches):
+                        # Gets the initial index from the list and the 
+                        # final index as the horizontal size of the 
+                        # patch defined previously plus the initial
+                        # index
+                        initial_index = starting_indexes[patch_index]
+                        end_index = initial_index + patch_shape[1]
+                        # Slices the patch from the original image
+                        patch = img[:,initial_index:end_index]
+                        # Slices the patch from the original mask
+                        # Declares the name under which the patch will be saved
+                        save_name_patch = save_name + "_" + str(slice_num).zfill(3) + "_" + str(patch_index) + '.tiff'
+                        # Passes the patches from a NumPy array to a Pillow object to save
+                        patch = Image.fromarray(patch)
+                        # Saves the patch
+                        patch.save(save_name_patch)
+
+                    # Updates the progress bar
+                    progress_bar.update(1)
+
+    print("All patches have been extracted.")
+    print("EOF.")
+
+def save_resized_images(folder_path: str, save_folder: str, 
+                             start_on: int=0):
+    """
+    In this function, the original images are all resized
+    to the same shape (496x512 (H,W)) independently of the 
+    vendor and then saved
+    
+    Args:
+        folder_path (str): path to the RETOUCH dataset
+        save_folder (str): path to the folder where the images 
+            will be saved
+        start_on (int): number of the volume in which extraction
+            must start. Since this is a long process, there may be
+            no conditions to do it all in one session. Default is
+            0, since the default case is considered the full 
+            extraction of all the images 
+            
+    Return:
+        None
+    """
+    # Indicates where the resized 
+    # images will be stored 
+    folder = save_folder + "\\OCT_images\\generation\\slices_resized\\"
+    if exists(folder):
+        rmtree(folder)
+    makedirs(folder) 
+
+    # Loads a Spectralis file to check what is the patch size desired
+    spectralis_path = folder_path + "\RETOUCH-TrainingSet-Spectralis\TRAIN025\oct.mhd"
+    img, _, _ = load_oct_image(spectralis_path)
+    # Saves the desired shape as a tuple
+    spectralis_shape = (img.shape[1], img.shape[2])
+
+    # Initiates the variable that will 
+    # count the progress of volumes 
+    # whose slices are being extracted
+    volume = start_on 
+
+    # Iterates through all the folders in the RETOUCH dataset
+    for (root, _, files) in walk(folder_path):
+        # Gets if the volume is from the test or training of the dataset
+        train_or_test = root.split("-")
+        # Only procedes to the folders in training
+        if (len(train_or_test) == 3):
+            # Gets the name of the vendor and the volume from 
+            # the name of the folder
+            vendor_volume = train_or_test[2].split("""\\""")
+            # Only iterates in the folders that contains 
+            # the files and not other folders
+            if len(vendor_volume) == 2:
+                # Gets the name of the vendor
+                vendor = vendor_volume[0]
+                # Gets the number of the volume
+                volume_name = vendor_volume[1]
+                if int(volume_name[-3:]) >= start_on:   
+                    # Gets the name of the vendors and the name under which the 
+                    # patches will be saved
+                    vendor_volume = vendor + "_" + volume_name
+                    save_name = folder + vendor_volume
+                    # Iterates through to the subfolders and reads the oct.mhd file to 
+                    # extract the images
+                    # Iterates through the files and only accesses 
+                    # one file of the folder (oct.mhd)
+                    for filename in files:
+                        if filename == "oct.mhd":
+                            # Registers the number of the volumes 
+                            # iterated
+                            volume += 1
+                            # Declares the path to the OCT scan file 
+                            # and to the masks
+                            file_path = root + """\\""" + filename
+                            # Loads the OCT volume
+                            img, _, _ = load_oct_image(file_path)
+                            # Gets the number of slices in the volume 
+                            # to update the volume progress bar
+                            num_slices = img.shape[0]
+                            # Creates a progress bar
+                            with tqdm(total=num_slices, desc=f"{vendor_volume}: Volume {volume}/112", unit="img", leave=True, position=0) as progress_bar:
+                                # Iterates through the slices to save each slice with 
+                                # an identifiable name and saves it in uint8
+                                for slice_num in range(num_slices):
+                                    # Gets the slices from the volumes
+                                    im_slice = img[slice_num,:,:]
+
+                                    # Declares the name under which the image that will be saved
+                                    save_name_img_slice = save_name + "_" + str(slice_num).zfill(3) + ".tiff"
+
+                                    # Normalizes the image to uint8 and in 
+                                    # range 0 to 255 so that it can be 
+                                    # visualized in the computer
+                                    im_slice_uint8 = int32_to_uint8(im_slice)
+                                    # In case the volume is not 
+                                    # from the Spectralis vendor,
+                                    # the image will be resized
+                                    # Resizes the images to the shape of the Spectralis scan
+                                    im_slice_uint8 = resize(im_slice_uint8, spectralis_shape, preserve_range=True, 
+                                                            anti_aliasing=True).astype(np.uint8)
+                                    # Passes the patches from a NumPy array to a Pillow object to save
+                                    img_slice = Image.fromarray(im_slice_uint8)
+                                    # Saves the patch
+                                    img_slice.save(save_name_img_slice)
+                                    # Saves the mask
+                                    # Updates the progress bar
+                                    progress_bar.update(1)
+    
+    print("All images have been saved.")
     print("EOF.")
