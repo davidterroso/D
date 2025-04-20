@@ -348,7 +348,17 @@ def runs_resume_final(folder: str, runs_to_check: int):
             # This will be saved under the name of Run001_resumed.csv, as an example
             Series(results).to_frame().T.to_csv(f".\\results\\{'Run' + run_number}_final_resumed.csv")
 
-def gan_runs_resume(folder: str="results"):
+def gan_runs_resume(folder: str=".\\results"):
+    """
+    Function used to resume the data from the GAN runs
+
+    Args:
+        folder (str): path to the folder in which the 
+            results from runs are saved
+
+    Returns:
+        None
+    """
     # Finds all the devices and results CSV files from the GANs
     device_files = glob(join(folder, "Run*_device.csv"))
     results_files = glob(join(folder, "Run*_results.csv"))
@@ -467,4 +477,5 @@ def combine_csvs_to_excel(folder_path, output_excel_path):
 runs_resume(starting_run=1, ending_run=80, folder=".\\results\\", prefix="Run")
 runs_resume(starting_run=1, ending_run=22, folder=".\\results\\", prefix="Iteration")
 runs_resume_final(folder=".\\results\\", runs_to_check=100)
+gan_runs_resume(folder=".\\results\\")
 combine_csvs_to_excel(folder_path=".\\results\\", output_excel_path=".\\results\\combined_output.xlsx")
