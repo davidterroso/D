@@ -1,5 +1,6 @@
+from glob import glob
 from pandas import DataFrame, ExcelWriter, read_csv, Series
-from os.path import exists, join
+from os.path import basename, exists, join
 from os import listdir
 
 def runs_resume(prefix: str, starting_run: int, 
@@ -347,6 +348,66 @@ def runs_resume_final(folder: str, runs_to_check: int):
             # This will be saved under the name of Run001_resumed.csv, as an example
             Series(results).to_frame().T.to_csv(f".\\results\\{'Run' + run_number}_final_resumed.csv")
 
+def gan_runs_resume(folder: str="results"):
+    # Finds all the devices and results CSV files from the GANs
+    device_files = glob(join(folder, "Run*_device.csv"))
+    results_files = glob(join(folder, "Run*_results.csv"))
+
+    # Creates a dictionary that associates the name of the run to the result files
+    results_lookup = {basename(f).replace('_results.csv', ''): f for f in results_files}
+
+    # Iterates through the list of files
+    for device_file in device_files:
+        # Gets the name of the run from the file that contains the 
+        # information per device
+        base_name = basename(device_file).replace('_device.csv', '')
+        # Gets the complete file name from the base_name
+        result_file = results_lookup.get(base_name)
+
+        # If there is a file 
+        # with that name
+        if result_file:
+            # Reads the device file
+            device_df = read_csv(device_file, index_col=0)
+            # Initiates a dicionary 
+            # that will have the data
+            # of the device and metric
+            # associated with a unique 
+            # name 
+            device_data = {}
+
+            # Gets all the values from all 
+            # columns and all metrics and 
+            # saves it to a dictionary
+            for col in device_df.columns:
+                for metric in device_df.index:
+                    # Defines the key of the 
+                    # dictionary
+                    key = f"{col}_{metric}"
+                    # Gets the value from the device 
+                    # DataFrame
+                    value = device_df.loc[metric, col]
+                    # Assigns the value to the 
+                    # key in the dictionary
+                    device_data[key] = value
+
+            # Reads the file with the results
+            result_df = read_csv(result_file)
+            # Gets the data from the CSV file
+            result_data = result_df.iloc[0].to_dict()
+
+            # Combines the data from both CSVs
+            # with the name of the run
+            combined_data = {"Run": base_name}
+            combined_data.update(device_data)
+            combined_data.update(result_data)
+
+            # Converts the data to a single DataFrame
+            output_df = DataFrame([combined_data])
+            # Saves the data in a single CSV file
+            output_file = join(folder, f"{base_name}_gan_resumed.csv")
+            output_df.to_csv(output_file, index=False, header=False)
+
 def combine_csvs_to_excel(folder_path, output_excel_path):
     """
     Combines the different CSV files in a single excel, 
@@ -367,6 +428,7 @@ def combine_csvs_to_excel(folder_path, output_excel_path):
     # different DataFrames from the runs and iterations
     run_rows = []
     iteration_rows = []
+    gan_rows = []
 
     # Iterates through the files in the 
     # folder that is being iterated
@@ -384,18 +446,23 @@ def combine_csvs_to_excel(folder_path, output_excel_path):
             # Appends the results to the 
             # respective list
             if filename.startswith("Run"):
-                run_rows.append(row)
+                if filename.endswith("gan_resumed.csv"):
+                    gan_rows.append(row)
+                else:
+                    run_rows.append(row)
             elif filename.startswith("Iteration"):
                 iteration_rows.append(row)
 
     # Combines all the DataFrames in a single one for each group
     run_df = DataFrame(run_rows)
     iteration_df = DataFrame(iteration_rows)
+    gan_df = DataFrame(gan_rows)
 
     # Saves the DataFrames to separate Excel sheets
     with ExcelWriter(output_excel_path) as writer:
         run_df.to_excel(writer, sheet_name="Runs", index=False, header=False)
         iteration_df.to_excel(writer, sheet_name="Iterations", index=False, header=False)
+        gan_df.to_excel(writer, sheet_name="GAN", index=False, header=False)
 
 runs_resume(starting_run=1, ending_run=80, folder=".\\results\\", prefix="Run")
 runs_resume(starting_run=1, ending_run=22, folder=".\\results\\", prefix="Iteration")
