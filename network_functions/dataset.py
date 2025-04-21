@@ -679,7 +679,6 @@ class ValidationDataset(Dataset):
             scan = expand_dims(scan, axis=0)
         elif ((self.number_of_channels > 2) and (self.model != "2.5D")):
             scan = stack(arrays=[scan, rdm], axis=0)
-        mask = expand_dims(mask, axis=0)
 
         # In case the selected model is the 2.5D, also loads the previous
         # and following slice
