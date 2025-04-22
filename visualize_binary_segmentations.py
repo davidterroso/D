@@ -1,4 +1,3 @@
-from ast import List
 import torch
 from IPython import get_ipython
 import matplotlib.colors as mcolors
@@ -6,6 +5,8 @@ import matplotlib.pyplot as plt
 from numpy import array, float32, nan, uint8, where, zeros_like
 from pandas import read_csv
 from torch.utils.data import DataLoader
+from typing import List, Union
+from networks.loss import dice_coefficient
 from networks.unet import UNet
 from network_functions.dataset import TestDataset
 from paths import IMAGES_PATH
@@ -20,7 +21,7 @@ else:
     from tqdm.auto import tqdm
 
 def visualize_binary_segmentations(volume_index: int, binary_split: bool, 
-                                   merging_strat: str, order: List[int]):
+                                   merging_strat: str, order: Union[List[int], None]):
     """
     This function will be used to visualize the overlay of multiple binary 
     segmentation masks. Two binary segmentation splits were used: one with 
@@ -136,6 +137,14 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
     test_dataset = TestDataset([volume_index], "UNet", "vertical", True, (496,512), None, 1)
     test_dataloader = DataLoader(test_dataset, batch_size=1, num_workers=12, collate_fn=collate_fn)
 
+    slices_dsc_irf = []
+    slices_dsc_srf = []
+    slices_dsc_ped = []
+
+    merged_dsc_irf = []
+    merged_dsc_srf = []
+    merged_dsc_ped = []
+
     with torch.no_grad():
         # Creates a progress bar to track the progress on testing images
         with tqdm(test_dataloader, total=len(test_dataloader), desc='Testing Models', unit='img', leave=True, position=0) as progress_bar:
@@ -194,6 +203,11 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
                     merged_preds[overlap_indices] = fused_classes
 
                     predicted_mask_name = folder_to_save + image_name[:-5] + f"_{irf_run}_{srf_run}_{ped_run}_{merging_strat}" + ".tiff"
+    
+                dice_scores_irf, _, _, _, _ = dice_coefficient(target=true_masks, prediction=irf_preds, model_name="UNet3", num_classes=2)
+                dice_scores_srf, _, _, _, _ = dice_coefficient(target=true_masks, prediction=srf_preds, model_name="UNet3", num_classes=2)
+                dice_scores_ped, _, _, _, _ = dice_coefficient(target=true_masks, prediction=ped_preds, model_name="UNet3", num_classes=2)
+                dice_scores, _, _, _, _ = dice_coefficient(target=true_masks, prediction=merged_preds, model_name="UNet", num_classes=4)
 
                 # Gets the original OCT B-scan
                 oct_image = images[0].cpu().numpy()[0]
@@ -207,7 +221,8 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
                 srf_preds[srf_preds == 0] = nan
                 ped_preds = array(ped_preds.cpu().numpy(), dtype=float32)[0]
                 ped_preds[ped_preds == 0] = nan
-
+                merged_preds = array(merged_preds.cpu().numpy(), dtype=float32)[0]
+                merged_preds[merged_preds == 0] = nan
                 true_masks = array(true_masks.cpu().numpy(), dtype=float32)[0]
                 true_masks[true_masks == 0] = nan
 
@@ -238,20 +253,37 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
                 axes[1].imshow(ped_preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
                 axes[1].imshow(overlap_mask, alpha=0.7, cmap="Purples")
                 axes[1].axis("off")
-                axes[1].set_title("Predicted Masks")
+                axes[1].set_title(f"Predicted Masks. DSC: {dice_scores_irf[1]}, {dice_scores_srf[1]}, {dice_scores_ped[1]}")
 
                 # Plot the predicted masks
                 axes[2].imshow(oct_image, cmap=plt.cm.gray)
                 axes[2].imshow(merged_preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
                 axes[2].axis("off")
-                axes[2].set_title("Merged Masks")
+                axes[2].set_title(f"Merged Masks. DSC: {dice_scores[1:3]}")
 
                 # Save the combined figure
                 plt.savefig(predicted_mask_name, bbox_inches='tight', pad_inches=0)
                 plt.clf()
                 plt.close("all")
 
+                slices_dsc_irf.append(dice_scores_irf[1])
+                slices_dsc_srf.append(dice_scores_srf[1])
+                slices_dsc_ped.append(dice_scores_ped[1])
+
+                merged_dsc_irf.append(dice_scores[1])
+                merged_dsc_srf.append(dice_scores[2])
+                merged_dsc_ped.append(dice_scores[3])
+
                 # Update the progress bar
                 progress_bar.update(1)
+
+
+    print(f"IRF: {array(slices_dsc_irf).mean()}")
+    print(f"SRF: {array(slices_dsc_srf).mean()}")
+    print(f"PED: {array(slices_dsc_ped).mean()}")
+
+    print(f"Merged PED: {array(merged_dsc_irf).mean()}")
+    print(f"Merged PED: {array(merged_dsc_srf).mean()}")
+    print(f"Merged PED: {array(merged_dsc_ped).mean()}")
 
 visualize_binary_segmentations(volume_index=1, binary_split=True, merging_strat="binary", order=[2,1,3])
