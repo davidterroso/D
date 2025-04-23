@@ -1,9 +1,8 @@
-import numpy as np
 import lmdb
 import torch
 from collections import defaultdict
 from io import BytesIO
-from numpy import any, expand_dims, max, min, nonzero, stack, sum, int8, uint8, ndarray
+from numpy import array, any, expand_dims, int8, max, min, ndarray, nonzero, stack, sum, uint8, zeros_like
 from numpy.random import random_sample
 from os import listdir, remove
 from os.path import exists
@@ -498,14 +497,14 @@ class TrainDataset(Dataset):
         # In case the model selected is the UNet3, all the labels 
         # that are not the one desired to segment are set to 0
         if self.model == "UNet3":
-            mask = ((mask == int(self.fluid)).astype(np.uint8))
+            mask = ((mask == int(self.fluid)).astype(uint8))
 
         # Expands the scan dimentions to 
         # include an extra channel of value 1
         # as the first channel
         # The mask dimensions are also expanded 
         # to match
-        if (self.model != "2.5D") and (self.number_of_channels == 1):
+        if ((self.number_of_channels == 1) and (self.model != "2.5D")):
             scan = expand_dims(scan, axis=0)
         elif ((self.number_of_channels > 2) and (self.model != "2.5D")):
             scan = stack(arrays=[scan, rdm], axis=0)
@@ -527,8 +526,10 @@ class TrainDataset(Dataset):
 
         # Separate the scan and the mask from the stack
         # Keeps the extra dimension on the slice but not on the mask
-        if self.model != "2.5D":
+        if ((self.model != "2.5D") and (self.number_of_channels == 1)):
             scan, mask = transformed[0], transformed[1]
+        elif (self.model != "2.5D" and (self.number_of_channels > 1)):
+            scan, mask = transformed[0,1], transformed[2]
         # Handles it differently for the 2.5D model, ensuring the correct order of slices 
         else:
             scan = torch.cat([transformed[0].float(), transformed[1].float(), transformed[2].float()], dim=0)
@@ -536,7 +537,10 @@ class TrainDataset(Dataset):
 
         # Z-Score Normalization / Standardization
         # Mean of 0 and SD of 1 of the image
-        scan[0,:,:] = (scan[0,:,:] - 128.) / 128.
+        if self.number_of_channels == 2:
+            scan = (scan - 128.) / 128.
+        else:
+            scan[0,:,:] = (scan[0,:,:] - 128.) / 128.
 
         # Declares a sample as a dictionary that 
         # to the keyword "scan" associates the 
@@ -664,7 +668,7 @@ class ValidationDataset(Dataset):
         # In case the model selected is the UNet3, all the labels 
         # that are not the one desired to segment are set to 0
         if self.model == "UNet3":
-            mask = ((mask == self.fluid).astype(np.uint8))
+            mask = ((mask == self.fluid).astype(uint8))
 
         # Z-Score Normalization / Standardization
         # Mean of 0 and SD of 1
@@ -673,11 +677,9 @@ class ValidationDataset(Dataset):
         # Expands the scan dimentions to 
         # include an extra channel of value 1
         # as the first channel
-        # The mask dimensions are also expanded 
-        # to match
         if (self.model != "2.5D") and (self.number_of_channels == 1):
             scan = expand_dims(scan, axis=0)
-        elif ((self.number_of_channels > 2) and (self.model != "2.5D")):
+        elif ((self.number_of_channels > 1) and (self.model != "2.5D")):
             scan = stack(arrays=[scan, rdm], axis=0)
 
         # In case the selected model is the 2.5D, also loads the previous
@@ -804,8 +806,10 @@ class TestDataset(Dataset):
         # fluid mask
         scan = imread(slice_name)
         mask = imread(mask_name)
-        rdm = imread(rdm_name)
-        roi = imread(roi_name)
+        if self.model == "2.5D":
+            roi = imread(roi_name)
+        if self.number_of_channels > 1 and self.model != "2.5D":
+            rdm = imread(rdm_name)
 
         # In case the selected model is the 2.5D, also loads the previous
         # and following slice
@@ -839,7 +843,7 @@ class TestDataset(Dataset):
         # In case the model selected is the UNet3, all the labels 
         # that are not the one desired to segment are set to 0
         if self.model == "UNet3":
-            mask = ((mask == self.fluid).astype(np.uint8))
+            mask = ((mask == self.fluid).astype(uint8))
 
         # The shape of the test images is handled in different ways depending 
         # whether it was done using patches or not
@@ -856,7 +860,10 @@ class TestDataset(Dataset):
 
         # Z-Score Normalization / Standardization
         # Mean of 0 and SD of 1
-        scan[:,:,0] = (scan[:,:,0] - 128.) / 128.
+        if ((self.number_of_channels > 1) and (self.model != "2.5D")):
+            scan[:,:,0] = (scan[:,:,0] - 128.) / 128.
+        else:
+            scan = (scan - 128.) / 128.
 
         # Declares a sample as a dictionary that 
         # to the keyword "scan" associates the 
@@ -966,15 +973,15 @@ class TrainDatasetLMDB(Dataset):
         # Converts the PIL 
         # object to a NumPy
         #  array
-        img = np.array(img)
-        mask = np.array(mask)
+        img = array(img)
+        mask = array(mask)
 
         # Handles the cases for 2.5D 
         # segmentation 
         if self.model == "2.5D":
             # Loads the previous and following image as an array of zeros 
             # with the same shape
-            img_before, img_after = np.zeros_like(img), np.zeros_like(img)
+            img_before, img_after = zeros_like(img), zeros_like(img)
             # Opens the environment once again to load the previous and following 
             # images and masks
             with lmdb.open(self.img_lmdb_path, readonly=True, lock=False) as img_env:
@@ -988,10 +995,10 @@ class TrainDatasetLMDB(Dataset):
                     after_bytes = img_txn.get(after_key)
 
                     # Loads the previous and following image as a NumPy array
-                    img_before = np.array(Image.open(BytesIO(before_bytes)).convert("L")) if before_bytes else np.zeros_like(img)
-                    img_after = np.array(Image.open(BytesIO(after_bytes)).convert("L")) if after_bytes else np.zeros_like(img)
+                    img_before = array(Image.open(BytesIO(before_bytes)).convert("L")) if before_bytes else zeros_like(img)
+                    img_after = array(Image.open(BytesIO(after_bytes)).convert("L")) if after_bytes else zeros_like(img)
             # Stacks the images together, ending with shape (3, H, W)
-            img = np.stack([img_before, img, img_after], axis=0)
+            img = stack([img_before, img, img_after], axis=0)
 
         # Expands the dimensions of the image 
         # and the mask to include the channel 
@@ -1127,15 +1134,15 @@ class ValidationDatasetLMDB(Dataset):
 
         # Converts the PIL Image 
         # object to a NumPy array
-        img = np.array(img)
-        mask = np.array(mask)
+        img = array(img)
+        mask = array(mask)
 
         # Handles the cases for 
         # 2.5D Model
         if self.model == "2.5D":
             # Initiates the image that is located previous and after the 
             # current image as a matrix of zeros
-            img_before, img_after = np.zeros_like(img), np.zeros_like(img)
+            img_before, img_after = zeros_like(img), zeros_like(img)
             # Opens the LMDB environment that contains the validation patches
             with lmdb.open(self.img_lmdb_path, readonly=True, lock=False) as img_env:
                 with img_env.begin() as img_txn:
@@ -1148,11 +1155,11 @@ class ValidationDatasetLMDB(Dataset):
                     before_bytes = img_txn.get(before_key)
                     after_bytes = img_txn.get(after_key)
                     # Saves the image before and after as a NumPy array after loading it as a PIL Image object
-                    img_before = np.array(Image.open(BytesIO(before_bytes)).convert("L")) if before_bytes else np.zeros_like(img)
-                    img_after = np.array(Image.open(BytesIO(after_bytes)).convert("L")) if after_bytes else np.zeros_like(img)
+                    img_before = array(Image.open(BytesIO(before_bytes)).convert("L")) if before_bytes else zeros_like(img)
+                    img_after = array(Image.open(BytesIO(after_bytes)).convert("L")) if after_bytes else zeros_like(img)
             # Stacks the middle with the previous and following 
             # images, attaining a shape of (3, H, W) 
-            img = np.stack([img_before, img, img_after], axis=0)
+            img = stack([img_before, img, img_after], axis=0)
 
         # Expands the image 
         # dimensions if not 2.5D
