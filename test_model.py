@@ -833,6 +833,9 @@ def test_model (
         if not resize_images:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
+        elif final_test:
+            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_final.csv", index=True)
+            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_final.csv", index=True)
         else:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)
@@ -867,6 +870,9 @@ def test_model (
         if not resize_images:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid.csv", index=True)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid.csv", index=True)
+        elif final_test:
+            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid_final.csv", index=True)
+            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid_final.csv", index=True)
         else:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid.csv", index=True)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid.csv", index=True)
@@ -908,6 +914,10 @@ def test_model (
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid.csv", index=True)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid.csv", index=True)
             classes_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
+        elif final_test:
+            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid_final.csv", index=True)
+            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid_final.csv", index=True)
+            classes_df.to_csv(f"results/{run_name}_class_dice_resized_final.csv", index=False)
         else:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid.csv", index=True)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid.csv", index=True)
