@@ -390,7 +390,7 @@ def test_model (
         batch_size: int=1,
         device_name: str="GPU",
         final_test: bool=False,
-        fluid: int=None,
+        fluid: str=None,
         number_of_channels: int=1,
         number_of_classes: int=4,
         patch_type: str="vertical",
@@ -412,8 +412,7 @@ def test_model (
         final_test (bool): indicates that the final test will be 
             performed, changing the name of the saved files. Since final
             testing is rare, the default value is False 
-        fluid (int): integer that is associated with the label desired 
-            to segment
+        fluid (str): name of the fluid that is desired to segment
         number_of_channels (int): number of channels the 
             input will present
         number_of_classes (int): number of classes the 
@@ -584,6 +583,11 @@ def test_model (
 
                     true_masks = np.array(true_masks.cpu().numpy(), dtype=np.float32)[0]
                     true_masks[true_masks == 0] = np.nan
+
+                    # Converts the mask from 
+                    # binary to the correct class 
+                    if fluid is not None:
+                        preds = preds * int(fluids_to_label.get(fluid))
 
                     # The voxels classified in "IRF", "SRF", and "PED" 
                     # will be converted to color as Red for IRF, green 
