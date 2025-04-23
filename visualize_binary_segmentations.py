@@ -2,9 +2,9 @@ import torch
 from IPython import get_ipython
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
-from numpy import array, float32, nan, uint8, where, zeros_like
+from numpy import array, float32, nan, uint8, where
 from os import makedirs
-from pandas import read_csv
+from pandas import DataFrame, concat, read_csv, Series
 from torch.utils.data import DataLoader
 from typing import List, Union
 from networks.loss import dice_coefficient
@@ -21,8 +21,17 @@ if (get_ipython() is not None):
 else:
     from tqdm.auto import tqdm
 
+# Dictionary of labels in masks to fluid names
+label_to_fluids = {
+    0: "Background",
+    1: "IRF",
+    2: "SRF",
+    3: "PED"
+}
+
 def visualize_binary_segmentations(volume_index: int, binary_split: bool, 
-                                   merging_strat: str, order: Union[List[int], None]):
+                                   merging_strat: str, order: Union[List[int], None],
+                                   save_images: bool):
     """
     This function will be used to visualize the overlay of multiple binary 
     segmentation masks. Two binary segmentation splits were used: one with 
@@ -41,9 +50,12 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
             masks. Can be: 'priority' (needs the argument order) or 'softmax'
         order (List[int]): order of priority of the different masks. The 
             first value is the most important
+        save_images (bool): flag that indicates whether the images will be 
+            saved or not
             
     Returns:
-        None
+        slice_df (Pandas DataFrame): DataFrame that contains the information 
+            of the results per slice
     """
 
     # Defines the dictionaries that assign 
@@ -192,11 +204,15 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
     merged_dsc_srf = []
     merged_dsc_ped = []
 
+    # Initiates the list that will 
+    # store the results of the slices 
+    slice_results = []
+
     # Indicates that no gradient 
     # must be calculated in the models
     with torch.no_grad():
         # Creates a progress bar to track the progress on testing images
-        with tqdm(test_dataloader, total=len(test_dataloader), desc='Testing Models', unit='img', leave=True, position=0) as progress_bar:
+        with tqdm(test_dataloader, total=len(test_dataloader), desc=f'Testing Volume {volume_index}', unit='img', leave=True, position=0) as progress_bar:
             # Iterates through every batch and path 
             # (that compose the batch) in the dataloader
             # In this case, the batches are of size one, 
@@ -278,65 +294,72 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
                 dice_scores_srf, _, _, _, _ = dice_coefficient(target=true_masks, prediction=srf_preds, model_name="UNet3", num_classes=2)
                 dice_scores_ped, _, _, _, _ = dice_coefficient(target=true_masks, prediction=ped_preds, model_name="UNet3", num_classes=2)
                 # Gets the Dice coefficient for the merged mask
-                dice_scores, _, _, _, _ = dice_coefficient(target=true_masks, prediction=merged_preds, model_name="UNet", num_classes=4)
+                dice_scores, voxel_counts, union_counts, intersection_counts, binary_dice = dice_coefficient(target=true_masks, 
+                                                                                                             prediction=merged_preds,
+                                                                                                             model_name="UNet", 
+                                                                                                             num_classes=4)
 
-                # Gets the original OCT B-scan
-                oct_image = images[0].cpu().numpy()[0]
+                # Appends the results per slice, per volume, and per vendor
+                slice_results.append([image_name, *dice_scores, *voxel_counts, *union_counts, *intersection_counts, binary_dice])
 
-                # Converts each voxel classified as background to 
-                # NaN so that it will not appear in the overlaying
-                # mask
-                irf_preds = array(irf_preds.cpu().numpy(), dtype=float32)[0]
-                irf_preds[irf_preds == 0] = nan
-                srf_preds = array(srf_preds.cpu().numpy(), dtype=float32)[0]
-                srf_preds[srf_preds == 0] = nan
-                ped_preds = array(ped_preds.cpu().numpy(), dtype=float32)[0]
-                ped_preds[ped_preds == 0] = nan
-                merged_preds = array(merged_preds.cpu().numpy(), dtype=float32)[0]
-                merged_preds[merged_preds == 0] = nan
-                true_masks = array(true_masks.cpu().numpy(), dtype=float32)[0]
-                true_masks[true_masks == 0] = nan
+                if save_images:
+                    # Gets the original OCT B-scan
+                    oct_image = images[0].cpu().numpy()[0]
 
-                # The voxels classified in "IRF", "SRF", and "PED" 
-                # will be converted to color as Red for IRF, green 
-                # for SRF, and blue for PED
-                fluid_colors = ["red", "green", "blue"]
-                fluid_cmap = mcolors.ListedColormap(fluid_colors)
-                # Declares in which part of the color bar each
-                # label is going to be placed
-                fluid_bounds = [1, 2, 3, 4]
-                # Normalizes the color map according to the 
-                # bounds declared.
-                fluid_norm = mcolors.BoundaryNorm(fluid_bounds, fluid_cmap.N)
+                    # Converts each voxel classified as background to 
+                    # NaN so that it will not appear in the overlaying
+                    # mask
+                    irf_preds = array(irf_preds.cpu().numpy(), dtype=float32)[0]
+                    irf_preds[irf_preds == 0] = nan
+                    srf_preds = array(srf_preds.cpu().numpy(), dtype=float32)[0]
+                    srf_preds[srf_preds == 0] = nan
+                    ped_preds = array(ped_preds.cpu().numpy(), dtype=float32)[0]
+                    ped_preds[ped_preds == 0] = nan
+                    merged_preds = array(merged_preds.cpu().numpy(), dtype=float32)[0]
+                    merged_preds[merged_preds == 0] = nan
+                    true_masks = array(true_masks.cpu().numpy(), dtype=float32)[0]
+                    true_masks[true_masks == 0] = nan
 
-                # Initiates a subplot that will have three images along one row
-                fig, axes = plt.subplots(1, 3, figsize=(2 * oct_image.shape[1] / 100, oct_image.shape[0] / 100))
+                    # The voxels classified in "IRF", "SRF", and "PED" 
+                    # will be converted to color as Red for IRF, green 
+                    # for SRF, and blue for PED
+                    fluid_colors = ["red", "green", "blue"]
+                    fluid_cmap = mcolors.ListedColormap(fluid_colors)
+                    # Declares in which part of the color bar each
+                    # label is going to be placed
+                    fluid_bounds = [1, 2, 3, 4]
+                    # Normalizes the color map according to the 
+                    # bounds declared.
+                    fluid_norm = mcolors.BoundaryNorm(fluid_bounds, fluid_cmap.N)
 
-                # Plots the ground-truth masks
-                axes[0].imshow(oct_image, cmap=plt.cm.gray)
-                axes[0].imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
-                axes[0].axis("off")
-                axes[0].set_title("Ground Truth Masks")
+                    # Initiates a subplot that will have three images along one row
+                    fig, axes = plt.subplots(1, 3, figsize=(2 * oct_image.shape[1] / 100, oct_image.shape[0] / 100))
 
-                # Plots the predicted masks and the overlaying in purple
-                axes[1].imshow(oct_image, cmap=plt.cm.gray)
-                axes[1].imshow(irf_preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
-                axes[1].imshow(srf_preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
-                axes[1].imshow(ped_preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
-                axes[1].imshow(overlap_mask, alpha=0.7, cmap="Purples")
-                axes[1].axis("off")
-                axes[1].set_title(f"Predicted Masks. DSC: {dice_scores_irf[1]}, {dice_scores_srf[1]}, {dice_scores_ped[1]}")
+                    # Plots the ground-truth masks
+                    axes[0].imshow(oct_image, cmap=plt.cm.gray)
+                    axes[0].imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+                    axes[0].axis("off")
+                    axes[0].set_title("Ground Truth Masks")
 
-                # Plots the predicted masks merged
-                axes[2].imshow(oct_image, cmap=plt.cm.gray)
-                axes[2].imshow(merged_preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
-                axes[2].axis("off")
-                axes[2].set_title(f"Merged Masks. DSC: {dice_scores[1:3]}")
+                    # Plots the predicted masks and the overlaying in purple
+                    axes[1].imshow(oct_image, cmap=plt.cm.gray)
+                    axes[1].imshow(irf_preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+                    axes[1].imshow(srf_preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+                    axes[1].imshow(ped_preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+                    axes[1].imshow(overlap_mask, alpha=0.7, cmap="Purples")
+                    axes[1].axis("off")
+                    axes[1].set_title(f"Predicted Masks. DSC: {dice_scores_irf[1]}, {dice_scores_srf[1]}, {dice_scores_ped[1]}")
 
-                # Saves the combined figures
-                plt.savefig(predicted_mask_name, bbox_inches='tight', pad_inches=0)
-                plt.clf()
-                plt.close("all")
+                    # Plots the predicted masks merged
+                    axes[2].imshow(oct_image, cmap=plt.cm.gray)
+                    axes[2].imshow(merged_preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+                    axes[2].axis("off")
+                    axes[2].set_title(f"Merged Masks. DSC: {dice_scores[1:3]}")
+
+                    # Saves the combined figures
+                    plt.savefig(predicted_mask_name, bbox_inches='tight', pad_inches=0)
+                    plt.clf()
+                    plt.close("all")
 
                 # Appends the Dice coefficient for the 
                 # slice in the binary models
@@ -353,6 +376,15 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
                 # Update the progress bar
                 progress_bar.update(1)
 
+    # Gets all the information in a single DataFrame
+    slice_df = DataFrame(slice_results, 
+                        columns=["slice", 
+                                *[f"dice_{label_to_fluids.get(i)}" for i in range(len(label_to_fluids.keys()))], 
+                                *[f"voxels_{label_to_fluids.get(i)}" for i in range(len(label_to_fluids.keys()))], 
+                                *[f"union_{label_to_fluids.get(i)}" for i in range(len(label_to_fluids.keys()))], 
+                                *[f"intersection_{label_to_fluids.get(i)}" for i in range(len(label_to_fluids.keys()))],
+                                "binary_dice"])
+
     # Prints the statistics of the model
     print(f"Volume {volume_index}")
 
@@ -364,4 +396,168 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
     print(f"Merged PED: {array(merged_dsc_srf).mean()}")
     print(f"Merged PED: {array(merged_dsc_ped).mean()}")
 
-visualize_binary_segmentations(volume_index=1, binary_split=True, merging_strat="binary", order=[2,1,3])
+    return slice_df
+
+def merge_binary_segmentations(binary_split: bool=True, merging_strat: str="priority", 
+                               order: List=[2,1,3], save_images: bool=True):
+    """
+    This function will be used to calculate the result of multiple merging 
+    techniques applied to multiple binary segmentation masks. Two binary 
+    segmentation splits were used: one with the same partition as the 
+    multi-class segmentation, and one specific for the class that is 
+    segmented. This network receives as input the index of the volume 
+    desired to segment and the models of which split will be used
+
+    Args:
+        volume_index (int): index of the volume desired to segment
+        binary_split (bool): boolean that indicates whether the split 
+            used will be the one used specifically for binary segmentation
+            when assigned True or the one for multi-class segmentation when
+            assigned False
+        merging_strat (str): strategy used when merging the multiple binary
+            masks. Can be: 'priority' (needs the argument order) or 'softmax'
+        order (List[int]): order of priority of the different masks. The 
+            first value is the most important
+        save_images (bool): flag that indicates whether the images will be 
+            saved or not
+            
+    Returns:
+        None
+    """
+
+    # Defines the name in which the 
+    # results will be saved
+    if merging_strat == "priority":
+        merge_file_name = f"results\\binary_segmentation_binary_split_{merging_strat}_{''.join(str(k) for k in order)}"
+    elif merging_strat == "softmax":
+        merge_file_name = f"results\\binary_segmentation_binary_split_{merging_strat}_{''.join(str(k) for k in order)}"
+    else:
+        raise ValueError(f"The selected strat '{merging_strat}' does not exist. Only 'priority' or 'softmax'")
+
+    # Initiates an empty list that 
+    # will store multiple DataFrames 
+    all_slices_df = []
+
+    # Iterates through all the volumes
+    for vol_idx in range(71):
+        # Calls the function that will predict the current volume
+        slice_df = visualize_binary_segmentations(volume_index=vol_idx, 
+                                                  binary_split=binary_split, 
+                                                  merging_strat=merging_strat, 
+                                                  order=order, save_images=save_images)
+        # Appends the resulting DataFrame
+        all_slices_df.append(slice_df)
+    # Concatenates all the DataFrames into a single one 
+    # with all the slices iterated
+    final_df = concat(all_slices_df, ignore_index=True)
+    final_df[['vendor', 'volume', 'slice_number']] = final_df['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
+
+    # Gets the Dice coefficients across allslices
+    vendor_df_mean = final_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
+    vendor_df_mean.index.name = "Vendor"
+    vendor_df_std = final_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").std()
+    vendor_df_std.index.name = "Vendor"
+    resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
+
+    class_df_mean = final_df[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
+    class_df_std = final_df[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
+    resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
+
+    # Handles the information only on the slices that have the fluid
+    slice_df_wf = final_df.copy()
+    # Iterates through all the classes available
+    for i in range(len(label_to_fluids.keys())):
+        # Sets the Dice values to NaN whenever there is no fluid of that type
+        slice_df_wf.loc[slice_df_wf[f"voxels_{label_to_fluids.get(i)}"] == 0, f"dice_{label_to_fluids.get(i)}"] = nan
+
+    # Adds the vendor, volume, and number of the slice information to the DataFrame
+    slice_df_wf[['vendor', 'volume', 'slice_number']] = slice_df_wf['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
+
+    # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
+    vendor_df_mean = slice_df_wf[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
+    vendor_df_mean.index.name = "Vendor"
+    vendor_df_std = slice_df_wf[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").std()
+    vendor_df_std.index.name = "Vendor"
+    resulting_vendor_df_wf = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
+
+    # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
+    class_df_mean = slice_df_wf[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
+    class_df_std = slice_df_wf[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
+    resulting_class_df_wf = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
+
+    # Handles the information only on the slices that do not have fluid
+    slice_df_wof = final_df.copy()
+    # Iterates through all the classes available
+    for i in range(len(label_to_fluids.keys())):
+        # Gets the DataFrame that contains a non-negative number of voxels for each column
+        slice_df_wof.loc[slice_df_wof[f"voxels_{label_to_fluids.get(i)}"] > 0, f"dice_{label_to_fluids.get(i)}"] = nan
+
+    # Adds the vendor, volume, and number of the slice information to the DataFrame
+    slice_df_wof[['vendor', 'volume', 'slice_number']] = slice_df_wof['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
+
+    # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
+    vendor_df_mean = slice_df_wof[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
+    vendor_df_mean.index.name = "Vendor"
+    vendor_df_std = slice_df_wof[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").std()
+    vendor_df_std.index.name = "Vendor"
+    resulting_vendor_df_wof = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
+
+    # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
+    class_df_mean = slice_df_wof[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
+    class_df_std = slice_df_wof[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
+    resulting_class_df_wof = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
+
+    # Initializes a list that will hold the results for the binary case
+    binary_dices = []
+    # Appends the binary Dice coefficient to a list that holds these values
+    binary_dices.append(f"{final_df['binary_dice'].mean()} ({final_df['binary_dice'].std()})")
+
+    # Get the fluid voxel column names (i = 1, 2, 3)
+    fluid_voxel_cols = [f"voxels_{label_to_fluids[i]}" for i in [1, 2, 3]]
+
+    # Copies the original DataFrame 
+    # on which changes will be applied
+    slice_df_wf = final_df.copy()
+    slice_df_wof = final_df.copy()
+
+    # For the 'with fluid' DataFrame, the slices with no fluid will be set to NaN in the 
+    # column that contains the binary Dice        
+    slice_df_wf.loc[slice_df_wf[fluid_voxel_cols].sum(axis=1) == 0, 'binary_dice'] = nan
+
+    # For the 'without fluid' DataFrame, the slices with any fluid will be set to NaN in the 
+    # column that contains the binary Dice
+    slice_df_wof.loc[slice_df_wof[fluid_voxel_cols].sum(axis=1) > 0, 'binary_dice'] = nan
+
+    # The mean and std of each column is added to a list that contains the results in binary conditions
+    binary_dices.append(f"{slice_df_wf['binary_dice'].mean()} ({slice_df_wf['binary_dice'].std()})")
+    binary_dices.append(f"{slice_df_wof['binary_dice'].mean()} ({slice_df_wof['binary_dice'].std()})")
+
+    # Initiates a list that will store all the results
+    results_list = []
+
+    # Iterates through all the vendors in the DataFrame
+    for vendor in ["Cirrus", "Spectralis", "Topcon"]:
+        # Iterates through all the fluids in the DataFrame
+        for fluid in ["IRF", "SRF", "PED"]:
+            # Appends the results to the list
+            results_list.append(resulting_vendor_df.at[vendor, fluid])
+            results_list.append(resulting_vendor_df_wf.at[vendor, fluid])
+            results_list.append(resulting_vendor_df_wof.at[vendor, fluid])
+
+    # Iterates through all the fluids in the DataFrame
+    for fluid in ["IRF", "SRF", "PED"]:
+        # Appends the results to the list
+        results_list.append(resulting_class_df.at[0, fluid])
+        results_list.append(resulting_class_df_wf.at[0, fluid])
+        results_list.append(resulting_class_df_wof.at[0, fluid])
+
+    # Appends the binary Dice values to the list
+    results_list = results_list + binary_dices
+
+    # Saves the list as a DataFrame and then to a CSV file
+    Series(results_list).to_frame.T.to_csv(merge_file_name)
+
+merge_binary_segmentations(binary_split=True, merging_strat="priority", order=[2,1,3], save_images=True)
+merge_binary_segmentations(binary_split=False, merging_strat="priority", order=[2,1,3], save_images=True)
+merge_binary_segmentations(binary_split=True, merging_strat="softmax", save_images=True)
+merge_binary_segmentations(binary_split=False, merging_strat="softmax", save_images=True)

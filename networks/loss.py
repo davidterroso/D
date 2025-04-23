@@ -166,6 +166,9 @@ def dice_coefficient(model_name: str, prediction: torch.Tensor,
         intersection_counts (List[int]): List with all the number of 
             voxels that intersect between the GT and the predicted
             mask
+        binary_dice (List[float]): List with all the the 
+            calculated Dice coefficient for the predicted mask 
+            when the classes are binarized as fluid or background
 
     """
     # In case the model is 2.5D, it needs to 
