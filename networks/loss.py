@@ -142,6 +142,76 @@ def multiclass_balanced_cross_entropy_loss(model_name: str,
     # Returns the loss value
     return loss
 
+def balanced_bce_loss(y_true: torch.Tensor, 
+                      y_pred: torch.Tensor, 
+                      batch_size: int, 
+                      n_classes: int, 
+                      eps: float=1e-7):
+    """
+    Loss function for the background segmentation on the network
+
+    Args:
+        model_name (str): name of the model used in segmentation
+        y_true (PyTorch tensor): ground-truth of the segmented 
+            fluids and background        
+        y_pred (PyTorch tensor): network's prediction of the 
+            segmented fluids and background 
+        batch_size (int): size of the batch
+        eps (float): epsilon value used to prevent divisions by 
+            zero. Default: 1e-7
+    
+    Return:
+        (float): loss of the background segmentation
+    """
+    # Check to verify that the probabilities in one class correspond 
+    # to 1 - the other, when dealing with two classes
+    if n_classes == 2:
+        # Calculates the difference between the values explained
+        diff = torch.abs((1.0 - y_pred[..., 0]) - y_pred[..., 1])
+        max_diff = torch.max(diff)
+        # If the difference is above a threshold, an error is raised
+        # (a requirement to be exactly the same would likely cause 
+        # crashes due to minor approximations or floating point)
+        if max_diff > 1e-4:
+            raise ValueError(f"Softmax channel sum check failed. Max difference: {max_diff.item():.6f}")
+
+    # Casts y_true as float32 to allow 
+    # higher precision calculations 
+    y_true = y_true.to(torch.float32)
+    
+    # Limits predictions to an interval of [eps, 1 - eps] 
+    # to avoid log(0) issues
+    y_pred_ = torch.clamp(y_pred, min=eps, max=1. - eps)
+
+    # Calculate balanced cross-entropy loss
+    # y_true is one-hot encoded and y_pred_ 
+    # are probabilities
+    cross_ent = torch.log(y_pred_) * y_true
+    # Sum over spatial dimensions
+    # y_true and y_pred_ have shape (B, H, W, C)
+    # Sum over height and width
+    cross_ent = torch.sum(cross_ent, dim=[1, 2])
+    # Reshapes the tensor to have shape (B,C)
+    cross_ent = torch.reshape(cross_ent, (batch_size, n_classes))
+
+    # Compute the sum of true labels for each class, to balance the loss
+    # Sums the over height and width
+    y_true_sum = torch.sum(y_true, dim=[1, 2])
+    # Reshapes the tensor to have shape (B,C) and sums eps to avoid 
+    # division by zero
+    y_true_sum = torch.reshape(y_true_sum, (batch_size, n_classes)) + eps
+
+    # Calculates the cross entropy 
+    # balanced to the total number of 
+    # positive voxels
+    cross_ent = cross_ent / y_true_sum
+
+    # The negative sign on cross-entropy is because of the log function
+    loss = (- torch.mean(cross_ent, dim=-1, keepdim=False)).mean()
+
+    # Returns the loss
+    return loss
+
 def dice_coefficient(model_name: str, prediction: torch.Tensor,
                       target: torch.Tensor, num_classes: int):
     """

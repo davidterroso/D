@@ -13,7 +13,7 @@ from torch.nn.functional import one_hot, softmax
 from init.patch_extraction import extract_patches_wrapper
 from network_functions.evaluate import evaluate
 from networks.unet25D import TennakoonUNet
-from networks.loss import multiclass_balanced_cross_entropy_loss
+from networks.loss import balanced_bce_loss, multiclass_balanced_cross_entropy_loss
 from networks.unet import UNet
 
 import matplotlib.colors as mcolors
@@ -475,13 +475,20 @@ def train_model (
                     masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float().squeeze(1)
 
                     # Calculates the balanced loss for the background mask
-                    loss = multiclass_balanced_cross_entropy_loss(
-                                        model_name=model_name,
-                                        y_true=masks_true_one_hot,
-                                        y_pred=masks_pred_prob, 
-                                        batch_size=images.shape[0], 
-                                        n_classes=model.n_classes, 
-                                        eps=1e-7)
+                    if model_name != "UNet3": 
+                        loss = multiclass_balanced_cross_entropy_loss(
+                                            model_name=model_name,
+                                            y_true=masks_true_one_hot,
+                                            y_pred=masks_pred_prob, 
+                                            batch_size=images.shape[0], 
+                                            n_classes=model.n_classes, 
+                                            eps=1e-7)
+                    else:
+                        loss = balanced_bce_loss(y_true=masks_true_one_hot,
+                                                 y_pred=masks_pred_prob, 
+                                                 batch_size=images.shape[0], 
+                                                 n_classes=model.n_classes, 
+                                                 eps=1e-7)
 
                 # Saves the value that are zero as 
                 # None so that it saves memory
