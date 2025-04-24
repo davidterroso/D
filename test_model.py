@@ -395,7 +395,8 @@ def test_model (
         number_of_classes: int=4,
         patch_type: str="vertical",
         resize_images: bool=False,
-        save_images: bool=True
+        save_images: bool=True,
+        split: str="competitive_fold_selection.csv",
     ):
     """
     Function used to test the trained models
@@ -427,6 +428,8 @@ def test_model (
             will be resized or not in testing 
         save_images (bool): flag that indicates whether the 
             predicted images will be saved or not
+        split (str): name of the k-fold split file that will be 
+            used in this run
             
     Return:
         None
@@ -454,10 +457,7 @@ def test_model (
     weights_path = "models\\" + weights_name 
 
     # Gets the list of volumes used to test the model
-    if model_name != "UNet3":
-        df = read_csv("splits/competitive_fold_selection.csv")
-    else:
-        df = read_csv(f"splits/competitive_fold_selection_{fluid}.csv")
+    df = read_csv(f"splits/{split}")
     test_volumes = df[str(fold_test)].dropna().to_list()
 
     # Checks if the declared device exists
