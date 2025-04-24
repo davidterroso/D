@@ -294,11 +294,6 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
                 dice_scores_srf, _, _, _, _ = dice_coefficient(target=true_masks, prediction=srf_preds, model_name="UNet3", num_classes=2)
                 dice_scores_ped, _, _, _, _ = dice_coefficient(target=true_masks, prediction=ped_preds, model_name="UNet3", num_classes=2)
 
-                print(image_name)
-                print(dice_scores_irf)
-                print(dice_scores_srf)
-                print(dice_scores_ped)
-
                 # Gets the Dice coefficient for the merged mask
                 dice_scores, voxel_counts, union_counts, intersection_counts, binary_dice = dice_coefficient(target=true_masks, 
                                                                                                              prediction=merged_preds,

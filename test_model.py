@@ -615,10 +615,7 @@ def test_model (
                     # Saves the OCT scan with an overlay of the ground-truth masks
                     plt.figure(figsize=(oct_image.shape[1] / 100, oct_image.shape[0] / 100))
                     plt.imshow(oct_image, cmap=plt.cm.gray)
-                    if model_name == "UNet3":
-                        plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap)
-                    else:
-                        plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+                    plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
                     plt.axis("off")
                     plt.savefig(gt_mask_name, bbox_inches="tight", pad_inches=0)
 
