@@ -431,10 +431,6 @@ def test_model (
     Return:
         None
     """
-    # Gets the list of volumes used to test the model
-    df = read_csv("splits/competitive_fold_selection.csv")
-    test_volumes = df[str(fold_test)].dropna().to_list()
-
     # Dictionary of models, associates a string to a PyTorch module
     models = {
         "UNet": UNet(in_channels=number_of_channels, num_classes=number_of_classes),
@@ -456,6 +452,13 @@ def test_model (
     
     # Declares the path to the weights
     weights_path = "models\\" + weights_name 
+
+    # Gets the list of volumes used to test the model
+    if model_name != "UNet3":
+        df = read_csv("splits/competitive_fold_selection.csv")
+    else:
+        df = read_csv(f"splits/competitive_fold_selection_{fluid}.csv")
+    test_volumes = df[str(fold_test)].dropna().to_list()
 
     # Checks if the declared device exists
     if device_name not in ["CPU", "GPU"]:
@@ -588,6 +591,7 @@ def test_model (
                     # binary to the correct class 
                     if fluid is not None:
                         preds = preds * int(fluids_to_label.get(fluid))
+                        true_masks = true_masks * int(fluids_to_label.get(fluid))
 
                     # The voxels classified in "IRF", "SRF", and "PED" 
                     # will be converted to color as Red for IRF, green 

@@ -2,7 +2,7 @@ import torch
 from IPython import get_ipython
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
-from numpy import array, float32, nan, uint8, where
+from numpy import array, float32, nan
 from os import makedirs
 from pandas import DataFrame, concat, read_csv, Series
 from torch.utils.data import DataLoader
@@ -94,19 +94,11 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
         86: 0,
     }
 
-    # Dictionary that associates 
-    # a label with a variable
-    mask_dict = {
-        1: irf_preds,
-        2: srf_preds,
-        3: ped_preds
-    }
-
     # In case the split used specifically for the binary fluid segmentation 
     # is used three splits have to be checked
     if binary_split:
         # Declares the folder in which the images will be saved
-        folder_to_save = IMAGES_PATH + f"\\OCT_images\\prediction\\binary_segmentation_binary_split\\"
+        folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\binary_segmentation_binary_split\\"
         
         # Reads the splits for the splits used in the binary segmentation
         irf_split = read_csv("splits\\competitive_fold_selection_IRF.csv")
@@ -134,7 +126,7 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
     # In case the split used is the same as the multi-class
     else:
         # Declares the name of the folder in which the images will be saved
-        folder_to_save = IMAGES_PATH + "\\OCT_images\\prediction\\binary_segmentation_multiclass_split\\"
+        folder_to_save = IMAGES_PATH + "\\OCT_images\\segmentation\\predictions\\binary_segmentation_multiclass_split\\"
         
         # Reads the split from used in multi-class segmentation
         split = read_csv("splits\\competitive_fold_selection.csv")
@@ -184,7 +176,7 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
     # Creates the Dataset object as a multi-class since multiple models will have the classes compared
     test_dataset = TestDataset([volume_index], "UNet", "vertical", True, (496,512), None, 1)
     # Creates the DataLoader object
-    test_dataloader = DataLoader(test_dataset, batch_size=1, num_workers=12, collate_fn=collate_fn)
+    test_dataloader = DataLoader(test_dataset, batch_size=1, num_workers=0, collate_fn=collate_fn)
 
     # Initiates an array that 
     # will contain the 
@@ -238,21 +230,29 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
                 logit_stack = torch.stack([irf_outputs, srf_outputs, ped_outputs], axis=-1)
 
                 # Calculates the prediction of each independent model
-                irf_preds = torch.argmax(irf_outputs, dim=1) * 1
-                srf_preds = torch.argmax(srf_outputs, dim=1) * 2
-                ped_preds = torch.argmax(ped_outputs, dim=1) * 3
+                irf_preds = torch.argmax(irf_outputs, dim=1)
+                srf_preds = torch.argmax(srf_outputs, dim=1)
+                ped_preds = torch.argmax(ped_outputs, dim=1)
+
+                # Dictionary that associates 
+                # a label with a variable
+                mask_dict = {
+                    1: irf_preds,
+                    2: srf_preds,
+                    3: ped_preds
+                }
 
                 # Stacks all the preds
-                preds_stack = torch.stack([irf_preds, srf_preds, ped_preds], axis=-1)
+                preds_stack = torch.stack([irf_preds * 1, srf_preds * 2, ped_preds * 3], axis=-1)
 
                 # Creates a binary mask signalling where there 
                 # is overlaps and where there is not
-                overlap_mask = ((irf_preds > 0).astype(int) +
-                (srf_preds > 0).astype(int) +
-                (ped_preds > 0).astype(int)) > 1
+                overlap_mask = ((irf_preds > 0).int() +
+                (srf_preds > 0).int() +
+                (ped_preds > 0).int()) > 1
 
                 # Initializes the mask of merged predictions as tensor of zeros
-                merged_preds = torch.zeros_like(irf_preds, dtype=uint8).to(device=torch.device("cuda"))
+                merged_preds = torch.zeros_like(irf_preds, dtype=torch.uint8).to(device=torch.device("cuda"))
 
                 # In case the merging strat 
                 # selected is "priority"
@@ -263,7 +263,7 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
                     # order to apply lowest priority first
                     for class_id in order[::-1]:
                         mask = (mask_dict[class_id] > 0).int()
-                        merged_preds = where(mask > 0, class_id, merged_preds)
+                        merged_preds = torch.where(mask > 0, class_id, merged_preds)
                 
                 # In case the merging strategy 
                 # selected is "softmax"                
@@ -293,6 +293,12 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
                 dice_scores_irf, _, _, _, _ = dice_coefficient(target=true_masks, prediction=irf_preds, model_name="UNet3", num_classes=2)
                 dice_scores_srf, _, _, _, _ = dice_coefficient(target=true_masks, prediction=srf_preds, model_name="UNet3", num_classes=2)
                 dice_scores_ped, _, _, _, _ = dice_coefficient(target=true_masks, prediction=ped_preds, model_name="UNet3", num_classes=2)
+
+                print(image_name)
+                print(dice_scores_irf)
+                print(dice_scores_srf)
+                print(dice_scores_ped)
+
                 # Gets the Dice coefficient for the merged mask
                 dice_scores, voxel_counts, union_counts, intersection_counts, binary_dice = dice_coefficient(target=true_masks, 
                                                                                                              prediction=merged_preds,
@@ -319,6 +325,8 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
                     merged_preds[merged_preds == 0] = nan
                     true_masks = array(true_masks.cpu().numpy(), dtype=float32)[0]
                     true_masks[true_masks == 0] = nan
+                    overlap_mask = array(overlap_mask.cpu().numpy(), dtype=float32)[0]
+                    overlap_mask[overlap_mask == 0] = nan
 
                     # The voxels classified in "IRF", "SRF", and "PED" 
                     # will be converted to color as Red for IRF, green 
@@ -348,13 +356,13 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
                     axes[1].imshow(ped_preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
                     axes[1].imshow(overlap_mask, alpha=0.7, cmap="Purples")
                     axes[1].axis("off")
-                    axes[1].set_title(f"Predicted Masks. DSC: {dice_scores_irf[1]}, {dice_scores_srf[1]}, {dice_scores_ped[1]}")
+                    axes[1].set_title(f"Predicted DSC: {dice_scores_irf[1]:.2f}, {dice_scores_srf[1]:.2f}, {dice_scores_ped[1]:.2f}")
 
                     # Plots the predicted masks merged
                     axes[2].imshow(oct_image, cmap=plt.cm.gray)
                     axes[2].imshow(merged_preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
                     axes[2].axis("off")
-                    axes[2].set_title(f"Merged Masks. DSC: {dice_scores[1:3]}")
+                    axes[2].set_title(f"Merged DSC:  {dice_scores[1]:.2f}, {dice_scores[2]:.2f}, {dice_scores[3]:.2f}")
 
                     # Saves the combined figures
                     plt.savefig(predicted_mask_name, bbox_inches='tight', pad_inches=0)
@@ -392,8 +400,8 @@ def visualize_binary_segmentations(volume_index: int, binary_split: bool,
     print(f"SRF: {array(slices_dsc_srf).mean()}")
     print(f"PED: {array(slices_dsc_ped).mean()}")
 
-    print(f"Merged PED: {array(merged_dsc_irf).mean()}")
-    print(f"Merged PED: {array(merged_dsc_srf).mean()}")
+    print(f"Merged IRF: {array(merged_dsc_irf).mean()}")
+    print(f"Merged SRF: {array(merged_dsc_srf).mean()}")
     print(f"Merged PED: {array(merged_dsc_ped).mean()}")
 
     return slice_df
@@ -557,7 +565,8 @@ def merge_binary_segmentations(binary_split: bool=True, merging_strat: str="prio
     # Saves the list as a DataFrame and then to a CSV file
     Series(results_list).to_frame.T.to_csv(merge_file_name)
 
-merge_binary_segmentations(binary_split=True, merging_strat="priority", order=[2,1,3], save_images=True)
-merge_binary_segmentations(binary_split=False, merging_strat="priority", order=[2,1,3], save_images=True)
-merge_binary_segmentations(binary_split=True, merging_strat="softmax", save_images=True)
-merge_binary_segmentations(binary_split=False, merging_strat="softmax", save_images=True)
+# merge_binary_segmentations(binary_split=True, merging_strat="priority", order=[2,1,3], save_images=True)
+# merge_binary_segmentations(binary_split=False, merging_strat="priority", order=[2,1,3], save_images=True)
+# merge_binary_segmentations(binary_split=True, merging_strat="softmax", save_images=True)
+# merge_binary_segmentations(binary_split=False, merging_strat="softmax", save_images=True)
+visualize_binary_segmentations(volume_index=1, binary_split=True, merging_strat="priority", order=[2,1,3], save_images=True)

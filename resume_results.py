@@ -475,7 +475,7 @@ def combine_csvs_to_excel(folder_path, output_excel_path):
         gan_df.to_excel(writer, sheet_name="GAN", index=False, header=False)
 
 runs_resume(starting_run=1, ending_run=89, folder=".\\results\\", prefix="Run")
-runs_resume(starting_run=1, ending_run=24, folder=".\\results\\", prefix="Iteration")
+runs_resume(starting_run=1, ending_run=25, folder=".\\results\\", prefix="Iteration")
 runs_resume_final(folder=".\\results\\", runs_to_check=100)
 gan_runs_resume(folder=".\\results\\")
 combine_csvs_to_excel(folder_path=".\\results\\", output_excel_path=".\\results\\combined_output.xlsx")
