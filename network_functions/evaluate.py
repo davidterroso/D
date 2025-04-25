@@ -3,7 +3,7 @@ from IPython import get_ipython
 from torch.nn import Module
 from torch.utils.data import DataLoader
 from torch.nn.functional import one_hot, softmax
-from networks.loss import multiclass_balanced_cross_entropy_loss, MS_SSIM
+from networks.loss import balanced_bce_loss, multiclass_balanced_cross_entropy_loss, MS_SSIM
 
 # Imports tqdm depending on whether 
 # it is being called from the 
@@ -68,13 +68,20 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
                     masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float()
 
                     # Calculates the balanced loss for the background mask
-                    loss = multiclass_balanced_cross_entropy_loss(
-                                        model_name=model_name,
-                                        y_true=masks_true_one_hot,
-                                        y_pred=masks_pred_prob, 
-                                        batch_size=images.shape[0], 
-                                        n_classes=model.n_classes, 
-                                        eps=1e-7)
+                    if model_name != "UNet3": 
+                        loss = multiclass_balanced_cross_entropy_loss(
+                                            model_name=model_name,
+                                            y_true=masks_true_one_hot,
+                                            y_pred=masks_pred_prob, 
+                                            batch_size=images.shape[0], 
+                                            n_classes=model.n_classes, 
+                                            eps=1e-7)
+                    else:
+                        loss = balanced_bce_loss(y_true=masks_true_one_hot,
+                                                 y_pred=masks_pred_prob, 
+                                                 batch_size=images.shape[0], 
+                                                 n_classes=model.n_classes, 
+                                                 eps=1e-7)
 
                     # Accumulate loss
                     total_loss += loss.item()
