@@ -227,8 +227,8 @@ def extract_patches_wrapper(model_name: str, patch_type: str, patch_shape: tuple
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations
     if ((number_of_channels==1) and (number_of_classes==2)):
-        train_set =  TrainDatasetGAN(train_volumes=train_volumes)
-        val_set =  ValidationDatasetGAN(val_volumes=val_volumes)
+        train_set =  TrainDatasetGAN(train_volumes=train_volumes, model_name=model_name)
+        val_set =  ValidationDatasetGAN(val_volumes=val_volumes, model_name=model_name)
     else:
         if num_patches <= 7:
             train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)

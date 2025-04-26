@@ -161,8 +161,8 @@ def train_gan(
     # Creates the training and validation set as a PyTorch 
     # Dataset, using the list of OCT volumes that will be 
     # used to train and validate the network
-    train_set = TrainDatasetGAN(train_volumes=train_volumes)
-    val_set = ValidationDatasetGAN(val_volumes=val_volumes)
+    train_set = TrainDatasetGAN(train_volumes=train_volumes, model_name="GAN")
+    val_set = ValidationDatasetGAN(val_volumes=val_volumes, model_name="GAN")
     # With the previously created datasets, creates a DataLoader that splits this information in multiple batches
     # The number of workers selected corresponds to the number of cores available in the CPU and the persistent workers means they are not closed/killed 
     # every time training or validation ceases
