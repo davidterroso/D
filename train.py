@@ -369,13 +369,14 @@ def train_model (
 
     # In case patch extraction is done before training
     if (assyncronous_patch_extraction):
-        train_loader, val_loader, n_train = extract_patches_wrapper(
+        train_loader, val_loader, n_train, n_val = extract_patches_wrapper(
             model_name=model_name, patch_type=patch_type, patch_shape=patch_shape, n_pos=n_pos, 
             n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
             val_volumes=val_volumes, batch_size=batch_size, 
             patch_dropping=patch_dropping, drop_prob=drop_prob, 
             num_patches=num_patches, seed=seed, fold_val=fold_val, 
-            fold_test=fold_test, fluid=fluid, number_of_channels=number_of_channels)
+            fold_test=fold_test, fluid=fluid, number_of_channels=number_of_channels, 
+            number_of_classes=number_of_classes)
 
     # Initiates the counter of patience
     patience_counter = 0
@@ -388,12 +389,13 @@ def train_model (
         # In case the patch extraction is done syncronously
         if ((not assyncronous_patch_extraction) and (patch_type=="small")):
             print(f"Preparing epoch {epoch} training")
-            train_loader, val_loader, n_train = extract_patches_wrapper(
+            train_loader, val_loader, n_train, n_val = extract_patches_wrapper(
                 model_name=model_name, patch_type=patch_type, patch_shape=patch_shape, n_pos=n_pos, 
                 n_neg=n_neg, pos=pos, neg=neg, train_volumes=train_volumes, 
                 val_volumes=val_volumes, batch_size=batch_size, 
                 patch_dropping=patch_dropping, drop_prob=drop_prob, seed=seed, fold_val=fold_val, 
-                fold_test=fold_test, fluid=fluid, number_of_channels=number_of_channels)
+                fold_test=fold_test, fluid=fluid, number_of_channels=number_of_channels, 
+                number_of_classes=number_of_classes)
 
         # Indicates the model that it is going to be trained
         model.train()
@@ -448,9 +450,9 @@ def train_model (
 
                 # Checks if the number of channels given as input matches the number of 
                 # images read with the dataloader
-                assert images[0].shape[0] == model.n_channels, \
+                assert images.shape[1] == model.n_channels, \
                     f'Network has been defined with {model.n_channels} input channels, ' \
-                    f'but loaded images have {images[0].shape[0]} channels. Please check if ' \
+                    f'but loaded images have {images.shape[1]} channels. Please check if ' \
                     'the images are loaded correctly.'
 
                 # Declares what type the images and the true_masks variables, including the device that is
@@ -541,7 +543,7 @@ def train_model (
         # Calculates the validation score for 
         # the model, in case tuning is being done
         if tuning:
-            val_loss = evaluate(model_name, model, val_loader, device, amp)
+            val_loss = evaluate(model_name, model, val_loader, device, amp, n_val)
         else:
             val_loss = 0
         

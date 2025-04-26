@@ -1243,8 +1243,11 @@ class TrainDatasetGAN(Dataset):
                 middle image and the following image, associated with 
                 the key 'stack'
         """
+        # Declares the path to the images
+        images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
+
         # Gets the path of the image by the given index
-        image_path = self.images_names[index]
+        image_path = images_folder + self.images_names[index]
 
         # Reads the middle image as a NumPy array
         img = imread(image_path)
@@ -1320,8 +1323,11 @@ class ValidationDatasetGAN(Dataset):
                 middle image and the following image, associated with 
                 the key 'stack'
         """
+        # Declares the path to the images
+        images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
+
         # Gets the path of the image by the given index
-        image_path = self.images_names[index]
+        image_path = images_folder + self.images_names[index]
 
         # Reads the middle image as a NumPy array
         img = imread(image_path)
@@ -1397,8 +1403,11 @@ class TestDatasetGAN(Dataset):
                 the key 'stack' and the path to the image, associated 
                 with the key 'image_name', for the given index 
         """
+        # Declares the path to the images
+        images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
+
         # Gets the path of the image by the given index
-        image_path = self.images_names[index]
+        image_path = images_folder + self.images_names[index]
 
         # Reads the middle image as a NumPy array
         img = imread(image_path)

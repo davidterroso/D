@@ -1,3 +1,4 @@
+from random import shuffle
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
@@ -14,7 +15,7 @@ from skimage.filters.rank import entropy
 from skimage.transform import resize
 from time import time
 from torch.utils.data import DataLoader
-from network_functions.dataset import TrainDataset, ValidationDataset, TrainDatasetLMDB, ValidationDatasetLMDB, drop_patches
+from network_functions.dataset import TrainDataset, TrainDatasetLMDB, TrainDatasetGAN, ValidationDataset, ValidationDatasetLMDB, ValidationDatasetGAN, drop_patches
 from paths import IMAGES_PATH
 from .read_oct import int32_to_uint8, load_oct_image, load_oct_mask
 
@@ -47,11 +48,11 @@ def seed_worker(worker_id):
     torch.manual_seed(0)
     torch.cuda.manual_seed(0)
 
-def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tuple, 
+def extract_patches_wrapper(model_name: str, patch_type: str, patch_shape: tuple, 
                              n_pos: int, n_neg: int, pos: int, neg: int, 
                              train_volumes: list, val_volumes: list, 
                              batch_size: int, patch_dropping: bool, drop_prob: float,
-                             num_patches: int, seed: int, fold_val: int, 
+                             num_patches: int, seed: int, fold_val: int, number_of_classes: int, 
                              fluid: int=None, fold_test: int=1, number_of_channels: int=1):
     """
     Args:
@@ -93,6 +94,8 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
             indicated, the default value is None and the seed is
             not fixed
         fold_val (int): fold used by the model in validation
+        number_of_classes (int): number of classes the 
+            model is supposed to output
         fluid (int): label of the fluid to segment
         fold_test (int): fold used by the model in testing. 
             The default value is 1 because that is the fold 
@@ -110,6 +113,8 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
             object that contains information about how to load 
             the images that will be used in validation
         n_train (int): number of images that will be used to train 
+            the model
+        n_val (int): number of images that will be used to validate 
             the model
     """
 
@@ -221,18 +226,23 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
             f"The {num_patches} overlapping {patch_type} patches must be extracted first"
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations
-    if num_patches <= 7:
-        train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)
-        val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)
+    if ((number_of_channels==1) and (number_of_classes==2)):
+        train_set =  TrainDatasetGAN(train_volumes=train_volumes)
+        val_set =  ValidationDatasetGAN(val_volumes=val_volumes)
     else:
-        train_img_path_to_lmdb = f".\\lmdb\\train_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
-        train_mask_path_to_lmdb = f".\\lmdb\\train_masks_{num_patches}_{fold_test}_{fold_val}.lmdb"
-        val_img_path_to_lmdb = f".\\lmdb\\val_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
-        val_mask_path_to_lmdb = f".\\lmdb\\val_masks_{num_patches}_{fold_test}_{fold_val}.lmdb"
-        train_set = TrainDatasetLMDB(model=model_name, num_patches=num_patches, 
-                                     img_lmdb_path=train_img_path_to_lmdb, mask_lmdb_path=train_mask_path_to_lmdb)
-        val_set = ValidationDatasetLMDB(model=model_name, num_patches=num_patches, 
-                                        img_lmdb_path=val_img_path_to_lmdb, mask_lmdb_path=val_mask_path_to_lmdb)
+        if num_patches <= 7:
+            train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)
+            val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)
+        else:
+            train_img_path_to_lmdb = f".\\lmdb\\train_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
+            train_mask_path_to_lmdb = f".\\lmdb\\train_masks_{num_patches}_{fold_test}_{fold_val}.lmdb"
+            val_img_path_to_lmdb = f".\\lmdb\\val_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
+            val_mask_path_to_lmdb = f".\\lmdb\\val_masks_{num_patches}_{fold_test}_{fold_val}.lmdb"
+            train_set = TrainDatasetLMDB(model=model_name, num_patches=num_patches, 
+                                        img_lmdb_path=train_img_path_to_lmdb, mask_lmdb_path=train_mask_path_to_lmdb)
+            val_set = ValidationDatasetLMDB(model=model_name, num_patches=num_patches, 
+                                            img_lmdb_path=val_img_path_to_lmdb, mask_lmdb_path=val_mask_path_to_lmdb)
+
 
     # Calculates the total number of images used in train
     n_train = len(train_set)
@@ -243,19 +253,19 @@ def extract_patches_wrapper(model_name: str, patch_type: str,  patch_shape: tupl
     # which will be used to train the model in batches
     begin = time()
     if seed is not None:
-        loader_args = dict(batch_size=batch_size, pin_memory=True)
+        loader_args = dict(batch_size=batch_size, pin_memory=True, num_workers=12, 
+                              persistent_workers=True, shuffle=True, drop_last=True)
     else:
-        loader_args = dict(batch_size=batch_size, pin_memory=True, worker_init_fn=seed_worker)
+        loader_args = dict(batch_size=batch_size, pin_memory=True, num_workers=12, 
+                              persistent_workers=True, worker_init_fn=seed_worker)
     print("Loading Training Data.")
-    train_loader = DataLoader(train_set, shuffle=True, drop_last=True, num_workers=12, 
-                              persistent_workers=True, **loader_args)
+    train_loader = DataLoader(train_set, **loader_args)
     print("Loading Validation Data.")
-    val_loader = DataLoader(val_set, shuffle=True, drop_last=True, num_workers=12, 
-                            persistent_workers=True,**loader_args)
+    val_loader = DataLoader(val_set, **loader_args)
     end = time()
     print(f"Data loading took {end - begin} seconds.")
 
-    return train_loader, val_loader, n_train
+    return train_loader, val_loader, n_train, n_val
 
 def create_roi_mask(slice: np.ndarray, mask: np.ndarray, threshold: float, 
                     save_location: str, save_location_to_view: str):

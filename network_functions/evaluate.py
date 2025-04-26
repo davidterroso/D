@@ -15,7 +15,7 @@ else:
 
 @torch.inference_mode()
 def evaluate(model_name: str, model: Module, dataloader: DataLoader, 
-             device: str, amp: bool):
+             device: str, amp: bool, n_val: int):
     """
     Function used to evaluate the model
 
@@ -29,6 +29,7 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
             going to be used
         amp (bool): flag that indicates if automatic 
             mixed precision is being used
+        n_val (int): number of validation images
 
     Return:
         (float) mean of the loss across the considered 
@@ -42,10 +43,9 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
     # Initiates the loss as zero
     total_loss = 0
 
-    # Allows for mixed precision calculations, attributes a device to be used in 
-    # these calculations
+    # Allows for mixed precision calculations, attributes a device to be used in these calculations
     with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=amp):       
-        with tqdm(dataloader, total=num_val_batches, desc='Validating Epoch', unit='batch', leave=True, position=0) as progress_bar:
+        with tqdm(dataloader, total=n_val, desc='Validating Epoch', unit='img', leave=True, position=0) as progress_bar:
             for batch in dataloader:
                     # Gets the images and the masks from the dataloader
                     images, true_masks = batch['scan'], batch['mask']
@@ -87,7 +87,7 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
                     total_loss += loss.item()
 
                     # Updates the progress bar
-                    progress_bar.update(1)
+                    progress_bar.update(images.shape[0])
 
     # Sets the model to train mode again
     model.train()
