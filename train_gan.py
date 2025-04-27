@@ -9,6 +9,7 @@ from network_functions.dataset import TrainDatasetGAN, ValidationDatasetGAN
 from network_functions.evaluate import evaluate_gan
 from networks.gan import Discriminator, Generator
 from networks.loss import discriminator_loss, generator_loss
+from networks.unet import UNet
 
 # Imports tqdm depending on whether 
 # it is being called from the 
@@ -34,6 +35,7 @@ def train_gan(
         patience: int=400,
         patience_after_n: int=0,
         split: str="generation_5_fold_split.csv",
+        weight_decay: float=None
 ):
     """
     Function that trains the GAN models.
@@ -73,6 +75,7 @@ def train_gan(
             value is 0
         split (str): name of the k-fold split file that will be 
             used in this run
+        weight_decay (float): optimizer's weight decay value
 
     Returns:
         None
@@ -80,16 +83,84 @@ def train_gan(
     # Declares what the logging style will be
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
+    # Checks if the given model name is available
+    assert model_name in ["GAN", "UNet"], "Possible model names: 'GAN' and 'UNet'"
+
+    # Declares the path to the CSV file on which the logging of 
+    # the training and epochs will be made
+    csv_epoch_filename = f"logs\{run_name}_training_log_epoch_{model_name.lower()}.csv"
+    csv_batch_filename = f"logs\{run_name}_training_log_batch_{model_name.lower()}.csv"
+    # Creates the folder in case it does not exist
+    makedirs("logs", exist_ok=True)
+
+    # Creates the logging files in case they do not exist
+    if (exists(csv_epoch_filename) and exists(csv_batch_filename)):
+        # Deletes the files with 
+        # the desired name
+        remove(csv_epoch_filename)
+        remove(csv_batch_filename)
+
     # Defines the device that will be used to train the network
     device = torch.device("cuda" if torch.cuda.is_available() and device == "GPU" else "cpu")
-    # Defines the Discriminator module
-    discriminator = Discriminator(number_of_classes)
-    # Allocates the Discriminator module to the GPU
-    discriminator.to(device=device)
-    # Defines the Generator module
-    generator = Generator(number_of_classes)
-    # Allocates the Generator module to the GPU
-    generator.to(device=device)
+    # Iniates the model
+    if model_name == "GAN":
+        # Defines the Discriminator module
+        discriminator = Discriminator(number_of_classes)
+        # Allocates the Discriminator module to the GPU
+        discriminator.to(device=device)
+        # Defines the Generator module
+        generator = Generator(number_of_classes)
+        # Allocates the Generator module to the GPU
+        generator.to(device=device)
+        # Declares the optimizer of the Generator
+        optimizer_G = torch.optim.Adam(generator.parameters(), 
+                                    lr=learning_rate, 
+                                    betas=(beta_1, beta_2), 
+                                    foreach=True)
+        
+        # Declares the optimizer of the Discriminator
+        optimizer_D = torch.optim.Adam(discriminator.parameters(), 
+                                    lr=learning_rate, 
+                                    betas=(beta_1, beta_2), 
+                                    foreach=True)
+
+        with open(csv_epoch_filename, mode="w", newline="") as file:
+            writer = csv.writer(file)
+            # Declares which information will be saved in the logging file
+            # associated with each epoch
+            writer.writerow(["Epoch", "Adversarial Loss", 
+                                "Generator Loss", "Real Loss", 
+                                "Fake Loss", "Discriminator Loss", 
+                                "Epoch Validation MS-SSIM"])
+            
+        with open(csv_batch_filename, mode="w", newline="") as file:
+            # Declares which information will be saved in the logging file
+            # associated with each batch
+            writer = csv.writer(file)
+            writer.writerow(["Epoch", "Batch", "Batch Adversarial Loss", 
+                                "Batch Generator Loss", "Batch Real Loss", 
+                                "Batch Fake Loss", "Batch Discriminator Loss"])
+    elif model_name == "UNet":
+        # Initiates the U-Net model in case that is the model selected
+        unet = UNet(in_channels=number_of_channels, num_classes=number_of_classes)
+        # Initiates the U-Net optimizer
+        optimizer_unet = torch.optim.Adam(params=unet.parameters(), 
+                                           lr=learning_rate, 
+                                           foreach=True, 
+                                           maximize=False, 
+                                           weight_decay=weight_decay)
+        
+        with open(csv_epoch_filename, mode="w", newline="") as file:
+            writer = csv.writer(file)
+            # Declares which information will be saved in the logging file
+            # associated with each epoch
+            writer.writerow(["Epoch", "Validation Loss"])
+            
+        with open(csv_batch_filename, mode="w", newline="") as file:
+            # Declares which information will be saved in the logging file
+            # associated with each batch
+            writer = csv.writer(file)
+            writer.writerow(["Epoch", "Batch", "Batch Loss"])
 
     # Logs the information of the input and output 
     # channels of the network
@@ -119,54 +190,12 @@ def train_gan(
         Device:          {device.type}
     """
     )
-    # Declares the optimizer of the Generator
-    optimizer_G = torch.optim.Adam(generator.parameters(), 
-                                   lr=learning_rate, 
-                                   betas=(beta_1, beta_2), 
-                                   foreach=True)
-    
-    # Declares the optimizer of the Discriminator
-    optimizer_D = torch.optim.Adam(discriminator.parameters(), 
-                                   lr=learning_rate, 
-                                   betas=(beta_1, beta_2), 
-                                   foreach=True)
-
-    # Declares the path to the CSV file on which the logging of 
-    # the training and epochs will be made
-    csv_epoch_filename = f"logs\{run_name}_training_log_epoch_gan.csv"
-    csv_batch_filename = f"logs\{run_name}_training_log_batch_gan.csv"
-    # Creates the folder in case it does not exist
-    makedirs("logs", exist_ok=True)
-
-    # Creates the logging files in case they do not exist
-    if (exists(csv_epoch_filename) and exists(csv_batch_filename)):
-        # Deletes the files with 
-        # the desired name
-        remove(csv_epoch_filename)
-        remove(csv_batch_filename)
-
-    with open(csv_epoch_filename, mode="w", newline="") as file:
-        writer = csv.writer(file)
-        # Declares which information will be saved in the logging file
-        # associated with each epoch
-        writer.writerow(["Epoch", "Adversarial Loss", 
-                            "Generator Loss", "Real Loss", 
-                            "Fake Loss", "Discriminator Loss", 
-                            "Epoch Validation MS-SSIM"])
-        
-    with open(csv_batch_filename, mode="w", newline="") as file:
-        # Declares which information will be saved in the logging file
-        # associated with each batch
-        writer = csv.writer(file)
-        writer.writerow(["Epoch", "Batch", "Batch Adversarial Loss", 
-                            "Batch Generator Loss", "Batch Real Loss", 
-                            "Batch Fake Loss", "Batch Discriminator Loss"])
             
     # Creates the training and validation set as a PyTorch 
     # Dataset, using the list of OCT volumes that will be 
     # used to train and validate the network
-    train_set = TrainDatasetGAN(train_volumes=train_volumes, model_name="GAN")
-    val_set = ValidationDatasetGAN(val_volumes=val_volumes, model_name="GAN")
+    train_set = TrainDatasetGAN(train_volumes=train_volumes, model_name=model_name)
+    val_set = ValidationDatasetGAN(val_volumes=val_volumes, model_name=model_name)
     # With the previously created datasets, creates a DataLoader that splits this information in multiple batches
     # The number of workers selected corresponds to the number of cores available in the CPU and the persistent workers means they are not closed/killed 
     # every time training or validation ceases
@@ -175,28 +204,31 @@ def train_gan(
     val_loader = torch.utils.data.DataLoader(val_set, shuffle=True, num_workers=12, persistent_workers=True, batch_size=batch_size, pin_memory=True)
 
     # Initiates the validation 
-    # SSIM as infinite 
-    best_val_ssim = float('inf')
+    # PSNR as infinite 
+    best_val_psnr = 0
 
     # Iterates through the total 
     # number of possible epochs
     for epoch in range(1, epochs + 1):
         # Sets the generator and 
         # discriminator to training mode
-        generator.train()
-        discriminator.train()
-
-        # Initializes each loss 
-        # component of this 
-        # epoch as zero
-        epoch_adv_loss = 0
-        epoch_g_loss = 0
-        epoch_real_loss = 0
-        epoch_fake_loss = 0
-        epoch_d_loss = 0
+        if model_name == "GAN":
+            generator.train()
+            discriminator.train()
+            # Initializes each loss 
+            # component of this 
+            # epoch as zero
+            epoch_adv_loss = 0
+            epoch_g_loss = 0
+            epoch_real_loss = 0
+            epoch_fake_loss = 0
+            epoch_d_loss = 0
+        elif model_name == "UNet":
+            # Sets the UNet to training mode
+            unet.train()
+            epoch_loss = 0
 
         print(f"Training Epoch {epoch}")
-
         # Starts a progress bar that indicates which epoch is trained and updates as the number of images used in training changes
         with tqdm(total=len(train_set), desc=f"Epoch {epoch}/{epochs}", unit="img", leave=True, position=0) as progress_bar:
             # Iterates through the number of batches that compose the dataloader
@@ -229,104 +261,141 @@ def train_gan(
                 mid_imgs = stack[:,1,:,:].to(device=device)
                 next_imgs = stack[:,2,:,:].to(device=device)
 
-                # Sets the gradient of the 
-                # generator optimizer for 
-                # this epoch to zero
-                optimizer_G.zero_grad()
-                # Calls the generator to generate the expected middle 
-                # image by receiving the previous and following images
-                gen_imgs = generator(prev_imgs.detach(), next_imgs.detach())
-                # Calculates the loss of the generator, which compares the generated images 
-                # with the real images
-                adv_loss, g_loss = generator_loss(device, discriminator, gen_imgs, mid_imgs, valid)
-                # Calculates the gradient of the 
-                # generator using the generator loss 
-                g_loss.backward()
-                # The optimizer performs the 
-                # backwards step on the generator
-                optimizer_G.step()
+                if model_name == "GAN":
+                    # Sets the gradient of the 
+                    # generator optimizer for 
+                    # this epoch to zero
+                    optimizer_G.zero_grad()
+                    # Calls the generator to generate the expected middle 
+                    # image by receiving the previous and following images
+                    gen_imgs = generator(prev_imgs.detach(), next_imgs.detach())
+                    # Calculates the loss of the generator, which compares the generated images 
+                    # with the real images
+                    adv_loss, g_loss = generator_loss(device, discriminator, gen_imgs, mid_imgs, valid)
+                    # Calculates the gradient of the 
+                    # generator using the generator loss 
+                    g_loss.backward()
+                    # The optimizer performs the 
+                    # backwards step on the generator
+                    optimizer_G.step()
 
-                # Sets the gradient of the 
-                # generator optimizer for 
-                # this epoch to zero
-                optimizer_D.zero_grad()
+                    # Sets the gradient of the 
+                    # generator optimizer for 
+                    # this epoch to zero
+                    optimizer_D.zero_grad()
 
-                # Gets the prediction of the discriminator 
-                # on whether the true image is true or fake                
-                gt_distingue = discriminator(mid_imgs)
-                # Gets the prediction of the discriminator 
-                # on whether the fake image is true or fake
-                # The generated image is detached so that 
-                # the gradient of the discriminator does not 
-                # affect the generator function
-                fake_distingue = discriminator(gen_imgs.detach())
-                # The discriminator loss is calculated for the true image and fake image predicted labels 
-                # and their respective true labels
-                real_loss, fake_loss, d_loss = discriminator_loss(device, gt_distingue, fake_distingue, valid, fake)
-                # The backward step is calculated 
-                # for the model according to the 
-                # discriminator loss
-                d_loss.backward()
+                    # Gets the prediction of the discriminator 
+                    # on whether the true image is true or fake                
+                    gt_distingue = discriminator(mid_imgs)
+                    # Gets the prediction of the discriminator 
+                    # on whether the fake image is true or fake
+                    # The generated image is detached so that 
+                    # the gradient of the discriminator does not 
+                    # affect the generator function
+                    fake_distingue = discriminator(gen_imgs.detach())
+                    # The discriminator loss is calculated for the true image and fake image predicted labels 
+                    # and their respective true labels
+                    real_loss, fake_loss, d_loss = discriminator_loss(device, gt_distingue, fake_distingue, valid, fake)
+                    # The backward step is calculated 
+                    # for the model according to the 
+                    # discriminator loss
+                    d_loss.backward()
 
-                # The optimizer performs the backwards step 
-                # on the discriminator
-                optimizer_D.step()
+                    # The optimizer performs the backwards step 
+                    # on the discriminator
+                    optimizer_D.step()
 
+                    # Updates the loss of the current epoch
+                    epoch_adv_loss += adv_loss.item()
+                    epoch_g_loss += g_loss.item()
+                    epoch_real_loss += real_loss.item()
+                    epoch_fake_loss += fake_loss.item()
+                    epoch_d_loss += d_loss.item()
+
+                    # Writes the loss values of the batch in the CSV file
+                    with open(csv_batch_filename, mode="a", newline="") as file:
+                        writer = csv.writer(file)
+                        writer.writerow([epoch, batch_num, adv_loss.item(), 
+                                            g_loss.item(), real_loss.item(), 
+                                            fake_loss.item(), d_loss.item()])
+
+                elif model_name == "UNet":
+                    # Sets the gradient of the 
+                    # generator optimizer for 
+                    # this epoch to zero
+                    unet.zero_grad()
+                    # Calls the UNet to generate the expected middle 
+                    # image by receiving the previous and following images
+                    gen_imgs = unet(prev_imgs.detach(), next_imgs.detach())
+                    # Calculates the loss of the generator, which compares the generated images 
+                    # with the real images
+                    mae_loss = torch.nn.L1Loss(gen_imgs, mid_imgs)
+                    # Calculates the gradient of the 
+                    # generator using the generator loss 
+                    mae_loss.backward()
+                    # The optimizer performs the 
+                    # backwards step on the generator
+                    optimizer_unet.step()
+                    # Updates the loss of the current epoch
+                    epoch_loss += mae_loss.item()
+                    # Writes the loss values of the batch in the CSV file
+                    with open(csv_batch_filename, mode="a", newline="") as file:
+                        writer = csv.writer(file)
+                        writer.writerow([epoch, batch_num, mae_loss.item()])
                 # Updates the progress bar according 
                 # to the number of images present in 
                 # the batch  
                 progress_bar.update(stack.shape[0])
 
-                # Updates the loss of the current epoch
-                epoch_adv_loss += adv_loss.item()
-                epoch_g_loss += g_loss.item()
-                epoch_real_loss += real_loss.item()
-                epoch_fake_loss += fake_loss.item()
-                epoch_d_loss += d_loss.item()
-
-                # Writes the loss values of the batch in the CSV file
-                with open(csv_batch_filename, mode="a", newline="") as file:
-                    writer = csv.writer(file)
-                    writer.writerow([epoch, batch_num, adv_loss.item(), 
-                                     g_loss.item(), real_loss.item(), 
-                                     fake_loss.item(), d_loss.item()])
                 
         print(f"Validating Epoch {epoch}")
         # Calls the function that evaluates the output of the generator and returns the 
-        # respective result of 1 - the images' multi-scale structural similarity index (MS-SSIM)
-        val_ssim = evaluate_gan(generator=generator, dataloader=val_loader, device=device)
+        # respective result of the peak signal-to-noise ratio (PSNR)
+        if model_name == "GAN":
+            val_psnr = evaluate_gan(generator=generator, dataloader=val_loader, model_name=model_name, device=device)
+        elif model_name == "UNet":
+            val_psnr = evaluate_gan(generator=unet, dataloader=val_loader, model_name=model_name, device=device)
 
         # Logs the results of the validation
-        logging.info(f"Validation Mean Loss: {val_ssim}")
+        logging.info(f"Validation Mean PSNR: {val_psnr}")
 
         # Writes the mean of the results of the different batches in 
         # the epoch to the CSV file 
-        with open(csv_epoch_filename, mode="a", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerow([epoch, adv_loss.item() / len(val_loader), 
-                            g_loss.item() / len(val_loader), 
-                            real_loss.item() / len(val_loader), 
-                            fake_loss.item() / len(val_loader), 
-                            d_loss.item() / len(val_loader),
-                            val_ssim / len(val_loader)])
+        if model_name == "GAN":
+            with open(csv_epoch_filename, mode="a", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerow([epoch, epoch_adv_loss.item() / len(val_loader), 
+                                epoch_g_loss.item() / len(val_loader), 
+                                epoch_real_loss.item() / len(val_loader), 
+                                epoch_fake_loss.item() / len(val_loader), 
+                                epoch_d_loss.item() / len(val_loader),
+                                val_psnr])
+        elif model_name == "UNet":
+            with open(csv_epoch_filename, mode="a", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerow([epoch, val_psnr.item()])
 
         # In case the validation SSIM is better 
         # than the previous, the model is saved 
         # as the best model
-        if val_ssim < best_val_ssim:
+        if val_psnr > best_val_psnr:
             # Creates the folder models in case 
             # it does not exist yet
             makedirs("models", exist_ok=True)
             # Updates the best value of 1 - MS-SSIM
-            best_val_ssim = val_ssim
+            best_val_psnr = val_psnr
             patience_counter = 0
             # Both the generator and the discriminator are saved with a name 
             # that depends on the argument input, the name of the model, and 
             # fluid desired to segment in case it exists
-            torch.save(generator.state_dict(), 
-                        f"models/{run_name}_generator_best_model.pth")
-            torch.save(discriminator.state_dict(),
-                        f"models/{run_name}_discriminator_best_model.pth")
+            if model_name == "GAN":
+                torch.save(generator.state_dict(), 
+                            f"models/{run_name}_generator_best_model.pth")
+                torch.save(discriminator.state_dict(),
+                            f"models/{run_name}_discriminator_best_model.pth")
+            elif model_name == "UNet":
+                torch.save(unet.state_dict(), 
+                            f"models/{run_name}_unet_best_model.pth")
             print("Models saved.")
         # In case the model has not 
         # obtained a better performance, 

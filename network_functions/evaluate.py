@@ -3,7 +3,7 @@ from IPython import get_ipython
 from torch.nn import Module
 from torch.utils.data import DataLoader
 from torch.nn.functional import one_hot, softmax
-from networks.loss import balanced_bce_loss, multiclass_balanced_cross_entropy_loss, MS_SSIM
+from networks.loss import balanced_bce_loss, multiclass_balanced_cross_entropy_loss, psnr
 
 # Imports tqdm depending on whether 
 # it is being called from the 
@@ -145,12 +145,11 @@ def evaluate_gan(generator: Module, dataloader: DataLoader, device: str):
 
                 # Calculates the MS-SSIM for the original 
                 # image and the generated image
-                ms_ssim = MS_SSIM().to(device)
-                val_ssim = ms_ssim(mid_imgs, gen_imgs)
+                val_psnr = psnr(mid_imgs, gen_imgs)
 
                 # Accumulates the loss for this 
                 # validation 
-                total_loss += val_ssim.item()
+                total_loss += val_psnr.item()
 
                 # Updates the progress bar
                 progress_bar.update(1)
