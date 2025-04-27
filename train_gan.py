@@ -21,6 +21,7 @@ else:
 def train_gan(
         run_name: str,
         fold_val: int,
+        model_name: str="GAN",
         batch_size: int=8,
         beta_1: float=0.5,
         beta_2: float=0.999,
@@ -42,6 +43,9 @@ def train_gan(
             will be saved
         fold_val (int): number of the fold that will be used 
             in the network validation 
+        model_name (str): name of the model that will be trained 
+            to generate images. Can only be "GAN" or "UNet". The 
+            default is "GAN"
         batch_size (int): size of the batch used in 
             training
         beta_1 (float): value of beta_1 used in both optimizers
@@ -205,9 +209,9 @@ def train_gan(
 
                 # Checks if the number of channels in an image matches the value indicated 
                 # in the training arguments
-                assert stack[0].shape[0] == number_of_channels, \
+                assert stack.shape[1] == number_of_channels, \
                 f'Network has been defined with {number_of_channels} input channels, ' \
-                f'but loaded images have {stack[0].shape[0]} channels. Please check if ' \
+                f'but loaded images have {stack.shape[1]} channels. Please check if ' \
                 'the images are loaded correctly.'
 
                 # Sets the label associated with true images to 0.95. The reason 

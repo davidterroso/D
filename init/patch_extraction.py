@@ -226,23 +226,18 @@ def extract_patches_wrapper(model_name: str, patch_type: str, patch_shape: tuple
             f"The {num_patches} overlapping {patch_type} patches must be extracted first"
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations
-    if ((number_of_channels==1) and (number_of_classes==2)):
-        train_set =  TrainDatasetGAN(train_volumes=train_volumes, model_name=model_name)
-        val_set =  ValidationDatasetGAN(val_volumes=val_volumes, model_name=model_name)
+    if num_patches <= 7:
+        train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)
+        val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)
     else:
-        if num_patches <= 7:
-            train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)
-            val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)
-        else:
-            train_img_path_to_lmdb = f".\\lmdb\\train_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
-            train_mask_path_to_lmdb = f".\\lmdb\\train_masks_{num_patches}_{fold_test}_{fold_val}.lmdb"
-            val_img_path_to_lmdb = f".\\lmdb\\val_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
-            val_mask_path_to_lmdb = f".\\lmdb\\val_masks_{num_patches}_{fold_test}_{fold_val}.lmdb"
-            train_set = TrainDatasetLMDB(model=model_name, num_patches=num_patches, 
-                                        img_lmdb_path=train_img_path_to_lmdb, mask_lmdb_path=train_mask_path_to_lmdb)
-            val_set = ValidationDatasetLMDB(model=model_name, num_patches=num_patches, 
-                                            img_lmdb_path=val_img_path_to_lmdb, mask_lmdb_path=val_mask_path_to_lmdb)
-
+        train_img_path_to_lmdb = f".\\lmdb\\train_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
+        train_mask_path_to_lmdb = f".\\lmdb\\train_masks_{num_patches}_{fold_test}_{fold_val}.lmdb"
+        val_img_path_to_lmdb = f".\\lmdb\\val_patches_{num_patches}_{fold_test}_{fold_val}.lmdb"
+        val_mask_path_to_lmdb = f".\\lmdb\\val_masks_{num_patches}_{fold_test}_{fold_val}.lmdb"
+        train_set = TrainDatasetLMDB(model=model_name, num_patches=num_patches, 
+                                    img_lmdb_path=train_img_path_to_lmdb, mask_lmdb_path=train_mask_path_to_lmdb)
+        val_set = ValidationDatasetLMDB(model=model_name, num_patches=num_patches, 
+                                        img_lmdb_path=val_img_path_to_lmdb, mask_lmdb_path=val_mask_path_to_lmdb)
 
     # Calculates the total number of images used in train
     n_train = len(train_set)
