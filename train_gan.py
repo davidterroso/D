@@ -173,6 +173,7 @@ def train_gan(
     # Reads the CSV file that indicates which images will be used to 
     # train the network and which images will be used to validate it
     df = read_csv(f"splits/{split}")
+    train_volumes = []
     val_volumes = []
     for col in df.columns:
         if (col != str(fold_test)) and (col != str(fold_val)):
