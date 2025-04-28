@@ -77,11 +77,13 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
                                             n_classes=model.n_classes, 
                                             eps=1e-7)
                     else:
-                        loss = balanced_bce_loss(y_true=masks_true_one_hot,
-                                                 y_pred=masks_pred_prob, 
-                                                 batch_size=images.shape[0], 
-                                                 n_classes=model.n_classes, 
-                                                 eps=1e-7)
+                        # loss = balanced_bce_loss(y_true=masks_true_one_hot,
+                        #                          y_pred=masks_pred_prob, 
+                        #                          batch_size=images.shape[0], 
+                        #                          n_classes=model.n_classes, 
+                        #                          eps=1e-7)
+                        criterion = torch.nn.BCELoss()
+                        loss = criterion(masks_pred_prob, masks_true_one_hot)
 
                     # Accumulate loss
                     total_loss += loss.item()

@@ -330,7 +330,8 @@ def train_gan(
                     gen_imgs = unet(prev_imgs.detach(), next_imgs.detach())
                     # Calculates the loss of the generator, which compares the generated images 
                     # with the real images
-                    mae_loss = torch.nn.L1Loss(gen_imgs, mid_imgs)
+                    criterion = torch.nn.L1Loss()
+                    mae_loss = criterion(gen_imgs, mid_imgs)
                     # Calculates the gradient of the 
                     # generator using the generator loss 
                     mae_loss.backward()
