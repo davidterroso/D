@@ -1,3 +1,4 @@
+from re import S
 import numpy as np
 import pandas as pd
 from itertools import permutations, product
@@ -1184,3 +1185,225 @@ def generation_5_fold_split():
 
     # Saves the data to a CSV
     split_df.to_csv("..\\splits\\generation_5_fold_split.csv", index=False)
+
+def generation_4_fold_split():
+    """
+    This function is used to generate an even
+    four fold split for the image generation 
+    network. In this function, the arrays with 
+    the distributed quantity of volumes in each 
+    fold are already given, handling the special 
+    cases separately. An array that contains the
+    number of slices per volume is also given. 
+    Then, all the possible combinations of this 
+    distributions are calculated and the one that 
+    provides a smaller standard deviation 
+    regarding the total number of slices per fold
+    is selected. The special cases may not be in 
+    the same fold together or in the same fold as 
+    the number with highest number of volumes in 
+    their respective device. Lastly, it is saved
+    in a CSV file.
+    The difference between this function and the
+    generation_5_fold split is that only four 
+    folds are considered, as the fifth fold is 
+    considered to be the fold used in testing for 
+    the segmentation task
+
+    Args:
+        None
+    
+    Returns:
+        None
+    """
+    # Initiates the array with the ideal 
+    # partition of volumes of each device 
+    # per fold
+    cirrus_split = [9, 9, 8, 8]
+    spectralis_split = [9, 8, 8, 8]
+    t1000_split = [3, 2, 2, 2]
+    t2000_split = [5, 5, 5, 4]
+    # Two special cases with 64 slices each
+    t2000_special_split_1 = [1, 0, 0, 0]
+
+    # Initiates the with the number of sliced 
+    # per device
+    slices_num = [128, 49, 128, 128, 64]
+
+    # Calculates all the possible permutations for each device
+    cirrus_perms = set(permutations(cirrus_split))
+    spectralis_perms = set(permutations(spectralis_split))
+    t1000_perms = set(permutations(t1000_split))
+    t2000_perms = set(permutations(t2000_split))
+    t2000_special_split_1_perms = set(permutations(t2000_special_split_1))
+
+    # Saves the row where 
+    # this data is in the 
+    # matrix
+    T2000_INDEX = 3
+    SPECIAL_1_INDEX = 4
+
+    # Initiates the optimal 
+    # minimum standard 
+    # deviation and best 
+    # matrix of data
+    min_std = float('inf')
+    best_matrix = None
+
+    # Iterates through all the possible combinations
+    for combo in product(
+        cirrus_perms,
+        spectralis_perms,
+        t1000_perms,
+        t2000_perms,
+        t2000_special_split_1_perms
+    ):
+        # Sets the combination as 
+        # a NumPy matrix of shape 
+        # (5, 4)
+        matrix = np.array(combo)
+
+        # Ensures that no column has 5 T-2000 
+        # volumes and one the each special cases
+        invalid = False
+        for col in range(4):
+            if (
+                (matrix[T2000_INDEX, col] == 5) and
+                (matrix[SPECIAL_1_INDEX, col] == 1)
+            ):
+                invalid = True
+                break
+        # In case the condition is broken, 
+        # the combination is ignored
+        if invalid:
+            continue
+
+        # Transposes the matrix for row-wise 
+        # slice multiplication
+        transposed = matrix.T
+        weighted = transposed * slices_num
+        # Sums all the values along the columns
+        col_sums = weighted.sum(axis=1)
+        # Calculates the standard deviation of 
+        # the matrix
+        std_val = stdev(col_sums)
+
+        # If this value is better than the 
+        # best case, then it is saved
+        if std_val < min_std:
+            min_std = std_val
+            best_matrix = matrix.copy()
+
+    # Loads the data with the train volumes info
+    train_volumes = pd.read_csv("..\\splits\\volumes_info.csv")
+    # Sets a column indicating it is from 
+    # the train set
+    train_volumes["origin_set"] = "train"
+
+    # Loads the data with the test volumes info
+    test_volumes = pd.read_csv("..\\splits\\volumes_info_test.csv")
+    # Sets a column indicating it is from 
+    # the test set
+    test_volumes["origin_set"] = "test"
+
+    # Combines both sets into a single DataFrame
+    full_data = pd.concat([train_volumes, test_volumes], ignore_index=True)
+
+    # Create a unified identifier column with shape "1_train"
+    full_data["VolumeNumber"] = full_data["VolumeNumber"].astype(str) + "_" + full_data["origin_set"]
+
+    # Createsa dictionary that contains 
+    # a list of volumes for each fold
+    folds = {i: [] for i in range(4)}
+    # Initiates a set that 
+    # contains all the used 
+    # volumes
+    used_indices = set()
+
+    # Creates a matrix of 
+    # devices and assign 
+    # the value False to 
+    # indicate that they 
+    # are not special cases
+    matrix_devices = [
+        ('Cirrus', False),
+        ('Spectralis', False),
+        ('T-1000', False),
+        ('T-2000', False)
+    ]
+
+    # Iterates through all the devices available
+    for device_idx, (device_name, _) in enumerate(matrix_devices):
+        # Gets the row that explains the device partition
+        matrix_row = best_matrix[device_idx]
+        # Gets a sub-DataFrame with the data of this device
+        device_volumes = full_data[full_data['Device'] == device_name]
+        # Shuffles the list to ensure the volumes are 
+        # picked randomly
+        device_volumes = device_volumes.sample(frac=1)
+
+        # Iterates through all the five folds
+        for fold_idx, num_samples in enumerate(matrix_row):
+            # Counts the total number 
+            # of samples
+            count = int(num_samples)
+            # Appends the 
+            # selected volumes 
+            # to a list
+            selected = []
+
+            # Iterates through all the volumes in 
+            # of the said device
+            for _, row in device_volumes.iterrows():
+                # Gets the ID of 
+                # the device
+                row_id = row.name
+                # Checks if it has not been 
+                # used yet
+                if row_id not in used_indices:
+                    # In case it is unused, 
+                    # appends it to the list
+                    # of the volumes of this 
+                    # split and to the list of
+                    # seen volumes
+                    selected.append(row_id)
+                    used_indices.add(row_id)
+                    # Whenever all the volumes 
+                    # have been seen, it breaks
+                    if len(selected) == count:
+                        break
+
+            # Gets the volumes selected to a list
+            fold_ids = full_data.loc[selected, 'VolumeNumber'].tolist()
+            # Assigns the list to the dictionary 
+            # with the volumes identifiers
+            folds[fold_idx].extend(fold_ids)
+
+    # Handles the two special cases manually
+    # Selects the data and shuffles them
+    special_volumes = full_data[
+        (full_data['Device'] == 'T-2000') & (full_data['SlicesNumber'] == 64)
+    ].sample(frac=1)
+
+    # Gets the folds to which it is expected 
+    # to append
+    special_1_fold = np.argmax(best_matrix[4])
+
+    # Assigns each one to the target folder
+    folds[special_1_fold].append(special_volumes.iloc[0]['VolumeNumber'])
+
+    # Gets the information from the first fold of the train split
+    fold_1 = pd.read_csv("..\\splits\\competitive_fold_selection.csv")["1"]
+    fold_1 = [str(int(fold_1[k])) + "_train" for k in range(len(fold_1))] + [pd.NA] * (len(folds.get(0)) - len(fold_1))
+
+    # Creates the output DataFrame with indexes from 0 to 4 as the names
+    split_df = pd.DataFrame({"0": folds.get(0)})
+    split_df["1"] = fold_1
+    split_df["2"] = folds.get(1)
+    split_df["3"] = folds.get(2)
+    split_df["4"] = folds.get(3)
+
+    # Saves the data to a CSV
+    split_df.to_csv("..\\splits\\generation_4_fold_split.csv", index=False)
+
+generation_4_fold_split()
