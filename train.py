@@ -41,7 +41,7 @@ label_to_fluids = {
     3: "PED"
 }
 
-def get_class_weights(fluid: str):
+def get_class_weights(fluid: str=None):
     """
     Function used to calculate the weights of a determined 
     class using the total number of voxels across a dataset
@@ -73,8 +73,8 @@ def get_class_weights(fluid: str):
     background_weights = (num_background_voxels + num_fluid_voxels) / (2 * num_background_voxels)
     fluid_weights = (num_background_voxels + num_fluid_voxels) / (2 * num_fluid_voxels)
 
-    # Converts the weights to a PyTorch tensor of shape [2]
-    binary_weights = torch.tensor([background_weights], [fluid_weights])
+    # Converts the weights to a PyTorch tensor of shape [2,1,1]
+    binary_weights = torch.tensor([[[background_weights]], [[fluid_weights]]])
 
     return binary_weights
 
@@ -206,6 +206,11 @@ def train_model (
         np.random.seed(seed)
         random.seed(seed)
 
+    # Checks whether the option selected is possible
+    device = torch.device("cuda" if torch.cuda.is_available() and device == "GPU" else "cpu")
+    # Saves the variable device as torch.device 
+    print(f"Training on {device}.")
+
     # Restrictions for the triple U-Net framework
     # Has to be done before model initiation in case the number of 
     # classes is selected incorrectly
@@ -222,7 +227,7 @@ def train_model (
                 print(key)
             return 0
         # Gets the weights of the background and the selected fluid
-        class_weights = get_class_weights(fluid)
+        class_weights = get_class_weights(fluid).to(device=device)
         # In case none of the other 
         # restrictions has been raised, 
         # the fluid variable will 
@@ -255,10 +260,6 @@ def train_model (
             print(key)
         return 0
 
-    # Checks whether the option selected is possible
-    device = torch.device("cuda" if torch.cuda.is_available() and device == "GPU" else "cpu")
-    # Saves the variable device as torch.device 
-    print(f"Training on {device}.")
 
     # Gets the model selected and indicates in which device it is going 
     # to be trained on and that the memory format is channels_last: 
@@ -506,6 +507,8 @@ def train_model (
                 with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=amp):
                     # Predicts the masks of the received images
                     masks_pred = model(images)
+                    # Performs one hot encoding on the true masks, in channels last format
+                    masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float().squeeze(1)
 
                     if model_name != "UNet3": 
                         # Performs softmax on the predicted masks
@@ -515,8 +518,6 @@ def train_model (
                         masks_pred_prob_bchw = softmax(masks_pred, dim=1).float()
                         # Permute changes the images from channels first to channels last
                         masks_pred_prob = masks_pred_prob_bchw.permute(0, 2, 3, 1)
-                        # Performs one hot encoding on the true masks, in channels last format
-                        masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float().squeeze(1)
                         # Calculates the balanced loss for the background mask
                         loss = multiclass_balanced_cross_entropy_loss(
                                             model_name=model_name,
@@ -531,8 +532,10 @@ def train_model (
                         #                          batch_size=images.shape[0], 
                         #                          n_classes=model.n_classes, 
                         #                          eps=1e-7)
+                        # Permute changes the images from channels first to channels last
+                        masks_true_one_hot_cf = masks_true_one_hot.permute(0, 3, 1, 2)
                         criterion = torch.nn.BCEWithLogitsLoss(pos_weight=class_weights)
-                        loss = criterion(masks_pred, masks_true_one_hot)
+                        loss = criterion(masks_pred, masks_true_one_hot_cf)
 
                 # Saves the value that are zero as 
                 # None so that it saves memory
@@ -585,7 +588,7 @@ def train_model (
         # Calculates the validation score for 
         # the model, in case tuning is being done
         if tuning:
-            val_loss = evaluate(model_name, model, val_loader, device, amp, n_val)
+            val_loss = evaluate(model_name, model, val_loader, device, amp, n_val, class_weights)
         else:
             val_loss = 0
         

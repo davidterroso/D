@@ -15,7 +15,7 @@ else:
 
 @torch.inference_mode()
 def evaluate(model_name: str, model: Module, dataloader: DataLoader, 
-             device: str, amp: bool, n_val: int):
+             device: str, amp: bool, n_val: int, class_weights: torch.Tensor=None):
     """
     Function used to evaluate the model
 
@@ -30,6 +30,8 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
         amp (bool): flag that indicates if automatic 
             mixed precision is being used
         n_val (int): number of validation images
+        class_weights (PyTorch tensor): weights of each class 
+            used in the BCE loss
 
     Return:
         (float) mean of the loss across the considered 
@@ -82,8 +84,10 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
                         #                          batch_size=images.shape[0], 
                         #                          n_classes=model.n_classes, 
                         #                          eps=1e-7)
-                        criterion = torch.nn.BCELoss()
-                        loss = criterion(masks_pred_prob, masks_true_one_hot)
+                        # Permute changes the images from channels first to channels last
+                        masks_true_one_hot_cf = masks_true_one_hot.permute(0, 3, 1, 2)
+                        criterion = torch.nn.BCEWithLogitsLoss(pos_weight=class_weights)
+                        loss = criterion(masks_pred, masks_true_one_hot_cf)
 
                     # Accumulate loss
                     total_loss += loss.item()
