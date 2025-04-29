@@ -849,19 +849,18 @@ def psnr(img1: torch.Tensor, img2: torch.Tensor):
     (PSNR) metric from two tensors of images
 
     Args:
-    img1 (PyTorch tensor): one of the 
-    images that will be compared, 
-    with range 0-255
-    img2 (PyTorch tensor): the other 
-    image that will be compared, 
-    with range 0-255
+        img1 (PyTorch tensor): one of the 
+            images that will be compared, 
+            with range 0-255
+        img2 (PyTorch tensor): the other 
+            image that will be compared, 
+            with range 0-255
 
     Returns:
-    psnr (PyTorch tensor | float): PSNR for
-    the received images. In case the 
-    images are equal, returns an 
-    infinite float
-
+        psnr (PyTorch tensor | float): PSNR 
+        for the received images. In case the 
+        images are equal, returns an 
+        infinite float
     """
     # Calculates the difference 
     # between the images

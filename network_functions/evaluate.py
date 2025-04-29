@@ -99,13 +99,15 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
     return total_loss / max(num_val_batches, 1)
 
 @torch.inference_mode()
-def evaluate_gan(generator: Module, dataloader: DataLoader, device: str):
+def evaluate_gan(model_name: str, generator: Module, dataloader: DataLoader, device: str):
     """
     Function used to evaluate the GAN model
 
     Args:
-        generator (PyTorch Module object): generator that is being 
-            trained
+        model_name (str): name of the model that is being 
+            validated
+        generator (PyTorch Module object): generator that 
+            is being trained
         dataloader (PyTorch DataLoader object): DataLoader 
             that contains the evaluation data
         device (str): indicates which PyTorch device is
@@ -143,11 +145,15 @@ def evaluate_gan(generator: Module, dataloader: DataLoader, device: str):
 
                 # Generates the image using the generator and the 
                 # previous and following images
-                gen_imgs = generator(prev_imgs.detach(), next_imgs.detach())
+                if model_name == "GAN":
+                    gen_imgs = generator(prev_imgs.detach(), next_imgs.detach())
+                elif model_name =="UNet":
+                    unet_input = torch.stack([prev_imgs, next_imgs], dim=1).detach().float() / 255.0
+                    gen_imgs = generator(unet_input.to(device=device))
 
                 # Calculates the MS-SSIM for the original 
                 # image and the generated image
-                val_psnr = psnr(mid_imgs, gen_imgs)
+                val_psnr = psnr(gen_imgs, mid_imgs.unsqueeze(1))
 
                 # Accumulates the loss for this 
                 # validation 

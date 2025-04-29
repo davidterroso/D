@@ -30,7 +30,7 @@ def train_gan(
         epochs=400,
         fold_test: int=1,
         learning_rate: float=2e-5,
-        number_of_channels: int=3,
+        number_of_channels: int=2,
         number_of_classes: int=1,
         patience: int=400,
         patience_after_n: int=0,
@@ -143,6 +143,7 @@ def train_gan(
     elif model_name == "UNet":
         # Initiates the U-Net model in case that is the model selected
         unet = UNet(in_channels=number_of_channels, num_classes=number_of_classes)
+        unet = unet.to(device=device)
         # Initiates the U-Net optimizer
         optimizer_unet = torch.optim.Adam(params=unet.parameters(), 
                                            lr=learning_rate, 
@@ -191,7 +192,9 @@ def train_gan(
         Device:          {device.type}
     """
     )
-            
+
+    train_volumes = ["1_train"]
+
     # Creates the training and validation set as a PyTorch 
     # Dataset, using the list of OCT volumes that will be 
     # used to train and validate the network
@@ -240,21 +243,6 @@ def train_gan(
                 # B corresponds to the batch size whose default value is 32
                 stack = batch["stack"]
 
-                # Checks if the number of channels in an image matches the value indicated 
-                # in the training arguments
-                assert stack.shape[1] == number_of_channels, \
-                f'Network has been defined with {number_of_channels} input channels, ' \
-                f'but loaded images have {stack.shape[1]} channels. Please check if ' \
-                'the images are loaded correctly.'
-
-                # Sets the label associated with true images to 0.95. The reason 
-                # this value is set to 0.95 and not 1 is called label smoothing and 
-                # prevents the model of becoming too overconfident, improving training 
-                # stability. The same is done for the label associated with fake images, 
-                # in which the label is set to 0.1 instead of the expected value 0
-                valid = torch.Tensor(stack.shape[0], 1, 1, 1).fill_(0.95).to(device)
-                fake = torch.Tensor(stack.shape[0], 1, 1, 1).fill_(0.1).to(device)
-
                 # Separates the stack in the previous image, 
                 # the middle image (the one we aim to predict), 
                 # and following image, allocating them to the GPU 
@@ -263,6 +251,13 @@ def train_gan(
                 next_imgs = stack[:,2,:,:].to(device=device)
 
                 if model_name == "GAN":
+                    # Sets the label associated with true images to 0.95. The reason 
+                    # this value is set to 0.95 and not 1 is called label smoothing and 
+                    # prevents the model of becoming too overconfident, improving training 
+                    # stability. The same is done for the label associated with fake images, 
+                    # in which the label is set to 0.1 instead of the expected value 0
+                    valid = torch.Tensor(stack.shape[0], 1, 1, 1).fill_(0.95).to(device)
+                    fake = torch.Tensor(stack.shape[0], 1, 1, 1).fill_(0.1).to(device)
                     # Sets the gradient of the 
                     # generator optimizer for 
                     # this epoch to zero
@@ -327,11 +322,20 @@ def train_gan(
                     unet.zero_grad()
                     # Calls the UNet to generate the expected middle 
                     # image by receiving the previous and following images
-                    gen_imgs = unet(prev_imgs.detach(), next_imgs.detach())
+                    unet_input = torch.stack([prev_imgs, next_imgs], dim=1).detach().float() / 255.0
+
+                    # Checks if the number of channels in an image matches the value indicated 
+                    # in the training arguments
+                    assert unet_input.shape[1] == number_of_channels, \
+                    f'Network has been defined with {number_of_channels} input channels, ' \
+                    f'but loaded images have {unet_input.shape[1]} channels. Please check if ' \
+                    'the images are loaded correctly.'
+
+                    gen_imgs = unet(unet_input.to(device=device))
                     # Calculates the loss of the generator, which compares the generated images 
                     # with the real images
                     criterion = torch.nn.L1Loss()
-                    mae_loss = criterion(gen_imgs, mid_imgs)
+                    mae_loss = criterion(gen_imgs, mid_imgs.unsqueeze(1))
                     # Calculates the gradient of the 
                     # generator using the generator loss 
                     mae_loss.backward()
@@ -354,9 +358,9 @@ def train_gan(
         # Calls the function that evaluates the output of the generator and returns the 
         # respective result of the peak signal-to-noise ratio (PSNR)
         if model_name == "GAN":
-            val_psnr = evaluate_gan(generator=generator, dataloader=val_loader, model_name=model_name, device=device)
+            val_psnr = evaluate_gan(model_name=model_name, generator=generator, dataloader=val_loader, device=device)
         elif model_name == "UNet":
-            val_psnr = evaluate_gan(generator=unet, dataloader=val_loader, model_name=model_name, device=device)
+            val_psnr = evaluate_gan(model_name=model_name, generator=unet, dataloader=val_loader, device=device)
 
         # Logs the results of the validation
         logging.info(f"Validation Mean PSNR: {val_psnr}")
@@ -375,7 +379,7 @@ def train_gan(
         elif model_name == "UNet":
             with open(csv_epoch_filename, mode="a", newline="") as file:
                 writer = csv.writer(file)
-                writer.writerow([epoch, val_psnr.item()])
+                writer.writerow([epoch, val_psnr])
 
         # In case the validation SSIM is better 
         # than the previous, the model is saved 

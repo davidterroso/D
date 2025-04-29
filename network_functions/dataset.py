@@ -232,7 +232,7 @@ def generation_images_from_volumes(volumes_list: list):
     # training, returning that list
     images_list = []
     for patch_name in listdir(images_folder):
-        volume_name = patch_name.split("_")[1][-3:]
+        volume_name = patch_name.split("_")[1]
         volume_set = volume_name[:-3].lower()
         volume_number = int(volume_name[-3:])
         volume = f"{volume_number}_{volume_set}"
@@ -249,10 +249,10 @@ def generation_images_from_volumes(volumes_list: list):
     filtered_paths = []
     for volume_id, paths in volume_dict.items():
         # Sort paths to ensure correct order
-        paths.sort(key=lambda x: int(x.split("_")[-1]))
+        paths.sort(key=lambda x: int(x.split("_")[-1][:3]))
         # Exclude the first and last slices
         filtered_paths.extend(paths[1:-1])
-    return images_list
+    return filtered_paths
 
 def images_from_volumes(volumes_list: list):
     """
@@ -1256,17 +1256,17 @@ class TrainDatasetGAN(Dataset):
         image_path = images_folder + self.images_names[index]
 
         # Reads the middle image as a NumPy array
-        img = imread(image_path)
+        img = torch.from_numpy(imread(image_path))
         # Gets the number of the slice
         img_number = int(image_path.split(".")[0][-3:])
         # Sets the name of the previous and following images
-        prev_img_path = image_path.split(".")[0][-3:] + str(img_number - 1).zfill(3) + ".tiff"
-        next_img_path = image_path.split(".")[0][-3:] + str(img_number + 1).zfill(3) + ".tiff"
+        prev_img_path = image_path.split(".")[0][:-3] + str(img_number - 1).zfill(3) + ".tiff"
+        next_img_path = image_path.split(".")[0][:-3] + str(img_number + 1).zfill(3) + ".tiff"
 
         # Loads the previous and the 
         # following images 
-        prev_img = imread(prev_img_path)
-        next_img = imread(next_img_path)
+        prev_img = torch.from_numpy(imread(prev_img_path))
+        next_img = torch.from_numpy(imread(next_img_path))
 
         # Organizes the data in a dictionary that contains the images 
         # stacked along the first axis under the key "stack"
@@ -1342,7 +1342,7 @@ class ValidationDatasetGAN(Dataset):
         image_path = images_folder + self.images_names[index]
 
         # Reads the middle image as a NumPy array
-        img = imread(image_path)
+        img = torch.from_numpy(imread(image_path))
         # Gets the number of the slice
         img_number = int(image_path.split(".")[0][-3:])
         # Sets the name of the previous and following images
@@ -1351,12 +1351,12 @@ class ValidationDatasetGAN(Dataset):
 
         # Loads the previous and the 
         # following images 
-        prev_img = imread(prev_img_path)
-        next_img = imread(next_img_path)
+        prev_img = torch.from_numpy(imread(prev_img_path))
+        next_img = torch.from_numpy(imread(next_img_path))
 
         # Organizes the data in a dictionary that contains the images 
         # stacked along the first axis under the key "stack"
-        sample = {"stack": torch.stack(prev_img, img, next_img, axis=0)}
+        sample = {"stack": torch.stack([prev_img, img, next_img], axis=0)}
 
         return sample
 
@@ -1428,20 +1428,20 @@ class TestDatasetGAN(Dataset):
         image_path = images_folder + self.images_names[index]
 
         # Reads the middle image as a NumPy array
-        img = imread(image_path)
+        img = torch.from_numpy(imread(image_path))
         # Gets the number of the slice
         img_number = int(image_path.split(".")[0][-3:])
         # Sets the name of the previous and following images
-        prev_img_path = image_path.split(".")[0][-3:] + str(img_number - 1).zfill(3) + ".tiff"
-        next_img_path = image_path.split(".")[0][-3:] + str(img_number + 1).zfill(3) + ".tiff"
+        prev_img_path = image_path.split(".")[0][:-3] + str(img_number - 1).zfill(3) + ".tiff"
+        next_img_path = image_path.split(".")[0][:-3] + str(img_number + 1).zfill(3) + ".tiff"
 
         # Loads the previous and the 
         # following images 
-        prev_img = imread(prev_img_path)
-        next_img = imread(next_img_path)
+        prev_img = torch.from_numpy(imread(prev_img_path))
+        next_img = torch.from_numpy(imread(next_img_path))
 
         # Organizes the data in a dictionary that contains the images stacked along the first axis under the key 
         # "stack" and the path of the middle image associated with the key "image_name"
-        sample = {"stack": torch.stack(prev_img, img, next_img, axis=0), "image_name": self.images_names[index]}
+        sample = {"stack": torch.stack([prev_img, img, next_img], axis=0), "image_name": self.images_names[index]}
 
         return sample
