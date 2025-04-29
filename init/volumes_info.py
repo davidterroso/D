@@ -59,8 +59,8 @@ def volumes_info(oct_folder: str, vol_set: str="train"):
         desired_set = "TrainingSet"
         total_vols = 70 
         columns=["VolumeNumber", "Vendor", 
-                 "IRF", "SRF", "PED", 
-                 "Device", "SlicesNumber"]
+                 "Background", "IRF", "SRF",
+                 "PED", "Device", "SlicesNumber"]
     elif vol_set == "test":
         desired_set = "TestSet"
         total_vols = 42 
@@ -89,7 +89,7 @@ def volumes_info(oct_folder: str, vol_set: str="train"):
                     # Iterates through to the subfolders and reads the reference.mhd file to 
                     # extract the images
                     for filename in files:
-                        if filename == "reference.mhd":
+                        if filename == "reference.mhd" and desired_set == "TrainingSet":
                             file_path = root + """\\""" + filename
                             # Loads the OCT volume
                             img, _, spacing = load_oct_mask(file_path)
@@ -102,7 +102,7 @@ def volumes_info(oct_folder: str, vol_set: str="train"):
 
                             # Checks all the possible classes in the volume 
                             # and appends them to a temporary list
-                            for i in [1, 2, 3]:
+                            for i in [0, 1, 2, 3]:
                                 if i in unique_values:
                                     index = np.where(unique_values == i)
                                     voxel_count = voxels_count[index]
@@ -129,32 +129,31 @@ def volumes_info(oct_folder: str, vol_set: str="train"):
                             progress_bar.update(1)
                         # For the testing volumes that 
                         # do not have a reference mask
-                        else:
-                            if filename == "oct.mhd":
-                                file_path = root + """\\""" + filename
-                                # Loads the OCT volume
-                                img, _, spacing = load_oct_image(file_path)
+                        elif filename == "oct.mhd" and desired_set == "TestSet":
+                            file_path = root + """\\""" + filename
+                            # Loads the OCT volume
+                            img, _, spacing = load_oct_image(file_path)
 
-                                # Loads the data to the DataFrame
-                                tmp_values = [volume_index, vendor]
+                            # Loads the data to the DataFrame
+                            tmp_values = [volume_index, vendor]
 
-                                # Gets the vendor through the spacing of the OCT volume
-                                if vendor == "Cirrus":
-                                    oct_device = spacing_to_device.get(round(spacing[1],3))
-                                else:
-                                    oct_device = spacing_to_device.get(round(spacing[1],4))
+                            # Gets the vendor through the spacing of the OCT volume
+                            if vendor == "Cirrus":
+                                oct_device = spacing_to_device.get(round(spacing[1],3))
+                            else:
+                                oct_device = spacing_to_device.get(round(spacing[1],4))
 
-                                # Appends the values to the list 
-                                # that will be saved on the DataFrame
-                                tmp_values.append(oct_device)
-                                tmp_values.append(img.shape[0])
+                            # Appends the values to the list 
+                            # that will be saved on the DataFrame
+                            tmp_values.append(oct_device)
+                            tmp_values.append(img.shape[0])
 
-                                # Adds a temporary list to the DataFrame
-                                df.loc[volume] = tmp_values
-                                volume += 1
+                            # Adds a temporary list to the DataFrame
+                            df.loc[volume] = tmp_values
+                            volume += 1
 
-                                # Updates the progress bar
-                                progress_bar.update(1)
+                            # Updates the progress bar
+                            progress_bar.update(1)
 
     # Saves the DataFrame to a CSV file
     if desired_set == "TrainingSet":
@@ -192,3 +191,5 @@ def volumes_resumed_info(file_path: str="..\splits\\volumes_info.csv"):
     resulting_df_sum = df.groupby("Vendor").sum().drop("VolumeNumber", axis=1).round(2)
     # Saves the DataFrame as a CSV file
     resulting_df_sum.to_csv("..\splits\\volumes_sum.csv", index=True)
+
+volumes_info("D:\RETOUCH")

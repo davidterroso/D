@@ -27,6 +27,57 @@ if (get_ipython() is not None):
 else:
     from tqdm.auto import tqdm
 
+
+# Dictionary of fluid to labels in masks
+fluids_to_label = {
+    "IRF": 1,
+    "SRF": 2,
+    "PED": 3
+}    
+# Dictionary of labels in masks to fluid names
+label_to_fluids = {
+    1: "IRF",
+    2: "SRF",
+    3: "PED"
+}
+
+def get_class_weights(fluid: str):
+    """
+    Function used to calculate the weights of a determined 
+    class using the total number of voxels across a dataset
+
+    Args:
+        fluid (str): name of the fluid desired to segment
+
+    Returns:
+        binary_weights (PyTorch tensor): weights of 
+            background and fluid for the binary segmentation
+            with shape [2]
+    """
+    # Loads the dataframe that contains the information 
+    # of all the volumes
+    volumes_df = read_csv("splits\\volumes_info.csv")
+    # Inititates a list with all possible classes
+    fluids = ["Background", "IRF", "SRF", "PED"]
+    # Removes from the list the desired fluid
+    fluids.remove(fluid)
+    # Sums all the voxels across all volumes in the 
+    # dataset that are labeled as not the desired class
+    num_background_voxels = volumes_df[fluids].sum().sum()
+    # Sums all the voxels across all volumes in 
+    # the dataset that are labeled as the desired class
+    num_fluid_voxels = volumes_df[fluid].sum()
+
+    # Calculates the weights of each class as: N / (2 * N_{c}), where N corresponds to the total 
+    # number of voxels in the dataset and N_{c} the total number of voxels of class C in the dataset
+    background_weights = (num_background_voxels + num_fluid_voxels) / (2 * num_background_voxels)
+    fluid_weights = (num_background_voxels + num_fluid_voxels) / (2 * num_fluid_voxels)
+
+    # Converts the weights to a PyTorch tensor of shape [2]
+    binary_weights = torch.tensor([background_weights], [fluid_weights])
+
+    return binary_weights
+
 def train_model (
         run_name: str,
         fold_val: int,
@@ -147,19 +198,6 @@ def train_model (
     # Initiates logging 
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
-    # Dictionary of fluid to labels in masks
-    fluids_to_label = {
-        "IRF": 1,
-        "SRF": 2,
-        "PED": 3
-    }    
-    # Dictionary of labels in masks to fluid names
-    label_to_fluids = {
-        1: "IRF",
-        2: "SRF",
-        3: "PED"
-    }
-
     # Fixes the seed in case it is declared
     if seed is not None:
         torch.manual_seed(seed)
@@ -183,6 +221,8 @@ def train_model (
             for key in fluids_to_label.keys():
                 print(key)
             return 0
+        # Gets the weights of the background and the selected fluid
+        class_weights = get_class_weights(fluid)
         # In case none of the other 
         # restrictions has been raised, 
         # the fluid variable will 
@@ -466,18 +506,18 @@ def train_model (
                 with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=amp):
                     # Predicts the masks of the received images
                     masks_pred = model(images)
-                    # Performs softmax on the predicted masks
-                    # dim=1 indicates that the softmax is calculated 
-                    # across the masks, since the channels is the first 
-                    # dimension
-                    masks_pred_prob_bchw = softmax(masks_pred, dim=1).float()
-                    # Permute changes the images from channels first to channels last
-                    masks_pred_prob = masks_pred_prob_bchw.permute(0, 2, 3, 1)
-                    # Performs one hot encoding on the true masks, in channels last format
-                    masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float().squeeze(1)
 
-                    # Calculates the balanced loss for the background mask
                     if model_name != "UNet3": 
+                        # Performs softmax on the predicted masks
+                        # dim=1 indicates that the softmax is calculated 
+                        # across the masks, since the channels is the first 
+                        # dimension
+                        masks_pred_prob_bchw = softmax(masks_pred, dim=1).float()
+                        # Permute changes the images from channels first to channels last
+                        masks_pred_prob = masks_pred_prob_bchw.permute(0, 2, 3, 1)
+                        # Performs one hot encoding on the true masks, in channels last format
+                        masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float().squeeze(1)
+                        # Calculates the balanced loss for the background mask
                         loss = multiclass_balanced_cross_entropy_loss(
                                             model_name=model_name,
                                             y_true=masks_true_one_hot,
@@ -491,8 +531,8 @@ def train_model (
                         #                          batch_size=images.shape[0], 
                         #                          n_classes=model.n_classes, 
                         #                          eps=1e-7)
-                        criterion = torch.nn.BCELoss()
-                        loss = criterion(masks_pred_prob, masks_true_one_hot)
+                        criterion = torch.nn.BCEWithLogitsLoss(pos_weight=class_weights)
+                        loss = criterion(masks_pred, masks_true_one_hot)
 
                 # Saves the value that are zero as 
                 # None so that it saves memory
