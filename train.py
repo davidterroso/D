@@ -52,7 +52,7 @@ def get_class_weights(fluid: str=None):
     Returns:
         binary_weights (PyTorch tensor): weights of 
             background and fluid for the binary segmentation
-            with shape [2]
+            with shape [1]
     """
     # Loads the dataframe that contains the information 
     # of all the volumes
@@ -238,12 +238,12 @@ def train_model (
         # correspond to the label 
         # in the mask
         fluid = fluids_to_label.get(fluid)
-        # The number of classes in this model must always be 2 because 
+        # The number of classes in this model must always be 1 because 
         # it is a binary segmentation problem
-        if number_of_classes != 2:
+        if number_of_classes != 1:
             print("Because of the selected model, binary will " \
-                  "be performed so the number of classes is set to 2")
-            number_of_classes = 2
+                  "be performed so the number of classes is set to 1")
+            number_of_classes = 1
     # Warning in case the model selected does not require fluid but fluid 
     # was selected
     elif fluid is not None:
@@ -511,10 +511,9 @@ def train_model (
                 with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=amp):
                     # Predicts the masks of the received images
                     masks_pred = model(images)
-                    # Performs one hot encoding on the true masks, in channels last format
-                    masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float().squeeze(1)
-
                     if model_name != "UNet3": 
+                        # Performs one hot encoding on the true masks, in channels last format
+                        masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float().squeeze(1)
                         # Performs softmax on the predicted masks
                         # dim=1 indicates that the softmax is calculated 
                         # across the masks, since the channels is the first 
@@ -537,8 +536,8 @@ def train_model (
                         #                          n_classes=model.n_classes, 
                         #                          eps=1e-7)
                         # Permute changes the images from channels first to channels last
-                        # masks_true_one_hot_cf = masks_true_one_hot.permute(0, 3, 1, 2) 
-                        true_masks = true_masks.unsqueeze(1).float()
+                        # masks_true_one_hot_cf = masks_true_one_hot.permute(0, 3, 1, 2)
+                        true_masks = true_masks.float()
                         criterion = torch.nn.BCEWithLogitsLoss(pos_weight=class_weights)
                         # loss = criterion(masks_pred, masks_true_one_hot_cf)
                         loss = criterion(masks_pred, true_masks)

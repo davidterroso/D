@@ -15,7 +15,7 @@ from skimage.filters.rank import entropy
 from skimage.transform import resize
 from time import time
 from torch.utils.data import DataLoader
-from network_functions.dataset import TrainDataset, TrainDatasetLMDB, TrainDatasetGAN, ValidationDataset, ValidationDatasetLMDB, ValidationDatasetGAN, drop_patches
+from network_functions.dataset import TrainDataset, TrainDatasetLMDB, ValidationDataset, ValidationDatasetLMDB, drop_patches
 from paths import IMAGES_PATH
 from .read_oct import int32_to_uint8, load_oct_image, load_oct_mask
 
