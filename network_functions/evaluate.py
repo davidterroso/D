@@ -59,18 +59,17 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
                     # Predicts the masks of the received images
                     masks_pred = model(images)
 
-                    # Performs softmax on the predicted masks
-                    # dim=1 indicates that the softmax is calculated 
-                    # across the masks, since the channels is the first 
-                    # dimension
-                    masks_pred_prob = softmax(masks_pred, dim=1).float()
-                    # Permute changes the images from channels first to channels last
-                    masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
-                    # Performs one hot encoding on the true masks, in channels last format
-                    masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float()
-
                     # Calculates the balanced loss for the background mask
                     if model_name != "UNet3": 
+                        # Performs softmax on the predicted masks
+                        # dim=1 indicates that the softmax is calculated 
+                        # across the masks, since the channels is the first 
+                        # dimension
+                        masks_pred_prob = softmax(masks_pred, dim=1).float()
+                        # Permute changes the images from channels first to channels last
+                        masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
+                        # Performs one hot encoding on the true masks, in channels last format
+                        masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float()
                         loss = multiclass_balanced_cross_entropy_loss(
                                             model_name=model_name,
                                             y_true=masks_true_one_hot,
@@ -85,9 +84,10 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
                         #                          n_classes=model.n_classes, 
                         #                          eps=1e-7)
                         # Permute changes the images from channels first to channels last
-                        masks_true_one_hot_cf = masks_true_one_hot.permute(0, 3, 1, 2)
+                        # masks_true_one_hot_cf = masks_true_one_hot.permute(0, 3, 1, 2)
+                        true_masks = true_masks.unsqueeze(1).float()
                         criterion = torch.nn.BCEWithLogitsLoss(pos_weight=class_weights)
-                        loss = criterion(masks_pred, masks_true_one_hot_cf)
+                        loss = criterion(masks_pred, true_masks)
 
                     # Accumulate loss
                     total_loss += loss.item()
