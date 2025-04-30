@@ -70,11 +70,15 @@ def get_class_weights(fluid: str=None):
 
     # Calculates the weights of each class as: N / (2 * N_{c}), where N corresponds to the total 
     # number of voxels in the dataset and N_{c} the total number of voxels of class C in the dataset
-    background_weights = (num_background_voxels + num_fluid_voxels) / (2 * num_background_voxels)
-    fluid_weights = (num_background_voxels + num_fluid_voxels) / (2 * num_fluid_voxels)
+    # background_weights = (num_background_voxels + num_fluid_voxels) / (2 * num_background_voxels)
+    # fluid_weights = (num_background_voxels + num_fluid_voxels) / (2 * num_fluid_voxels)
+    # Calculates the positive weight as the total number 
+    # of background voxels divided by the number of fluid voxels
+    pos_weight = num_background_voxels / num_fluid_voxels
 
     # Converts the weights to a PyTorch tensor of shape [2,1,1]
-    binary_weights = torch.tensor([[[background_weights]], [[fluid_weights]]])
+    # binary_weights = torch.tensor([[[background_weights]], [[fluid_weights]]])
+    binary_weights = torch.tensor([pos_weight], dtype=torch.float)
 
     return binary_weights
 
@@ -533,9 +537,11 @@ def train_model (
                         #                          n_classes=model.n_classes, 
                         #                          eps=1e-7)
                         # Permute changes the images from channels first to channels last
-                        masks_true_one_hot_cf = masks_true_one_hot.permute(0, 3, 1, 2)
+                        # masks_true_one_hot_cf = masks_true_one_hot.permute(0, 3, 1, 2) 
+                        true_masks = true_masks.unsqueeze(1).float()
                         criterion = torch.nn.BCEWithLogitsLoss(pos_weight=class_weights)
-                        loss = criterion(masks_pred, masks_true_one_hot_cf)
+                        # loss = criterion(masks_pred, masks_true_one_hot_cf)
+                        loss = criterion(masks_pred, true_masks)
 
                 # Saves the value that are zero as 
                 # None so that it saves memory
