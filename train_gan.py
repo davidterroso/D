@@ -42,14 +42,16 @@ def weights_normal_initialization(m):
 def train_gan(
         run_name: str,
         fold_val: int,
-        model_name: str="GAN",
+        amp: bool=True,
         batch_size: int=8,
         beta_1: float=0.5,
         beta_2: float=0.999,
         device="GPU",
         epochs=400,
         fold_test: int=1,
+        gradient_clipping: float=1.0,
         learning_rate: float=2e-5,
+        model_name: str="GAN",
         number_of_channels: int=2,
         number_of_classes: int=1,
         patience: int=400,
@@ -65,9 +67,8 @@ def train_gan(
             will be saved
         fold_val (int): number of the fold that will be used 
             in the network validation 
-        model_name (str): name of the model that will be trained 
-            to generate images. Can only be "GAN" or "UNet". The 
-            default is "GAN"
+        amp (bool): bool that indicates whether automatic mixed
+            precision is going to be used or not
         batch_size (int): size of the batch used in 
             training
         beta_1 (float): value of beta_1 used in both optimizers
@@ -80,9 +81,15 @@ def train_gan(
             in the triple U-Net framework. Default is None because 
             it is not required in other models
         fold_test (int): number of the fold that will be used 
-            in the network testing    
+            in the network testing
+        gradient_clipping (float): threshold after which it
+            scales the gradient down, to prevent gradient 
+            exploding  
         learning_rate (float): learning rate of the 
             optimization function
+        model_name (str): name of the model that will be trained 
+            to generate images. Can only be "GAN" or "UNet". The 
+            default is "GAN"
         number_of_channels (int): number of channels the 
             input will present
         number_of_classes (int): number of classes the 
@@ -176,7 +183,7 @@ def train_gan(
                                            foreach=True, 
                                            maximize=False, 
                                            weight_decay=weight_decay)
-        
+   
         with open(csv_epoch_filename, mode="w", newline="") as file:
             writer = csv.writer(file)
             # Declares which information will be saved in the logging file
@@ -188,6 +195,10 @@ def train_gan(
             # associated with each batch
             writer = csv.writer(file)
             writer.writerow(["Epoch", "Batch", "Batch Loss"])
+
+    # Initiates the grad scaler in case mixed 
+    # precision is used
+    grad_scaler = torch.amp.GradScaler(enabled=amp)
 
     # Logs the information of the input and output 
     # channels of the network
@@ -216,6 +227,7 @@ def train_gan(
         Batch size:      {batch_size}
         Learning rate:   {learning_rate}
         Device:          {device.type}
+        Mixed Precision: {amp}
     """
     )
 
@@ -274,117 +286,145 @@ def train_gan(
                 mid_imgs = stack[:,1,:,:].to(device=device)
                 next_imgs = stack[:,2,:,:].to(device=device)
 
-                if model_name == "GAN":
-                    # Sets the label associated with true images to 0.95. The reason 
-                    # this value is set to 0.95 and not 1 is called label smoothing and 
-                    # prevents the model of becoming too overconfident, improving training 
-                    # stability. The same is done for the label associated with fake images, 
-                    # in which the label is set to 0.1 instead of the expected value 0
-                    valid = torch.Tensor(stack.shape[0], 1, 1, 1).fill_(0.95).to(device)
-                    fake = torch.Tensor(stack.shape[0], 1, 1, 1).fill_(0.1).to(device)
-                    # Sets the gradient of the 
-                    # generator optimizer for 
-                    # this epoch to zero
-                    optimizer_G.zero_grad()
-                    # Calls the generator to generate the expected middle 
-                    # image by receiving the previous and following images
-                    gen_imgs = generator(prev_imgs.detach(), next_imgs.detach())
-                    # Calculates the loss of the generator, which compares the generated images 
-                    # with the real images
-                    adv_loss, g_loss = generator_loss(device, discriminator, gen_imgs, mid_imgs, valid)
-                    # Calculates the gradient of the 
-                    # generator using the generator loss 
-                    g_loss.backward()
-                    # The optimizer performs the 
-                    # backwards step on the generator
-                    optimizer_G.step()
+                # Allows for mixed precision calculations, attributes a device to be used in 
+                # these calculations
+                # Calculates loss
+                with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=amp):
+                    if model_name == "GAN":
+                        # Sets the label associated with true images to 0.95. The reason 
+                        # this value is set to 0.95 and not 1 is called label smoothing and 
+                        # prevents the model of becoming too overconfident, improving training 
+                        # stability. The same is done for the label associated with fake images, 
+                        # in which the label is set to 0.1 instead of the expected value 0
+                        valid = torch.Tensor(stack.shape[0], 1, 1, 1).fill_(0.95).to(device)
+                        fake = torch.Tensor(stack.shape[0], 1, 1, 1).fill_(0.1).to(device)
+                        # Sets the gradient of the 
+                        # generator optimizer for 
+                        # this epoch to zero
+                        optimizer_G.zero_grad()
+                        # Calls the generator to generate the expected middle 
+                        # image by receiving the previous and following images
+                        gen_imgs = generator(prev_imgs, next_imgs)
+                        # Calculates the loss of the generator, which compares the generated images 
+                        # with the real images
+                        adv_loss, g_loss = generator_loss(device, discriminator, gen_imgs, mid_imgs, valid)
+                        # Acumulates scaled gradients
+                        grad_scaler.scale(g_loss).backward()
+                        # Unscales the gradients so that 
+                        # they can be clipped
+                        grad_scaler.unscale_(optimizer_G)
+                        # Clips the gradients above the threshold
+                        torch.nn.utils.clip_grad_norm_(generator.parameters(), 1.0)
+                        # Updates the parameters 
+                        # based on the current gradient
+                        grad_scaler.step(optimizer_G)
 
-                    # Sets the gradient of the 
-                    # generator optimizer for 
-                    # this epoch to zero
-                    optimizer_D.zero_grad()
+                        # Sets the gradient of the 
+                        # generator optimizer for 
+                        # this epoch to zero
+                        optimizer_D.zero_grad()
+                        # Gets the prediction of the discriminator 
+                        # on whether the true image is true or fake                
+                        gt_distingue = discriminator(mid_imgs)
+                        # Gets the prediction of the discriminator 
+                        # on whether the fake image is true or fake
+                        # The generated image is detached so that 
+                        # the gradient of the discriminator does not 
+                        # affect the generator function
+                        fake_distingue = discriminator(gen_imgs.detach())
+                        # The discriminator loss is calculated for the true image and fake image predicted labels 
+                        # and their respective true labels
+                        real_loss, fake_loss, d_loss = discriminator_loss(device, gt_distingue, fake_distingue, valid, fake)
+                        # Acumulates scaled gradients
+                        grad_scaler.scale(d_loss).backward()
+                        # Unscales the gradients so that 
+                        # they can be clipped
+                        grad_scaler.unscale_(optimizer_D)
+                        # Clips the gradients above the threshold
+                        torch.nn.utils.clip_grad_norm_(discriminator.parameters(), 1.0)
+                        # Updates the parameters 
+                        # based on the current gradient
+                        grad_scaler.step(optimizer_D)
 
-                    # Gets the prediction of the discriminator 
-                    # on whether the true image is true or fake                
-                    gt_distingue = discriminator(mid_imgs)
-                    # Gets the prediction of the discriminator 
-                    # on whether the fake image is true or fake
-                    # The generated image is detached so that 
-                    # the gradient of the discriminator does not 
-                    # affect the generator function
-                    fake_distingue = discriminator(gen_imgs.detach())
-                    # The discriminator loss is calculated for the true image and fake image predicted labels 
-                    # and their respective true labels
-                    real_loss, fake_loss, d_loss = discriminator_loss(device, gt_distingue, fake_distingue, valid, fake)
-                    # The backward step is calculated 
-                    # for the model according to the 
-                    # discriminator loss
-                    d_loss.backward()
+                        # Updates the scale 
+                        # for the next iteration
+                        grad_scaler.update()
 
-                    # The optimizer performs the backwards step 
-                    # on the discriminator
-                    optimizer_D.step()
+                        # Updates the loss of the current epoch
+                        epoch_adv_loss += adv_loss.item()
+                        epoch_g_loss += g_loss.item()
+                        epoch_real_loss += real_loss.item()
+                        epoch_fake_loss += fake_loss.item()
+                        epoch_d_loss += d_loss.item()
 
-                    # Updates the loss of the current epoch
-                    epoch_adv_loss += adv_loss.item()
-                    epoch_g_loss += g_loss.item()
-                    epoch_real_loss += real_loss.item()
-                    epoch_fake_loss += fake_loss.item()
-                    epoch_d_loss += d_loss.item()
+                        # Writes the loss values of the batch in the CSV file
+                        with open(csv_batch_filename, mode="a", newline="") as file:
+                            writer = csv.writer(file)
+                            writer.writerow([epoch, batch_num, adv_loss.item(), 
+                                                g_loss.item(), real_loss.item(), 
+                                                fake_loss.item(), d_loss.item()])
 
-                    # Writes the loss values of the batch in the CSV file
-                    with open(csv_batch_filename, mode="a", newline="") as file:
-                        writer = csv.writer(file)
-                        writer.writerow([epoch, batch_num, adv_loss.item(), 
-                                            g_loss.item(), real_loss.item(), 
-                                            fake_loss.item(), d_loss.item()])
+                    elif model_name == "UNet":
+                        # Checks if the number of channels in an image matches the value indicated 
+                        # in the training arguments
+                        assert unet_input.shape[1] == number_of_channels, \
+                        f'Network has been defined with {number_of_channels} input channels, ' \
+                        f'but loaded images have {unet_input.shape[1]} channels. Please check if ' \
+                        'the images are loaded correctly.' 
+ 
+                        # Sets the gradient of the 
+                        # generator optimizer for 
+                        # this epoch to zero
+                        unet.zero_grad()
+                        
+                        # Calls the UNet to generate the expected middle 
+                        # image by receiving the previous and following images
+                        unet_input = torch.stack([prev_imgs, next_imgs], dim=1)
+                        gen_imgs = unet(unet_input.to(device=device))
+                        # Calculates the loss of the generator, which compares the generated images 
+                        # with the real images
+                        criterion = torch.nn.L1Loss()
+                        mae_loss = criterion(gen_imgs, mid_imgs.unsqueeze(1))
+                        
+                        # Saves the value that are zero as 
+                        # None so that it saves memory
+                        optimizer_unet.zero_grad(set_to_none=True)
+                        # Acumulates scaled gradients
+                        grad_scaler.scale(mae_loss).backward()
+                        # Unscales the gradients so that 
+                        # they can be clipped
+                        grad_scaler.unscale_(optimizer_unet)
+                        # Clips the gradients above the threshold
+                        torch.nn.utils.clip_grad_norm_(unet.parameters(), 1.0)
+                        # Updates the parameters 
+                        # based on the current gradient
+                        grad_scaler.step(optimizer_unet)
+                        # Updates the scale 
+                        # for the next iteration
+                        grad_scaler.update()
 
-                elif model_name == "UNet":
-                    # Sets the gradient of the 
-                    # generator optimizer for 
-                    # this epoch to zero
-                    unet.zero_grad()
-                    # Calls the UNet to generate the expected middle 
-                    # image by receiving the previous and following images
-                    unet_input = torch.stack([prev_imgs, next_imgs], dim=1).detach()
+                        # Updates the loss of the current epoch
+                        epoch_loss += mae_loss.item()
+                        # Writes the loss values of the batch in the CSV file
+                        with open(csv_batch_filename, mode="a", newline="") as file:
+                            writer = csv.writer(file)
+                            writer.writerow([epoch, batch_num, mae_loss.item()])
+                    # Updates the progress bar according 
+                    # to the number of images present in 
+                    # the batch  
+                    progress_bar.update(stack.shape[0])
 
-                    # Checks if the number of channels in an image matches the value indicated 
-                    # in the training arguments
-                    assert unet_input.shape[1] == number_of_channels, \
-                    f'Network has been defined with {number_of_channels} input channels, ' \
-                    f'but loaded images have {unet_input.shape[1]} channels. Please check if ' \
-                    'the images are loaded correctly.'
-
-                    gen_imgs = unet(unet_input.to(device=device))
-                    # Calculates the loss of the generator, which compares the generated images 
-                    # with the real images
-                    criterion = torch.nn.L1Loss()
-                    mae_loss = criterion(gen_imgs, mid_imgs.unsqueeze(1))
-                    # Calculates the gradient of the 
-                    # generator using the generator loss 
-                    mae_loss.backward()
-                    # The optimizer performs the 
-                    # backwards step on the generator
-                    optimizer_unet.step()
-                    # Updates the loss of the current epoch
-                    epoch_loss += mae_loss.item()
-                    # Writes the loss values of the batch in the CSV file
-                    with open(csv_batch_filename, mode="a", newline="") as file:
-                        writer = csv.writer(file)
-                        writer.writerow([epoch, batch_num, mae_loss.item()])
-                # Updates the progress bar according 
-                # to the number of images present in 
-                # the batch  
-                progress_bar.update(stack.shape[0])
-
-                
         print(f"Validating Epoch {epoch}")
         # Calls the function that evaluates the output of the generator and returns the 
         # respective result of the peak signal-to-noise ratio (PSNR)
         if model_name == "GAN":
-            val_psnr = evaluate_gan(model_name=model_name, generator=generator, dataloader=val_loader, device=device)
+            val_psnr = evaluate_gan(model_name=model_name, generator=generator, 
+                                    dataloader=val_loader, device=device, amp=amp, 
+                                    n_val=len(val_set))
         elif model_name == "UNet":
-            val_psnr = evaluate_gan(model_name=model_name, generator=unet, dataloader=val_loader, device=device)
+            val_psnr = evaluate_gan(model_name=model_name, generator=unet, 
+                                    dataloader=val_loader, device=device, amp=amp, 
+                                    n_val=len(val_set))
 
         # Logs the results of the validation
         logging.info(f"Validation Mean PSNR: {val_psnr}")
