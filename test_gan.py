@@ -11,6 +11,8 @@ from torch.utils.data import DataLoader
 from networks.gan import Generator
 from networks.loss import psnr
 from network_functions.dataset import TestDatasetGAN
+from networks.pix2pix import Pix2PixGenerator
+from networks.unet import UNet
 from paths import IMAGES_PATH
 
 # Imports tqdm depending on whether 
@@ -163,41 +165,59 @@ def folds_results_gan(first_run_name: str, iteration: int, k: int=5):
     results_df.to_csv(f".\\results\\Iteration{iteration}_results_gan.csv")
 
 def test_gan(
-        fold_test: int, 
+        fold_test: int,
+        model_name: str, 
         weights_name: str, 
         batch_size: int=1, 
         device_name: str="GPU", 
         final_test: bool=False, 
+        gen_model_name: str=None,
         number_of_classes: int=1,
-        save_images: bool=True
+        save_images: bool=True,
+        trained_generator_name: str=None
     ):
     """
-    Function used to test the trained GAN models
+    Function used to test all the trained generative models
 
     Args:
         fold_test (int): number of the fold that will be used 
             in the network testing 
+        model_name (str): name of the model desired to test.
+            Can only be 'GAN', 'UNet', or 'Pix2Pix'
         weights_name (str): path to the model's weight file
         batch_size (int): size of the batch used in testing
         device_name (str): indicates whether the network will 
             be trained using the CPU or the GPU
-        final_test (bool): indicates that the final test will be 
-            performed, changing the name of the saved files. Since final
-            testing is rare, the default value is False 
+        final_test (bool): indicates that the final test will 
+            be performed, changing the name of the saved files. 
+            Since final testing is rare, the default value is 
+            False
+        gen_model_name (str): name of the trained generator 
+            model used in the Pix2Pix. Can only be 'GAN' or
+            'UNet'
         number_of_classes (int): number of classes the 
             output will present
         save_images (bool): flag that indicates whether the 
             predicted images will be saved or not
+        trained_generator_name (str): name of the trained 
+            generator weights file
             
     Return:
         None
     """
     # Gets the list of volumes used to test the model
-    df = read_csv("splits/generation_5_fold_selection.csv")
+    df = read_csv("splits/generation_4_fold_selection.csv")
     test_volumes = df[str(fold_test)].dropna().to_list()
 
+    # Checks if the given model name is available
+    assert model_name in ["GAN", "UNet", "Pix2Pix"],\
+        "Possible model names: 'GAN', 'UNet', or 'Pix2Pix'"
+
     # Declares the Generator model that will be used to infer
-    generator = Generator(number_of_classes)
+    if model_name == "GAN":
+        generator = Generator(number_of_classes)
+    elif model_name == "UNet":
+        generator = UNet(in_channels=2, num_classes=number_of_classes)
 
     # Declares the path to the weights
     weights_path = "models\\" + weights_name
@@ -221,7 +241,21 @@ def test_gan(
     # Assigns the generator to the selected device
     generator = generator.to(device=device)
     # Loads the model's trained weights
-    generator.load_state_dict(torch.load(weights_name, weights_only=True, map_location=device))
+    if trained_generator_name == None:
+        generator.load_state_dict(torch.load(weights_path, weights_only=True, map_location=device))
+    else:
+        # Declares the path to the weights of the trained generator
+        gen_weights_path = "models\\" + trained_generator_name
+        # Loads the weights to the trained generator
+        generator.load_state_dict(torch.load(gen_weights_path, weights_only=True, map_location=device))
+        # Initiates the Pix2Pix generator
+        pix2pix_generator = Pix2PixGenerator(number_of_classes, number_of_classes)
+        # Loads the weights to the trained Pix2Pix generator
+        pix2pix_generator.load_state_dict(torch.load(weights_path, weights_only=True, map_location=device))
+        # Sets the Pix2Pix generator 
+        # to evaluation mode
+        pix2pix_generator.eval()
+
     # Sets the generator 
     # to evaluation mode
     generator.eval()
@@ -274,15 +308,30 @@ def test_gan(
                 mid_imgs = stack[:,1,:,:].to(device=device)
                 next_imgs = stack[:,2,:,:].to(device=device)
 
+                # Using the trained generator, the previous and 
+                # following images are used to generate the middle image
+                if gen_model_name == "GAN":
+                    gen_imgs_wgenerator = generator(prev_imgs.detach(), next_imgs.detach())
+                elif gen_model_name == "UNet":
+                    gen_imgs_wgenerator = generator(torch.stack([prev_imgs, next_imgs], dim=1).detach())
+                elif not None:
+                    print("Unrecognized generator model name. Available names: 'GAN' or 'UNet'")
+                    return
+
                 # Generates the middle image
-                gen_imgs = generator(prev_imgs, next_imgs)
+                if model_name == "GAN":
+                    gen_imgs = generator(prev_imgs.detach(), next_imgs.detach())
+                elif model_name == "UNet":
+                    gen_imgs = generator(torch.stack([prev_imgs, next_imgs], dim=1).detach().to(device=device))
+                elif model_name == "Pix2Pix":
+                    gen_imgs = pix2pix_generator(gen_imgs_wgenerator)
 
                 # Calculates the PSNR value
                 img_psnr = round(psnr(mid_imgs, gen_imgs), 3)
                 # Calculates the SSIM value
                 img_ssim = round(ssim(
                                 mid_imgs, gen_imgs,
-                                data_range=255,
+                                data_range=1,
                                 gaussian_weights=True,
                                 use_sample_covariance=False,
                                 win_size=11

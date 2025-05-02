@@ -11,6 +11,7 @@ from networks.gan import Generator
 from networks.loss import discriminator_loss, generator_loss
 from networks.pix2pix import Pix2PixDiscriminator, Pix2PixGenerator
 from networks.unet import UNet
+from train_gan import weights_normal_initialization
 
 # Imports tqdm depending on whether 
 # it is being called from the 
@@ -39,7 +40,7 @@ def train_pix2pix(
         split: str="generation_5_fold_split.csv",
 ):
     """
-    Function that trains the GAN models.
+    Function that trains the Pix2Pix GAN models.
 
     Args:
         run_name (str): name of the run under which the best model
@@ -143,6 +144,11 @@ def train_pix2pix(
     pix2pix_generator = Pix2PixGenerator(number_of_classes, number_of_classes)
     pix2pix_discriminator = Pix2PixDiscriminator(number_of_classes)
 
+    # Initiates the weights of the Pix2Pix generator 
+    # and discriminator
+    pix2pix_generator.apply(weights_normal_initialization)
+    pix2pix_discriminator.apply(weights_normal_initialization)
+
     # Declares the optimizer of the Generator
     optimizer_G = torch.optim.Adam(pix2pix_generator.parameters(), 
                                 lr=learning_rate, 
@@ -227,7 +233,7 @@ def train_pix2pix(
                 if model_name == "GAN":
                     gen_imgs_wgenerator = generator(prev_imgs.detach(), next_imgs.detach())
                 elif model_name == "UNet":
-                    gen_imgs_wgenerator = generator(torch.stack([prev_imgs, next_imgs], dim=1).detach().float() / 255.0)
+                    gen_imgs_wgenerator = generator(torch.stack([prev_imgs, next_imgs], dim=1).detach())
                 # Sets the label associated with true images to 0.95. The reason 
                 # this value is set to 0.95 and not 1 is called label smoothing and 
                 # prevents the model of becoming too overconfident, improving training 
@@ -260,13 +266,13 @@ def train_pix2pix(
 
                 # Gets the prediction of the discriminator 
                 # on whether the true image is true or fake                
-                gt_distingue = pix2pix_discriminator(torch.cat((gen_imgs_wgenerator.detach(), gen_imgs), dim=1))
+                gt_distingue = pix2pix_discriminator(torch.cat((gen_imgs_wgenerator.detach(), mid_imgs), dim=1))
                 # Gets the prediction of the discriminator 
                 # on whether the fake image is true or fake
                 # The generated image is detached so that 
                 # the gradient of the discriminator does not 
                 # affect the generator function
-                fake_distingue = pix2pix_discriminator(torch.cat((gen_imgs_wgenerator.detach(), mid_imgs.detach())))
+                fake_distingue = pix2pix_discriminator(torch.cat((gen_imgs_wgenerator.detach(), gen_imgs.detach()), dim=1))
                 # The discriminator loss is calculated for the true image and fake image predicted labels 
                 # and their respective true labels
                 real_loss, fake_loss, d_loss = discriminator_loss(device, gt_distingue, fake_distingue, valid, fake)
@@ -300,28 +306,25 @@ def train_pix2pix(
 
                 
         print(f"Validating Epoch {epoch}")
-        # Calls the function that evaluates the output of the generator and returns the 
-        # respective result of the peak signal-to-noise ratio (PSNR)
-        val_psnr = evaluate_gan(model_name=model_name, generator=pix2pix_generator, dataloader=val_loader, device=device)
+        # Calls the function that evaluates the output of the Pix2Pix generator 
+        # and returns the respective result of the peak signal-to-noise ratio (PSNR)
+        val_psnr = evaluate_gan(model_name=model_name, dataloader=val_loader, 
+                                device=device, pix2pix_generator=pix2pix_generator, 
+                                generator=generator)
 
         # Logs the results of the validation
         logging.info(f"Validation Mean PSNR: {val_psnr}")
 
         # Writes the mean of the results of the different batches in 
         # the epoch to the CSV file 
-        if model_name == "GAN":
-            with open(csv_epoch_filename, mode="a", newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow([epoch, epoch_adv_loss.item() / len(val_loader), 
-                                epoch_g_loss.item() / len(val_loader), 
-                                epoch_real_loss.item() / len(val_loader), 
-                                epoch_fake_loss.item() / len(val_loader), 
-                                epoch_d_loss.item() / len(val_loader),
-                                val_psnr])
-        elif model_name == "UNet":
-            with open(csv_epoch_filename, mode="a", newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow([epoch, val_psnr])
+        with open(csv_epoch_filename, mode="a", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow([epoch, epoch_adv_loss.item() / len(val_loader), 
+                            epoch_g_loss.item() / len(val_loader), 
+                            epoch_real_loss.item() / len(val_loader), 
+                            epoch_fake_loss.item() / len(val_loader), 
+                            epoch_d_loss.item() / len(val_loader),
+                            val_psnr])
 
         # In case the validation SSIM is better 
         # than the previous, the model is saved 

@@ -1256,7 +1256,7 @@ class TrainDatasetGAN(Dataset):
         image_path = images_folder + self.images_names[index]
 
         # Reads the middle image as a NumPy array
-        img = torch.from_numpy(imread(image_path))
+        img = torch.from_numpy(imread(image_path) / 255.).float()
         # Gets the number of the slice
         img_number = int(image_path.split(".")[0][-3:])
         # Sets the name of the previous and following images
@@ -1265,8 +1265,8 @@ class TrainDatasetGAN(Dataset):
 
         # Loads the previous and the 
         # following images 
-        prev_img = torch.from_numpy(imread(prev_img_path))
-        next_img = torch.from_numpy(imread(next_img_path))
+        prev_img = torch.from_numpy(imread(prev_img_path) / 255.).float()
+        next_img = torch.from_numpy(imread(next_img_path) / 255.).float()
 
         # Organizes the data in a dictionary that contains the images 
         # stacked along the first axis under the key "stack"
@@ -1342,7 +1342,7 @@ class ValidationDatasetGAN(Dataset):
         image_path = images_folder + self.images_names[index]
 
         # Reads the middle image as a NumPy array
-        img = torch.from_numpy(imread(image_path))
+        img = torch.from_numpy(imread(image_path) / 255).float()
         # Gets the number of the slice
         img_number = int(image_path.split(".")[0][-3:])
         # Sets the name of the previous and following images
@@ -1351,8 +1351,8 @@ class ValidationDatasetGAN(Dataset):
 
         # Loads the previous and the 
         # following images 
-        prev_img = torch.from_numpy(imread(prev_img_path))
-        next_img = torch.from_numpy(imread(next_img_path))
+        prev_img = torch.from_numpy(imread(prev_img_path) / 255).float()
+        next_img = torch.from_numpy(imread(next_img_path) / 255).float()
 
         # Organizes the data in a dictionary that contains the images 
         # stacked along the first axis under the key "stack"
@@ -1428,7 +1428,7 @@ class TestDatasetGAN(Dataset):
         image_path = images_folder + self.images_names[index]
 
         # Reads the middle image as a NumPy array
-        img = torch.from_numpy(imread(image_path))
+        img = torch.from_numpy(imread(image_path) / 255.).float()
         # Gets the number of the slice
         img_number = int(image_path.split(".")[0][-3:])
         # Sets the name of the previous and following images
@@ -1437,8 +1437,8 @@ class TestDatasetGAN(Dataset):
 
         # Loads the previous and the 
         # following images 
-        prev_img = torch.from_numpy(imread(prev_img_path))
-        next_img = torch.from_numpy(imread(next_img_path))
+        prev_img = torch.from_numpy(imread(prev_img_path) / 255.).float()
+        next_img = torch.from_numpy(imread(next_img_path) / 255.).float()
 
         # Organizes the data in a dictionary that contains the images stacked along the first axis under the key 
         # "stack" and the path of the middle image associated with the key "image_name"
