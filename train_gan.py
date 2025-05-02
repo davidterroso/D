@@ -19,6 +19,26 @@ if (get_ipython() is not None):
 else:
     from tqdm.auto import tqdm
 
+def weights_normal_initialization(m):
+    """
+    Initiates the weights of the model 
+    following a Gaussian distribution
+    
+    Args:
+        m (PyTorch Module): PyTorch 
+            module that will have its
+            weights initialized
+
+    Returns:
+        None  
+    """
+    classname = m.__class__.__name__
+    if classname.find("Conv") != -1:
+        torch.nn.init.normal_(m.weight.data, 0.0, 0.02)
+    elif classname.find("BatchNorm2d") != -1:
+        torch.nn.init.normal_(m.weight.data, 1.0, 0.02)
+        torch.nn.init.constant_(m.bias.data, 0.0)
+
 def train_gan(
         run_name: str,
         fold_val: int,
@@ -84,7 +104,7 @@ def train_gan(
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
     # Checks if the given model name is available
-    assert model_name in ["GAN", "UNet"], "Possible model names: 'GAN' and 'UNet'"
+    assert model_name in ["GAN", "UNet"], "Possible model names: 'GAN' or 'UNet'"
 
     # Declares the path to the CSV file on which the logging of 
     # the training and epochs will be made
@@ -112,6 +132,12 @@ def train_gan(
         generator = Generator(number_of_classes)
         # Allocates the Generator module to the GPU
         generator.to(device=device)
+
+        # Initiates the weights of the Pix2Pix generator 
+        # and discriminator
+        generator.apply(weights_normal_initialization)
+        discriminator.apply(weights_normal_initialization)
+
         # Declares the optimizer of the Generator
         optimizer_G = torch.optim.Adam(generator.parameters(), 
                                     lr=learning_rate, 
@@ -192,8 +218,6 @@ def train_gan(
         Device:          {device.type}
     """
     )
-
-    train_volumes = ["1_train"]
 
     # Creates the training and validation set as a PyTorch 
     # Dataset, using the list of OCT volumes that will be 
@@ -322,7 +346,7 @@ def train_gan(
                     unet.zero_grad()
                     # Calls the UNet to generate the expected middle 
                     # image by receiving the previous and following images
-                    unet_input = torch.stack([prev_imgs, next_imgs], dim=1).detach().float() / 255.0
+                    unet_input = torch.stack([prev_imgs, next_imgs], dim=1).detach()
 
                     # Checks if the number of channels in an image matches the value indicated 
                     # in the training arguments
