@@ -78,15 +78,14 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
                                             n_classes=model.n_classes, 
                                             eps=1e-7)
                     else:
-                        # loss = balanced_bce_loss(y_true=masks_true_one_hot,
-                        #                          y_pred=masks_pred_prob, 
-                        #                          batch_size=images.shape[0], 
-                        #                          n_classes=model.n_classes, 
-                        #                          eps=1e-7)
-                        # Permute changes the images from channels first to channels last
-                        # masks_true_one_hot_cf = masks_true_one_hot.permute(0, 3, 1, 2)
-                        true_masks = true_masks.unsqueeze(1).float()
-                        criterion = torch.nn.BCEWithLogitsLoss(pos_weight=class_weights)
+                        # Removes the second dimension because CrossEntropyLoss expects
+                        # a target with shape (B, H, W) and a prediction of shape 
+                        # (B, C, H, W) where C matches the length of the class_weights
+                        # passed as argument
+                        true_masks = true_masks.squeeze(1)
+                        # Assigns the calculated weights to each class
+                        criterion = torch.nn.CrossEntropyLoss(weight=class_weights)
+                        # Calculates the CrossEntropyLoss for the predicted masks
                         loss = criterion(masks_pred, true_masks)
 
                     # Accumulate loss

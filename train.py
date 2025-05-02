@@ -78,7 +78,7 @@ def get_class_weights(fluid: str=None):
     # pos_weight = num_background_voxels / num_fluid_voxels
 
     # Converts the weights to a PyTorch tensor of shape [2]
-    binary_weights = torch.tensor([background_weights, fluid_weights])
+    binary_weights = torch.tensor([background_weights, fluid_weights], dtype=torch.float)
     # Converts the weights to a PyTorch tensor of shape [1]
     # binary_weights = torch.tensor([pos_weight], dtype=torch.float)
 
@@ -515,7 +515,7 @@ def train_model (
                     masks_pred = model(images)
                     if model_name != "UNet3": 
                         # Performs one hot encoding on the true masks, in channels last format
-                        masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float().squeeze(1)
+                        masks_true_one_hot = one_hot(true_masks, model.n_classes).float().squeeze(1)
                         # Performs softmax on the predicted masks
                         # dim=1 indicates that the softmax is calculated 
                         # across the masks, since the channels is the first 
