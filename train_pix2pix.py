@@ -8,7 +8,7 @@ from pandas import read_csv
 from network_functions.dataset import TrainDatasetGAN, ValidationDatasetGAN
 from network_functions.evaluate import evaluate_gan
 from networks.gan import Generator
-from networks.loss import discriminator_loss, generator_loss
+from networks.loss import discriminator_loss, pix2pix_generator_loss
 from networks.pix2pix import Pix2PixDiscriminator, Pix2PixGenerator
 from networks.unet import UNet
 from train_gan import weights_normal_initialization
@@ -251,7 +251,7 @@ def train_pix2pix(
                 gen_imgs = pix2pix_generator(gen_imgs_wgenerator)
                 # Calculates the loss of the generator, which compares the generated images 
                 # with the real images
-                adv_loss, g_loss = generator_loss(device, pix2pix_discriminator, gen_imgs, mid_imgs, valid)
+                adv_loss, g_loss = pix2pix_generator_loss(device, pix2pix_discriminator, gen_imgs, mid_imgs, valid)
                 # Calculates the gradient of the 
                 # generator using the generator loss 
                 g_loss.backward()
