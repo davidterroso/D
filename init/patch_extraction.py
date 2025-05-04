@@ -219,14 +219,14 @@ def extract_patches_wrapper(model_name: str, patch_type: str, patch_shape: tuple
         path_to_check_mask = IMAGES_PATH + f"\\OCT_images\\segmentation\\{patch_type}_masks\\"
         assert (exists(path_to_check_image) and exists(path_to_check_mask)),\
             f"The {patch_type} patches must be extracted first"
-    elif (patch_type=="vertical" and num_patches>4):
+    elif (patch_type=="vertical" and num_patches > 4):
         path_to_check_image = IMAGES_PATH + f"\\OCT_images\\segmentation\\{patch_type}_patches_overlap_{num_patches}\\"
         path_to_check_mask = IMAGES_PATH + f"\\OCT_images\\segmentation\\{patch_type}_masks_overlap_{num_patches}\\"
         assert (exists(path_to_check_image) and exists(path_to_check_mask)),\
             f"The {num_patches} overlapping {patch_type} patches must be extracted first"
     # Creates the train and validation Dataset objects
     # The validation dataset does not apply transformations
-    if num_patches <= 7:
+    if num_patches <= 12:
         train_set = TrainDataset(train_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)
         val_set = ValidationDataset(val_volumes, model_name, patch_type, num_patches, fluid, number_of_channels=number_of_channels)
     else:
