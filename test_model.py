@@ -559,13 +559,9 @@ def test_model (
                 outputs = model(images)
 
                 # Apply sigmoid activation and one-hot encoding for binary tasks
-                if model_name == "UNet3":
-                    outputs = torch.sigmoid(outputs)
-                    preds = (outputs >= 0.5).long()  # Transform logits to binary mask with 0s and 1s
-                else:
-                    # The prediction is assumed as the value 
-                    # that has a higher logit
-                    preds = torch.argmax(outputs, dim=1)
+                # The prediction is assumed as the value 
+                # that has a higher logit
+                preds = torch.argmax(outputs, dim=1)
 
                 # Calculates the Dice coefficient of the predicted mask, and gets the result of the union and intersection between the GT and 
                 # the predicted mask 
@@ -586,7 +582,7 @@ def test_model (
                     # Converts each voxel classified as background to 
                     # NaN so that it will not appear in the overlaying
                     # mask
-                    preds = np.array(preds.cpu().numpy(), dtype=np.float32)[0][0]
+                    preds = np.array(preds.cpu().numpy(), dtype=np.float32)[0]
                     preds[preds == 0] = np.nan
 
                     true_masks = np.array(true_masks.cpu().numpy(), dtype=np.float32)[0]

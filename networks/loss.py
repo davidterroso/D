@@ -264,9 +264,6 @@ def dice_coefficient(model_name: str, prediction: torch.Tensor,
     voxel_counts = []
     union_counts = []
     intersection_counts = []
-    
-    if model_name == "UNet3":
-        num_classes = num_classes + 1
 
     # Iterates through the possible classes
     for class_idx in range(0, num_classes):
