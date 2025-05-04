@@ -15,7 +15,7 @@ else:
 
 @torch.inference_mode()
 def evaluate(model_name: str, model: Module, dataloader: DataLoader, 
-             device: str, amp: bool):
+             device: str, amp: bool, class_weights: torch.Tensor=None):
     """
     Function used to evaluate the model
 
@@ -29,7 +29,9 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
             going to be used
         amp (bool): flag that indicates if automatic 
             mixed precision is being used
-
+        class_weights (PyTorch tensor): weights of each class 
+            used in the BCE loss
+            
     Return:
         (float) mean of the loss across the considered 
         batches
@@ -57,24 +59,35 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
                     # Predicts the masks of the received images
                     masks_pred = model(images)
 
-                    # Performs softmax on the predicted masks
-                    # dim=1 indicates that the softmax is calculated 
-                    # across the masks, since the channels is the first 
-                    # dimension
-                    masks_pred_prob = softmax(masks_pred, dim=1).float()
-                    # Permute changes the images from channels first to channels last
-                    masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
-                    # Performs one hot encoding on the true masks, in channels last format
-                    masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float()
+                    if model_name != "UNet3":
+                        # Performs softmax on the predicted masks
+                        # dim=1 indicates that the softmax is calculated 
+                        # across the masks, since the channels is the first 
+                        # dimension
+                        masks_pred_prob = softmax(masks_pred, dim=1).float()
+                        # Permute changes the images from channels first to channels last
+                        masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
+                        # Performs one hot encoding on the true masks, in channels last format
+                        masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float()
 
-                    # Calculates the balanced loss for the background mask
-                    loss = multiclass_balanced_cross_entropy_loss(
-                                        model_name=model_name,
-                                        y_true=masks_true_one_hot,
-                                        y_pred=masks_pred_prob, 
-                                        batch_size=images.shape[0], 
-                                        n_classes=model.n_classes, 
-                                        eps=1e-7)
+                        # Calculates the balanced loss for the background mask
+                        loss = multiclass_balanced_cross_entropy_loss(
+                                            model_name=model_name,
+                                            y_true=masks_true_one_hot,
+                                            y_pred=masks_pred_prob, 
+                                            batch_size=images.shape[0], 
+                                            n_classes=model.n_classes, 
+                                            eps=1e-7)
+                    else:
+                        # Removes the second dimension because CrossEntropyLoss expects
+                        # a target with shape (B, H, W) and a prediction of shape 
+                        # (B, C, H, W) where C matches the length of the class_weights
+                        # passed as argument
+                        true_masks = true_masks.squeeze(1)
+                        # Assigns the calculated weights to each class
+                        criterion = torch.nn.CrossEntropyLoss(weight=class_weights)
+                        # Calculates the CrossEntropyLoss for the predicted masks
+                        loss = criterion(masks_pred, true_masks)
 
                     # Accumulate loss
                     total_loss += loss.item()

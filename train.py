@@ -27,6 +27,49 @@ if (get_ipython() is not None):
 else:
     from tqdm.auto import tqdm
 
+def get_class_weights(fluid: str=None):
+    """
+    Function used to calculate the weights of a determined 
+    class using the total number of voxels across a dataset
+
+    Args:
+        fluid (str): name of the fluid desired to segment
+
+    Returns:
+        binary_weights (PyTorch tensor): weights of 
+            background and fluid for the binary segmentation
+            with shape [2,1,1]. The commented version has an 
+            output shape of [1] to be used with BCEWithLogits
+    """
+    # Loads the dataframe that contains the information 
+    # of all the volumes
+    volumes_df = read_csv("splits\\volumes_info.csv")
+    # Inititates a list with all possible classes
+    fluids = ["Background", "IRF", "SRF", "PED"]
+    # Removes from the list the desired fluid
+    fluids.remove(fluid)
+    # Sums all the voxels across all volumes in the 
+    # dataset that are labeled as not the desired class
+    num_background_voxels = volumes_df[fluids].sum().sum()
+    # Sums all the voxels across all volumes in 
+    # the dataset that are labeled as the desired class
+    num_fluid_voxels = volumes_df[fluid].sum()
+
+    # Calculates the weights of each class as: N / (2 * N_{c}), where N corresponds to the total 
+    # number of voxels in the dataset and N_{c} the total number of voxels of class C in the dataset
+    background_weights = (num_background_voxels + num_fluid_voxels) / (2 * num_background_voxels)
+    fluid_weights = (num_background_voxels + num_fluid_voxels) / (2 * num_fluid_voxels)
+    # Calculates the positive weight as the total number 
+    # of background voxels divided by the number of fluid voxels
+    # pos_weight = num_background_voxels / num_fluid_voxels
+
+    # Converts the weights to a PyTorch tensor of shape [2]
+    binary_weights = torch.tensor([background_weights, fluid_weights], dtype=torch.float)
+    # Converts the weights to a PyTorch tensor of shape [1]
+    # binary_weights = torch.tensor([pos_weight], dtype=torch.float)
+
+    return binary_weights
+
 def train_model (
         run_name: str,
         fold_val: int,
@@ -172,6 +215,8 @@ def train_model (
     # Has to be done before model initiation in case the number of 
     # classes is selected incorrectly
     if model_name == "UNet3":
+        # Gets the weights of the background and the selected fluid
+        class_weights = get_class_weights(fluid).to(device=device)
         # Restriction in case no fluid was selected
         if fluid is None:
             print("The fluid desired to segment must be specified.")
@@ -462,26 +507,41 @@ def train_model (
                 # these calculations
                 # Calculates loss
                 with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=amp):
-                    # Predicts the masks of the received images
-                    masks_pred = model(images)
-                    # Performs softmax on the predicted masks
-                    # dim=1 indicates that the softmax is calculated 
-                    # across the masks, since the channels is the first 
-                    # dimension
-                    masks_pred_prob_bchw = softmax(masks_pred, dim=1).float()
-                    # Permute changes the images from channels first to channels last
-                    masks_pred_prob = masks_pred_prob_bchw.permute(0, 2, 3, 1)
-                    # Performs one hot encoding on the true masks, in channels last format
-                    masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float().squeeze(1)
+                    if model_name != "UNet3":
+                        # Predicts the masks of the received images
+                        masks_pred = model(images)
+                        # Performs one hot encoding on the true masks, in channels last format
+                        masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float().squeeze(1)
+                        # Performs softmax on the predicted masks
+                        # dim=1 indicates that the softmax is calculated 
+                        # across the masks, since the channels is the first 
+                        # dimension
+                        masks_pred_prob_bchw = softmax(masks_pred, dim=1).float()
+                        # Permute changes the images from channels first to channels last
+                        masks_pred_prob = masks_pred_prob_bchw.permute(0, 2, 3, 1)
 
-                    # Calculates the balanced loss for the background mask
-                    loss = multiclass_balanced_cross_entropy_loss(
-                                        model_name=model_name,
-                                        y_true=masks_true_one_hot,
-                                        y_pred=masks_pred_prob, 
-                                        batch_size=images.shape[0], 
-                                        n_classes=model.n_classes, 
-                                        eps=1e-7)
+                        # Calculates the balanced loss for the background mask
+                        loss = multiclass_balanced_cross_entropy_loss(
+                                            model_name=model_name,
+                                            y_true=masks_true_one_hot,
+                                            y_pred=masks_pred_prob, 
+                                            batch_size=images.shape[0], 
+                                            n_classes=model.n_classes, 
+                                            eps=1e-7)
+                    else:
+                        # Checks if the number of weights matches the number of classes
+                        assert class_weights.shape[0] == model.n_classes, \
+                        f"Class weights length ({class_weights.shape[0]})" \
+                            f"does not match the number of classes ({model.n_classes})."
+                        # Removes the second dimension because CrossEntropyLoss expects
+                        # a target with shape (B, H, W) and a prediction of shape 
+                        # (B, C, H, W) where C matches the length of the class_weights
+                        # passed as argument
+                        true_masks = true_masks.squeeze(1)
+                        # Assigns the calculated weights to each class
+                        criterion = torch.nn.CrossEntropyLoss(weight=class_weights)
+                        # Calculates the CrossEntropyLoss for the predicted masks
+                        loss = criterion(masks_pred, true_masks)
 
                 # Saves the value that are zero as 
                 # None so that it saves memory
