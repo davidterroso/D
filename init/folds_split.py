@@ -1,4 +1,3 @@
-from re import S
 import numpy as np
 import pandas as pd
 from itertools import permutations, product
@@ -1405,5 +1404,3 @@ def generation_4_fold_split():
 
     # Saves the data to a CSV
     split_df.to_csv("..\\splits\\generation_4_fold_split.csv", index=False)
-
-generation_4_fold_split()

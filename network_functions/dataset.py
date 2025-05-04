@@ -483,7 +483,9 @@ class TrainDataset(Dataset):
         # in case it is applicable
         scan = imread(slice_name)
         mask = imread(mask_name)
-        if (self.number_of_channels > 1) and (self.patch_type != "small"):
+        if (self.number_of_channels > 1) and \
+            (self.patch_type == "vertical") and \
+            (self.model == "UNet"):
             rdm = imread(rdms_name)
 
         # In case the selected model is the 2.5D, also loads the previous
@@ -528,8 +530,8 @@ class TrainDataset(Dataset):
         # Keeps the extra dimension on the slice but not on the mask
         if ((self.model != "2.5D") and (self.number_of_channels == 1)):
             scan, mask = transformed[0], transformed[1]
-        elif (self.model != "2.5D" and (self.number_of_channels > 1)):
-            scan, mask = transformed[0,1], transformed[2]
+        elif ((self.model != "2.5D") and (self.number_of_channels > 1)):
+            scan, mask = transformed[0:1,:,:], transformed[2,:,:]
         # Handles it differently for the 2.5D model, ensuring the correct order of slices 
         else:
             scan = torch.cat([transformed[0].float(), transformed[1].float(), transformed[2].float()], dim=0)
@@ -537,7 +539,9 @@ class TrainDataset(Dataset):
 
         # Z-Score Normalization / Standardization
         # Mean of 0 and SD of 1 of the image
-        if self.number_of_channels == 2:
+        # The mean and the standard deviation of 
+        # the scan are considered 128 
+        if (self.number_of_channels != 2):
             scan = (scan - 128.) / 128.
         else:
             scan[0,:,:] = (scan[0,:,:] - 128.) / 128.
@@ -662,7 +666,7 @@ class ValidationDataset(Dataset):
         # in case it is applicable
         scan = imread(slice_name)
         mask = imread(mask_name)
-        if (self.number_of_channels > 1) and (self.patch_type != "small"):
+        if (self.number_of_channels > 1) and (self.patch_type == "vertical"):
             rdm = imread(rdms_name)
 
         # In case the model selected is the UNet3, all the labels 
@@ -679,12 +683,11 @@ class ValidationDataset(Dataset):
         # as the first channel
         if (self.model != "2.5D") and (self.number_of_channels == 1):
             scan = expand_dims(scan, axis=0)
-        elif ((self.number_of_channels > 1) and (self.model != "2.5D")):
+        elif ((self.number_of_channels == 2) and (self.model != "2.5D")):
             scan = stack(arrays=[scan, rdm], axis=0)
-
         # In case the selected model is the 2.5D, also loads the previous
         # and following slice
-        if self.model == "2.5D":
+        elif self.model == "2.5D":
             scan_before = imread(str(slice_name[:-5] + "_before.tiff"))
             scan_after = imread(str(slice_name[:-5] + "_after.tiff"))
             # Stacks them to apply the transformations
@@ -808,7 +811,7 @@ class TestDataset(Dataset):
         mask = imread(mask_name)
         if self.model == "2.5D":
             roi = imread(roi_name)
-        if self.number_of_channels > 1 and self.model != "2.5D":
+        if self.number_of_channels == 2 and self.model != "UNet":
             rdm = imread(rdm_name)
 
         # In case the selected model is the 2.5D, also loads the previous
@@ -860,7 +863,7 @@ class TestDataset(Dataset):
 
         # Z-Score Normalization / Standardization
         # Mean of 0 and SD of 1
-        if ((self.number_of_channels > 1) and (self.model != "2.5D")):
+        if ((self.number_of_channels == 2) and (self.model == "vertical")):
             scan[:,:,0] = (scan[:,:,0] - 128.) / 128.
         else:
             scan = (scan - 128.) / 128.
