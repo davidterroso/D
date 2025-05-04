@@ -174,6 +174,7 @@ def test_gan(
         gen_model_name: str=None,
         number_of_classes: int=1,
         save_images: bool=True,
+        split: str="generation_4_fold_split.csv",
         trained_generator_name: str=None
     ):
     """
@@ -199,6 +200,8 @@ def test_gan(
             output will present
         save_images (bool): flag that indicates whether the 
             predicted images will be saved or not
+        split (str): name of the k-fold split file that will be 
+            used in this run
         trained_generator_name (str): name of the trained 
             generator weights file
             
@@ -206,7 +209,7 @@ def test_gan(
         None
     """
     # Gets the list of volumes used to test the model
-    df = read_csv("splits/generation_4_fold_selection.csv")
+    df = read_csv(split)
     test_volumes = df[str(fold_test)].dropna().to_list()
 
     # Checks if the given model name is available
