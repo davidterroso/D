@@ -229,7 +229,7 @@ def generation_images_from_volumes(volumes_list: list, model_name: str):
     if model_name == "UNet":
         images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
     elif model_name == "GAN":
-        images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized_patches\\"
+        images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized_64_patches\\"
 
     # Iterates through the available images
     # and registers the name of those that are 
@@ -245,9 +245,8 @@ def generation_images_from_volumes(volumes_list: list, model_name: str):
         if volume in volumes_list:
             images_list.append((images_folder, patch_name))
 
-    # Creates a dictionary that will 
-    # match the id of a volume to a path
-    volume_dict = defaultdict(list)
+    # Creates a dictionary that will match the id of a volume to a path
+    volume_dict = defaultdict(lambda: defaultdict(list))
     # Iterates through the 
     # full list of images
     for folder, path in images_list:
@@ -265,21 +264,25 @@ def generation_images_from_volumes(volumes_list: list, model_name: str):
         else:
             volume_id = "_".join(parts[:-1])
             slice_number = int(parts[-1].split(".")[0])
-        volume_dict[volume_id].append((folder, path, slice_number))
+        volume_dict[volume_id][slice_number].append((folder, path))
 
     # Remove the first and last slice for each volume
     # Initiates a list that 
     # will have the filtered paths
     filtered_paths = []
     # Iterates through all the volumes in the dataset
-    for volume_id, paths in volume_dict.items():
+    for volume_id, slices_dict in volume_dict.items():
         # Sorts paths for the volume to ensure correct order
-        paths.sort(key=lambda x: x[2])
-        # Excludes the first and last slices
-        filtered_paths.extend([(folder, path) for folder, path, _ in paths[1:-1]])
+        slice_numbers = sorted(slices_dict.keys())
+        # Excludes the first and last slices,
+        # while ensuring that there are enough 
+        # slices to analyze 
+        if len(slice_numbers) > 2:
+            for sn in slice_numbers[1:-1]:
+                filtered_paths.extend(slices_dict[sn])
     
     # Return only the filenames with their respective folder
-    return [f"{folder}{path}" for folder, path in filtered_paths]
+    return [f"{path}" for folder, path in filtered_paths]
 
 def images_from_volumes(volumes_list: list):
     """
@@ -1295,6 +1298,7 @@ class TrainDatasetGAN(Dataset):
             prev_img_path = image_path.split(".")[0][:-3] + str(img_number - 1).zfill(3) + ".tiff"
             next_img_path = image_path.split(".")[0][:-3] + str(img_number + 1).zfill(3) + ".tiff"
         elif self.model_name == "GAN":
+            print(self.images_names[index].split("_"))
             # Gets the information of the slice that is being read
             vendor, volume_id, img_number, patch_number = self.images_names[index].split("_")
             # Sets the name of the previous and following images
@@ -1305,6 +1309,10 @@ class TrainDatasetGAN(Dataset):
             # Changes the number of the slice in the path
             prev_img_path = f"{images_folder}{base_name.format(prev_img_num)}"
             next_img_path = f"{images_folder}{base_name.format(next_img_num)}"
+
+        print(prev_img_path)
+        print(image_path)
+        print(next_img_path)
 
         # Loads the previous and the following images while normalizing 
         # to 0-1 range

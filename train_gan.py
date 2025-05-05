@@ -11,6 +11,8 @@ from networks.gan import Discriminator, Generator
 from networks.loss import discriminator_loss, generator_loss
 from networks.unet import UNet
 
+import matplotlib.pyplot as plt
+
 # Imports tqdm depending on whether 
 # it is being called from the 
 # Notebook or from this file
@@ -285,6 +287,25 @@ def train_gan(
                 prev_imgs = stack[:,0,:,:].to(device=device)
                 mid_imgs = stack[:,1,:,:].to(device=device)
                 next_imgs = stack[:,2,:,:].to(device=device)
+
+                ########### USED ONLY FOR DEBUGGING #############
+
+                # fig, axes = plt.subplots(1, 3, figsize=(12, 4))
+
+                # axes[0].imshow(prev_imgs.cpu()[0], cmap='gray')
+                # axes[0].set_title('Previous Image')
+                # axes[0].axis('off')
+
+                # axes[1].imshow(mid_imgs.cpu()[0], cmap='gray')
+                # axes[1].set_title('Middle Image')
+                # axes[1].axis('off')
+
+                # axes[2].imshow(next_imgs.cpu()[0], cmap='gray')
+                # axes[2].set_title('Next Image')
+                # axes[2].axis('off')
+
+                # plt.tight_layout()
+                # plt.show()
 
                 # Allows for mixed precision calculations, attributes a device to be used in 
                 # these calculations
