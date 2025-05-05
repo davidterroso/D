@@ -386,6 +386,10 @@ def train_gan(
                                                 fake_loss.item(), d_loss.item()])
 
                     elif model_name == "UNet":
+                        # Calls the UNet to generate the expected middle 
+                        # image by receiving the previous and following images
+                        unet_input = torch.stack([prev_imgs, next_imgs], dim=1)
+                        
                         # Checks if the number of channels in an image matches the value indicated 
                         # in the training arguments
                         assert unet_input.shape[1] == number_of_channels, \
@@ -398,9 +402,6 @@ def train_gan(
                         # this epoch to zero
                         unet.zero_grad()
                         
-                        # Calls the UNet to generate the expected middle 
-                        # image by receiving the previous and following images
-                        unet_input = torch.stack([prev_imgs, next_imgs], dim=1)
                         gen_imgs = unet(unet_input.to(device=device))
                         # Calculates the loss of the generator, which compares the generated images 
                         # with the real images
