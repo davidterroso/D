@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import torch
 from IPython import get_ipython
-from os import walk, makedirs
-from os.path import isfile, exists
+from os import walk, makedirs, listdir
+from os.path import isfile, exists, join, splitext
 from shutil import rmtree
 from PIL import Image
 from skimage.io import imread
@@ -1396,4 +1396,86 @@ def save_resized_images(folder_path: str, save_folder: str,
                                     progress_bar.update(1)
     
     print("All images have been saved.")
+    print("EOF.")
+
+def gan_patches_extraction(image_folder: str, patch_size: int=64):
+    """
+    Function used to extract 64x64 patches from the resized images 
+    for further be used to train a GAN in order to generate the 
+    intermediate patch between two images
+
+    Args:
+        image_folder (str): path to the folder that is being used 
+            to store the images
+        patch_size (int): height and width of the square patch that 
+            is desired to extract. In this case, since we aim for
+            64x64 patches, the default value is 64
+
+    Returns:
+        None
+    """
+    # Sets the path to where the images will be read from
+    input_folder = image_folder + "\OCT_images\generation\slices_resized"
+    output_folder = image_folder + f"\OCT_images\generation\slices_resized_{patch_size}_patches"
+    
+    # Creates the output folder in case it 
+    # doesn't exist
+    makedirs(output_folder, exist_ok=True)
+
+    # Gets all the images names in the folder
+    image_files = sorted([f for f in listdir(input_folder) if f.endswith('.tiff')])
+
+    # Gets the shape of the images by loading the first image
+    img_shape = imread(join(input_folder, image_files[0])).shape
+
+    # Calculate number of patches per row and column
+    img_width, img_height = img_shape[0], img_shape[1]
+    # The number of patches is always the value required 
+    # to fill the whole image
+    num_patches_y = int(np.ceil(img_height / patch_size))
+
+    # Creates a progress bar to show the progress in the patches extracted
+    with tqdm(total=len(image_files), desc=f"Images Patched", unit="img", leave=True, position=0) as progress_bar:
+        # Iterates through all the 
+        # images in the selected folder
+        for filename in image_files:
+            # Sets the path to the image to load
+            filepath = join(input_folder, filename)
+            # Removes the .tiff from the file name
+            base_name = splitext(filename)[0]
+
+            # Loads the image as a 
+            # NumPy array
+            img = imread(filepath)
+
+            # Calculates the padding needed
+            padded_height = patch_size * num_patches_y
+            # Pads the bottom of the image 
+            # in case it is needed
+            if img.shape[0] < padded_height:
+                padding = np.zeros((padded_height - img.shape[0], img.shape[1]), dtype=img.dtype)
+                img = np.vstack((img, padding))
+
+            # Starts the patch extraction and sets the 
+            # patch counter to zero
+            patch_num = 0
+            # Iterates through the vertical patches later
+            for y in range(0, padded_height, patch_size):
+                # Iterates through the horizontal patches after
+                for x in range(0, img_width, patch_size):
+                    # Extracts a patch from the image for the 
+                    # considered indexes that are being iterated
+                    patch = img[y:y+patch_size, x:x+patch_size]
+                    # Loads the image as a PIL array
+                    patch_img = Image.fromarray(patch)
+                    # Defines the name of the patch
+                    patch_name = f"{base_name}_{patch_num:02d}.tiff"
+                    # Saves the patch to the output folder
+                    patch_img.save(join(output_folder, patch_name))
+                    # Updates the number of extracted patches
+                    patch_num += 1
+            # Updates the progress bar
+            progress_bar.update(1)
+            
+    print("All patches have been extracted.")
     print("EOF.")
