@@ -210,7 +210,7 @@ def patches_from_volumes(volumes_list: list, model: str,
             patches_list.append(patch_name)
     return patches_list
 
-def generation_images_from_volumes(volumes_list: list):
+def generation_images_from_volumes(volumes_list: list, model_name: str):
     """
     Used to return the list of all the patches that are available to 
     train the GAN, knowing which volumes will be used
@@ -218,13 +218,18 @@ def generation_images_from_volumes(volumes_list: list):
     Args:
         volumes_list (List[float]): list of the OCT volume's identifier 
             that will be used in training
+        model_name (str): name of the model that is being trained. Can 
+            only be "UNet" or "GAN"
 
     Return:
         patches_list (List[str]): list of the name of the patches that 
             will be used to train the model
     """
-    # Sets the path to the images that will be used to train the GAN
-    images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
+    # Sets the path to the images based on the model_name
+    if model_name == "UNet":
+        images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
+    elif model_name == "GAN":
+        images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized_patches\\"
 
     # Iterates through the available images
     # and registers the name of those that are 
@@ -232,27 +237,49 @@ def generation_images_from_volumes(volumes_list: list):
     # training, returning that list
     images_list = []
     for patch_name in listdir(images_folder):
-        volume_name = patch_name.split("_")[1]
+        parts = patch_name.split("_")
+        volume_name = parts[1]
         volume_set = volume_name[:-3].lower()
         volume_number = int(volume_name[-3:])
         volume = f"{volume_number}_{volume_set}"
         if volume in volumes_list:
-            images_list.append(patch_name)
+            images_list.append((images_folder, patch_name))
 
+    # Creates a dictionary that will 
+    # match the id of a volume to a path
     volume_dict = defaultdict(list)
-    for path in images_list:
-        # Extract volume identifier (everything before the last underscore)
-        volume_id = "_".join(path.split("_")[:-1])
-        volume_dict[volume_id].append(path)
+    # Iterates through the 
+    # full list of images
+    for folder, path in images_list:
+        # Extracts the volume identifier which is 
+        # all the information prior to the slice
+        # number
+        parts = path.split("_")
+        # Gets the information differently depending 
+        # on the folder that is handling, identifiable 
+        # by the number of components in the name 
+        # separated by '_'
+        if len(parts) == 4:
+            volume_id = "_".join(parts[:-2])
+            slice_number = int(parts[-2])
+        else:
+            volume_id = "_".join(parts[:-1])
+            slice_number = int(parts[-1].split(".")[0])
+        volume_dict[volume_id].append((folder, path, slice_number))
 
-    # Remove the first (000) and last slice for each volume
+    # Remove the first and last slice for each volume
+    # Initiates a list that 
+    # will have the filtered paths
     filtered_paths = []
+    # Iterates through all the volumes in the dataset
     for volume_id, paths in volume_dict.items():
-        # Sort paths to ensure correct order
-        paths.sort(key=lambda x: int(x.split("_")[-1][:3]))
-        # Exclude the first and last slices
-        filtered_paths.extend(paths[1:-1])
-    return filtered_paths
+        # Sorts paths for the volume to ensure correct order
+        paths.sort(key=lambda x: x[2])
+        # Excludes the first and last slices
+        filtered_paths.extend([(folder, path) for folder, path, _ in paths[1:-1]])
+    
+    # Return only the filenames with their respective folder
+    return [f"{folder}{path}" for folder, path in filtered_paths]
 
 def images_from_volumes(volumes_list: list):
     """
@@ -1217,7 +1244,7 @@ class TrainDatasetGAN(Dataset):
         super().__init__()
         # Gets a list of paths to all the images that will be used to 
         # train the model and the name of the model
-        self.images_names = generation_images_from_volumes(train_volumes)
+        self.images_names = generation_images_from_volumes(train_volumes, model_name)
         self.model_name = model_name
 
     def __len__(self):
@@ -1253,21 +1280,34 @@ class TrainDatasetGAN(Dataset):
         if self.model_name == "UNet":
             images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
         elif self.model_name == "GAN":
-            images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_patches\\"
+            images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized_64_patches\\"
 
         # Gets the path of the image by the given index
         image_path = images_folder + self.images_names[index]
 
-        # Reads the middle image as a NumPy array
+        # Reads the middle image as a NumPy array and normalizes 
+        # it to 0-1 range
         img = torch.from_numpy(imread(image_path) / 255.).float()
-        # Gets the number of the slice
-        img_number = int(image_path.split(".")[0][-3:])
-        # Sets the name of the previous and following images
-        prev_img_path = image_path.split(".")[0][:-3] + str(img_number - 1).zfill(3) + ".tiff"
-        next_img_path = image_path.split(".")[0][:-3] + str(img_number + 1).zfill(3) + ".tiff"
+        if self.model_name == "UNet":
+            # Gets the number of the slice
+            img_number = int(image_path.split(".")[0][-3:])
+            # Sets the name of the previous and following images
+            prev_img_path = image_path.split(".")[0][:-3] + str(img_number - 1).zfill(3) + ".tiff"
+            next_img_path = image_path.split(".")[0][:-3] + str(img_number + 1).zfill(3) + ".tiff"
+        elif self.model_name == "GAN":
+            # Gets the information of the slice that is being read
+            vendor, volume_id, img_number, patch_number = self.images_names[index].split("_")
+            # Sets the name of the previous and following images
+            prev_img_num = f"{int(img_number) - 1:03}"
+            next_img_num = f"{int(img_number) + 1:03}"
+            # Sets a base name that will only change the number of the slice
+            base_name = f"{vendor}_{volume_id}_{{}}_{patch_number}"
+            # Changes the number of the slice in the path
+            prev_img_path = f"{images_folder}{base_name.format(prev_img_num)}"
+            next_img_path = f"{images_folder}{base_name.format(next_img_num)}"
 
-        # Loads the previous and the 
-        # following images 
+        # Loads the previous and the following images while normalizing 
+        # to 0-1 range
         prev_img = torch.from_numpy(imread(prev_img_path) / 255.).float()
         next_img = torch.from_numpy(imread(next_img_path) / 255.).float()
 
@@ -1303,7 +1343,7 @@ class ValidationDatasetGAN(Dataset):
         super().__init__()
         # Gets a list of paths to all the images that will be used to 
         # validate the model and the name of the model
-        self.images_names = generation_images_from_volumes(val_volumes)
+        self.images_names = generation_images_from_volumes(val_volumes, model_name)
         self.model_name = model_name
 
     def __len__(self):
@@ -1339,21 +1379,34 @@ class ValidationDatasetGAN(Dataset):
         if self.model_name == "UNet":
             images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
         elif self.model_name == "GAN":
-            images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_patches\\"
+            images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized_64_patches\\"
 
         # Gets the path of the image by the given index
         image_path = images_folder + self.images_names[index]
 
-        # Reads the middle image as a NumPy array
-        img = torch.from_numpy(imread(image_path) / 255).float()
-        # Gets the number of the slice
-        img_number = int(image_path.split(".")[0][-3:])
-        # Sets the name of the previous and following images
-        prev_img_path = image_path.split(".")[0][:-3] + str(img_number - 1).zfill(3) + ".tiff"
-        next_img_path = image_path.split(".")[0][:-3] + str(img_number + 1).zfill(3) + ".tiff"
+        # Reads the middle image as a NumPy array and normalizes 
+        # it to 0-1 range
+        img = torch.from_numpy(imread(image_path) / 255.).float()
+        if self.model_name == "UNet":
+            # Gets the number of the slice
+            img_number = int(image_path.split(".")[0][-3:])
+            # Sets the name of the previous and following images
+            prev_img_path = image_path.split(".")[0][:-3] + str(img_number - 1).zfill(3) + ".tiff"
+            next_img_path = image_path.split(".")[0][:-3] + str(img_number + 1).zfill(3) + ".tiff"
+        elif self.model_name == "GAN":
+            # Gets the information of the slice that is being read
+            vendor, volume_id, img_number, patch_number = self.images_names[index].split("_")
+            # Sets the name of the previous and following images
+            prev_img_num = f"{int(img_number) - 1:03}"
+            next_img_num = f"{int(img_number) + 1:03}"
+            # Sets a base name that will only change the number of the slice
+            base_name = f"{vendor}_{volume_id}_{{}}_{patch_number}"
+            # Changes the number of the slice in the path
+            prev_img_path = f"{images_folder}{base_name.format(prev_img_num)}"
+            next_img_path = f"{images_folder}{base_name.format(next_img_num)}"
 
-        # Loads the previous and the 
-        # following images 
+        # Loads the previous and the following images while normalizing 
+        # to 0-1 range
         prev_img = torch.from_numpy(imread(prev_img_path) / 255).float()
         next_img = torch.from_numpy(imread(next_img_path) / 255).float()
 
@@ -1389,7 +1442,7 @@ class TestDatasetGAN(Dataset):
         super().__init__()
         # Gets a list of paths to all the images that will be used to 
         # test the model
-        self.images_names = generation_images_from_volumes(test_volumes)
+        self.images_names = generation_images_from_volumes(test_volumes, model_name)
         self.model_name = model_name
 
     def __len__(self):
