@@ -1,6 +1,6 @@
 import torch
 from IPython import get_ipython
-from numpy import array
+from numpy import array, ndarray
 from os import makedirs
 from os.path import exists
 from pandas import concat, DataFrame, read_csv
@@ -8,6 +8,7 @@ from PIL import Image
 from shutil import rmtree
 from skimage.metrics import structural_similarity as ssim
 from torch.utils.data import DataLoader
+from typing import List
 from networks.gan import Generator
 from networks.loss import psnr
 from network_functions.dataset import TestDatasetGAN
@@ -22,6 +23,91 @@ if (get_ipython() is not None):
     from tqdm import tqdm_notebook as tqdm
 else:
     from tqdm.auto import tqdm
+
+def extract_patches(img: torch.Tensor, patch_size: int=64):
+    """
+    Function used to split a single image tensor with shape HxW 
+    into square patches of with a given height/width in order of 
+    left to right and top to bottom
+    
+    Args:
+        img (PyTorch tensor): image that will be patched
+        patch_size (int): height/width of the patches that will 
+            be extracted. Since we are dealing with 64x64 patches
+            the value considered default was 64
+
+    Returns:
+        None
+    """
+    # Gets the height and width of the image
+    h, w = img.shape[-2], img.shape[-1]
+    # Calculates the height that is necessary to pad
+    pad_h = (patch_size - (h % patch_size)) % patch_size
+    # Padds the image with zeros at the bottom
+    padded_img = torch.nn.functional.pad(img, (0, 0, 0, pad_h))
+
+    # Gets the patches from the padded image
+    patches = padded_img.unfold(0, patch_size, patch_size).unfold(1, patch_size, patch_size)
+    # Organizes it to have shape C x H x W, where C is the total 
+    # number of patches, H and W correspond to the height and width
+    # of the extracted patch
+    patches = patches.contiguous().view(-1, patch_size, patch_size)
+    return patches
+
+def stitch_patches(patches: List[ndarray],
+                    image_shape: List, 
+                    patch_size: int=64):
+    """
+    Reconstructs the full image from the 64x64 patches, 
+    by stitching them together side by side
+
+    Args:
+        patches (List[NumPy array]): list of NumPy 
+            matrices that correspond to the predicted
+            patches
+        image_shape (List[int, int]): shape of the 
+            input image and, therefore, expected shape
+        patch_size (int): height/width of the patches that will 
+            be extracted. Since we are dealing with 64x64 patches
+            the value considered default was 64
+
+    Returns:
+        
+    """
+    # Gets the expected shape of images
+    original_h, original_w = image_shape
+    # Gets the total number of 
+    # patches that make up the image
+    num_patches = len(patches)
+    # Gets the number of patches in each row
+    patches_per_row = original_w // patch_size
+    # Gets the total number of rows
+    rows = (num_patches + patches_per_row - 1) // patches_per_row
+
+    # Gets the expected height 
+    # of the image
+    h_padded = rows * patch_size
+    # Creates a matrix with the same shape as the 
+    # image full of zeros
+    full_image = torch.zeros((h_padded, original_w))
+
+    # Iterates through all the patches
+    for idx, patch in enumerate(patches):
+        # Gets the row and column in which 
+        # the patch must be placed
+        i = idx // patches_per_row
+        j = idx % patches_per_row
+        # Changes the values that are zeroes to 
+        # the ones that compose the patch
+        full_image[
+            i * patch_size:(i + 1) * patch_size,
+            j * patch_size:(j + 1) * patch_size
+        ] = patch
+
+    # Slices the image to its original size and 
+    # removes the bottom part of the image, 
+    # which was previously padded
+    return full_image[:original_h, :original_w]
 
 def folds_results_gan(first_run_name: str, iteration: int, k: int=5):
     """
@@ -322,8 +408,41 @@ def test_gan(
                     return
 
                 # Generates the middle image
+                # In the case of the GAN, since we are dealing 
+                # with 64x64 patches, the original image is 
+                # patched in multiple others of this shape
+                # so that the model, which was also trained in 
+                # patches can generate the intermediate patch
+                # Then, these patches are stitched together
                 if model_name == "GAN":
-                    gen_imgs = generator(prev_imgs.detach(), next_imgs.detach())
+                    # Initiates a list that will contain the 
+                    # outputted patches resulting from the 
+                    # 64x64 patches extracted from the loaded 
+                    # image 
+                    patches_out = []
+
+                    # Calls a function that returns all the 
+                    # 1x64x64 patches that make up the image
+                    prev_patches = extract_patches(prev_imgs[0])
+                    next_patches = extract_patches(next_imgs[0])
+
+                    # Iterates through all the extracted patches
+                    for patch in range(prev_patches.shape[0]):
+                        # Converts each image to a BxCxHxW format and assigns it to the GPU 
+                        prev_patch = prev_patches[patch].unsqueeze(0).unsqueeze(0).to(device)
+                        next_patch = next_patches[patch].unsqueeze(0).unsqueeze(0).to(device)
+
+                        # With the previous and following patch 
+                        # generates the intermediate one
+                        gen_patch = generator(prev_patch, next_patch)
+                        # Appends the patch to the list of patches as 
+                        # a NumPy array
+                        patches_out.append(gen_patch.squeeze(0).cpu())
+
+                    # Stitches all the resulting patches together forming an 
+                    # image with shape 496x512 that can be compared
+                    gen_imgs = stitch_patches(patches_out, mid_imgs[0].shape)
+
                 elif model_name == "UNet":
                     gen_imgs = generator(torch.stack([prev_imgs, next_imgs], dim=1).detach().to(device=device))
                 elif model_name == "Pix2Pix":
