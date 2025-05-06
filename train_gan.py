@@ -335,7 +335,7 @@ def train_gan(
                         # they can be clipped
                         grad_scaler.unscale_(optimizer_G)
                         # Clips the gradients above the threshold
-                        torch.nn.utils.clip_grad_norm_(generator.parameters(), 1.0)
+                        torch.nn.utils.clip_grad_norm_(generator.parameters(), gradient_clipping)
                         # Updates the parameters 
                         # based on the current gradient
                         grad_scaler.step(optimizer_G)
@@ -362,7 +362,7 @@ def train_gan(
                         # they can be clipped
                         grad_scaler.unscale_(optimizer_D)
                         # Clips the gradients above the threshold
-                        torch.nn.utils.clip_grad_norm_(discriminator.parameters(), 1.0)
+                        torch.nn.utils.clip_grad_norm_(discriminator.parameters(), gradient_clipping)
                         # Updates the parameters 
                         # based on the current gradient
                         grad_scaler.step(optimizer_D)
@@ -417,7 +417,7 @@ def train_gan(
                         # they can be clipped
                         grad_scaler.unscale_(optimizer_unet)
                         # Clips the gradients above the threshold
-                        torch.nn.utils.clip_grad_norm_(unet.parameters(), 1.0)
+                        torch.nn.utils.clip_grad_norm_(unet.parameters(), gradient_clipping)
                         # Updates the parameters 
                         # based on the current gradient
                         grad_scaler.step(optimizer_unet)
@@ -474,7 +474,7 @@ def train_gan(
             # Creates the folder models in case 
             # it does not exist yet
             makedirs("models", exist_ok=True)
-            # Updates the best value of 1 - MS-SSIM
+            # Updates the best value of PSNR
             best_val_psnr = val_psnr
             patience_counter = 0
             # Both the generator and the discriminator are saved with a name 
@@ -487,7 +487,7 @@ def train_gan(
                             f"models/{run_name}_discriminator_best_model.pth")
             elif model_name == "UNet":
                 torch.save(unet.state_dict(), 
-                            f"models/{run_name}_unet_best_model.pth")
+                            f"models/{run_name}_generator_unet_best_model.pth")
             print("Models saved.")
         # In case the model has not 
         # obtained a better performance, 

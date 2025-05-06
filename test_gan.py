@@ -295,7 +295,7 @@ def test_gan(
         None
     """
     # Gets the list of volumes used to test the model
-    df = read_csv(split)
+    df = read_csv(f"splits\{split}")
     test_volumes = df[str(fold_test)].dropna().to_list()
 
     # Checks if the given model name is available
@@ -351,7 +351,7 @@ def test_gan(
 
     # Creates the TestDatasetGAN object with the 
     # list of volumes that will be used in training
-    test_dataset = TestDatasetGAN(test_volumes)
+    test_dataset = TestDatasetGAN(test_volumes=test_volumes, model_name=model_name)
     # Creates the DataLoader object using the dataset, declaring both the size of the 
     # batch and the number of workers
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=12)
@@ -403,7 +403,7 @@ def test_gan(
                     gen_imgs_wgenerator = generator(prev_imgs.detach(), next_imgs.detach())
                 elif gen_model_name == "UNet":
                     gen_imgs_wgenerator = generator(torch.stack([prev_imgs, next_imgs], dim=1).detach())
-                elif not None:
+                elif gen_model_name is not None:
                     print("Unrecognized generator model name. Available names: 'GAN' or 'UNet'")
                     return
 
@@ -450,9 +450,12 @@ def test_gan(
 
                 # Calculates the PSNR value
                 img_psnr = round(psnr(mid_imgs, gen_imgs), 3)
+                # Removes batch dimension from the generated image
+                mid_imgs = mid_imgs.squeeze(0).squeeze(0)
+                gen_imgs = gen_imgs.squeeze(0).squeeze(0)
                 # Calculates the SSIM value
                 img_ssim = round(ssim(
-                                mid_imgs, gen_imgs,
+                                mid_imgs.cpu().numpy(), gen_imgs.cpu().numpy(),
                                 data_range=1,
                                 gaussian_weights=True,
                                 use_sample_covariance=False,
