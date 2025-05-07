@@ -536,10 +536,8 @@ class TrainDataset(Dataset):
         # as the first channel
         # The mask dimensions are also expanded 
         # to match
-        if ((self.number_of_channels == 1) and (self.model != "2.5D")):
+        if self.model != "2.5D":
             scan = expand_dims(scan, axis=0)
-        elif ((self.number_of_channels > 2) and (self.model != "2.5D")):
-            scan = stack(arrays=[scan, rdm], axis=0)
         mask = expand_dims(mask, axis=0)
 
         # Converts the scan and mask 
@@ -558,10 +556,8 @@ class TrainDataset(Dataset):
 
         # Separate the scan and the mask from the stack
         # Keeps the extra dimension on the slice but not on the mask
-        if ((self.model != "2.5D") and (self.number_of_channels == 1)):
+        if self.model != "2.5D":
             scan, mask = transformed[0], transformed[1]
-        elif ((self.model != "2.5D") and (self.number_of_channels > 1)):
-            scan, mask = transformed[0:1,:,:], transformed[2,:,:]
         # Handles it differently for the 2.5D model, ensuring the correct order of slices 
         else:
             scan = torch.cat([transformed[0].float(), transformed[1].float(), transformed[2].float()], dim=0)
@@ -571,10 +567,7 @@ class TrainDataset(Dataset):
         # Mean of 0 and SD of 1 of the image
         # The mean and the standard deviation of 
         # the scan are considered 128 
-        if (self.number_of_channels != 2):
-            scan = (scan - 128.) / 128.
-        else:
-            scan[0,:,:] = (scan[0,:,:] - 128.) / 128.
+        scan = (scan - 128.) / 128.
 
         # Declares a sample as a dictionary that 
         # to the keyword "scan" associates the 
@@ -711,13 +704,11 @@ class ValidationDataset(Dataset):
         # Expands the scan dimentions to 
         # include an extra channel of value 1
         # as the first channel
-        if (self.model != "2.5D") and (self.number_of_channels == 1):
+        if self.model != "2.5D":
             scan = expand_dims(scan, axis=0)
-        elif ((self.number_of_channels == 2) and (self.model != "2.5D")):
-            scan = stack(arrays=[scan, rdm], axis=0)
         # In case the selected model is the 2.5D, also loads the previous
         # and following slice
-        elif self.model == "2.5D":
+        if self.model == "2.5D":
             scan_before = imread(str(slice_name[:-5] + "_before.tiff"))
             scan_after = imread(str(slice_name[:-5] + "_after.tiff"))
             # Stacks them to apply the transformations
@@ -893,10 +884,7 @@ class TestDataset(Dataset):
 
         # Z-Score Normalization / Standardization
         # Mean of 0 and SD of 1
-        if ((self.number_of_channels == 2) and (self.model == "vertical")):
-            scan[:,:,0] = (scan[:,:,0] - 128.) / 128.
-        else:
-            scan = (scan - 128.) / 128.
+        scan = (scan - 128.) / 128.
 
         # Declares a sample as a dictionary that 
         # to the keyword "scan" associates the 

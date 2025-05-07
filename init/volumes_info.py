@@ -191,5 +191,3 @@ def volumes_resumed_info(file_path: str="..\splits\\volumes_info.csv"):
     resulting_df_sum = df.groupby("Vendor").sum().drop("VolumeNumber", axis=1).round(2)
     # Saves the DataFrame as a CSV file
     resulting_df_sum.to_csv("..\splits\\volumes_sum.csv", index=True)
-
-volumes_info("D:\RETOUCH")

@@ -133,7 +133,7 @@ def multiclass_balanced_cross_entropy_loss(model_name: str,
     true_pos = torch.sum((1. - p_0) * (1. - g_0))
     false_pos = torch.sum((1. - p_0) * g_0)
     false_neg = torch.sum(p_0 * (1. - g_0))
-    dice_loss = 1. - ((2. * true_pos) / (2. * true_pos + false_pos + false_neg + eps))
+    dice_loss = 1. - ((2. * true_pos + eps) / (2. * true_pos + false_pos + false_neg + eps))
 
     # Combine the losses
     # The negative sign on cross-entropy is because of the log function

@@ -1,4 +1,3 @@
-from random import shuffle
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
@@ -252,7 +251,7 @@ def extract_patches_wrapper(model_name: str, patch_type: str, patch_shape: tuple
                               persistent_workers=True, shuffle=True, drop_last=True)
     else:
         loader_args = dict(batch_size=batch_size, pin_memory=True, num_workers=12, 
-                              persistent_workers=True, worker_init_fn=seed_worker)
+                              persistent_workers=True, shuffle=True, worker_init_fn=seed_worker)
     print("Loading Training Data.")
     train_loader = DataLoader(train_set, **loader_args)
     print("Loading Validation Data.")

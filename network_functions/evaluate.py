@@ -3,7 +3,7 @@ from IPython import get_ipython
 from torch.nn import Module
 from torch.utils.data import DataLoader
 from torch.nn.functional import one_hot, softmax
-from networks.loss import balanced_bce_loss, multiclass_balanced_cross_entropy_loss, psnr
+from networks.loss import multiclass_balanced_cross_entropy_loss, psnr
 
 # Imports tqdm depending on whether 
 # it is being called from the 
@@ -60,33 +60,22 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
                 masks_pred = model(images)
 
                 # Calculates the balanced loss for the background mask
-                if model_name != "UNet3": 
-                    # Performs softmax on the predicted masks
-                    # dim=1 indicates that the softmax is calculated 
-                    # across the masks, since the channels is the first 
-                    # dimension
-                    masks_pred_prob = softmax(masks_pred, dim=1).float()
-                    # Permute changes the images from channels first to channels last
-                    masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
-                    # Performs one hot encoding on the true masks, in channels last format
-                    masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float()
-                    loss = multiclass_balanced_cross_entropy_loss(
-                                        model_name=model_name,
-                                        y_true=masks_true_one_hot,
-                                        y_pred=masks_pred_prob, 
-                                        batch_size=images.shape[0], 
-                                        n_classes=model.n_classes, 
-                                        eps=1e-7)
-                else:
-                    # Removes the second dimension because CrossEntropyLoss expects
-                    # a target with shape (B, H, W) and a prediction of shape 
-                    # (B, C, H, W) where C matches the length of the class_weights
-                    # passed as argument
-                    true_masks = true_masks.squeeze(1)
-                    # Assigns the calculated weights to each class
-                    criterion = torch.nn.CrossEntropyLoss(weight=class_weights)
-                    # Calculates the CrossEntropyLoss for the predicted masks
-                    loss = criterion(masks_pred, true_masks)
+                # Performs softmax on the predicted masks
+                # dim=1 indicates that the softmax is calculated 
+                # across the masks, since the channels is the first 
+                # dimension
+                masks_pred_prob = softmax(masks_pred, dim=1).float()
+                # Permute changes the images from channels first to channels last
+                masks_pred_prob = masks_pred_prob.permute(0, 2, 3, 1)
+                # Performs one hot encoding on the true masks, in channels last format
+                masks_true_one_hot = one_hot(true_masks.long(), model.n_classes).float()
+                loss = multiclass_balanced_cross_entropy_loss(
+                                    model_name=model_name,
+                                    y_true=masks_true_one_hot,
+                                    y_pred=masks_pred_prob, 
+                                    batch_size=images.shape[0], 
+                                    n_classes=model.n_classes, 
+                                    eps=1e-7)
 
                 # Accumulate loss
                 total_loss += loss.item()
