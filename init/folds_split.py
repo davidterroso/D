@@ -1405,7 +1405,7 @@ def generation_4_fold_split():
     # Saves the data to a CSV
     split_df.to_csv("..\\splits\\generation_4_fold_split.csv", index=False)
 
-def splits_to_25d(split_path: str):
+def splits_to_25d(split_path: str, test_fold: int=1):
     """
     This function is used to convert the splits 
     obtained with the functions used in this project 
@@ -1424,6 +1424,8 @@ def splits_to_25d(split_path: str):
     Args:
         split_path (str): path to the split we want 
             to convert
+        test_fold (int): number of the fold that 
+            will be used in testing
 
     Returns:
         None
@@ -1437,24 +1439,52 @@ def splits_to_25d(split_path: str):
     # Loads the split that will be converted
     split_df = pd.read_csv(split_path, header=None)
 
+    # Gets the number of folds
+    num_folds = split_df.shape[1]
+
+    # Creates a dictionary that will associate folds to the volumes
+    fold_to_volumes = {
+        i: [f"TRAIN{int(v):03d}" for v in split_df[i].dropna().astype(int)]
+        for i in range(num_folds)
+    }
+
+    test_volumes = fold_to_volumes[test_fold]
+    test_df = slice_df[slice_df['image_name'].isin(test_volumes)].copy()
+    test_df = test_df.sample(frac=1, random_state=42).reset_index(drop=True)
+    
+    test_out_path = f"..\\splits_ptl\\competitive_fold_selection_{test_fold}.csv"
+    test_df.to_csv(test_out_path, index=False)
+
     # Creates the directory in case it does 
     # not exist already
     makedirs("..\\splits_ptl", exist_ok=True)
 
     # Iterates through all the folds in the split
-    for fold_idx in range(split_df.shape[1]):
-        # Reads the fold of the split
-        volumes = split_df[fold_idx].dropna().astype(int)
-        # Converts the identifier of the volume to a TRAIN0XX
-        # format, where X is the padded identifier of the volume
-        volume_ids = [f"TRAIN{vid:03d}" for vid in volumes]
+    for fold_idx in range(num_folds):
+        # In case the fold is the 
+        # one used in testing,
+        # nothing happens
+        if fold_idx == test_fold:
+            continue
 
-        # Selects all slices corresponding to the volumes in this fold
-        fold_data = slice_df[slice_df['image_name'].isin(volume_ids)].copy()
+        # Uses all folds except the current fold and the fold used in testing
+        include_folds = [f for f in range(num_folds) if f not in {fold_idx, test_fold}]
         
-        # Shuffles the slices in this fold
-        fold_data = fold_data.sample(frac=1, random_state=42).reset_index(drop=True)
+        # Initiates an empty list that will store 
+        # the volumes used in training
+        train_volumes = []
+        # Iterates through all 
+        # the included folds and 
+        # adds to the list the 
+        # volumes that belong to it 
+        for f in include_folds:
+            train_volumes.extend(fold_to_volumes[f])
 
-        # Saves the slices information to a CSV file
+        # Creates a DataFrame that will contain the information of the slices
+        # that will be used in training and shuffles them
+        train_df = slice_df[slice_df['image_name'].isin(train_volumes)].copy()
+        train_df = train_df.sample(frac=1, random_state=42).reset_index(drop=True)
+
+        # Saves the results as a CSV file
         out_path = f"..\\splits_ptl\\competitive_fold_selection_{fold_idx}.csv"
-        fold_data.to_csv(out_path, index=False)
+        train_df.to_csv(out_path, index=False)
