@@ -146,17 +146,20 @@ def evaluate_gan(model_name: str, generator: Module,
                     # previous and following images
                     if model_name == "GAN":
                         gen_imgs = generator(prev_imgs.detach(), next_imgs.detach())
+                        # Calculates the PSNR for the original 
+                        # image and the generated image
+                        val_loss = psnr(gen_imgs, mid_imgs.unsqueeze(1))
                     elif model_name =="UNet":
                         unet_input = torch.stack([prev_imgs, next_imgs], dim=1).detach().float() / 255.0
                         gen_imgs = generator(unet_input.to(device=device))
-
-                    # Calculates the PSNR for the original 
-                    # image and the generated image
-                    val_psnr = psnr(gen_imgs, mid_imgs.unsqueeze(1))
+                        # Calculates the loss of the generator, which 
+                        # compares the generated images with the real images
+                        criterion = torch.nn.L1Loss()
+                        val_loss = criterion(gen_imgs, mid_imgs.unsqueeze(1))
 
                     # Accumulates the loss for this 
                     # validation 
-                    total_loss += val_psnr.item()
+                    total_loss += val_loss.item()
 
                     # Updates the progress bar
                     progress_bar.update(stack.shape[0])

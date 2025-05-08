@@ -1298,10 +1298,6 @@ class TrainDatasetGAN(Dataset):
             prev_img_path = f"{images_folder}{base_name.format(prev_img_num)}"
             next_img_path = f"{images_folder}{base_name.format(next_img_num)}"
 
-        print(prev_img_path)
-        print(image_path)
-        print(next_img_path)
-
         # Loads the previous and the following images while normalizing 
         # to 0-1 range
         prev_img = torch.from_numpy(imread(prev_img_path) / 255.).float()

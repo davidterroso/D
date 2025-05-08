@@ -190,7 +190,7 @@ def train_gan(
             writer = csv.writer(file)
             # Declares which information will be saved in the logging file
             # associated with each epoch
-            writer.writerow(["Epoch", "Validation Loss"])
+            writer.writerow(["Epoch", "Training Loss", "Validation Loss"])
             
         with open(csv_batch_filename, mode="w", newline="") as file:
             # Declares which information will be saved in the logging file
@@ -465,7 +465,7 @@ def train_gan(
         elif model_name == "UNet":
             with open(csv_epoch_filename, mode="a", newline="") as file:
                 writer = csv.writer(file)
-                writer.writerow([epoch, val_psnr])
+                writer.writerow([epoch, epoch_loss / len(train_loader), val_psnr])
 
         # In case the validation SSIM is better 
         # than the previous, the model is saved 
