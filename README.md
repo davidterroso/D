@@ -47,7 +47,7 @@ The code here implemented was ran in a Windows device, requiring some caution wi
 
 7. Packages installation
 - The packages I used in this code and their respective versions are described in [requirements.txt](environment/requirements.txt). To install them, please run the following command, with the conda environment activated:
- ```pip install -r environment/requirements.txt```
+ ```pip install -r environment/requirements_tf.txt```
 - More information on the packages used as a consequence of those installed, you can see: [requirements_full_tf.txt](environment/requirements_full_tf.txt). The environment specifications are available at [environment_tf.yml](environment/environment_tf.yml).
 
 # PyTorch Installation
