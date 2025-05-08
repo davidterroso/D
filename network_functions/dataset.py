@@ -229,7 +229,7 @@ def generation_images_from_volumes(volumes_list: list, model_name: str):
     if model_name == "UNet":
         images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
     elif model_name == "GAN":
-        images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized_64_patches\\"
+        images_folder = "C:\slices_resized_64_patches\\"
 
     # Iterates through the available images
     # and registers the name of those that are 
@@ -1271,7 +1271,7 @@ class TrainDatasetGAN(Dataset):
         if self.model_name == "UNet":
             images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
         elif self.model_name == "GAN":
-            images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized_64_patches\\"
+            images_folder = "C:\slices_resized_64_patches\\"
 
         # Gets the path of the image by the given index
         image_path = images_folder + self.images_names[index]
@@ -1371,7 +1371,7 @@ class ValidationDatasetGAN(Dataset):
         if self.model_name == "UNet":
             images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
         elif self.model_name == "GAN":
-            images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized_64_patches\\"
+            images_folder = "C:\slices_resized_64_patches\\"
 
         # Gets the path of the image by the given index
         image_path = images_folder + self.images_names[index]
@@ -1470,7 +1470,7 @@ class TestDatasetGAN(Dataset):
         if self.model_name == "UNet":
             images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
         elif self.model_name == "GAN":
-            images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_patches\\"
+            images_folder = "C:\slices_resized_64_patches\\"
 
         # Gets the path of the image by the given index
         image_path = images_folder + self.images_names[index]

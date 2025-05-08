@@ -188,8 +188,7 @@ class Discriminator(Module):
             # 1 x 28 x 29
         )
 
-    def forward(self, img_before, img_mid, 
-                img_after):
+    def forward(self, img_mid):
         """
         Forward step of the discriminator, 
         that returns the logits that 
@@ -199,15 +198,9 @@ class Discriminator(Module):
         Args: 
             self (Generator object): the 
                 Generator object
-            img_before (PyTorch tensor): 
-                image before the one we 
-                are looking to classify
             img_mid (PyTorch tensor): 
                 image we are looking to
                 classify
-            img_after (PyTorch tensor): 
-                image before the one we 
-                are looking to classify
 
         Return:
             (PyTorch tensor): logits that 
@@ -215,7 +208,5 @@ class Discriminator(Module):
                 probability of the image 
                 being real
         """
-        # Concatenates the images along the now first dimension
-        x = cat([img_before, img_mid, img_after], dim=1)
-        return self.conv_blocks(x)
+        return self.conv_blocks(img_mid)
     

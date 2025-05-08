@@ -607,28 +607,20 @@ def gdl_loss(gen_frames, gt_frames, alpha=2, cuda=True):
     # Initiates the weights of the first convolution 
     # filter
     filter_x_values = array(
-        [
-            [[[-1, 1, 0]], [[0, 0, 0]], [[0, 0, 0]]],
-            [[[0, 0, 0]], [[-1, 1, 0]], [[0, 0, 0]]],
-            [[[0, 0, 0]], [[0, 0, 0]], [[-1, 1, 0]]],
-        ],
+        [[[[-1, 1, 0]]]],
         dtype=float32,
     )
     # Initiates the first convolution object
-    filter_x = Conv2d(3, 3, (1, 3), padding=(0, 1))
+    filter_x = Conv2d(1, 1, (1, 3), padding=(0, 1))
     
     # Initiates the weights of the second convolution 
     # filter
     filter_y_values = array(
-        [
-            [[[-1], [1], [0]], [[0], [0], [0]], [[0], [0], [0]]],
-            [[[0], [0], [0]], [[-1], [1], [0]], [[0], [0], [0]]],
-            [[[0], [0], [0]], [[0], [0], [0]], [[-1], [1], [0]]],
-        ],
+        [[[[-1], [1], [0]]]],
         dtype=float32,
     )
     # Initiates the second convolution object
-    filter_y = Conv2d(3, 3, (3, 1), padding=(1, 0))
+    filter_y = Conv2d(1, 1, (3, 1), padding=(1, 0))
         
     # Sets the weights of the convolutions to those initialized above
     filter_x.weight = Parameter(torch.from_numpy(filter_x_values))

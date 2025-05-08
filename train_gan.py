@@ -286,9 +286,9 @@ def train_gan(
                 # Separates the stack in the previous image, 
                 # the middle image (the one we aim to predict), 
                 # and following image, allocating them to the GPU 
-                prev_imgs = stack[:,0,:,:].to(device=device)
-                mid_imgs = stack[:,1,:,:].to(device=device)
-                next_imgs = stack[:,2,:,:].to(device=device)
+                prev_imgs = stack[:,0:1,:,:].to(device=device)
+                mid_imgs = stack[:,1:2,:,:].to(device=device)
+                next_imgs = stack[:,2:3,:,:].to(device=device)
 
                 ########### USED ONLY FOR DEBUGGING #############
 
@@ -458,11 +458,11 @@ def train_gan(
         if model_name == "GAN":
             with open(csv_epoch_filename, mode="a", newline="") as file:
                 writer = csv.writer(file)
-                writer.writerow([epoch, epoch_adv_loss.item() / len(val_loader), 
-                                epoch_g_loss.item() / len(val_loader), 
-                                epoch_real_loss.item() / len(val_loader), 
-                                epoch_fake_loss.item() / len(val_loader), 
-                                epoch_d_loss.item() / len(val_loader),
+                writer.writerow([epoch, epoch_adv_loss / len(val_loader), 
+                                epoch_g_loss / len(val_loader), 
+                                epoch_real_loss / len(val_loader), 
+                                epoch_fake_loss / len(val_loader), 
+                                epoch_d_loss / len(val_loader),
                                 val_psnr])
         elif model_name == "UNet":
             with open(csv_epoch_filename, mode="a", newline="") as file:

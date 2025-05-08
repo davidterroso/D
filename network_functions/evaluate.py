@@ -125,7 +125,7 @@ def evaluate_gan(model_name: str, generator: Module,
     # Allows for mixed precision calculations, attributes a device to be used in these calculations
     with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=amp):       
         # Creates a progress bar that tracks the number of batches that are being used in validation 
-        with tqdm(dataloader, total=n_val, desc='Validating Epoch', unit='batch', leave=True, position=0) as progress_bar:
+        with tqdm(dataloader, total=n_val, desc='Validating Epoch', unit='img', leave=True, position=0) as progress_bar:
             # Iterates through the batches in the batchloader
             for batch in dataloader:
                     # Gets the stack from the dataloader
@@ -138,9 +138,9 @@ def evaluate_gan(model_name: str, generator: Module,
                     # Splits the stack in three different images:
                     # the previous image, the middle image that we 
                     # aim to generate, and the following image 
-                    prev_imgs = stack[:,0,:,:].to(device=device)
-                    mid_imgs = stack[:,1,:,:].to(device=device)
-                    next_imgs = stack[:,2,:,:].to(device=device)
+                    prev_imgs = stack[:,0:1,:,:].to(device=device)
+                    mid_imgs = stack[:,1:2,:,:].to(device=device)
+                    next_imgs = stack[:,2:3,:,:].to(device=device)
 
                     # Generates the image using the generator and the 
                     # previous and following images
