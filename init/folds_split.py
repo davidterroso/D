@@ -1448,16 +1448,22 @@ def splits_to_25d(split_path: str, test_fold: int=1):
         for i in range(num_folds)
     }
 
-    test_volumes = fold_to_volumes[test_fold]
-    test_df = slice_df[slice_df['image_name'].isin(test_volumes)].copy()
-    test_df = test_df.sample(frac=1, random_state=42).reset_index(drop=True)
-    
-    test_out_path = f"..\\splits_ptl\\competitive_fold_selection_{test_fold}.csv"
-    test_df.to_csv(test_out_path, index=False)
-
     # Creates the directory in case it does 
     # not exist already
     makedirs("..\\splits_ptl", exist_ok=True)
+
+    # Iterates through all the folds
+    for i in range(num_folds):
+        # Gets all the volumes that compose a single fold
+        fold_volumes = fold_to_volumes[i]
+        # Converts the slices that compose them to a single DataFrame
+        val_df = slice_df[slice_df['image_name'].isin(fold_volumes)].copy()
+        # Shuffles the DataFrame
+        val_df = val_df.sample(frac=1, random_state=42).reset_index(drop=True)
+
+        # Saves the DataFrame to a CSV file
+        val_out_path = f"..\\splits_ptl\\competitive_fold_selection_{i}_val.csv"
+        val_df.to_csv(val_out_path, index=False)
 
     # Iterates through all the folds in the split
     for fold_idx in range(num_folds):
