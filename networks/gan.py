@@ -44,8 +44,6 @@ class Generator(Module):
             # Input Shape: B x (N * 2) x H x W
             Conv2d(number_of_channels * 2, feature_map_size * 2, kernel_size=3, stride=1, padding=1, bias=False),
             # Shape: B x (F * 2) x H x W
-            Conv2d(number_of_channels * 2, feature_map_size * 2, kernel_size=3, stride=1, padding=1, bias=False),
-            # Shape: B x (F * 2) x H x W
             BatchNorm2d(feature_map_size * 2), # Same shape
             LeakyReLU(0.02, inplace=True), # Same shape
             Conv2d(feature_map_size * 2, feature_map_size * 2, kernel_size=4, stride=2, padding=1, bias=False),
