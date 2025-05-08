@@ -166,7 +166,7 @@ def train_gan(
             writer.writerow(["Epoch", "Adversarial Loss", 
                                 "Generator Loss", "Real Loss", 
                                 "Fake Loss", "Discriminator Loss", 
-                                "Epoch Validation MS-SSIM"])
+                                "Epoch Validation PSNR"])
             
         with open(csv_batch_filename, mode="w", newline="") as file:
             # Declares which information will be saved in the logging file
@@ -190,7 +190,7 @@ def train_gan(
             writer = csv.writer(file)
             # Declares which information will be saved in the logging file
             # associated with each epoch
-            writer.writerow(["Epoch", "Validation Loss"])
+            writer.writerow(["Epoch", "Training Loss", "Validation Loss"])
             
         with open(csv_batch_filename, mode="w", newline="") as file:
             # Declares which information will be saved in the logging file
@@ -246,8 +246,10 @@ def train_gan(
     val_loader = torch.utils.data.DataLoader(val_set, shuffle=True, num_workers=12, persistent_workers=True, batch_size=batch_size, pin_memory=True)
 
     # Initiates the validation 
-    # PSNR as infinite 
+    # PSNR as 0 and the MAE as 
+    # infinite 
     best_val_psnr = 0
+    best_val_mae = float('inf')
 
     # Iterates through the total 
     # number of possible epochs
@@ -443,13 +445,13 @@ def train_gan(
             val_psnr = evaluate_gan(model_name=model_name, generator=generator, 
                                     dataloader=val_loader, device=device, amp=amp, 
                                     n_val=len(val_set))
+            # Logs the results of the validation
+            logging.info(f"Validation Mean PSNR: {val_psnr}")
         elif model_name == "UNet":
-            val_psnr = evaluate_gan(model_name=model_name, generator=unet, 
+            val_mae = evaluate_gan(model_name=model_name, generator=unet, 
                                     dataloader=val_loader, device=device, amp=amp, 
                                     n_val=len(val_set))
 
-        # Logs the results of the validation
-        logging.info(f"Validation Mean PSNR: {val_psnr}")
 
         # Writes the mean of the results of the different batches in 
         # the epoch to the CSV file 
@@ -465,35 +467,52 @@ def train_gan(
         elif model_name == "UNet":
             with open(csv_epoch_filename, mode="a", newline="") as file:
                 writer = csv.writer(file)
-                writer.writerow([epoch, val_psnr])
+                writer.writerow([epoch, epoch_loss / len(train_loader), val_mae])
 
-        # In case the validation SSIM is better 
-        # than the previous, the model is saved 
-        # as the best model
-        if val_psnr > best_val_psnr:
-            # Creates the folder models in case 
-            # it does not exist yet
-            makedirs("models", exist_ok=True)
-            # Updates the best value of PSNR
-            best_val_psnr = val_psnr
-            patience_counter = 0
-            # Both the generator and the discriminator are saved with a name 
-            # that depends on the argument input, the name of the model, and 
-            # fluid desired to segment in case it exists
-            if model_name == "GAN":
+        if model_name == "GAN":
+            # In case the validation PSNR is better 
+            # than the previous, the model is saved 
+            # as the best model
+            if val_psnr > best_val_psnr:
+                # Creates the folder models in case 
+                # it does not exist yet
+                makedirs("models", exist_ok=True)
+                # Updates the best value of PSNR
+                best_val_psnr = val_psnr
+                patience_counter = 0
+                # Both the generator and the discriminator are saved with a name 
+                # that depends on the argument input and the name of the model
                 torch.save(generator.state_dict(), 
                             f"models/{run_name}_generator_best_model.pth")
                 torch.save(discriminator.state_dict(),
                             f"models/{run_name}_discriminator_best_model.pth")
-            elif model_name == "UNet":
+                print("Models saved.")
+            # In case the model has not 
+            # obtained a better performance, 
+            # the patience counter increases
+            else:
+                patience_counter += 1
+        elif model_name == "UNet":
+            # In case the validation PSNR is better 
+            # than the previous, the model is saved 
+            # as the best model
+            if val_mae < best_val_mae:
+                # Creates the folder models in case 
+                # it does not exist yet
+                makedirs("models", exist_ok=True)
+                # Updates the best value of PSNR
+                best_val_mae = val_mae
+                patience_counter = 0
+                # Both the generator and the discriminator are saved with a name 
+                # that depends on the argument input and the name of the model
                 torch.save(unet.state_dict(), 
                             f"models/{run_name}_generator_unet_best_model.pth")
-            print("Models saved.")
-        # In case the model has not 
-        # obtained a better performance, 
-        # the patience counter increases
-        else:
-            patience_counter += 1
+                print("Model saved.")
+            # In case the model has not 
+            # obtained a better performance, 
+            # the patience counter increases
+            else:
+                patience_counter += 1
 
         # In case the number of epochs after which no 
         # improvement has been made surpasses the 
