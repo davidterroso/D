@@ -388,7 +388,7 @@ def test_gan(
             # so every batch is handled like a single image
             for batch in test_dataloader:
                 # Gets the stack of three images from the DataLoader
-                stack, mid_image_name = batch["stack"], batch["image_name"]
+                stack, mid_image_name = batch["stack"], batch["image_name"][0]
 
                 # Separates the stack in the previous image, 
                 # the middle image (the one we aim to predict), 
@@ -473,8 +473,8 @@ def test_gan(
                     Image.fromarray(array(gen_imgs.cpu().numpy())).save(
                         str(folder_to_save + mid_image_name[:-5] + "_generated" + ".tiff"))
 
-            # Updates the progress bar
-            progress_bar.update(1)
+                # Updates the progress bar
+                progress_bar.update(1)
 
     # Creates the folder results in case 
     # it does not exist yet
@@ -485,21 +485,21 @@ def test_gan(
 
     # Saves the DataFrame as a CSV file
     if not final_test:
-        slice_df.to_csv(f"results/{run_name}_slice_dice.csv", index=False)        
+        slice_df.to_csv(f"results/{run_name}_slice.csv", index=False)        
     else:
-        slice_df.to_csv(f"results/{run_name}_slice_dice_final.csv", index=False)
+        slice_df.to_csv(f"results/{run_name}_slice_final.csv", index=False)
 
     # Adds three columns to the DataFrame separating the information of the slice into vendor, volume, and slice_number
-    slice_df[['vendor', 'volume', 'slice_number']] = slice_df['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
+    slice_df[['vendor', 'volume', 'slice_number']] = slice_df['Slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
 
     # Reads the CSV files with the information of the 
     # OCT volumes used in training in the original dataset
-    train_df = read_csv("..\\splits\\volumes_info.csv")
+    train_df = read_csv("splits\\volumes_info.csv")
     train_df["volume_key"] = "TRAIN" + train_df["VolumeNumber"].astype(str).str.zfill(3)
 
     # Reads the CSV files with the information of the 
     # OCT volumes used in testing in the original dataset
-    test_df = read_csv("..\\splits\\volumes_info_test.csv")
+    test_df = read_csv("splits\\volumes_info_test.csv")
     test_df["volume_key"] = "TEST" + test_df["VolumeNumber"].astype(str).str.zfill(3)
 
     # Concatenates both DataFrames into a single one, keeping only the volume_key and the Device 
@@ -529,18 +529,16 @@ def test_gan(
     resulting_device_df = device_df_mean.astype(str) + " (" + device_df_std.astype(str) + ")"
 
     # Groups the PSNR and SSIM by the mean of all slices
-    slice_df_mean = slice_df[["Device", "PSNR", "SSIM"]].mean().to_frame().T
-    slice_df_mean.index.name = "Device"
-    slice_df_std = slice_df[["Device", "PSNR", "SSIM"]].std().to_frame().T
-    slice_df_std.index.name = "Device"
+    slice_df_mean = slice_df[["PSNR", "SSIM"]].mean().to_frame().T
+    slice_df_mean.index.name = "AllDevices"
+    slice_df_std = slice_df[["PSNR", "SSIM"]].std().to_frame().T
+    slice_df_std.index.name = "AllDevices"
     resulting_slice_df = slice_df_mean.astype(str) + " (" + slice_df_std.astype(str) + ")"
 
     # Saves the DataFrames to a CSV file
     if not final_test:
-        slice_df.to_csv(f"results/{run_name}_slice.csv")
         resulting_device_df.to_csv(f"results/{run_name}_device.csv")
         resulting_slice_df.to_csv(f"results/{run_name}_results.csv")
     else:
-        slice_df.to_csv(f"results/{run_name}_slice_final.csv")
         resulting_device_df.to_csv(f"results/{run_name}_device_final.csv")
         resulting_slice_df.to_csv(f"results/{run_name}_results_final.csv")
