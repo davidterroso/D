@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from itertools import permutations, product
 from math import ceil, isnan
-from os import walk
+from os import makedirs, walk
 from random import shuffle
 from statistics import stdev
 
@@ -1404,3 +1404,57 @@ def generation_4_fold_split():
 
     # Saves the data to a CSV
     split_df.to_csv("..\\splits\\generation_4_fold_split.csv", index=False)
+
+def splits_to_25d(split_path: str):
+    """
+    This function is used to convert the splits 
+    obtained with the functions used in this project 
+    to the ones used in the PTL repository 
+    (https://github.com/davidterroso/PTL). Resuming,
+    in the current splits that are going to be read, 
+    the OCT volumes are separated in multiple folds
+    while in the second implementation, each slice
+    is associated to each own split, even though 
+    slices of the same volume can never be separated.
+    In this function, we are converting the whole 
+    volume to its constituting slices, associating 
+    to it a couple of values that are relevant for
+    the split used in the other project 
+    
+    Args:
+        split_path (str): path to the split we want 
+            to convert
+
+    Returns:
+        None
+    """
+    # Declares the path to the CSV file with the information of each 
+    # slice obtained in the repository PTL
+    slice_info_path=r'D:\PTL\RETOUCHdata\pre_processed\slice_gt.csv'
+    # Loads the information of each slice
+    slice_df = pd.read_csv(slice_info_path)
+    
+    # Loads the split that will be converted
+    split_df = pd.read_csv(split_path, header=None)
+
+    # Creates the directory in case it does 
+    # not exist already
+    makedirs("..\\splits_ptl", exist_ok=True)
+
+    # Iterates through all the folds in the split
+    for fold_idx in range(split_df.shape[1]):
+        # Reads the fold of the split
+        volumes = split_df[fold_idx].dropna().astype(int)
+        # Converts the identifier of the volume to a TRAIN0XX
+        # format, where X is the padded identifier of the volume
+        volume_ids = [f"TRAIN{vid:03d}" for vid in volumes]
+
+        # Selects all slices corresponding to the volumes in this fold
+        fold_data = slice_df[slice_df['image_name'].isin(volume_ids)].copy()
+        
+        # Shuffles the slices in this fold
+        fold_data = fold_data.sample(frac=1, random_state=42).reset_index(drop=True)
+
+        # Saves the slices information to a CSV file
+        out_path = f"..\\splits_ptl\\competitive_fold_selection_{fold_idx}.csv"
+        fold_data.to_csv(out_path, index=False)
