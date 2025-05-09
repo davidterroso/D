@@ -758,7 +758,7 @@ def folds_information(file_name: str):
     # which the data refers
     columns = []
     for vendor in info_df["Vendor"].unique():
-        for fluid in ["IRF", "SRF", "PED"]:
+        for fluid in ["Background", "IRF", "SRF", "PED"]:
             columns.append(vendor + fluid)
 
     # Initiates the DataFrame that will handle 
@@ -780,7 +780,7 @@ def folds_information(file_name: str):
             vendor_per_volume_list = df_vendor["VolumeNumber"].unique()
             # Initiates a list that will have the voxel count for this 
             # volume across all three classes
-            totals = [0] * 3
+            totals = [0] * 4
             # Iterates through all the volumes in 
             # the volumes list of this vendor
             for volume in vols_list:
@@ -795,7 +795,7 @@ def folds_information(file_name: str):
                     # number of the volumes start in one
                     info_row = info_df.loc[volume - 1]
                     # Iterates through all the possible classes
-                    for index, fluid in enumerate(["IRF", "SRF", "PED"]):
+                    for index, fluid in enumerate(["Background", "IRF", "SRF", "PED"]):
                         # Sums the total number of voxels of the said 
                         # class to the ones previously summed in the 
                         # other volumes of the fold
@@ -808,14 +808,14 @@ def folds_information(file_name: str):
 
     # Initiates a DataFrame with the three possible fluids 
     # as columns
-    fluid_df = pd.DataFrame(columns=["IRF", "SRF", "PED"])
+    fluid_df = pd.DataFrame(columns=["Background", "IRF", "SRF", "PED"])
     # Iterates through all the folds
     for fold in range(split_df.shape[1]):
         # Gets the list of volumes in this fold
         vols_list = split_df[str(fold)].dropna().to_list()
         # Initiates the list of total values 
         # as zero, with one value for each class
-        totals = [0] * 3
+        totals = [0] * 4
         # Iterates through all the 
         # volumes in the list of 
         # volumes of this fold
@@ -827,7 +827,7 @@ def folds_information(file_name: str):
             # number of the volumes start in one
             info_row = info_df.loc[volume - 1]
             # Iterates through the possible fluids
-            for index, fluid in enumerate(["IRF", "SRF", "PED"]):
+            for index, fluid in enumerate(["Background", "IRF", "SRF", "PED"]):
                 # Adds the number of voxels in this volume to 
                 # the other ons in this fold
                 totals[index] = totals[index] + info_row[fluid]
@@ -869,7 +869,7 @@ def folds_information(file_name: str):
         for vendor in info_df["Vendor"].unique():
             # Initiates the list as 
             # an array of zeros, one
-            #  zero for slice count 
+            # zero for slice count 
             # and one for volume count
             slices_volumes = [0] * 2
             # Gets a sub DataFrame that corresponds to the 
@@ -1405,7 +1405,7 @@ def generation_4_fold_split():
     # Saves the data to a CSV
     split_df.to_csv("..\\splits\\generation_4_fold_split.csv", index=False)
 
-def splits_to_25d(split_path: str):
+def splits_to_25d(split_path: str, test_fold: int=1):
     """
     This function is used to convert the splits 
     obtained with the functions used in this project 
@@ -1424,6 +1424,8 @@ def splits_to_25d(split_path: str):
     Args:
         split_path (str): path to the split we want 
             to convert
+        test_fold (int): number of the fold that 
+            will be used in testing
 
     Returns:
         None
@@ -1437,24 +1439,58 @@ def splits_to_25d(split_path: str):
     # Loads the split that will be converted
     split_df = pd.read_csv(split_path, header=None)
 
+    # Gets the number of folds
+    num_folds = split_df.shape[1]
+
+    # Creates a dictionary that will associate folds to the volumes
+    fold_to_volumes = {
+        i: [f"TRAIN{int(v):03d}" for v in split_df[i].dropna().astype(int)]
+        for i in range(num_folds)
+    }
+
     # Creates the directory in case it does 
     # not exist already
     makedirs("..\\splits_ptl", exist_ok=True)
 
+    # Iterates through all the folds
+    for i in range(num_folds):
+        # Gets all the volumes that compose a single fold
+        fold_volumes = fold_to_volumes[i]
+        # Converts the slices that compose them to a single DataFrame
+        val_df = slice_df[slice_df['image_name'].isin(fold_volumes)].copy()
+        # Shuffles the DataFrame
+        val_df = val_df.sample(frac=1, random_state=42).reset_index(drop=True)
+
+        # Saves the DataFrame to a CSV file
+        val_out_path = f"..\\splits_ptl\\competitive_fold_selection_{i}_val.csv"
+        val_df.to_csv(val_out_path, index=False)
+
     # Iterates through all the folds in the split
-    for fold_idx in range(split_df.shape[1]):
-        # Reads the fold of the split
-        volumes = split_df[fold_idx].dropna().astype(int)
-        # Converts the identifier of the volume to a TRAIN0XX
-        # format, where X is the padded identifier of the volume
-        volume_ids = [f"TRAIN{vid:03d}" for vid in volumes]
+    for fold_idx in range(num_folds):
+        # In case the fold is the 
+        # one used in testing,
+        # nothing happens
+        if fold_idx == test_fold:
+            continue
 
-        # Selects all slices corresponding to the volumes in this fold
-        fold_data = slice_df[slice_df['image_name'].isin(volume_ids)].copy()
+        # Uses all folds except the current fold and the fold used in testing
+        include_folds = [f for f in range(num_folds) if f not in {fold_idx, test_fold}]
         
-        # Shuffles the slices in this fold
-        fold_data = fold_data.sample(frac=1, random_state=42).reset_index(drop=True)
+        # Initiates an empty list that will store 
+        # the volumes used in training
+        train_volumes = []
+        # Iterates through all 
+        # the included folds and 
+        # adds to the list the 
+        # volumes that belong to it 
+        for f in include_folds:
+            train_volumes.extend(fold_to_volumes[f])
 
-        # Saves the slices information to a CSV file
+        # Creates a DataFrame that will contain the information of the slices
+        # that will be used in training and shuffles them
+        train_df = slice_df[slice_df['image_name'].isin(train_volumes)].copy()
+        train_df = train_df.sample(frac=1, random_state=42).reset_index(drop=True)
+
+        # Saves the results as a CSV file
         out_path = f"..\\splits_ptl\\competitive_fold_selection_{fold_idx}.csv"
-        fold_data.to_csv(out_path, index=False)
+        train_df.to_csv(out_path, index=False)

@@ -1414,7 +1414,7 @@ class TestDatasetGAN(Dataset):
     TestDatasetGAN with the available image's paths, thus 
     simplifying the testing process
     """
-    def __init__(self, test_volumes: list, model_name: str):
+    def __init__(self, test_volumes: list):
         """
         Initiates the Dataset object and gets the possible 
         names of the images that will be used in testing
@@ -1424,8 +1424,6 @@ class TestDatasetGAN(Dataset):
                 itself
             test_volumes(List[float]): list of the test 
                 volumes that will be used to test the model
-            model_name (str): name of the model that will be 
-                tested to generate the images
 
         Return:
             None
@@ -1434,8 +1432,7 @@ class TestDatasetGAN(Dataset):
         super().__init__()
         # Gets a list of paths to all the images that will be used to 
         # test the model
-        self.images_names = generation_images_from_volumes(test_volumes, model_name)
-        self.model_name = model_name
+        self.images_names = generation_images_from_volumes(test_volumes, model_name="UNet")
 
     def __len__(self):
         """
@@ -1467,10 +1464,7 @@ class TestDatasetGAN(Dataset):
                 with the key 'image_name', for the given index 
         """
         # Declares the path to the images
-        if self.model_name == "UNet":
-            images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
-        elif self.model_name == "GAN":
-            images_folder = "C:\slices_resized_64_patches\\"
+        images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
 
         # Gets the path of the image by the given index
         image_path = images_folder + self.images_names[index]

@@ -93,6 +93,12 @@ def stitch_patches(patches: List[ndarray],
 
     # Iterates through all the patches
     for idx, patch in enumerate(patches):
+        if isinstance(patch, ndarray):
+            patch = torch.from_numpy(patch)
+        if patch.ndim == 3:
+            patch = patch.squeeze()
+        assert patch.shape == (patch_size, patch_size), \
+            f"Patch has unexpected shape: {patch.shape}"
         # Gets the row and column in which 
         # the patch must be placed
         i = idx // patches_per_row
@@ -351,10 +357,10 @@ def test_gan(
 
     # Creates the TestDatasetGAN object with the 
     # list of volumes that will be used in training
-    test_dataset = TestDatasetGAN(test_volumes=test_volumes, model_name=model_name)
+    test_dataset = TestDatasetGAN(test_volumes=test_volumes)
     # Creates the DataLoader object using the dataset, declaring both the size of the 
     # batch and the number of workers
-    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=12)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=0)
 
     # Extracts the name of the run from 
     # the name of the weights file
@@ -446,10 +452,10 @@ def test_gan(
                 elif model_name == "UNet":
                     gen_imgs = generator(torch.stack([prev_imgs, next_imgs], dim=1).detach().to(device=device))
                 elif model_name == "Pix2Pix":
-                    gen_imgs = pix2pix_generator(gen_imgs_wgenerator)
+                    gen_imgs = pix2pix_generator(gen_imgs_wgenerator).to(device=device)
 
                 # Calculates the PSNR value
-                img_psnr = round(psnr(mid_imgs, gen_imgs), 3)
+                img_psnr = round(psnr(mid_imgs.to(device=device), gen_imgs.to(device=device)), 3)
                 # Removes batch dimension from the generated image
                 mid_imgs = mid_imgs.squeeze(0).squeeze(0)
                 gen_imgs = gen_imgs.squeeze(0).squeeze(0)

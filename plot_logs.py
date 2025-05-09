@@ -232,7 +232,7 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
         plt.savefig(img_path)
 
         # Shows the image
-        plt.show()
+        # plt.show()
 
         # Initiates the list with the number of batches and
         # the value obtained for the loss during training 
@@ -306,7 +306,7 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
         plt.savefig(img_path)
 
         # Shows the image
-        plt.show()
+        # plt.show()
 
         # Declares the information that is going 
         # to be plotted, the labels on the axes 
@@ -332,7 +332,7 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
         # Saves the image to the designated path
         plt.savefig(img_path)
 
-        plt.show()
+        # plt.show()
 
     elif model_name == "UNet":
         # Initiates the list with the number of epochs, 
