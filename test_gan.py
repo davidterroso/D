@@ -360,7 +360,7 @@ def test_gan(
     test_dataset = TestDatasetGAN(test_volumes=test_volumes)
     # Creates the DataLoader object using the dataset, declaring both the size of the 
     # batch and the number of workers
-    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=0)
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=12)
 
     # Extracts the name of the run from 
     # the name of the weights file
