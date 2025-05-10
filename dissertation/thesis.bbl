@@ -1,0 +1,3834 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{Hutmacher2019}{article}{}
+      \name{author}{1}{}{%
+        {{hash=37b3ba87704cb7f18740f94efaa2eb3e}{%
+           family={Hutmacher},
+           familyi={H\bibinitperiod},
+           given={Fabian},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{37b3ba87704cb7f18740f94efaa2eb3e}
+      \strng{fullhash}{37b3ba87704cb7f18740f94efaa2eb3e}
+      \strng{bibnamehash}{37b3ba87704cb7f18740f94efaa2eb3e}
+      \strng{authorbibnamehash}{37b3ba87704cb7f18740f94efaa2eb3e}
+      \strng{authornamehash}{37b3ba87704cb7f18740f94efaa2eb3e}
+      \strng{authorfullhash}{37b3ba87704cb7f18740f94efaa2eb3e}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1664-1078}
+      \field{journaltitle}{Frontiers in Psychology}
+      \field{title}{{Why Is There So Much More Research on Vision Than on Any Other Sensory Modality?}}
+      \field{volume}{10}
+      \field{year}{2019}
+      \verb{doi}
+      \verb 10.3389/fpsyg.2019.02246
+      \endverb
+      \verb{urlraw}
+      \verb https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2019.02246
+      \endverb
+      \verb{url}
+      \verb https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2019.02246
+      \endverb
+    \endentry
+    \entry{Bogunovic2019a}{inbook}{}
+      \name{author}{4}{}{%
+        {{hash=17ac420723c6365a667708aa7c7270d5}{%
+           family={Bogunović},
+           familyi={B\bibinitperiod},
+           given={Hrvoje},
+           giveni={H\bibinitperiod}}}%
+        {{hash=d311dbfc625642e226d70aeb9428a09b}{%
+           family={Vogl},
+           familyi={V\bibinitperiod},
+           given={Wolf-Dieter},
+           giveni={W\bibinithyphendelim D\bibinitperiod}}}%
+        {{hash=f62c0ed4ca99c2a77a4f75d188bf05f3}{%
+           family={Waldstein},
+           familyi={W\bibinitperiod},
+           given={Sebastian\bibnamedelima M},
+           giveni={S\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=17eb95b041d7ca41cf1a8d6939aa659e}{%
+           family={Schmidt-Erfurth},
+           familyi={S\bibinithyphendelim E\bibinitperiod},
+           given={Ursula},
+           giveni={U\bibinitperiod}}}%
+      }
+      \name{editor}{3}{}{%
+        {{hash=a1376b23a726c84a27db621d852cb19a}{%
+           family={Trucco},
+           familyi={T\bibinitperiod},
+           given={Emanuele},
+           giveni={E\bibinitperiod}}}%
+        {{hash=ea71331f65c26d0b8ee554c70ad0cd9b}{%
+           family={MacGillivray},
+           familyi={M\bibinitperiod},
+           given={Tom},
+           giveni={T\bibinitperiod}}}%
+        {{hash=554e6a63961e140f4b3c779b38696de2}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Yanwu},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Academic Press}%
+      }
+      \strng{namehash}{ffbacf1e860257f06e9fa85b60597bb0}
+      \strng{fullhash}{5434fe27229fe0b208a893164104d99a}
+      \strng{bibnamehash}{5434fe27229fe0b208a893164104d99a}
+      \strng{authorbibnamehash}{5434fe27229fe0b208a893164104d99a}
+      \strng{authornamehash}{ffbacf1e860257f06e9fa85b60597bb0}
+      \strng{authorfullhash}{5434fe27229fe0b208a893164104d99a}
+      \strng{editorbibnamehash}{add29e72a0edaf061ef0f4bf71e1c859}
+      \strng{editornamehash}{0983d41caf62207d198789ef5a578f0c}
+      \strng{editorfullhash}{add29e72a0edaf061ef0f4bf71e1c859}
+      \field{extraname}{1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-0-08-102816-2}
+      \field{journaltitle}{Computational Retinal Image Analysis}
+      \field{title}{{Chapter 14 - {OCT} fluid detection and quantification}}
+      \field{year}{2019}
+      \field{pages}{273\bibrangedash 298}
+      \range{pages}{26}
+      \verb{doi}
+      \verb https://doi.org/10.1016/B978-0-08-102816-2.00015-0
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/B9780081028162000150
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/B9780081028162000150
+      \endverb
+      \keyw{Anti-VEGF,Image classification,Image segmentation,Optical coherence tomography,Retina}
+    \endentry
+    \entry{Lim2012}{article}{}
+      \name{author}{5}{}{%
+        {{hash=d2c9ac7a5c9ab9ba51417b488698db42}{%
+           family={Lim},
+           familyi={L\bibinitperiod},
+           given={Laurence\bibnamedelima S},
+           giveni={L\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=84b0ee7999d0b9354ae8472fb9dc5ac1}{%
+           family={Mitchell},
+           familyi={M\bibinitperiod},
+           given={Paul},
+           giveni={P\bibinitperiod}}}%
+        {{hash=246871719050a69daa2844fede70d095}{%
+           family={Seddon},
+           familyi={S\bibinitperiod},
+           given={Johanna\bibnamedelima M},
+           giveni={J\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=a9f9e3b25f1ff79b9f2d5ce4f2506ff7}{%
+           family={Holz},
+           familyi={H\bibinitperiod},
+           given={Frank\bibnamedelima G},
+           giveni={F\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=d6df236bc121907fe9927ff8d51b131b}{%
+           family={Wong},
+           familyi={W\bibinitperiod},
+           given={Tien\bibnamedelima Y},
+           giveni={T\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+      }
+      \strng{namehash}{9a70cff12dfd2acaab147b5205c50965}
+      \strng{fullhash}{0fe4383a6376b0b1655e75c492708d90}
+      \strng{bibnamehash}{0fe4383a6376b0b1655e75c492708d90}
+      \strng{authorbibnamehash}{0fe4383a6376b0b1655e75c492708d90}
+      \strng{authornamehash}{9a70cff12dfd2acaab147b5205c50965}
+      \strng{authorfullhash}{0fe4383a6376b0b1655e75c492708d90}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0140-6736}
+      \field{issue}{9827}
+      \field{journaltitle}{The Lancet}
+      \field{title}{{Age-related macular degeneration}}
+      \field{volume}{379}
+      \field{year}{2012}
+      \field{pages}{1728\bibrangedash 1738}
+      \range{pages}{11}
+      \verb{doi}
+      \verb https://doi.org/10.1016/S0140-6736(12)60282-7
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0140673612602827
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0140673612602827
+      \endverb
+    \endentry
+    \entry{Mitchell2018}{article}{}
+      \name{author}{4}{}{%
+        {{hash=84b0ee7999d0b9354ae8472fb9dc5ac1}{%
+           family={Mitchell},
+           familyi={M\bibinitperiod},
+           given={Paul},
+           giveni={P\bibinitperiod}}}%
+        {{hash=23a86858491a927893ed8c479daed91c}{%
+           family={Liew},
+           familyi={L\bibinitperiod},
+           given={Gerald},
+           giveni={G\bibinitperiod}}}%
+        {{hash=0597ee2346ba47144bc2cc0064dfe1f6}{%
+           family={Gopinath},
+           familyi={G\bibinitperiod},
+           given={Bamini},
+           giveni={B\bibinitperiod}}}%
+        {{hash=d6df236bc121907fe9927ff8d51b131b}{%
+           family={Wong},
+           familyi={W\bibinitperiod},
+           given={Tien\bibnamedelima Y},
+           giveni={T\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{6510d7a670e36b555d485d67045d73b1}
+      \strng{fullhash}{67f1cf8bb5874b0ae09365c4fb217f4d}
+      \strng{bibnamehash}{67f1cf8bb5874b0ae09365c4fb217f4d}
+      \strng{authorbibnamehash}{67f1cf8bb5874b0ae09365c4fb217f4d}
+      \strng{authornamehash}{6510d7a670e36b555d485d67045d73b1}
+      \strng{authorfullhash}{67f1cf8bb5874b0ae09365c4fb217f4d}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0140-6736}
+      \field{issue}{10153}
+      \field{journaltitle}{The Lancet}
+      \field{month}{9}
+      \field{title}{{Age-related macular degeneration}}
+      \field{volume}{392}
+      \field{year}{2018}
+      \field{pages}{1147\bibrangedash 1159}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1016/S0140-6736(18)31550-2
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1016/S0140-6736(18)31550-2
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1016/S0140-6736(18)31550-2
+      \endverb
+    \endentry
+    \entry{Musat2015}{article}{}
+      \name{author}{7}{}{%
+        {{hash=19e00f3cf048b1d9ad989be4e2a9ebfb}{%
+           family={Musat},
+           familyi={M\bibinitperiod},
+           given={Ovidiu},
+           giveni={O\bibinitperiod}}}%
+        {{hash=9b923786ad7db8f04f921e8609df68e4}{%
+           family={Cernat},
+           familyi={C\bibinitperiod},
+           given={Corina},
+           giveni={C\bibinitperiod}}}%
+        {{hash=86d1b0948c3e5e5e1054508893e9daa6}{%
+           family={Labib},
+           familyi={L\bibinitperiod},
+           given={Mahdi},
+           giveni={M\bibinitperiod}}}%
+        {{hash=549ea432f615e52ab7625171cdffbcf8}{%
+           family={Gheorghe},
+           familyi={G\bibinitperiod},
+           given={Andreea},
+           giveni={A\bibinitperiod}}}%
+        {{hash=4dcba17e593632e746fcd6404c882578}{%
+           family={Toma},
+           familyi={T\bibinitperiod},
+           given={Oana},
+           giveni={O\bibinitperiod}}}%
+        {{hash=ed3f1cdbf765ffb6d0deaf39398bfd51}{%
+           family={Zamfir},
+           familyi={Z\bibinitperiod},
+           given={Madalina},
+           giveni={M\bibinitperiod}}}%
+        {{hash=00ce8659265eb5b2f29dccfbe75c170c}{%
+           family={Boureanu},
+           familyi={B\bibinitperiod},
+           given={Ana\bibnamedelima Maria},
+           giveni={A\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \strng{namehash}{bcfe315202b94b786380de8aa42047b4}
+      \strng{fullhash}{ebbc987f9e7cc75505fe9df5b8d1598f}
+      \strng{bibnamehash}{bcfe315202b94b786380de8aa42047b4}
+      \strng{authorbibnamehash}{bcfe315202b94b786380de8aa42047b4}
+      \strng{authornamehash}{bcfe315202b94b786380de8aa42047b4}
+      \strng{authorfullhash}{ebbc987f9e7cc75505fe9df5b8d1598f}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{3}
+      \field{journaltitle}{Rom J Ophthalmol}
+      \field{month}{7}
+      \field{title}{{Diabetic Macular Edema}}
+      \field{volume}{59}
+      \field{year}{2015}
+      \field{pages}{133\bibrangedash 136}
+      \range{pages}{4}
+    \endentry
+    \entry{Bhagat2009}{article}{}
+      \name{author}{4}{}{%
+        {{hash=afcde5b902ecddd089553d6d816860ff}{%
+           family={Bhagat},
+           familyi={B\bibinitperiod},
+           given={Neelakshi},
+           giveni={N\bibinitperiod}}}%
+        {{hash=5eeaebe648e242efcab0113a46689439}{%
+           family={Grigorian},
+           familyi={G\bibinitperiod},
+           given={Ruben\bibnamedelima A},
+           giveni={R\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=561f49d871652559b99794a88e594b1c}{%
+           family={Tutela},
+           familyi={T\bibinitperiod},
+           given={Arthur},
+           giveni={A\bibinitperiod}}}%
+        {{hash=705e41162728a0c7af392ab4f90a02fd}{%
+           family={Zarbin},
+           familyi={Z\bibinitperiod},
+           given={Marco\bibnamedelima A},
+           giveni={M\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{e6c4eb3c19e8573bbc9a722271b92925}
+      \strng{fullhash}{31a34c173e929ecfb3a547aec60de00c}
+      \strng{bibnamehash}{31a34c173e929ecfb3a547aec60de00c}
+      \strng{authorbibnamehash}{31a34c173e929ecfb3a547aec60de00c}
+      \strng{authornamehash}{e6c4eb3c19e8573bbc9a722271b92925}
+      \strng{authorfullhash}{31a34c173e929ecfb3a547aec60de00c}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0039-6257}
+      \field{issue}{1}
+      \field{journaltitle}{Survey of Ophthalmology}
+      \field{title}{{Diabetic Macular Edema: Pathogenesis and Treatment}}
+      \field{volume}{54}
+      \field{year}{2009}
+      \field{pages}{1\bibrangedash 32}
+      \range{pages}{32}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.survophthal.2008.10.001
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0039625708001811
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0039625708001811
+      \endverb
+      \keyw{AGEs,OCT,PEDF,PKC,RAGE,VEGF,angiotensin II,blood retinal barrier,clinically significant macular edema,diabetic macular edema,intravitreal steroid injection,laser photocoagulation,leukostasis,micropulse sub-threshold laser,retinal thickness analyzer,steroids,vasoactive factors,vitrectomy,vitreoretinal interface}
+    \endentry
+    \entry{Bandello2019}{inbook}{}
+      \name{author}{6}{}{%
+        {{hash=aab37ab419d67f1fe09a680fa6bfa904}{%
+           family={Bandello},
+           familyi={B\bibinitperiod},
+           given={Francesco},
+           giveni={F\bibinitperiod}}}%
+        {{hash=e9a3a3e3ec98e563f5d99260bb4e7042}{%
+           family={Lattanzio},
+           familyi={L\bibinitperiod},
+           given={Rosangela},
+           giveni={R\bibinitperiod}}}%
+        {{hash=66c881040741a9ab9d87b80fbf39b7be}{%
+           family={Zucchiatti},
+           familyi={Z\bibinitperiod},
+           given={Ilaria},
+           giveni={I\bibinitperiod}}}%
+        {{hash=eb27f4fdbdce79b21d242f42b6b99966}{%
+           family={Arrigo},
+           familyi={A\bibinitperiod},
+           given={Alessandro},
+           giveni={A\bibinitperiod}}}%
+        {{hash=57a3c236c020068d1b02ec6c74770efe}{%
+           family={Battista},
+           familyi={B\bibinitperiod},
+           given={Marco},
+           giveni={M\bibinitperiod}}}%
+        {{hash=023a613c25da4b63786d4b0ea347bf0d}{%
+           family={Cicinelli},
+           familyi={C\bibinitperiod},
+           given={Maria\bibnamedelima Vittoria},
+           giveni={M\bibinitperiod\bibinitdelim V\bibinitperiod}}}%
+      }
+      \name{editor}{4}{}{%
+        {{hash=4b41c2e83c42e0e3c79eedcbc11cffd6}{%
+           family={Attilio},
+           familyi={A\bibinitperiod},
+           given={Marco},
+           giveni={M\bibinitperiod}}}%
+        {{hash=40ddd920ff2d8167120cdfed786d09f5}{%
+           family={Rosangela},
+           familyi={R\bibinitperiod},
+           given={Lattanzio},
+           giveni={L\bibinitperiod}}}%
+        {{hash=a7f0b6d6339fed67e569fbb736e2d417}{%
+           family={Francesco},
+           familyi={F\bibinitperiod},
+           given={Zucchiatti\bibnamedelimb Ilaria\bibnamedelima Bandello},
+           giveni={Z\bibinitperiod\bibinitdelim I\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+        {{hash=ecb889eae739a29a21a4ce2341ce8e1d}{%
+           family={Zarbin},
+           familyi={Z\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer International Publishing}%
+      }
+      \strng{namehash}{d667ae17ab2f77e86d6d96102f7ff3a5}
+      \strng{fullhash}{07976e2006ebc8453a29d715ed6fc483}
+      \strng{bibnamehash}{07976e2006ebc8453a29d715ed6fc483}
+      \strng{authorbibnamehash}{07976e2006ebc8453a29d715ed6fc483}
+      \strng{authornamehash}{d667ae17ab2f77e86d6d96102f7ff3a5}
+      \strng{authorfullhash}{07976e2006ebc8453a29d715ed6fc483}
+      \strng{editorbibnamehash}{5f59176114bd5a30ff2d064a8ff9b183}
+      \strng{editornamehash}{8d9dc26cae69adf2f402d0f056cd1091}
+      \strng{editorfullhash}{5f59176114bd5a30ff2d064a8ff9b183}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-3-319-96157-6}
+      \field{journaltitle}{Clinical Strategies in the Management of Diabetic Retinopathy: A Step-by-Step Guide for Ophthalmologists}
+      \field{title}{{Diabetic Macular Edema}}
+      \field{year}{2019}
+      \field{pages}{97\bibrangedash 183}
+      \range{pages}{87}
+      \verb{doi}
+      \verb 10.1007/978-3-319-96157-6_3
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/978-3-319-96157-6_3
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/978-3-319-96157-6_3
+      \endverb
+    \endentry
+    \entry{Wong2010}{article}{}
+      \name{author}{2}{}{%
+        {{hash=d6df236bc121907fe9927ff8d51b131b}{%
+           family={Wong},
+           familyi={W\bibinitperiod},
+           given={Tien\bibnamedelima Y},
+           giveni={T\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=2c76c0e9c7570dd3fc2116cb6299c63e}{%
+           family={Scott},
+           familyi={S\bibinitperiod},
+           given={Ingrid\bibnamedelima U},
+           giveni={I\bibinitperiod\bibinitdelim U\bibinitperiod}}}%
+      }
+      \strng{namehash}{22d2369ccbe6cbb00b1aa08a4895051e}
+      \strng{fullhash}{22d2369ccbe6cbb00b1aa08a4895051e}
+      \strng{bibnamehash}{22d2369ccbe6cbb00b1aa08a4895051e}
+      \strng{authorbibnamehash}{22d2369ccbe6cbb00b1aa08a4895051e}
+      \strng{authornamehash}{22d2369ccbe6cbb00b1aa08a4895051e}
+      \strng{authorfullhash}{22d2369ccbe6cbb00b1aa08a4895051e}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{22}
+      \field{journaltitle}{New England Journal of Medicine}
+      \field{title}{{Retinal-Vein Occlusion}}
+      \field{volume}{363}
+      \field{year}{2010}
+      \field{pages}{2135\bibrangedash 2144}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1056/NEJMcp1003934
+      \endverb
+      \verb{urlraw}
+      \verb https://www.nejm.org/doi/full/10.1056/NEJMcp1003934
+      \endverb
+      \verb{url}
+      \verb https://www.nejm.org/doi/full/10.1056/NEJMcp1003934
+      \endverb
+    \endentry
+    \entry{Huang1991}{article}{}
+      \name{author}{10}{}{%
+        {{hash=e66383322e6e7236826a89cb3f42d1b0}{%
+           family={Huang},
+           familyi={H\bibinitperiod},
+           given={D},
+           giveni={D\bibinitperiod}}}%
+        {{hash=50ff0c848f9eb434cfb3c7381b669ddf}{%
+           family={Swanson},
+           familyi={S\bibinitperiod},
+           given={E\bibnamedelima A},
+           giveni={E\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=ae9d89d2876ed5246c9f79d423c8747a}{%
+           family={Lin},
+           familyi={L\bibinitperiod},
+           given={C\bibnamedelima P},
+           giveni={C\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+        {{hash=55cd61d71da6acf14740f554a7cedc66}{%
+           family={Schuman},
+           familyi={S\bibinitperiod},
+           given={J\bibnamedelima S},
+           giveni={J\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=f19c385980d8c1aad124eca07523c7fe}{%
+           family={Stinson},
+           familyi={S\bibinitperiod},
+           given={W\bibnamedelima G},
+           giveni={W\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=540e91d33468c547cd47a35c363ce4df}{%
+           family={Chang},
+           familyi={C\bibinitperiod},
+           given={W},
+           giveni={W\bibinitperiod}}}%
+        {{hash=c5d163cf65bacc3d2665c04d4a8968d6}{%
+           family={Hee},
+           familyi={H\bibinitperiod},
+           given={M\bibnamedelima R},
+           giveni={M\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=d42833e9961390600fc5ae007e8eb459}{%
+           family={Flotte},
+           familyi={F\bibinitperiod},
+           given={T},
+           giveni={T\bibinitperiod}}}%
+        {{hash=4bee581a53654b1b73535f7e39a6896b}{%
+           family={Gregory},
+           familyi={G\bibinitperiod},
+           given={K},
+           giveni={K\bibinitperiod}}}%
+        {{hash=39b0fd70f718aaf19465651ee7be1ee6}{%
+           family={Puliafito},
+           familyi={P\bibinitperiod},
+           given={C\bibnamedelima A},
+           giveni={C\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{036f94b10b252abfb923d921e17bf714}
+      \strng{fullhash}{dbe69d80f27c68d8553363a2ddea9eca}
+      \strng{bibnamehash}{036f94b10b252abfb923d921e17bf714}
+      \strng{authorbibnamehash}{036f94b10b252abfb923d921e17bf714}
+      \strng{authornamehash}{036f94b10b252abfb923d921e17bf714}
+      \strng{authorfullhash}{dbe69d80f27c68d8553363a2ddea9eca}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{5035}
+      \field{journaltitle}{Science}
+      \field{month}{11}
+      \field{title}{{Optical coherence tomography}}
+      \field{volume}{254}
+      \field{year}{1991}
+      \field{pages}{1178\bibrangedash 1181}
+      \range{pages}{4}
+    \endentry
+    \entry{Drexler2008}{article}{}
+      \name{author}{2}{}{%
+        {{hash=a54dcdb1024993409c339ea8c2965667}{%
+           family={Drexler},
+           familyi={D\bibinitperiod},
+           given={Wolfgang},
+           giveni={W\bibinitperiod}}}%
+        {{hash=b2403347e77e65b37d6c460141116fa8}{%
+           family={Fujimoto},
+           familyi={F\bibinitperiod},
+           given={James\bibnamedelima G},
+           giveni={J\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+      }
+      \strng{namehash}{dde625615056809ed5f2a58ea4776985}
+      \strng{fullhash}{dde625615056809ed5f2a58ea4776985}
+      \strng{bibnamehash}{dde625615056809ed5f2a58ea4776985}
+      \strng{authorbibnamehash}{dde625615056809ed5f2a58ea4776985}
+      \strng{authornamehash}{dde625615056809ed5f2a58ea4776985}
+      \strng{authorfullhash}{dde625615056809ed5f2a58ea4776985}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1350-9462}
+      \field{issue}{1}
+      \field{journaltitle}{Progress in Retinal and Eye Research}
+      \field{title}{{State-of-the-art retinal optical coherence tomography}}
+      \field{volume}{27}
+      \field{year}{2008}
+      \field{pages}{45\bibrangedash 88}
+      \range{pages}{44}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.preteyeres.2007.07.005
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S1350946207000444
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S1350946207000444
+      \endverb
+    \endentry
+    \entry{Viedma2022}{article}{}
+      \name{author}{4}{}{%
+        {{hash=37bd4aac0b58c6027667248197df5611}{%
+           family={Viedma},
+           familyi={V\bibinitperiod},
+           given={Ignacio\bibnamedelima A},
+           giveni={I\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=d42354d037c696578d7be76a435daee7}{%
+           family={Alonso-Caneiro},
+           familyi={A\bibinithyphendelim C\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=4eb81ea46f33ed7cdc5d995ce2d3b4d1}{%
+           family={Read},
+           familyi={R\bibinitperiod},
+           given={Scott\bibnamedelima A},
+           giveni={S\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=2f979b77c9504299366fcc4f861d485d}{%
+           family={Collins},
+           familyi={C\bibinitperiod},
+           given={Michael\bibnamedelima J},
+           giveni={M\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{d50b03055556ced1679958a822868cb7}
+      \strng{fullhash}{2ef5cd8fa4f868bc1746adbc46f922ee}
+      \strng{bibnamehash}{2ef5cd8fa4f868bc1746adbc46f922ee}
+      \strng{authorbibnamehash}{2ef5cd8fa4f868bc1746adbc46f922ee}
+      \strng{authornamehash}{d50b03055556ced1679958a822868cb7}
+      \strng{authorfullhash}{2ef5cd8fa4f868bc1746adbc46f922ee}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0925-2312}
+      \field{journaltitle}{Neurocomputing}
+      \field{title}{{Deep learning in retinal optical coherence tomography ({OCT}): A comprehensive survey}}
+      \field{volume}{507}
+      \field{year}{2022}
+      \field{pages}{247\bibrangedash 264}
+      \range{pages}{18}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.neucom.2022.08.021
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S092523122200995X
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S092523122200995X
+      \endverb
+      \keyw{Anomaly segmentation,Deep learning,OCT,Optical coherence tomography,Retinal layer segmentation,Semantic segmentation}
+    \endentry
+    \entry{Almonte2020}{article}{}
+      \name{author}{4}{}{%
+        {{hash=ebfe218c5e6818a41d63b9ee7f9fdf5c}{%
+           family={Almonte},
+           familyi={A\bibinitperiod},
+           given={Melanie},
+           giveni={M\bibinitperiod}}}%
+        {{hash=6078ced922d34cc1f82ea6f4059fb42a}{%
+           family={Capellàn},
+           familyi={C\bibinitperiod},
+           given={Pamela},
+           giveni={P\bibinitperiod}}}%
+        {{hash=dfc004488ceea327db5fe5fc0786eafd}{%
+           family={Yap},
+           familyi={Y\bibinitperiod},
+           given={Timothy},
+           giveni={T\bibinitperiod}}}%
+        {{hash=0f78c409f9c577d4e9311f69b2a8b4c3}{%
+           family={Cordeiro},
+           familyi={C\bibinitperiod},
+           given={M\bibnamedelima Francesca},
+           giveni={M\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+      }
+      \strng{namehash}{77f50424a0206f82eeb258d242a91428}
+      \strng{fullhash}{1dcf97b6bf66a1e3e5bb67677a695bc3}
+      \strng{bibnamehash}{1dcf97b6bf66a1e3e5bb67677a695bc3}
+      \strng{authorbibnamehash}{1dcf97b6bf66a1e3e5bb67677a695bc3}
+      \strng{authornamehash}{77f50424a0206f82eeb258d242a91428}
+      \strng{authorfullhash}{1dcf97b6bf66a1e3e5bb67677a695bc3}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Therapeutic Advances in Chronic Disease}
+      \field{month}{12}
+      \field{title}{{Retinal correlates of psychiatric disorders}}
+      \field{volume}{11}
+      \field{year}{2020}
+      \field{pages}{204062232090521}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1177/2040622320905215
+      \endverb
+    \endentry
+    \entry{Lopez2023}{article}{}
+      \name{author}{5}{}{%
+        {{hash=ac3d8b82b1f956509a4ff652c51d80fd}{%
+           family={López-Varela},
+           familyi={L\bibinithyphendelim V\bibinitperiod},
+           given={Emilio},
+           giveni={E\bibinitperiod}}}%
+        {{hash=78c76ddbcaae5071020836d1a7d80a66}{%
+           family={Barreira},
+           familyi={B\bibinitperiod},
+           given={Noelia},
+           giveni={N\bibinitperiod}}}%
+        {{hash=6d0c4c2ccdc7e4feeb99e8f84f50a699}{%
+           family={Pascual},
+           familyi={P\bibinitperiod},
+           given={Nuria\bibnamedelima Olivier},
+           giveni={N\bibinitperiod\bibinitdelim O\bibinitperiod}}}%
+        {{hash=ac02233cc717897bd927685a5c924471}{%
+           family={Castillo},
+           familyi={C\bibinitperiod},
+           given={Maria\bibnamedelimb Rosa\bibnamedelima Arroyo},
+           giveni={M\bibinitperiod\bibinitdelim R\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=1939a107ad3962e3ba231728617f305b}{%
+           family={Penedo},
+           familyi={P\bibinitperiod},
+           given={Manuel\bibnamedelima G},
+           giveni={M\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+      }
+      \strng{namehash}{806250ffe3c9bea5961f1e859c9562c0}
+      \strng{fullhash}{67386e27ed3b1c9a051e4812e7e85c25}
+      \strng{bibnamehash}{67386e27ed3b1c9a051e4812e7e85c25}
+      \strng{authorbibnamehash}{67386e27ed3b1c9a051e4812e7e85c25}
+      \strng{authornamehash}{806250ffe3c9bea5961f1e859c9562c0}
+      \strng{authorfullhash}{67386e27ed3b1c9a051e4812e7e85c25}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0010-4825}
+      \field{journaltitle}{Computers in Biology and Medicine}
+      \field{title}{{Generation of synthetic intermediate slices in {3D} {OCT} cubes for improving pathology detection and monitoring}}
+      \field{volume}{163}
+      \field{year}{2023}
+      \field{pages}{107214}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.compbiomed.2023.107214
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0010482523006790
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0010482523006790
+      \endverb
+      \keyw{3D volume,Convolutional neural networks,GAN,Medical synthesis,OCT,Optical coherence tomography,Resolution increase,Slice synthesis}
+    \endentry
+    \entry{Selvi2013}{article}{}
+      \name{author}{3}{}{%
+        {{hash=ed0dfaa266ce0c6738298499449ccc56}{%
+           family={Selvi},
+           familyi={S\bibinitperiod},
+           given={Eşref},
+           giveni={E\bibinitperiod}}}%
+        {{hash=a07b796c30aab8d043a0dd07642e1a91}{%
+           family={Özdemir},
+           familyi={Ö\bibinitperiod},
+           given={Merve},
+           giveni={M\bibinitperiod}}}%
+        {{hash=479bf721dc82109e016ad95d08f0ed82}{%
+           family={Selver},
+           familyi={S\bibinitperiod},
+           given={M\bibnamedelima Alper},
+           giveni={M\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{3734d4e5d01158695fbccd2cca93df7a}
+      \strng{fullhash}{d23421d4e498089b1a87b1c753b30b2a}
+      \strng{bibnamehash}{d23421d4e498089b1a87b1c753b30b2a}
+      \strng{authorbibnamehash}{d23421d4e498089b1a87b1c753b30b2a}
+      \strng{authornamehash}{3734d4e5d01158695fbccd2cca93df7a}
+      \strng{authorfullhash}{d23421d4e498089b1a87b1c753b30b2a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2297-8747}
+      \field{issue}{3}
+      \field{journaltitle}{Mathematical and Computational Applications}
+      \field{title}{{Performance Analysis of Distance Transform Based Inter-Slice Similarity Information on Segmentation of Medical Image Series}}
+      \field{volume}{18}
+      \field{year}{2013}
+      \field{pages}{511\bibrangedash 520}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.3390/mca18030511
+      \endverb
+      \verb{urlraw}
+      \verb https://www.mdpi.com/2297-8747/18/3/511
+      \endverb
+      \verb{url}
+      \verb https://www.mdpi.com/2297-8747/18/3/511
+      \endverb
+    \endentry
+    \entry{Pawan2021}{article}{}
+      \name{author}{9}{}{%
+        {{hash=068ae0952810a3d101f139275b7437c4}{%
+           family={Pawan},
+           familyi={P\bibinitperiod},
+           given={S\bibnamedelima J},
+           giveni={S\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=788b9bb3649793189e012626974c2f07}{%
+           family={Sankar},
+           familyi={S\bibinitperiod},
+           given={Rahul},
+           giveni={R\bibinitperiod}}}%
+        {{hash=1a7df34f95bdb077e13b78311841ed67}{%
+           family={Jain},
+           familyi={J\bibinitperiod},
+           given={Anubhav},
+           giveni={A\bibinitperiod}}}%
+        {{hash=05c4c49618d9baaf16eda6ba6620d9d0}{%
+           family={Jain},
+           familyi={J\bibinitperiod},
+           given={Mahir},
+           giveni={M\bibinitperiod}}}%
+        {{hash=1b93ab4e214a78a53235196dccee302e}{%
+           family={Darshan},
+           familyi={D\bibinitperiod},
+           given={D\bibnamedelima V},
+           giveni={D\bibinitperiod\bibinitdelim V\bibinitperiod}}}%
+        {{hash=45532a4560f5fe0be0180dd52725c345}{%
+           family={Anoop},
+           familyi={A\bibinitperiod},
+           given={B\bibnamedelima N},
+           giveni={B\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=cd4cd1e4da4127498133e037dcd80157}{%
+           family={Kothari},
+           familyi={K\bibinitperiod},
+           given={Abhishek\bibnamedelima R},
+           giveni={A\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=dc9335744554bf1972afd43b925684ff}{%
+           family={Venkatesan},
+           familyi={V\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+        {{hash=4515f2e3a05c459aef691c37e3b85caa}{%
+           family={Rajan},
+           familyi={R\bibinitperiod},
+           given={Jeny},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{f763f9988d7b8975a8442cc818de882c}
+      \strng{fullhash}{61ff82973156b312e9da3d2b8b0bbdbe}
+      \strng{bibnamehash}{f763f9988d7b8975a8442cc818de882c}
+      \strng{authorbibnamehash}{f763f9988d7b8975a8442cc818de882c}
+      \strng{authornamehash}{f763f9988d7b8975a8442cc818de882c}
+      \strng{authorfullhash}{61ff82973156b312e9da3d2b8b0bbdbe}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1741-0444}
+      \field{issue}{6}
+      \field{journaltitle}{Medical \& Biological Engineering \& Computing}
+      \field{title}{{Capsule Network–based architectures for the segmentation of sub-retinal serous fluid in optical coherence tomography images of central serous chorioretinopathy}}
+      \field{volume}{59}
+      \field{year}{2021}
+      \field{pages}{1245\bibrangedash 1259}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.1007/s11517-021-02364-4
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/s11517-021-02364-4
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/s11517-021-02364-4
+      \endverb
+    \endentry
+    \entry{Padilla2022}{article}{}
+      \name{author}{5}{}{%
+        {{hash=2af02f495f5a4d5c8d5971684865f5f5}{%
+           family={Padilla-Pantoja},
+           familyi={P\bibinithyphendelim P\bibinitperiod},
+           given={Fabio\bibnamedelima Daniel},
+           giveni={F\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=afd6f45daddf7721c66c808177351127}{%
+           family={Sanchez},
+           familyi={S\bibinitperiod},
+           given={Yeison\bibnamedelima D},
+           giveni={Y\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=25cc461d16e383faf254196e2799c8ae}{%
+           family={Quijano-Nieto},
+           familyi={Q\bibinithyphendelim N\bibinitperiod},
+           given={Bernardo\bibnamedelima Alfonso},
+           giveni={B\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=2f44da2f34eeb6e782eb76164974f105}{%
+           family={Perdomo},
+           familyi={P\bibinitperiod},
+           given={Oscar\bibnamedelima J},
+           giveni={O\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=551e303da8ec05064a9f34c799620e62}{%
+           family={Gonzalez},
+           familyi={G\bibinitperiod},
+           given={Fabio\bibnamedelima A},
+           giveni={F\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{87212b85fb998a3684c476c2e85b11bb}
+      \strng{fullhash}{ea1526808c1bfa59f9412dc328b292a6}
+      \strng{bibnamehash}{ea1526808c1bfa59f9412dc328b292a6}
+      \strng{authorbibnamehash}{ea1526808c1bfa59f9412dc328b292a6}
+      \strng{authornamehash}{87212b85fb998a3684c476c2e85b11bb}
+      \strng{authorfullhash}{ea1526808c1bfa59f9412dc328b292a6}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2164-2591}
+      \field{issue}{9}
+      \field{journaltitle}{Translational Vision Science \& Technology}
+      \field{month}{9}
+      \field{title}{{Etiology of Macular Edema Defined by Deep Learning in Optical Coherence Tomography Scans}}
+      \field{volume}{11}
+      \field{year}{2022}
+      \field{pages}{29}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1167/tvst.11.9.29
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1167/tvst.11.9.29
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1167/tvst.11.9.29
+      \endverb
+    \endentry
+    \entry{Liu2024}{article}{}
+      \name{author}{10}{}{%
+        {{hash=c2969289c79bfb5f2bd68129932f963b}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Hui},
+           giveni={H\bibinitperiod}}}%
+        {{hash=cf8e25f3cb740e3a1e3bba6b95f5bc74}{%
+           family={Gao},
+           familyi={G\bibinitperiod},
+           given={Wenteng},
+           giveni={W\bibinitperiod}}}%
+        {{hash=a395f08974363438b5b4297f5a3830aa}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Lei},
+           giveni={L\bibinitperiod}}}%
+        {{hash=65027af5f4f54f2e6c7bb140253872e2}{%
+           family={Wu},
+           familyi={W\bibinitperiod},
+           given={Di},
+           giveni={D\bibinitperiod}}}%
+        {{hash=4e6821fdd40d7d235a109a998341e8c2}{%
+           family={Zhao},
+           familyi={Z\bibinitperiod},
+           given={Dehan},
+           giveni={D\bibinitperiod}}}%
+        {{hash=a7f7ed2f9b03fb5406904986cf83c202}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Kun},
+           giveni={K\bibinitperiod}}}%
+        {{hash=2a31e8882b21f0e34477f94aa135eeb9}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Jicheng},
+           giveni={J\bibinitperiod}}}%
+        {{hash=43f2bd4ae5284a12d31e66ec43d0d6cc}{%
+           family={Ye},
+           familyi={Y\bibinitperiod},
+           given={Yu},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=a35fda79f6e61d9a255410b52105dbf9}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Ronald\bibnamedelima X},
+           giveni={R\bibinitperiod\bibinitdelim X\bibinitperiod}}}%
+        {{hash=df4e93d52e78f34f1b9d2ec1a115559d}{%
+           family={Sun},
+           familyi={S\bibinitperiod},
+           given={Mingzhai},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{139886769503600276bca11a46937697}
+      \strng{fullhash}{d26cde9fd188f61632b9b3dc89fb44f3}
+      \strng{bibnamehash}{139886769503600276bca11a46937697}
+      \strng{authorbibnamehash}{139886769503600276bca11a46937697}
+      \strng{authornamehash}{139886769503600276bca11a46937697}
+      \strng{authorfullhash}{d26cde9fd188f61632b9b3dc89fb44f3}
+      \field{extraname}{1}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0010-4825}
+      \field{journaltitle}{Computers in Biology and Medicine}
+      \field{title}{{{Semantic} uncertainty {Guided} {Cross-Transformer} for enhanced macular edema segmentation in {OCT} images}}
+      \field{volume}{174}
+      \field{year}{2024}
+      \field{pages}{108458}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.compbiomed.2024.108458
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0010482524005420
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0010482524005420
+      \endverb
+      \keyw{Cross-Transformer,Macular edema,OCT,Semantic uncertainty}
+    \endentry
+    \entry{Zhang2023}{article}{}
+      \name{author}{5}{}{%
+        {{hash=7d602c606bbdac9b7503677f466b90bc}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Haoran},
+           giveni={H\bibinitperiod}}}%
+        {{hash=7c04e5b1fed3c0a59159942b539bad00}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Jianlong},
+           giveni={J\bibinitperiod}}}%
+        {{hash=fa055549f13e830a4b8f3b8de81047d0}{%
+           family={Zheng},
+           familyi={Z\bibinitperiod},
+           given={Ce},
+           giveni={C\bibinitperiod}}}%
+        {{hash=ec64b4ac991c9f9135a06689cdae20ba}{%
+           family={Zhao},
+           familyi={Z\bibinitperiod},
+           given={Shiqing},
+           giveni={S\bibinitperiod}}}%
+        {{hash=c46328ea8be6f0bb2d60ce8b5699f2f7}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Aili},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Optica Publishing Group}%
+      }
+      \strng{namehash}{a47de0b0bd90609350ec9311881ce5f1}
+      \strng{fullhash}{5d49d0129e06eb2c57bc92ed19d4b072}
+      \strng{bibnamehash}{5d49d0129e06eb2c57bc92ed19d4b072}
+      \strng{authorbibnamehash}{5d49d0129e06eb2c57bc92ed19d4b072}
+      \strng{authornamehash}{a47de0b0bd90609350ec9311881ce5f1}
+      \strng{authorfullhash}{5d49d0129e06eb2c57bc92ed19d4b072}
+      \field{extraname}{1}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{7}
+      \field{journaltitle}{Biomed. Opt. Express}
+      \field{month}{7}
+      \field{title}{{Annotation-efficient learning for {OCT} segmentation}}
+      \field{volume}{14}
+      \field{year}{2023}
+      \field{pages}{3294\bibrangedash 3307}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1364/BOE.486276
+      \endverb
+      \verb{urlraw}
+      \verb https://opg.optica.org/boe/abstract.cfm?URI=boe-14-7-3294
+      \endverb
+      \verb{url}
+      \verb https://opg.optica.org/boe/abstract.cfm?URI=boe-14-7-3294
+      \endverb
+      \keyw{Deep learning; High throughput optics; Machine vision; Neural networks; Segmentation; Spatial resolution}
+    \endentry
+    \entry{Tang2022}{article}{}
+      \name{author}{7}{}{%
+        {{hash=7bf1d564eeadf2485f7a12641db27ca1}{%
+           family={Tang},
+           familyi={T\bibinitperiod},
+           given={Wei},
+           giveni={W\bibinitperiod}}}%
+        {{hash=280d23905603f118ee82839ffdd92bfe}{%
+           family={Ye},
+           familyi={Y\bibinitperiod},
+           given={Yanqing},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=39beb31489a9d2d2502b6f5e2e977b3f}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Xinjian},
+           giveni={X\bibinitperiod}}}%
+        {{hash=5ed60fb215297b437025a41817c66a88}{%
+           family={Shi},
+           familyi={S\bibinitperiod},
+           given={Fei},
+           giveni={F\bibinitperiod}}}%
+        {{hash=a74df3e171ead433e6fb61f003c4575a}{%
+           family={Xiang},
+           familyi={X\bibinitperiod},
+           given={Dehui},
+           giveni={D\bibinitperiod}}}%
+        {{hash=0ea53e2c154e4e661af4b9bbb5f2ff90}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Zhongyue},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=6dbf6bcbef3c413b9b1fad79671e11b3}{%
+           family={Zhu},
+           familyi={Z\bibinitperiod},
+           given={Weifang},
+           giveni={W\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {IOP Publishing}%
+      }
+      \strng{namehash}{fd036feb32ef1c8cb7f8f3b8ba6552d7}
+      \strng{fullhash}{d307dc05193a196e2ceef1572158de70}
+      \strng{bibnamehash}{fd036feb32ef1c8cb7f8f3b8ba6552d7}
+      \strng{authorbibnamehash}{fd036feb32ef1c8cb7f8f3b8ba6552d7}
+      \strng{authornamehash}{fd036feb32ef1c8cb7f8f3b8ba6552d7}
+      \strng{authorfullhash}{d307dc05193a196e2ceef1572158de70}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{12}
+      \field{journaltitle}{Physics in Medicine \& Biology}
+      \field{month}{6}
+      \field{title}{{Multi-class retinal fluid joint segmentation based on cascaded convolutional neural networks}}
+      \field{volume}{67}
+      \field{year}{2022}
+      \field{pages}{125018}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1088/1361-6560/ac7378
+      \endverb
+      \verb{urlraw}
+      \verb https://dx.doi.org/10.1088/1361-6560/ac7378
+      \endverb
+      \verb{url}
+      \verb https://dx.doi.org/10.1088/1361-6560/ac7378
+      \endverb
+    \endentry
+    \entry{Xing2022}{article}{}
+      \name{author}{8}{}{%
+        {{hash=392983008e59a0d9377840fd38e4e08a}{%
+           family={Xing},
+           familyi={X\bibinitperiod},
+           given={Gang},
+           giveni={G\bibinitperiod}}}%
+        {{hash=685d97480ebafb5a158e7c3dfdcb69a8}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Li},
+           giveni={L\bibinitperiod}}}%
+        {{hash=fc3f811f6664819ce5e8f984a3cd2e8a}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Hualin},
+           giveni={H\bibinitperiod}}}%
+        {{hash=3cb893d807d78f49b7e062133c783ce3}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Jiong},
+           giveni={J\bibinitperiod}}}%
+        {{hash=f0cc02c5b8b5cc186a59e2644d8f7ef1}{%
+           family={Sun},
+           familyi={S\bibinitperiod},
+           given={Dongke},
+           giveni={D\bibinitperiod}}}%
+        {{hash=7b489e462941f869f448a19abc85df4b}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Feng},
+           giveni={F\bibinitperiod}}}%
+        {{hash=1db1b8736c27dc9f010feb357e8cd005}{%
+           family={Lei},
+           familyi={L\bibinitperiod},
+           given={Jianqin},
+           giveni={J\bibinitperiod}}}%
+        {{hash=313347d77b6f4011d566c3a0b6753646}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Xiayu},
+           giveni={X\bibinitperiod}}}%
+      }
+      \strng{namehash}{2c30098e0e76b508eb192a372db4f5f3}
+      \strng{fullhash}{37b1eab1d7ca7a67becb3f55c6e2aa8c}
+      \strng{bibnamehash}{2c30098e0e76b508eb192a372db4f5f3}
+      \strng{authorbibnamehash}{2c30098e0e76b508eb192a372db4f5f3}
+      \strng{authornamehash}{2c30098e0e76b508eb192a372db4f5f3}
+      \strng{authorfullhash}{37b1eab1d7ca7a67becb3f55c6e2aa8c}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{6}
+      \field{journaltitle}{IEEE Transactions on Medical Imaging}
+      \field{title}{{Multi-Scale Pathological Fluid Segmentation in {OCT} With a Novel Curvature Loss in Convolutional Neural Network}}
+      \field{volume}{41}
+      \field{year}{2022}
+      \field{pages}{1547\bibrangedash 1559}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1109/TMI.2022.3142048
+      \endverb
+      \keyw{Fluids;Lesions;Retina;Image segmentation;Shape;Loss measurement;Pathology;Image segmentation;loss function;optical coherence tomography;pathological fluid}
+    \endentry
+    \entry{Rahil2023}{article}{}
+      \name{author}{6}{}{%
+        {{hash=46805d03bbcc28dfa3f8ed42f69dafc5}{%
+           family={Rahil},
+           familyi={R\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+        {{hash=45532a4560f5fe0be0180dd52725c345}{%
+           family={Anoop},
+           familyi={A\bibinitperiod},
+           given={B\bibnamedelima N},
+           giveni={B\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=95841faaa0a95f4fcfc602a8cc3af736}{%
+           family={Girish},
+           familyi={G\bibinitperiod},
+           given={G\bibnamedelima N},
+           giveni={G\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=938dba2b88ac6abe74d00721a4bfe878}{%
+           family={Kothari},
+           familyi={K\bibinitperiod},
+           given={A\bibnamedelima R},
+           giveni={A\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=2df954fe904a9fe05ce509c42418e3f6}{%
+           family={Koolagudi},
+           familyi={K\bibinitperiod},
+           given={S\bibnamedelima G},
+           giveni={S\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=d0abcb7f126c3c5ff0098c3dbaae9965}{%
+           family={Rajan},
+           familyi={R\bibinitperiod},
+           given={J},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{fc2f5844c7f86aa07c72c1faaf763ba7}
+      \strng{fullhash}{6061ce90a12fe54da87c4d7f3b0241d3}
+      \strng{bibnamehash}{6061ce90a12fe54da87c4d7f3b0241d3}
+      \strng{authorbibnamehash}{6061ce90a12fe54da87c4d7f3b0241d3}
+      \strng{authornamehash}{fc2f5844c7f86aa07c72c1faaf763ba7}
+      \strng{authorfullhash}{6061ce90a12fe54da87c4d7f3b0241d3}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2169-3536}
+      \field{journaltitle}{IEEE Access}
+      \field{title}{{A Deep Ensemble Learning-Based {CNN} Architecture for Multiclass Retinal Fluid Segmentation in {OCT} Images}}
+      \field{volume}{11}
+      \field{year}{2023}
+      \field{pages}{17241\bibrangedash 17251}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1109/ACCESS.2023.3244922
+      \endverb
+    \endentry
+    \entry{Lu2019}{article}{}
+      \name{author}{7}{}{%
+        {{hash=a63ed84d417f308cb47f955cc67d2de1}{%
+           family={Lu},
+           familyi={L\bibinitperiod},
+           given={Donghuan},
+           giveni={D\bibinitperiod}}}%
+        {{hash=06b45340e8ff9aeca6b1069a8d1d2bfc}{%
+           family={Heisler},
+           familyi={H\bibinitperiod},
+           given={Morgan},
+           giveni={M\bibinitperiod}}}%
+        {{hash=6db138f4f57d9a17626ae4d677ea241a}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Sieun},
+           giveni={S\bibinitperiod}}}%
+        {{hash=93f78c3601167df6b8410f629a3db361}{%
+           family={Ding},
+           familyi={D\bibinitperiod},
+           given={Gavin\bibnamedelima Weiguang},
+           giveni={G\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=39b120d591655c3bebfeffd948393dfc}{%
+           family={Navajas},
+           familyi={N\bibinitperiod},
+           given={Eduardo},
+           giveni={E\bibinitperiod}}}%
+        {{hash=371294587084e29bae95aa78b1a8fca5}{%
+           family={Sarunic},
+           familyi={S\bibinitperiod},
+           given={Marinko\bibnamedelima V},
+           giveni={M\bibinitperiod\bibinitdelim V\bibinitperiod}}}%
+        {{hash=78a6332645d46086b07915ee95646860}{%
+           family={Beg},
+           familyi={B\bibinitperiod},
+           given={Mirza\bibnamedelima Faisal},
+           giveni={M\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+      }
+      \strng{namehash}{29a83bfb440dfa41229a64a8c4517720}
+      \strng{fullhash}{2c3f6f697883c95d77a9fc0d3c4f1073}
+      \strng{bibnamehash}{29a83bfb440dfa41229a64a8c4517720}
+      \strng{authorbibnamehash}{29a83bfb440dfa41229a64a8c4517720}
+      \strng{authornamehash}{29a83bfb440dfa41229a64a8c4517720}
+      \strng{authorfullhash}{2c3f6f697883c95d77a9fc0d3c4f1073}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1361-8415}
+      \field{journaltitle}{Medical Image Analysis}
+      \field{title}{{Deep-learning based multiclass retinal fluid segmentation and detection in optical coherence tomography images using a fully convolutional neural network}}
+      \field{volume}{54}
+      \field{year}{2019}
+      \field{pages}{100\bibrangedash 110}
+      \range{pages}{11}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.media.2019.02.011
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S1361841519300167
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S1361841519300167
+      \endverb
+      \keyw{Fully convolutional network,Multiclass segmentation and detection,Optical coherence tomography,Retinal fluid}
+    \endentry
+    \entry{Hassan2021b}{article}{}
+      \name{author}{7}{}{%
+        {{hash=8292ab4fe2959a6205ed2d9f2cf2777d}{%
+           family={Hassan},
+           familyi={H\bibinitperiod},
+           given={Bilal},
+           giveni={B\bibinitperiod}}}%
+        {{hash=8f1f2dc6e88b5e85d106022c26d013be}{%
+           family={Qin},
+           familyi={Q\bibinitperiod},
+           given={Shiyin},
+           giveni={S\bibinitperiod}}}%
+        {{hash=d7edf216dd95f192316f83ed1706b623}{%
+           family={Ahmed},
+           familyi={A\bibinitperiod},
+           given={Ramsha},
+           giveni={R\bibinitperiod}}}%
+        {{hash=e970ef80506e19e504aaf97c3af98c78}{%
+           family={Hassan},
+           familyi={H\bibinitperiod},
+           given={Taimur},
+           giveni={T\bibinitperiod}}}%
+        {{hash=52c0430a0540184c943218798a23a8c5}{%
+           family={Taguri},
+           familyi={T\bibinitperiod},
+           given={Abdel\bibnamedelima Hakeem},
+           giveni={A\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=7d4ce260839513c4062a702e399b6912}{%
+           family={Hashmi},
+           familyi={H\bibinitperiod},
+           given={Shahrukh},
+           giveni={S\bibinitperiod}}}%
+        {{hash=deae07f06a62cdcc9f774869f8f0ac0c}{%
+           family={Werghi},
+           familyi={W\bibinitperiod},
+           given={Naoufel},
+           giveni={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{60c04d6845edbb6e04ba0016cc1457fc}
+      \strng{fullhash}{8b7c87d526c2f33bd44dfa9487bb90eb}
+      \strng{bibnamehash}{60c04d6845edbb6e04ba0016cc1457fc}
+      \strng{authorbibnamehash}{60c04d6845edbb6e04ba0016cc1457fc}
+      \strng{authornamehash}{60c04d6845edbb6e04ba0016cc1457fc}
+      \strng{authorfullhash}{8b7c87d526c2f33bd44dfa9487bb90eb}
+      \field{extraname}{1}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0010-4825}
+      \field{journaltitle}{Computers in Biology and Medicine}
+      \field{title}{{Deep learning based joint segmentation and characterization of multi-class retinal fluid lesions on {OCT} scans for clinical use in anti-{VEGF} therapy}}
+      \field{volume}{136}
+      \field{year}{2021}
+      \field{pages}{104727}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.compbiomed.2021.104727
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0010482521005217
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0010482521005217
+      \endverb
+      \keyw{Deep learning,Lesions detection,Medical image analysis,Optical coherence tomography (OCT),Radiomics,Retinal fluids segmentation}
+    \endentry
+    \entry{Hu2019}{article}{}
+      \name{author}{3}{}{%
+        {{hash=e204a95d3aa19254bd8306dca38da95b}{%
+           family={Hu},
+           familyi={H\bibinitperiod},
+           given={Junjie},
+           giveni={J\bibinitperiod}}}%
+        {{hash=05d03b77f0809c6152e608bc8ec7cc16}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Yuanyuan},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=f6de641fbecd61c21a492fa6ddbef2aa}{%
+           family={Yi},
+           familyi={Y\bibinitperiod},
+           given={Zhang},
+           giveni={Z\bibinitperiod}}}%
+      }
+      \strng{namehash}{3d0edfa69384cda960207446c099f56a}
+      \strng{fullhash}{1134a9d77e5cd47111a2a4e396c8206b}
+      \strng{bibnamehash}{1134a9d77e5cd47111a2a4e396c8206b}
+      \strng{authorbibnamehash}{1134a9d77e5cd47111a2a4e396c8206b}
+      \strng{authornamehash}{3d0edfa69384cda960207446c099f56a}
+      \strng{authorfullhash}{1134a9d77e5cd47111a2a4e396c8206b}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1361-8415}
+      \field{journaltitle}{Medical Image Analysis}
+      \field{title}{{Automated segmentation of macular edema in OCT using deep neural networks}}
+      \field{volume}{55}
+      \field{year}{2019}
+      \field{pages}{216\bibrangedash 227}
+      \range{pages}{12}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.media.2019.05.002
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S1361841519300386
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S1361841519300386
+      \endverb
+      \keyw{Atrous convolution,Deep neural networks,Macular edema segmentation}
+    \endentry
+    \entry{Sappa2021}{article}{}
+      \name{author}{7}{}{%
+        {{hash=c34d9c26967887bd3cd6e432f4c6646b}{%
+           family={Sappa},
+           familyi={S\bibinitperiod},
+           given={Loza\bibnamedelima Bekalo},
+           giveni={L\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+        {{hash=9872e0f1925b968937f49d165be5afcc}{%
+           family={Okuwobi},
+           familyi={O\bibinitperiod},
+           given={Idowu\bibnamedelima Paul},
+           giveni={I\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+        {{hash=f4e4f4ea1bdaee7d976c3b153173fdd2}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Mingchao},
+           giveni={M\bibinitperiod}}}%
+        {{hash=a56af66ec399fd8ca9e5ccca445915ad}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Yuhan},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=2906060620e606757a730c5f1a627c04}{%
+           family={Xie},
+           familyi={X\bibinitperiod},
+           given={Sha},
+           giveni={S\bibinitperiod}}}%
+        {{hash=e2bc25330861c5f630991843ecee0726}{%
+           family={Yuan},
+           familyi={Y\bibinitperiod},
+           given={Songtao},
+           giveni={S\bibinitperiod}}}%
+        {{hash=8b8805250fb5a57cfbae360547a18706}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Qiang},
+           giveni={Q\bibinitperiod}}}%
+      }
+      \strng{namehash}{6b76bb79fd982f87f785e6068081d7b4}
+      \strng{fullhash}{756e3afc92961f9591a9d7980dbbe86a}
+      \strng{bibnamehash}{6b76bb79fd982f87f785e6068081d7b4}
+      \strng{authorbibnamehash}{6b76bb79fd982f87f785e6068081d7b4}
+      \strng{authornamehash}{6b76bb79fd982f87f785e6068081d7b4}
+      \strng{authorfullhash}{756e3afc92961f9591a9d7980dbbe86a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1618-727X}
+      \field{issue}{3}
+      \field{journaltitle}{Journal of Digital Imaging}
+      \field{title}{{{RetFluidNet}: Retinal Fluid Segmentation for {SD-OCT} Images Using Convolutional Neural Network}}
+      \field{volume}{34}
+      \field{year}{2021}
+      \field{pages}{691\bibrangedash 704}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1007/s10278-021-00459-w
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/s10278-021-00459-w
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/s10278-021-00459-w
+      \endverb
+    \endentry
+    \entry{Liu2021}{article}{}
+      \name{author}{5}{}{%
+        {{hash=1fffcefedf3ee0de8d6eaf54ce15af5e}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Xiaoming},
+           giveni={X\bibinitperiod}}}%
+        {{hash=e2f64431f046ef831794967b9b1d6a8c}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Shaocheng},
+           giveni={S\bibinitperiod}}}%
+        {{hash=f5acec98b29ee91fa6b08b85a6a0adad}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Ying},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=7c3e7a7d9816c833c4d11cce8583b2cf}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Dong},
+           giveni={D\bibinitperiod}}}%
+        {{hash=0b61e9661067d0a906cff8be51415c72}{%
+           family={Hu},
+           familyi={H\bibinitperiod},
+           given={Wei},
+           giveni={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{72522accb479a3a6581a5bc243321903}
+      \strng{fullhash}{20a193f6d89c6ad7f55568ed6214cebb}
+      \strng{bibnamehash}{20a193f6d89c6ad7f55568ed6214cebb}
+      \strng{authorbibnamehash}{20a193f6d89c6ad7f55568ed6214cebb}
+      \strng{authornamehash}{72522accb479a3a6581a5bc243321903}
+      \strng{authorfullhash}{20a193f6d89c6ad7f55568ed6214cebb}
+      \field{extraname}{2}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0925-2312}
+      \field{journaltitle}{Neurocomputing}
+      \field{title}{{Automatic fluid segmentation in retinal optical coherence tomography images using attention based deep learning}}
+      \field{volume}{452}
+      \field{year}{2021}
+      \field{pages}{576\bibrangedash 591}
+      \range{pages}{16}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.neucom.2020.07.143
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0925231220319135
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0925231220319135
+      \endverb
+      \keyw{Attention mechanism,Deep learning,Fluid region segmentation,Medical image segmentation,Optical coherence tomography,U-Net}
+    \endentry
+    \entry{Gao2019}{article}{}
+      \name{author}{10}{}{%
+        {{hash=c8184a79fd407a8b8e507f0d7d5e7628}{%
+           family={Gao},
+           familyi={G\bibinitperiod},
+           given={Kun},
+           giveni={K\bibinitperiod}}}%
+        {{hash=6abcb9740f69c7f4604bcf642ac0674e}{%
+           family={Niu},
+           familyi={N\bibinitperiod},
+           given={Sijie},
+           giveni={S\bibinitperiod}}}%
+        {{hash=a38548d9b7d76249f7e6fe15cd456484}{%
+           family={Ji},
+           familyi={J\bibinitperiod},
+           given={Zexuan},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=e86fe803385f4d889275f863a77108f5}{%
+           family={Wu},
+           familyi={W\bibinitperiod},
+           given={Menglin},
+           giveni={M\bibinitperiod}}}%
+        {{hash=8b8805250fb5a57cfbae360547a18706}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Qiang},
+           giveni={Q\bibinitperiod}}}%
+        {{hash=1e4d934215b86ddb5237e867c352298f}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Rongbin},
+           giveni={R\bibinitperiod}}}%
+        {{hash=e2bc25330861c5f630991843ecee0726}{%
+           family={Yuan},
+           familyi={Y\bibinitperiod},
+           given={Songtao},
+           giveni={S\bibinitperiod}}}%
+        {{hash=8a95e14cf144d6206323d79fecf623ff}{%
+           family={Fan},
+           familyi={F\bibinitperiod},
+           given={Wen},
+           giveni={W\bibinitperiod}}}%
+        {{hash=042b6164b2b98e4b1f62bc8ae3dd0544}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Yuehui},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=886be168bd335c4890bb03faf5cd344b}{%
+           family={Dong},
+           familyi={D\bibinitperiod},
+           given={Jiwen},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{9a3d5abdf0928fa6deb197a86527ed34}
+      \strng{fullhash}{2858e5ec4bd23a8e31645a9ed1305cf0}
+      \strng{bibnamehash}{9a3d5abdf0928fa6deb197a86527ed34}
+      \strng{authorbibnamehash}{9a3d5abdf0928fa6deb197a86527ed34}
+      \strng{authornamehash}{9a3d5abdf0928fa6deb197a86527ed34}
+      \strng{authorfullhash}{2858e5ec4bd23a8e31645a9ed1305cf0}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0169-2607}
+      \field{journaltitle}{Computer Methods and Programs in Biomedicine}
+      \field{title}{{Double-branched and area-constraint fully convolutional networks for automated serous retinal detachment segmentation in {SD-OCT} images}}
+      \field{volume}{176}
+      \field{year}{2019}
+      \field{pages}{69\bibrangedash 80}
+      \range{pages}{12}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.cmpb.2019.04.027
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0169260718318327
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0169260718318327
+      \endverb
+      \keyw{Central serous chorioretinopathy,Double-branched and area-constraint fully convolutional networks,Medical image segmentation,Spectral domain optical coherence tomography}
+    \endentry
+    \entry{Guo2020}{article}{}
+      \name{author}{6}{}{%
+        {{hash=49d4cb022c4e3fca17ada3ff651d911f}{%
+           family={Guo},
+           familyi={G\bibinitperiod},
+           given={Yukun},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=096b0de9b8abf627dc3330082b6cb157}{%
+           family={Hormel},
+           familyi={H\bibinitperiod},
+           given={Tristan\bibnamedelima T},
+           giveni={T\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+        {{hash=372d4de4a9441983cfc089e0e04edd6d}{%
+           family={Xiong},
+           familyi={X\bibinitperiod},
+           given={Honglian},
+           giveni={H\bibinitperiod}}}%
+        {{hash=fcd6114a30fda9801eef65b9d374f56b}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Jie},
+           giveni={J\bibinitperiod}}}%
+        {{hash=555cb394a53be5e007d1e772653adc53}{%
+           family={Hwang},
+           familyi={H\bibinitperiod},
+           given={Thomas\bibnamedelima S},
+           giveni={T\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=44c5f0dd92eeeb23b4b1ea033e460258}{%
+           family={Jia},
+           familyi={J\bibinitperiod},
+           given={Yali},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \strng{namehash}{7b0841fcc96fb897a41bdc283b977b3d}
+      \strng{fullhash}{ac8e603a94cea8a4e2c3054db5df61a3}
+      \strng{bibnamehash}{ac8e603a94cea8a4e2c3054db5df61a3}
+      \strng{authorbibnamehash}{ac8e603a94cea8a4e2c3054db5df61a3}
+      \strng{authornamehash}{7b0841fcc96fb897a41bdc283b977b3d}
+      \strng{authorfullhash}{ac8e603a94cea8a4e2c3054db5df61a3}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2164-2591}
+      \field{issue}{2}
+      \field{journaltitle}{Translational Vision Science \& Technology}
+      \field{month}{10}
+      \field{title}{{Automated Segmentation of Retinal Fluid Volumes From Structural and Angiographic Optical Coherence Tomography Using Deep Learning}}
+      \field{volume}{9}
+      \field{year}{2020}
+      \field{pages}{54}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1167/tvst.9.2.54
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1167/tvst.9.2.54
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1167/tvst.9.2.54
+      \endverb
+    \endentry
+    \entry{Wu2023}{article}{}
+      \name{author}{14}{}{%
+        {{hash=5054d8715f6746af9ed28c566f168046}{%
+           family={Wu},
+           familyi={W\bibinitperiod},
+           given={Yue},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=3f647ab6d7123cee3ad215c49442f63b}{%
+           family={Olvera-Barrios},
+           familyi={O\bibinithyphendelim B\bibinitperiod},
+           given={Abraham},
+           giveni={A\bibinitperiod}}}%
+        {{hash=7ec82bc1e08c0745e796636149ba64a6}{%
+           family={Yanagihara},
+           familyi={Y\bibinitperiod},
+           given={Ryan},
+           giveni={R\bibinitperiod}}}%
+        {{hash=e6454053f46250969d695afa940b5fa7}{%
+           family={Kung},
+           familyi={K\bibinitperiod},
+           given={Timothy-Paul\bibnamedelima H},
+           giveni={T\bibinithyphendelim P\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=48470fcee3a08ed76dd5a21ea91bbf01}{%
+           family={Lu},
+           familyi={L\bibinitperiod},
+           given={Randy},
+           giveni={R\bibinitperiod}}}%
+        {{hash=d7551f0c2b258260b4bb93a0f1e458b2}{%
+           family={Leung},
+           familyi={L\bibinitperiod},
+           given={Irene},
+           giveni={I\bibinitperiod}}}%
+        {{hash=47845b6f74d0c2251583b6de16a759a4}{%
+           family={Mishra},
+           familyi={M\bibinitperiod},
+           given={Amit\bibnamedelima V},
+           giveni={A\bibinitperiod\bibinitdelim V\bibinitperiod}}}%
+        {{hash=136afa274920c08503f291815f389c79}{%
+           family={Nussinovitch},
+           familyi={N\bibinitperiod},
+           given={Hanan},
+           giveni={H\bibinitperiod}}}%
+        {{hash=1280e50bda3226df4f8db99d0ed02121}{%
+           family={Grimaldi},
+           familyi={G\bibinitperiod},
+           given={Gabriela},
+           giveni={G\bibinitperiod}}}%
+        {{hash=73de2cc562be2d62b1bdb33da6b19473}{%
+           family={Blazes},
+           familyi={B\bibinitperiod},
+           given={Marian},
+           giveni={M\bibinitperiod}}}%
+        {{hash=0b62d502e41c00fcd559e66bca444f38}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Cecilia\bibnamedelima S},
+           giveni={C\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=6e06667978944cb1b08006f65f070a28}{%
+           family={Egan},
+           familyi={E\bibinitperiod},
+           given={Catherine},
+           giveni={C\bibinitperiod}}}%
+        {{hash=5779931f5902e257b0301a66bc352d0b}{%
+           family={Tufail},
+           familyi={T\bibinitperiod},
+           given={Adnan},
+           giveni={A\bibinitperiod}}}%
+        {{hash=15b3f66ff44b7b8ca4455d3f8ff71e10}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Aaron\bibnamedelima Y},
+           giveni={A\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+      }
+      \strng{namehash}{77aa4285bb0660bf6222f13bc03c3431}
+      \strng{fullhash}{3a64ef671deb535ca6cca0db523642bb}
+      \strng{bibnamehash}{77aa4285bb0660bf6222f13bc03c3431}
+      \strng{authorbibnamehash}{77aa4285bb0660bf6222f13bc03c3431}
+      \strng{authornamehash}{77aa4285bb0660bf6222f13bc03c3431}
+      \strng{authorfullhash}{3a64ef671deb535ca6cca0db523642bb}
+      \field{extraname}{1}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0161-6420}
+      \field{issue}{2}
+      \field{journaltitle}{Ophthalmology}
+      \field{title}{{Training Deep Learning Models to Work on Multiple Devices by Cross-Domain Learning with No Additional Annotations}}
+      \field{volume}{130}
+      \field{year}{2023}
+      \field{pages}{213\bibrangedash 222}
+      \range{pages}{10}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.ophtha.2022.09.014
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0161642022007497
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0161642022007497
+      \endverb
+      \keyw{Cross-domain learning,Macula,OCT,Retina,Unsupervised learning}
+    \endentry
+    \entry{Wang2021}{article}{}
+      \name{author}{9}{}{%
+        {{hash=5c092e58f3e1da1e6b0175fb4a5aa0f6}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Zhenhua},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=e8b0c2fce3c3120004fbbb262d5fb5f5}{%
+           family={Zhong},
+           familyi={Z\bibinitperiod},
+           given={Yuanfu},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=42782c50d56863d08b0b6545ec1c026e}{%
+           family={Yao},
+           familyi={Y\bibinitperiod},
+           given={Mudi},
+           giveni={M\bibinitperiod}}}%
+        {{hash=db67a20d341926f69b95583555729a63}{%
+           family={Ma},
+           familyi={M\bibinitperiod},
+           given={Yan},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=312a86f0d7c32819d7fd0a4dda00c0ae}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Wenping},
+           giveni={W\bibinitperiod}}}%
+        {{hash=4cccb617a3c4393259fe7bd4943ffc43}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Chaopeng},
+           giveni={C\bibinitperiod}}}%
+        {{hash=96857ff9688febc921f322d5fd8be899}{%
+           family={Tao},
+           familyi={T\bibinitperiod},
+           given={Zhifu},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=05f3ab581488c1c312aaae378997cc9a}{%
+           family={Jiang},
+           familyi={J\bibinitperiod},
+           given={Qin},
+           giveni={Q\bibinitperiod}}}%
+        {{hash=5dd9f7adc4f975fd03bb8c348b06b4bd}{%
+           family={Yan},
+           familyi={Y\bibinitperiod},
+           given={Biao},
+           giveni={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{893b7c8f61a999c92475b0fff7896136}
+      \strng{fullhash}{898cbe7eac1ecbeb73f0a93fde154279}
+      \strng{bibnamehash}{893b7c8f61a999c92475b0fff7896136}
+      \strng{authorbibnamehash}{893b7c8f61a999c92475b0fff7896136}
+      \strng{authornamehash}{893b7c8f61a999c92475b0fff7896136}
+      \strng{authorfullhash}{898cbe7eac1ecbeb73f0a93fde154279}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2045-2322}
+      \field{issue}{1}
+      \field{journaltitle}{Scientific Reports}
+      \field{title}{{Automated segmentation of macular edema for the diagnosis of ocular disease using deep learning method}}
+      \field{volume}{11}
+      \field{year}{2021}
+      \field{pages}{13392}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1038/s41598-021-92458-8
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1038/s41598-021-92458-8
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1038/s41598-021-92458-8
+      \endverb
+    \endentry
+    \entry{Quek2022}{article}{}
+      \name{author}{13}{}{%
+        {{hash=80bd1c001239441f89021b08c9cbc74c}{%
+           family={Quek},
+           familyi={Q\bibinitperiod},
+           given={Ten\bibnamedelima Cheer},
+           giveni={T\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{hash=f3e22add8fd36e36deeca5803feb91ea}{%
+           family={Takahashi},
+           familyi={T\bibinitperiod},
+           given={Kengo},
+           giveni={K\bibinitperiod}}}%
+        {{hash=21ea52be4a418755c141642800dc0e0c}{%
+           family={Kang},
+           familyi={K\bibinitperiod},
+           given={Hyun\bibnamedelima Goo},
+           giveni={H\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=a26d75df132e83d68f2c0e1707073cb1}{%
+           family={Thakur},
+           familyi={T\bibinitperiod},
+           given={Sahil},
+           giveni={S\bibinitperiod}}}%
+        {{hash=9736a25ed8cd4046e059657ceb7677da}{%
+           family={Deshmukh},
+           familyi={D\bibinitperiod},
+           given={Mihir},
+           giveni={M\bibinitperiod}}}%
+        {{hash=2cf6cdcccec6d450cc63c7a898c7f306}{%
+           family={Tseng},
+           familyi={T\bibinitperiod},
+           given={Rachel\bibnamedelimb Marjorie\bibnamedelimb Wei\bibnamedelima Wen},
+           giveni={R\bibinitperiod\bibinitdelim M\bibinitperiod\bibinitdelim W\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=a536f1007faa40803c296b697faaced3}{%
+           family={Nguyen},
+           familyi={N\bibinitperiod},
+           given={Helen},
+           giveni={H\bibinitperiod}}}%
+        {{hash=aaa36d36465f806a01966e1e408174b9}{%
+           family={Tham},
+           familyi={T\bibinitperiod},
+           given={Yih-Chung},
+           giveni={Y\bibinithyphendelim C\bibinitperiod}}}%
+        {{hash=2fa03d36041be175415ac0bed6c846d3}{%
+           family={Rim},
+           familyi={R\bibinitperiod},
+           given={Tyler\bibnamedelima Hyungtaek},
+           giveni={T\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=656a014d7b0093ae00ecaba376e62fd0}{%
+           family={Kim},
+           familyi={K\bibinitperiod},
+           given={Sung\bibnamedelima Soo},
+           giveni={S\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=b6c33f7d5f15cb1edde168edfb8886cc}{%
+           family={Yanagi},
+           familyi={Y\bibinitperiod},
+           given={Yasuo},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=23a86858491a927893ed8c479daed91c}{%
+           family={Liew},
+           familyi={L\bibinitperiod},
+           given={Gerald},
+           giveni={G\bibinitperiod}}}%
+        {{hash=3116b3815d9f007d0a724fc0eba19c7c}{%
+           family={Cheng},
+           familyi={C\bibinitperiod},
+           given={Ching-Yu},
+           giveni={C\bibinithyphendelim Y\bibinitperiod}}}%
+      }
+      \strng{namehash}{69b66f134ffe225034e2cc0ab2e097b8}
+      \strng{fullhash}{bf385a75bef83726153a88abb239ea02}
+      \strng{bibnamehash}{69b66f134ffe225034e2cc0ab2e097b8}
+      \strng{authorbibnamehash}{69b66f134ffe225034e2cc0ab2e097b8}
+      \strng{authornamehash}{69b66f134ffe225034e2cc0ab2e097b8}
+      \strng{authorfullhash}{bf385a75bef83726153a88abb239ea02}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1878-5085}
+      \field{issue}{4}
+      \field{journaltitle}{EPMA Journal}
+      \field{title}{{Predictive, preventive, and personalized management of retinal fluid via computer-aided detection app for optical coherence tomography scans}}
+      \field{volume}{13}
+      \field{year}{2022}
+      \field{pages}{547\bibrangedash 560}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1007/s13167-022-00301-5
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/s13167-022-00301-5
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/s13167-022-00301-5
+      \endverb
+    \endentry
+    \entry{Mantel2021}{article}{}
+      \name{author}{8}{}{%
+        {{hash=6be4f7ebb47c3bed7eb388b546618f06}{%
+           family={Mantel},
+           familyi={M\bibinitperiod},
+           given={Irmela},
+           giveni={I\bibinitperiod}}}%
+        {{hash=cc963912edb91690c699d24f8fd0f3ad}{%
+           family={Mosinska},
+           familyi={M\bibinitperiod},
+           given={Agata},
+           giveni={A\bibinitperiod}}}%
+        {{hash=67321f4dae3b8105d776d98fdbe6d212}{%
+           family={Bergin},
+           familyi={B\bibinitperiod},
+           given={Ciara},
+           giveni={C\bibinitperiod}}}%
+        {{hash=752cfa51c706506b9a74b61e89454680}{%
+           family={Polito},
+           familyi={P\bibinitperiod},
+           given={Maria\bibnamedelima Sole},
+           giveni={M\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=9f6325fb82ab403a7c88b2ee5e58dcab}{%
+           family={Guidotti},
+           familyi={G\bibinitperiod},
+           given={Jacopo},
+           giveni={J\bibinitperiod}}}%
+        {{hash=8b06ba8dc863737e7fdcbd8a15bba077}{%
+           family={Apostolopoulos},
+           familyi={A\bibinitperiod},
+           given={Stefanos},
+           giveni={S\bibinitperiod}}}%
+        {{hash=ea5514193dd911955c72ae49febbb053}{%
+           family={Ciller},
+           familyi={C\bibinitperiod},
+           given={Carlos},
+           giveni={C\bibinitperiod}}}%
+        {{hash=63da7e3d1edf1bc40ff54d76535deca4}{%
+           family={Zanet},
+           familyi={Z\bibinitperiod},
+           given={Sandro\bibnamedelima De},
+           giveni={S\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \strng{namehash}{76b19ae8a5872106da616f147de42a41}
+      \strng{fullhash}{2cf307f6f9251fa2c95c9fd94e630865}
+      \strng{bibnamehash}{76b19ae8a5872106da616f147de42a41}
+      \strng{authorbibnamehash}{76b19ae8a5872106da616f147de42a41}
+      \strng{authornamehash}{76b19ae8a5872106da616f147de42a41}
+      \strng{authorfullhash}{2cf307f6f9251fa2c95c9fd94e630865}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2164-2591}
+      \field{issue}{4}
+      \field{journaltitle}{Translational Vision Science \& Technology}
+      \field{month}{4}
+      \field{title}{{Automated Quantification of Pathological Fluids in Neovascular Age-Related Macular Degeneration, and Its Repeatability Using Deep Learning}}
+      \field{volume}{10}
+      \field{year}{2021}
+      \field{pages}{17}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1167/tvst.10.4.17
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1167/tvst.10.4.17
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1167/tvst.10.4.17
+      \endverb
+    \endentry
+    \entry{Li2023}{article}{}
+      \name{author}{6}{}{%
+        {{hash=ba9afdabb422ef30c600dd346a418cea}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Xiaohui},
+           giveni={X\bibinitperiod}}}%
+        {{hash=6abcb9740f69c7f4604bcf642ac0674e}{%
+           family={Niu},
+           familyi={N\bibinitperiod},
+           given={Sijie},
+           giveni={S\bibinitperiod}}}%
+        {{hash=a23df5c8c6228ef3707c37925976339a}{%
+           family={Gao},
+           familyi={G\bibinitperiod},
+           given={Xizhan},
+           giveni={X\bibinitperiod}}}%
+        {{hash=e216aaa6db79c0762cb58570110f4e7e}{%
+           family={Zhou},
+           familyi={Z\bibinitperiod},
+           given={Xueying},
+           giveni={X\bibinitperiod}}}%
+        {{hash=886be168bd335c4890bb03faf5cd344b}{%
+           family={Dong},
+           familyi={D\bibinitperiod},
+           given={Jiwen},
+           giveni={J\bibinitperiod}}}%
+        {{hash=6a4c78fb3d965b2b2a9c3f627b540555}{%
+           family={Zhao},
+           familyi={Z\bibinitperiod},
+           given={Hui},
+           giveni={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{251be786cba2c6ec88c9fc6613a89ac0}
+      \strng{fullhash}{980d96b4774b2e4f4bd2b509dc29942d}
+      \strng{bibnamehash}{980d96b4774b2e4f4bd2b509dc29942d}
+      \strng{authorbibnamehash}{980d96b4774b2e4f4bd2b509dc29942d}
+      \strng{authornamehash}{251be786cba2c6ec88c9fc6613a89ac0}
+      \strng{authorfullhash}{980d96b4774b2e4f4bd2b509dc29942d}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0010-4825}
+      \field{journaltitle}{Computers in Biology and Medicine}
+      \field{title}{{Self-training adversarial learning for cross-domain retinal {OCT} fluid segmentation}}
+      \field{volume}{155}
+      \field{year}{2023}
+      \field{pages}{106650}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.compbiomed.2023.106650
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0010482523001154
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0010482523001154
+      \endverb
+      \keyw{Adversarial transfer learning,Medical image segmentation,Optical coherence tomography,Self-training,Unsupervised domain adaptation}
+    \endentry
+    \entry{Hassan2021a}{article}{}
+      \name{author}{5}{}{%
+        {{hash=8292ab4fe2959a6205ed2d9f2cf2777d}{%
+           family={Hassan},
+           familyi={H\bibinitperiod},
+           given={Bilal},
+           giveni={B\bibinitperiod}}}%
+        {{hash=8f1f2dc6e88b5e85d106022c26d013be}{%
+           family={Qin},
+           familyi={Q\bibinitperiod},
+           given={Shiyin},
+           giveni={S\bibinitperiod}}}%
+        {{hash=e970ef80506e19e504aaf97c3af98c78}{%
+           family={Hassan},
+           familyi={H\bibinitperiod},
+           given={Taimur},
+           giveni={T\bibinitperiod}}}%
+        {{hash=d7edf216dd95f192316f83ed1706b623}{%
+           family={Ahmed},
+           familyi={A\bibinitperiod},
+           given={Ramsha},
+           giveni={R\bibinitperiod}}}%
+        {{hash=deae07f06a62cdcc9f774869f8f0ac0c}{%
+           family={Werghi},
+           familyi={W\bibinitperiod},
+           given={Naoufel},
+           giveni={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{60c04d6845edbb6e04ba0016cc1457fc}
+      \strng{fullhash}{569aba54cdfacaed939a0219f3bee65a}
+      \strng{bibnamehash}{569aba54cdfacaed939a0219f3bee65a}
+      \strng{authorbibnamehash}{569aba54cdfacaed939a0219f3bee65a}
+      \strng{authornamehash}{60c04d6845edbb6e04ba0016cc1457fc}
+      \strng{authorfullhash}{569aba54cdfacaed939a0219f3bee65a}
+      \field{extraname}{2}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Transactions on Instrumentation and Measurement}
+      \field{title}{{Joint Segmentation and Quantification of Chorioretinal Biomarkers in Optical Coherence Tomography Scans: A Deep Learning Approach}}
+      \field{volume}{70}
+      \field{year}{2021}
+      \field{pages}{1\bibrangedash 17}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1109/TIM.2021.3077988
+      \endverb
+      \keyw{Retina;Biomarkers;Imaging;Image segmentation;Databases;Training;Retinopathy;Chorioretinal biomarkers (CRBMs);deep learning;lesions segmentation;optical coherence tomography (OCT);quantification;retinal image analysis}
+    \endentry
+    \entry{Ronneberger2015}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=8e46da9de9e53ea5d37089897d69cdd9}{%
+           family={Ronneberger},
+           familyi={R\bibinitperiod},
+           given={Olaf},
+           giveni={O\bibinitperiod}}}%
+        {{hash=168e84ce3582cbc6bac5e2ebc3ef8442}{%
+           family={Fischer},
+           familyi={F\bibinitperiod},
+           given={Philipp},
+           giveni={P\bibinitperiod}}}%
+        {{hash=b452a32296958371572717940f900884}{%
+           family={Brox},
+           familyi={B\bibinitperiod},
+           given={Thomas},
+           giveni={T\bibinitperiod}}}%
+      }
+      \name{editor}{4}{}{%
+        {{hash=c107bbd317cd780c2aa7006dbe61d83f}{%
+           family={Navab},
+           familyi={N\bibinitperiod},
+           given={Nassir},
+           giveni={N\bibinitperiod}}}%
+        {{hash=13dfdbfc375d5ae886268dec73d8d8f9}{%
+           family={Hornegger},
+           familyi={H\bibinitperiod},
+           given={Joachim},
+           giveni={J\bibinitperiod}}}%
+        {{hash=4d166f6210ae1792f8f90d7871b4d234}{%
+           family={Wells},
+           familyi={W\bibinitperiod},
+           given={William\bibnamedelima M},
+           giveni={W\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=2413defb142650e8edf0bcd5608ab789}{%
+           family={Frangi},
+           familyi={F\bibinitperiod},
+           given={Alejandro\bibnamedelima F},
+           giveni={A\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer International Publishing}%
+      }
+      \strng{namehash}{9a497128db448eba9bbb6e27b1ed57ed}
+      \strng{fullhash}{f23ccc5160c62c7866172335b2c76e11}
+      \strng{bibnamehash}{f23ccc5160c62c7866172335b2c76e11}
+      \strng{authorbibnamehash}{f23ccc5160c62c7866172335b2c76e11}
+      \strng{authornamehash}{9a497128db448eba9bbb6e27b1ed57ed}
+      \strng{authorfullhash}{f23ccc5160c62c7866172335b2c76e11}
+      \strng{editorbibnamehash}{33938a515d73fb8b00fd2bd7509d5e86}
+      \strng{editornamehash}{7d63d752dc1fd3abad4ee5f250821c1c}
+      \strng{editorfullhash}{33938a515d73fb8b00fd2bd7509d5e86}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Medical Image Computing and Computer-Assisted Intervention – MICCAI 2015}
+      \field{isbn}{978-3-319-24574-4}
+      \field{title}{{{U-Net}: Convolutional Networks for Biomedical Image Segmentation}}
+      \field{year}{2015}
+      \field{pages}{234\bibrangedash 241}
+      \range{pages}{8}
+    \endentry
+    \entry{LChen2018}{article}{}
+      \name{author}{5}{}{%
+        {{hash=9dddfcfd529634a150ee38ee5c0203d7}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Liang-Chieh},
+           giveni={L\bibinithyphendelim C\bibinitperiod}}}%
+        {{hash=f0b33c7651e3d639b1e91032533984f9}{%
+           family={Papandreou},
+           familyi={P\bibinitperiod},
+           given={George},
+           giveni={G\bibinitperiod}}}%
+        {{hash=c2ab5c413745093191463102e54727f3}{%
+           family={Kokkinos},
+           familyi={K\bibinitperiod},
+           given={Iasonas},
+           giveni={I\bibinitperiod}}}%
+        {{hash=d01ba1edf5711066e4d420d9df8d8f43}{%
+           family={Murphy},
+           familyi={M\bibinitperiod},
+           given={Kevin},
+           giveni={K\bibinitperiod}}}%
+        {{hash=7e4cdd805dbfc99ccee4571698195692}{%
+           family={Yuille},
+           familyi={Y\bibinitperiod},
+           given={Alan\bibnamedelima L},
+           giveni={A\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{5b195b34f54d3e071b82ddb71e157be1}
+      \strng{fullhash}{c0db6e31d214cb90a9557639a905cee8}
+      \strng{bibnamehash}{c0db6e31d214cb90a9557639a905cee8}
+      \strng{authorbibnamehash}{c0db6e31d214cb90a9557639a905cee8}
+      \strng{authornamehash}{5b195b34f54d3e071b82ddb71e157be1}
+      \strng{authorfullhash}{c0db6e31d214cb90a9557639a905cee8}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{4}
+      \field{journaltitle}{IEEE Transactions on Pattern Analysis and Machine Intelligence}
+      \field{title}{{{DeepLab}: Semantic Image Segmentation with Deep Convolutional Nets, Atrous Convolution, and Fully Connected {CRFs}}}
+      \field{volume}{40}
+      \field{year}{2018}
+      \field{pages}{834\bibrangedash 848}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.1109/TPAMI.2017.2699184
+      \endverb
+      \keyw{Convolution;Image segmentation;Semantics;Image resolution;Computational modeling;Neural networks;Context;Convolutional neural networks;semantic segmentation;atrous convolution;conditional random fields}
+    \endentry
+    \entry{Simonyan2014}{article}{}
+      \name{author}{2}{}{%
+        {{hash=9d16b7284df92c9adaee86c37ab992df}{%
+           family={Simonyan},
+           familyi={S\bibinitperiod},
+           given={Karen},
+           giveni={K\bibinitperiod}}}%
+        {{hash=c72fc39e94030f67717052309266a44d}{%
+           family={Zisserman},
+           familyi={Z\bibinitperiod},
+           given={Andrew},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{25d2f3c4577a6632d37f0126cc781232}
+      \strng{fullhash}{25d2f3c4577a6632d37f0126cc781232}
+      \strng{bibnamehash}{25d2f3c4577a6632d37f0126cc781232}
+      \strng{authorbibnamehash}{25d2f3c4577a6632d37f0126cc781232}
+      \strng{authornamehash}{25d2f3c4577a6632d37f0126cc781232}
+      \strng{authorfullhash}{25d2f3c4577a6632d37f0126cc781232}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv e-prints}
+      \field{month}{9}
+      \field{title}{{Very Deep Convolutional Networks for Large-Scale Image Recognition}}
+      \field{year}{2014}
+      \field{pages}{arXiv:1409.1556}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.48550/arXiv.1409.1556
+      \endverb
+      \keyw{Computer Science - Computer Vision and Pattern Recognition}
+    \endentry
+    \entry{You2020}{article}{}
+      \name{author}{14}{}{%
+        {{hash=b849a7c35fa48ade9262b424e79add7b}{%
+           family={You},
+           familyi={Y\bibinitperiod},
+           given={Chenyu},
+           giveni={C\bibinitperiod}}}%
+        {{hash=8610b91ad546e7a739475ef2d30cf1f0}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Guang},
+           giveni={G\bibinitperiod}}}%
+        {{hash=f4db9373a5ba3555eac8a45bcd339479}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Yi},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=fc831d1d55113f52eddbdc30561f32f7}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Xiaoliu},
+           giveni={X\bibinitperiod}}}%
+        {{hash=d3dc9eaace6a9cf32c5da2dcdcbcc0ec}{%
+           family={Shan},
+           familyi={S\bibinitperiod},
+           given={Hongming},
+           giveni={H\bibinitperiod}}}%
+        {{hash=a98d3000a3a49e5d81594ed6c9b1df1b}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Mengzhou},
+           giveni={M\bibinitperiod}}}%
+        {{hash=84839ef58478ec19b0bf6071eb1432b1}{%
+           family={Ju},
+           familyi={J\bibinitperiod},
+           given={Shenghong},
+           giveni={S\bibinitperiod}}}%
+        {{hash=768a78f72c9bf8b5ea782a3124e5c695}{%
+           family={Zhao},
+           familyi={Z\bibinitperiod},
+           given={Zhen},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=88ff96ebeea4c75df048aaa49b34c8bb}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Zhuiyang},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=175de39ceaa8c4dbdb9c6241904b001d}{%
+           family={Cong},
+           familyi={C\bibinitperiod},
+           given={Wenxiang},
+           giveni={W\bibinitperiod}}}%
+        {{hash=73e87115a6f8c14ddb106871f295c137}{%
+           family={Vannier},
+           familyi={V\bibinitperiod},
+           given={Michael\bibnamedelima W},
+           giveni={M\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=b6c2cc34a8077c75770486ed66421875}{%
+           family={Saha},
+           familyi={S\bibinitperiod},
+           given={Punam\bibnamedelima K},
+           giveni={P\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=07f31c92d84b3aa4aaaea7e930a6e95d}{%
+           family={Hoffman},
+           familyi={H\bibinitperiod},
+           given={Eric\bibnamedelima A},
+           giveni={E\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=3798e0c49b710b5e279a3eb38ba1b7fe}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Ge},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{bc0c4afe6967f60a7d5258dd3ec2d605}
+      \strng{fullhash}{3b94954177b0ca836a48382aa6e1b667}
+      \strng{bibnamehash}{bc0c4afe6967f60a7d5258dd3ec2d605}
+      \strng{authorbibnamehash}{bc0c4afe6967f60a7d5258dd3ec2d605}
+      \strng{authornamehash}{bc0c4afe6967f60a7d5258dd3ec2d605}
+      \strng{authorfullhash}{3b94954177b0ca836a48382aa6e1b667}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{1}
+      \field{journaltitle}{IEEE Transactions on Medical Imaging}
+      \field{title}{{{CT} Super-Resolution {GAN} {Constrained} by the {Identical}, {Residual}, and {Cycle} {Learning} {Ensemble} ({GAN-CIRCLE})}}
+      \field{volume}{39}
+      \field{year}{2020}
+      \field{pages}{188\bibrangedash 203}
+      \range{pages}{16}
+      \verb{doi}
+      \verb 10.1109/TMI.2019.2922960
+      \endverb
+      \keyw{Computed tomography;Gallium nitride;Image resolution;Generative adversarial networks;Image reconstruction;Training;Computed tomography (CT);super-resolution;noise reduction;deep learning;adversarial learning;residual learning}
+    \endentry
+    \entry{Ibrahim2024}{article}{}
+      \name{author}{9}{}{%
+        {{hash=650d3e06826dd01043f70d913b51c8ce}{%
+           family={Ibrahim},
+           familyi={I\bibinitperiod},
+           given={Mahmoud},
+           giveni={M\bibinitperiod}}}%
+        {{hash=14a4add1418f5ce06055c63b0c5fa2b4}{%
+           family={Khalil},
+           familyi={K\bibinitperiod},
+           given={Yasmina\bibnamedelima Al},
+           giveni={Y\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=a0d12ed3fe2eaed445c22e9880a300b6}{%
+           family={Amirrajab},
+           familyi={A\bibinitperiod},
+           given={Sina},
+           giveni={S\bibinitperiod}}}%
+        {{hash=322bf34f68c4484ce3e14de65c004cd8}{%
+           family={Sun},
+           familyi={S\bibinitperiod},
+           given={Chang},
+           giveni={C\bibinitperiod}}}%
+        {{hash=592692a6e192823011898332b2345b70}{%
+           family={Breeuwer},
+           familyi={B\bibinitperiod},
+           given={Marcel},
+           giveni={M\bibinitperiod}}}%
+        {{hash=00d184f0a352b4c02fe08357b052f42e}{%
+           family={Pluim},
+           familyi={P\bibinitperiod},
+           given={Josien},
+           giveni={J\bibinitperiod}}}%
+        {{hash=e8f15d045b1126f2e07c18cd5896640f}{%
+           family={Elen},
+           familyi={E\bibinitperiod},
+           given={Bart},
+           giveni={B\bibinitperiod}}}%
+        {{hash=b3a4d778a93d0d1ebac9bb2740007420}{%
+           family={Ertaylan},
+           familyi={E\bibinitperiod},
+           given={Gokhan},
+           giveni={G\bibinitperiod}}}%
+        {{hash=93badcbcd9ff0747849763affb474199}{%
+           family={Dumontier},
+           familyi={D\bibinitperiod},
+           given={Michel},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{27e2c17192330161a0b02e848944e706}
+      \strng{fullhash}{757329811b9544488a9138d57d62e683}
+      \strng{bibnamehash}{27e2c17192330161a0b02e848944e706}
+      \strng{authorbibnamehash}{27e2c17192330161a0b02e848944e706}
+      \strng{authornamehash}{27e2c17192330161a0b02e848944e706}
+      \strng{authorfullhash}{757329811b9544488a9138d57d62e683}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv e-prints}
+      \field{month}{6}
+      \field{title}{{Generative {AI} for Synthetic Data Across Multiple Medical Modalities: A Systematic Review of Recent Developments and Challenges}}
+      \field{year}{2024}
+      \field{pages}{arXiv:2407.00116}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.48550/arXiv.2407.00116
+      \endverb
+      \keyw{Computer Science - Artificial Intelligence,Computer Science - Machine Learning}
+    \endentry
+    \entry{Xia2021}{article}{}
+      \name{author}{6}{}{%
+        {{hash=ef657b90b23c6ef1780cc33f5a703a6d}{%
+           family={Xia},
+           familyi={X\bibinitperiod},
+           given={Yan},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=9c60e6f3a023d47086ecf66dafcdc305}{%
+           family={Ravikumar},
+           familyi={R\bibinitperiod},
+           given={Nishant},
+           giveni={N\bibinitperiod}}}%
+        {{hash=0489a7f83f971d8fbd6dbd414bfb17fa}{%
+           family={Greenwood},
+           familyi={G\bibinitperiod},
+           given={John\bibnamedelima P},
+           giveni={J\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+        {{hash=4687d353a0d0996af9a80dabec6841ac}{%
+           family={Neubauer},
+           familyi={N\bibinitperiod},
+           given={Stefan},
+           giveni={S\bibinitperiod}}}%
+        {{hash=d7b5c8def89d4066e2f84eec806b1586}{%
+           family={Petersen},
+           familyi={P\bibinitperiod},
+           given={Steffen\bibnamedelima E},
+           giveni={S\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+        {{hash=2413defb142650e8edf0bcd5608ab789}{%
+           family={Frangi},
+           familyi={F\bibinitperiod},
+           given={Alejandro\bibnamedelima F},
+           giveni={A\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+      }
+      \strng{namehash}{483e8dbebfdecf3ad8c3be14109e3bcd}
+      \strng{fullhash}{1d02ca420e71ba714ee485c2b7f78014}
+      \strng{bibnamehash}{1d02ca420e71ba714ee485c2b7f78014}
+      \strng{authorbibnamehash}{1d02ca420e71ba714ee485c2b7f78014}
+      \strng{authornamehash}{483e8dbebfdecf3ad8c3be14109e3bcd}
+      \strng{authorfullhash}{1d02ca420e71ba714ee485c2b7f78014}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1361-8415}
+      \field{journaltitle}{Medical Image Analysis}
+      \field{title}{{Super-Resolution of Cardiac {MR} Cine Imaging using Conditional {GANs} and Unsupervised Transfer Learning}}
+      \field{volume}{71}
+      \field{year}{2021}
+      \field{pages}{102037}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.media.2021.102037
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S1361841521000839
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S1361841521000839
+      \endverb
+      \keyw{Cardiac MRI,Conditional batch normalisation,Conditional generative adversarial net,Deep learning,Optical flow,Super-resolution}
+    \endentry
+    \entry{Wu2022}{article}{}
+      \name{author}{4}{}{%
+        {{hash=d13d687a788faba828a03cd1a415d354}{%
+           family={Wu},
+           familyi={W\bibinitperiod},
+           given={Zhaotao},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=0c66b6e35622c43bf454f8ce1c4ea95e}{%
+           family={Wei},
+           familyi={W\bibinitperiod},
+           given={Jia},
+           giveni={J\bibinitperiod}}}%
+        {{hash=4cfd50e035e5fb05a1a071673c8b227e}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Jiabing},
+           giveni={J\bibinitperiod}}}%
+        {{hash=45fc0568f15b89712e9e67375ff0d1ca}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Rui},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{44c670fdadfa8181725811e4c0fc65ee}
+      \strng{fullhash}{a7814fbbadb1957821e3cf1e07086dba}
+      \strng{bibnamehash}{a7814fbbadb1957821e3cf1e07086dba}
+      \strng{authorbibnamehash}{a7814fbbadb1957821e3cf1e07086dba}
+      \strng{authornamehash}{44c670fdadfa8181725811e4c0fc65ee}
+      \strng{authorfullhash}{a7814fbbadb1957821e3cf1e07086dba}
+      \field{extraname}{2}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0010-4825}
+      \field{journaltitle}{Computers in Biology and Medicine}
+      \field{title}{{Slice imputation: Multiple intermediate slices interpolation for anisotropic {3D} medical image segmentation}}
+      \field{volume}{147}
+      \field{year}{2022}
+      \field{pages}{105667}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.compbiomed.2022.105667
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0010482522004565
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0010482522004565
+      \endverb
+      \keyw{Deep learning,Frame interpolation,Medical image segmentation,Multi-task learning,Slice imputation}
+    \endentry
+    \entry{Nishimoto2024}{article}{}
+      \name{author}{5}{}{%
+        {{hash=f62ed815785a06b7df841613b46541a5}{%
+           family={Nishimoto},
+           familyi={N\bibinitperiod},
+           given={Soh},
+           giveni={S\bibinitperiod}}}%
+        {{hash=90302b807a1f7e977b33633de92444b2}{%
+           family={Kawai},
+           familyi={K\bibinitperiod},
+           given={Kenichiro},
+           giveni={K\bibinitperiod}}}%
+        {{hash=bb78c0b55f42baf2867991680e602586}{%
+           family={Nakajima},
+           familyi={N\bibinitperiod},
+           given={Koyo},
+           giveni={K\bibinitperiod}}}%
+        {{hash=104aa9f1c26840f267978da4d8d471d7}{%
+           family={Ishise},
+           familyi={I\bibinitperiod},
+           given={Hisako},
+           giveni={H\bibinitperiod}}}%
+        {{hash=8f4ea4deb5e9a709c8592277ee7e658f}{%
+           family={Kakibuchi},
+           familyi={K\bibinitperiod},
+           given={Masao},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{7f28b21f49deb42efd379b831efac8f6}
+      \strng{fullhash}{e392121a6a49e24d413f4d874aa71a73}
+      \strng{bibnamehash}{e392121a6a49e24d413f4d874aa71a73}
+      \strng{authorbibnamehash}{e392121a6a49e24d413f4d874aa71a73}
+      \strng{authornamehash}{7f28b21f49deb42efd379b831efac8f6}
+      \strng{authorfullhash}{e392121a6a49e24d413f4d874aa71a73}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{medRxiv}
+      \field{month}{1}
+      \field{title}{{Generating intermediate slices with U-nets in craniofacial CT images}}
+      \field{year}{2024}
+      \field{pages}{2024.05.08.24307089}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1101/2024.05.08.24307089
+      \endverb
+      \verb{urlraw}
+      \verb http://medrxiv.org/content/early/2024/05/09/2024.05.08.24307089.abstract
+      \endverb
+      \verb{url}
+      \verb http://medrxiv.org/content/early/2024/05/09/2024.05.08.24307089.abstract
+      \endverb
+    \endentry
+    \entry{Zhang2024}{article}{}
+      \name{author}{6}{}{%
+        {{hash=1611ce4752b7e7b2374f442c30cc05b5}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Huiting},
+           giveni={H\bibinitperiod}}}%
+        {{hash=8443cfb819a7ebc0953c0ab18bf31156}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Xiaotang},
+           giveni={X\bibinitperiod}}}%
+        {{hash=f31e6eaa0f9c010228b62b3290ce24b3}{%
+           family={Cui},
+           familyi={C\bibinitperiod},
+           given={Yanfen},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=42b03d7a28c97c101e0a62ee7baba8f9}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Qiang},
+           giveni={Q\bibinitperiod}}}%
+        {{hash=d459fc984a88410409a5a57c9a144e36}{%
+           family={Zhao},
+           familyi={Z\bibinitperiod},
+           given={Jumin},
+           giveni={J\bibinitperiod}}}%
+        {{hash=6a790c6973a80ac74256ac975f2d6f8f}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Dengao},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{40e19b9ee1f46e0c7eb74c6680cf0059}
+      \strng{fullhash}{54691633689522b97576ad65339b9b8c}
+      \strng{bibnamehash}{54691633689522b97576ad65339b9b8c}
+      \strng{authorbibnamehash}{54691633689522b97576ad65339b9b8c}
+      \strng{authornamehash}{40e19b9ee1f46e0c7eb74c6680cf0059}
+      \strng{authorfullhash}{54691633689522b97576ad65339b9b8c}
+      \field{extraname}{2}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0169-2607}
+      \field{journaltitle}{Computer Methods and Programs in Biomedicine}
+      \field{title}{{A novel {GAN}-based three-axis mutually supervised super-resolution reconstruction method for rectal cancer {MR} image}}
+      \field{volume}{257}
+      \field{year}{2024}
+      \field{pages}{108426}
+      \range{pages}{1}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.cmpb.2024.108426
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S016926072400419X
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S016926072400419X
+      \endverb
+      \keyw{Depth information,Generative Adversarial Networks,Magnetic resonance image,Rectal cancer,Super-resolution,Three-axis mutual supervision}
+    \endentry
+    \entry{Fang2022}{inproceedings}{}
+      \name{author}{6}{}{%
+        {{hash=dbe8e460e999037ebd21cc052394be5e}{%
+           family={Fang},
+           familyi={F\bibinitperiod},
+           given={Chaowei},
+           giveni={C\bibinitperiod}}}%
+        {{hash=cce05cab2c437e9c128f853684ee3137}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Liang},
+           giveni={L\bibinitperiod}}}%
+        {{hash=f754daa45bfdcf59298ca053ffe4510b}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Dingwen},
+           giveni={D\bibinitperiod}}}%
+        {{hash=05ed36bcb6a44b5b9e4d52219469373d}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Jun},
+           giveni={J\bibinitperiod}}}%
+        {{hash=ce0362c5846a7cae040cd4ac963ab99f}{%
+           family={Yuan},
+           familyi={Y\bibinitperiod},
+           given={Yixuan},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=19b9723645f5a1e1abb104400e9352d6}{%
+           family={Han},
+           familyi={H\bibinitperiod},
+           given={Junwei},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{d0e943b2731b86a41312a4cd2c60f808}
+      \strng{fullhash}{b6e4d85c7cd8dbc9f3688b203e62d353}
+      \strng{bibnamehash}{b6e4d85c7cd8dbc9f3688b203e62d353}
+      \strng{authorbibnamehash}{b6e4d85c7cd8dbc9f3688b203e62d353}
+      \strng{authornamehash}{d0e943b2731b86a41312a4cd2c60f808}
+      \strng{authorfullhash}{b6e4d85c7cd8dbc9f3688b203e62d353}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}
+      \field{month}{6}
+      \field{title}{{Incremental Cross-View Mutual Distillation for Self-Supervised Medical {CT} Synthesis}}
+      \field{year}{2022}
+      \field{pages}{20677\bibrangedash 20686}
+      \range{pages}{10}
+    \endentry
+    \entry{Nimitha2024}{article}{}
+      \name{author}{2}{}{%
+        {{hash=cd6056b6a816b8c58980f7385d5f56ab}{%
+           family={Nimitha},
+           familyi={N\bibinitperiod},
+           given={U},
+           giveni={U\bibinitperiod}}}%
+        {{hash=d55d6a0ff54022e40cf32a8848f0da35}{%
+           family={Ameer},
+           familyi={A\bibinitperiod},
+           given={P.M.},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{85eca6d79ece4125776b25eedd909e1d}
+      \strng{fullhash}{85eca6d79ece4125776b25eedd909e1d}
+      \strng{bibnamehash}{85eca6d79ece4125776b25eedd909e1d}
+      \strng{authorbibnamehash}{85eca6d79ece4125776b25eedd909e1d}
+      \strng{authornamehash}{85eca6d79ece4125776b25eedd909e1d}
+      \strng{authorfullhash}{85eca6d79ece4125776b25eedd909e1d}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0730-725X}
+      \field{journaltitle}{Magnetic Resonance Imaging}
+      \field{title}{{{MRI} super-resolution using similarity distance and multi-scale receptive field based feature fusion {GAN} and pre-trained slice interpolation network}}
+      \field{volume}{110}
+      \field{year}{2024}
+      \field{pages}{195\bibrangedash 209}
+      \range{pages}{15}
+      \verb{doi}
+      \verb https://doi.org/10.1016/j.mri.2024.04.021
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/S0730725X24001346
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/S0730725X24001346
+      \endverb
+      \keyw{Deep learning,Frame interpolation,Generative adversarial networks,In-plane and out-of-plane attention,Magnetic resonance imaging,Super-resolution}
+    \endentry
+    \entry{Georgescu2020}{article}{}
+      \name{author}{3}{}{%
+        {{hash=29b695e9086086f87cdb87bf54c98ac9}{%
+           family={Georgescu},
+           familyi={G\bibinitperiod},
+           given={Mariana-Iuliana},
+           giveni={M\bibinithyphendelim I\bibinitperiod}}}%
+        {{hash=0c881a20b685d760d9286b0c22525505}{%
+           family={Ionescu},
+           familyi={I\bibinitperiod},
+           given={Radu\bibnamedelima Tudor},
+           giveni={R\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+        {{hash=3a37efdab645f9bf5617d67133e8230d}{%
+           family={Verga},
+           familyi={V\bibinitperiod},
+           given={Nicolae},
+           giveni={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{cfea5fe02c77ca991244a6b05de026f0}
+      \strng{fullhash}{b5ad7d875b27a67ce7d45ddb7c447222}
+      \strng{bibnamehash}{b5ad7d875b27a67ce7d45ddb7c447222}
+      \strng{authorbibnamehash}{b5ad7d875b27a67ce7d45ddb7c447222}
+      \strng{authornamehash}{cfea5fe02c77ca991244a6b05de026f0}
+      \strng{authorfullhash}{b5ad7d875b27a67ce7d45ddb7c447222}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Access}
+      \field{title}{{Convolutional Neural Networks With Intermediate Loss for 3D Super-Resolution of CT and MRI Scans}}
+      \field{volume}{8}
+      \field{year}{2020}
+      \field{pages}{49112\bibrangedash 49124}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1109/ACCESS.2020.2980266
+      \endverb
+      \keyw{Image resolution;Three-dimensional displays;Computed tomography;Magnetic resonance imaging;Convolutional neural networks;Convolutional codes;Standards;Convolutional neural networks;single-image super-resolution;CT~images;MRI images;medical image super-resolution}
+    \endentry
+    \entry{YChen2018}{inproceedings}{}
+      \name{author}{6}{}{%
+        {{hash=45380a932509d4299ae37d4962b4d926}{%
+           family={Yuhua},
+           familyi={Y\bibinitperiod},
+           given={Chen},
+           giveni={C\bibinitperiod}}}%
+        {{hash=20f1235dbaae639ab190cc695022122d}{%
+           family={Shi},
+           familyi={S\bibinitperiod},
+           given={Feng},
+           giveni={F\bibinitperiod}}}%
+        {{hash=2c599fa4daa9fec5bbeb96693888878d}{%
+           family={Christodoulou},
+           familyi={C\bibinitperiod},
+           given={Anthony\bibnamedelima G.},
+           giveni={A\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=a3ba7173eb89b32389fea6e9e2a06bc1}{%
+           family={Xie},
+           familyi={X\bibinitperiod},
+           given={Yibin},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=694c4e80440f6413ecbda42520400253}{%
+           family={Zhou},
+           familyi={Z\bibinitperiod},
+           given={Zhengwei},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=bb0fbac5e738a717c64f55dc62793adc}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Debiao},
+           giveni={D\bibinitperiod}}}%
+      }
+      \name{editor}{5}{}{%
+        {{hash=2413defb142650e8edf0bcd5608ab789}{%
+           family={Frangi},
+           familyi={F\bibinitperiod},
+           given={Alejandro\bibnamedelima F.},
+           giveni={A\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+        {{hash=870a4d7557ea00c95c0552f7d5c176f8}{%
+           family={Julia\bibnamedelima A.},
+           familyi={J\bibinitperiod\bibinitdelim A\bibinitperiod},
+           given={Schnabel},
+           giveni={S\bibinitperiod}}}%
+        {{hash=9b3e5f4bb3bd53806daf0873ab42c7b7}{%
+           family={Davatzikos},
+           familyi={D\bibinitperiod},
+           given={Christos},
+           giveni={C\bibinitperiod}}}%
+        {{hash=8e56e2b9fed37acfcb8511126e938492}{%
+           family={Alberola-López},
+           familyi={A\bibinithyphendelim L\bibinitperiod},
+           given={Carlos},
+           giveni={C\bibinitperiod}}}%
+        {{hash=a294f1df23750035bfc2492b17ff1d60}{%
+           family={Fichtinger},
+           familyi={F\bibinitperiod},
+           given={Gabor},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer International Publishing}%
+      }
+      \strng{namehash}{4b4be12487573a1c61c36c38596ccbcf}
+      \strng{fullhash}{79d20248d4b115917f9cefd686130949}
+      \strng{bibnamehash}{79d20248d4b115917f9cefd686130949}
+      \strng{authorbibnamehash}{79d20248d4b115917f9cefd686130949}
+      \strng{authornamehash}{4b4be12487573a1c61c36c38596ccbcf}
+      \strng{authorfullhash}{79d20248d4b115917f9cefd686130949}
+      \strng{editorbibnamehash}{4504e97799f514c5463e2d0ad8cc6641}
+      \strng{editornamehash}{18b3f694259f08f7fd2048c63a39bab3}
+      \strng{editorfullhash}{4504e97799f514c5463e2d0ad8cc6641}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Medical Image Computing and Computer Assisted Intervention – MICCAI 2018}
+      \field{isbn}{978-3-030-00928-1}
+      \field{title}{{Efficient and Accurate {MRI} Super-Resolution Using a Generative Adversarial Network and {3D} Multi-level Densely Connected Network}}
+      \field{year}{2018}
+      \field{pages}{91\bibrangedash 99}
+      \range{pages}{9}
+    \endentry
+    \entry{Sanchez2018}{article}{}
+      \name{author}{2}{}{%
+        {{hash=86d03e6c29c0ee8215011868ec84db69}{%
+           family={Sanchez},
+           familyi={S\bibinitperiod},
+           given={Irina},
+           giveni={I\bibinitperiod}}}%
+        {{hash=42fefe55f516e1bae2d1e05a603f4f1d}{%
+           family={Vilaplana},
+           familyi={V\bibinitperiod},
+           given={Veronica},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{f8d17b65155a0bcfde5e55b1fcaf7f9c}
+      \strng{fullhash}{f8d17b65155a0bcfde5e55b1fcaf7f9c}
+      \strng{bibnamehash}{f8d17b65155a0bcfde5e55b1fcaf7f9c}
+      \strng{authorbibnamehash}{f8d17b65155a0bcfde5e55b1fcaf7f9c}
+      \strng{authornamehash}{f8d17b65155a0bcfde5e55b1fcaf7f9c}
+      \strng{authorfullhash}{f8d17b65155a0bcfde5e55b1fcaf7f9c}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv e-prints}
+      \field{month}{12}
+      \field{title}{{Brain {MRI} super-resolution using {3D} generative adversarial networks}}
+      \field{year}{2018}
+      \field{pages}{arXiv:1812.11440}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.48550/arXiv.1812.11440
+      \endverb
+      \keyw{Computer Science - Computer Vision and Pattern Recognition,Computer Science - Machine Learning,Statistics - Machine Learning}
+    \endentry
+    \entry{Kudo2019}{inproceedings}{}
+      \name{author}{5}{}{%
+        {{hash=9e9a7db54a3ed1f940cd86adbfbc0fd4}{%
+           family={Kudo},
+           familyi={K\bibinitperiod},
+           given={Akira},
+           giveni={A\bibinitperiod}}}%
+        {{hash=5c86a6dc134aaf3f58cce7bfd1fb60b9}{%
+           family={Kitamura},
+           familyi={K\bibinitperiod},
+           given={Yoshiro},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=03c19edaeafac36783feb0d0e40e9212}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Yuanzhong},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=a5840480909a7fe4c4f0bbfc38cd13b6}{%
+           family={Iizuka},
+           familyi={I\bibinitperiod},
+           given={Satoshi},
+           giveni={S\bibinitperiod}}}%
+        {{hash=151208fc63e33c67f94ce2fcbeb0d033}{%
+           family={Simo-Serra},
+           familyi={S\bibinithyphendelim S\bibinitperiod},
+           given={Edgar},
+           giveni={E\bibinitperiod}}}%
+      }
+      \name{editor}{4}{}{%
+        {{hash=cac58b5234e1f98b4c956998b8ac2e26}{%
+           family={Andreas},
+           familyi={A\bibinitperiod}}}%
+        {{hash=61f3aad853775b029018eae7217e7623}{%
+           family={Daniel},
+           familyi={D\bibinitperiod},
+           given={Rueckert},
+           giveni={R\bibinitperiod}}}%
+        {{hash=ef4a4baaa1d41bed6e2326aac68362ed}{%
+           family={Florian},
+           familyi={F\bibinitperiod},
+           given={Ye\bibnamedelima Jong\bibnamedelimb Chul\bibnamedelima Knoll},
+           giveni={Y\bibinitperiod\bibinitdelim J\bibinitperiod\bibinitdelim C\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=930132226ed94ce3e5d6512605deebb2}{%
+           family={Maier},
+           familyi={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer International Publishing}%
+      }
+      \strng{namehash}{6b41a4796d7e6312eb80c356053005b3}
+      \strng{fullhash}{7291d9ad02f6d70f84ef5068066e6e29}
+      \strng{bibnamehash}{7291d9ad02f6d70f84ef5068066e6e29}
+      \strng{authorbibnamehash}{7291d9ad02f6d70f84ef5068066e6e29}
+      \strng{authornamehash}{6b41a4796d7e6312eb80c356053005b3}
+      \strng{authorfullhash}{7291d9ad02f6d70f84ef5068066e6e29}
+      \strng{editorbibnamehash}{f05dbe3ffb62935de70b0dffe8ba65af}
+      \strng{editornamehash}{21e38e116df3a210187687f0575acf41}
+      \strng{editorfullhash}{f05dbe3ffb62935de70b0dffe8ba65af}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Machine Learning for Medical Image Reconstruction}
+      \field{isbn}{978-3-030-33843-5}
+      \field{title}{{Virtual Thin Slice: {3D} Conditional {GAN}-based Super-Resolution for {CT} Slice Interval}}
+      \field{year}{2019}
+      \field{pages}{91\bibrangedash 100}
+      \range{pages}{10}
+    \endentry
+    \entry{Zhang2022}{article}{}
+      \name{author}{7}{}{%
+        {{hash=9bfa804dfdc761140a406609d2cc9beb}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Kuan},
+           giveni={K\bibinitperiod}}}%
+        {{hash=5a2fb31cd0d859f23962e7dd2c090831}{%
+           family={Hu},
+           familyi={H\bibinitperiod},
+           given={Haoji},
+           giveni={H\bibinitperiod}}}%
+        {{hash=27a33cdf73ef655adb8ca92800c924e9}{%
+           family={Philbrick},
+           familyi={P\bibinitperiod},
+           given={Kenneth},
+           giveni={K\bibinitperiod}}}%
+        {{hash=77429bf649ef243caf4a030194b909c7}{%
+           family={Conte},
+           familyi={C\bibinitperiod},
+           given={Gian\bibnamedelima Marco},
+           giveni={G\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=fea577242134ad1529951d80c5288c71}{%
+           family={Sobek},
+           familyi={S\bibinitperiod},
+           given={Joseph\bibnamedelima D},
+           giveni={J\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=09c21253a41257b3312f2fe3882b1c37}{%
+           family={Rouzrokh},
+           familyi={R\bibinitperiod},
+           given={Pouria},
+           giveni={P\bibinitperiod}}}%
+        {{hash=0748b02d5c6dc9de7d72f8cd33a1927b}{%
+           family={Erickson},
+           familyi={E\bibinitperiod},
+           given={Bradley\bibnamedelima J},
+           giveni={B\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{fd39ad20ece493dadbbf99861688abdb}
+      \strng{fullhash}{45d7da65be6b0273f74b1e93a65232cb}
+      \strng{bibnamehash}{fd39ad20ece493dadbbf99861688abdb}
+      \strng{authorbibnamehash}{fd39ad20ece493dadbbf99861688abdb}
+      \strng{authornamehash}{fd39ad20ece493dadbbf99861688abdb}
+      \strng{authorfullhash}{45d7da65be6b0273f74b1e93a65232cb}
+      \field{extraname}{3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2379-139X}
+      \field{issue}{2}
+      \field{journaltitle}{Tomography}
+      \field{title}{{{SOUP-GAN}: Super-Resolution {MRI} Using Generative Adversarial Networks}}
+      \field{volume}{8}
+      \field{year}{2022}
+      \field{pages}{905\bibrangedash 919}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.3390/tomography8020073
+      \endverb
+      \verb{urlraw}
+      \verb https://www.mdpi.com/2379-139X/8/2/73
+      \endverb
+      \verb{url}
+      \verb https://www.mdpi.com/2379-139X/8/2/73
+      \endverb
+    \endentry
+    \entry{Bogunovic2019b}{article}{}
+      \name{author}{32}{}{%
+        {{hash=17ac420723c6365a667708aa7c7270d5}{%
+           family={Bogunović},
+           familyi={B\bibinitperiod},
+           given={Hrvoje},
+           giveni={H\bibinitperiod}}}%
+        {{hash=f888fd60c1e2afad45e668e7769cdb57}{%
+           family={Venhuizen},
+           familyi={V\bibinitperiod},
+           given={Freerk},
+           giveni={F\bibinitperiod}}}%
+        {{hash=fff7edccd4037f8cd593f89d8e6c49f1}{%
+           family={Klimscha},
+           familyi={K\bibinitperiod},
+           given={Sophie},
+           giveni={S\bibinitperiod}}}%
+        {{hash=8b06ba8dc863737e7fdcbd8a15bba077}{%
+           family={Apostolopoulos},
+           familyi={A\bibinitperiod},
+           given={Stefanos},
+           giveni={S\bibinitperiod}}}%
+        {{hash=71d418b2b47a1c6aa84eab54a04f93fb}{%
+           family={Bab-Hadiashar},
+           familyi={B\bibinithyphendelim H\bibinitperiod},
+           given={Alireza},
+           giveni={A\bibinitperiod}}}%
+        {{hash=8d9454415d95314950d88ffa2b460410}{%
+           family={Bagci},
+           familyi={B\bibinitperiod},
+           given={Ulas},
+           giveni={U\bibinitperiod}}}%
+        {{hash=78a6332645d46086b07915ee95646860}{%
+           family={Beg},
+           familyi={B\bibinitperiod},
+           given={Mirza\bibnamedelima Faisal},
+           giveni={M\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+        {{hash=6f01e789c66567e5454da287f7614a43}{%
+           family={Bekalo},
+           familyi={B\bibinitperiod},
+           given={Loza},
+           giveni={L\bibinitperiod}}}%
+        {{hash=8b8805250fb5a57cfbae360547a18706}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Qiang},
+           giveni={Q\bibinitperiod}}}%
+        {{hash=ea5514193dd911955c72ae49febbb053}{%
+           family={Ciller},
+           familyi={C\bibinitperiod},
+           given={Carlos},
+           giveni={C\bibinitperiod}}}%
+        {{hash=4d3f462de75559be47d0f5bd00b774d4}{%
+           family={Gopinath},
+           familyi={G\bibinitperiod},
+           given={Karthik},
+           giveni={K\bibinitperiod}}}%
+        {{hash=37bbc85894608a570405b178f3da6648}{%
+           family={Gostar},
+           familyi={G\bibinitperiod},
+           given={Amirali\bibnamedelima K},
+           giveni={A\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=cc30443e464b7beacf2aff5af90ba2ca}{%
+           family={Jeon},
+           familyi={J\bibinitperiod},
+           given={Kiwan},
+           giveni={K\bibinitperiod}}}%
+        {{hash=a38548d9b7d76249f7e6fe15cd456484}{%
+           family={Ji},
+           familyi={J\bibinitperiod},
+           given={Zexuan},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=9b58e8afbe2c40038a30f59afbb28f83}{%
+           family={Kang},
+           familyi={K\bibinitperiod},
+           given={Sung\bibnamedelima Ho},
+           giveni={S\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=045f3c4b988367e42d2ddf044d8c3d64}{%
+           family={Koozekanani},
+           familyi={K\bibinitperiod},
+           given={Dara\bibnamedelima D},
+           giveni={D\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=a63ed84d417f308cb47f955cc67d2de1}{%
+           family={Lu},
+           familyi={L\bibinitperiod},
+           given={Donghuan},
+           giveni={D\bibinitperiod}}}%
+        {{hash=4c31e796e0e91d8f2fa3ec0c280a56f3}{%
+           family={Morley},
+           familyi={M\bibinitperiod},
+           given={Dustin},
+           giveni={D\bibinitperiod}}}%
+        {{hash=ba11345c6ff55f9edde7bf138c3e479d}{%
+           family={Parhi},
+           familyi={P\bibinitperiod},
+           given={Keshab\bibnamedelima K},
+           giveni={K\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=ff6a88d36d216f238c492ff56870d4be}{%
+           family={Park},
+           familyi={P\bibinitperiod},
+           given={Hyoung\bibnamedelima Suk},
+           giveni={H\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=99700f201470992290451467011158b1}{%
+           family={Rashno},
+           familyi={R\bibinitperiod},
+           given={Abdolreza},
+           giveni={A\bibinitperiod}}}%
+        {{hash=27e0afcbf0aea1f85b63167d9fef91c1}{%
+           family={Sarunic},
+           familyi={S\bibinitperiod},
+           given={Marinko},
+           giveni={M\bibinitperiod}}}%
+        {{hash=0232811e749bbb45009a4fba6fbd152e}{%
+           family={Shaikh},
+           familyi={S\bibinitperiod},
+           given={Saad},
+           giveni={S\bibinitperiod}}}%
+        {{hash=2c6fe32d8b93bf8ad70526c48b7a8dc0}{%
+           family={Sivaswamy},
+           familyi={S\bibinitperiod},
+           given={Jayanthi},
+           giveni={J\bibinitperiod}}}%
+        {{hash=f590ea24817fcb05a4ad4c36b566322f}{%
+           family={Tennakoon},
+           familyi={T\bibinitperiod},
+           given={Ruwan},
+           giveni={R\bibinitperiod}}}%
+        {{hash=99c81ac342950c6ff7203c098146eb13}{%
+           family={Yadav},
+           familyi={Y\bibinitperiod},
+           given={Shivin},
+           giveni={S\bibinitperiod}}}%
+        {{hash=63da7e3d1edf1bc40ff54d76535deca4}{%
+           family={Zanet},
+           familyi={Z\bibinitperiod},
+           given={Sandro\bibnamedelima De},
+           giveni={S\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=f62c0ed4ca99c2a77a4f75d188bf05f3}{%
+           family={Waldstein},
+           familyi={W\bibinitperiod},
+           given={Sebastian\bibnamedelima M},
+           giveni={S\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=348b0ae77a8897b81494627bca82f8e8}{%
+           family={Gerendas},
+           familyi={G\bibinitperiod},
+           given={Bianca\bibnamedelima S},
+           giveni={B\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=aae8b696f681d6d4ad7910690ab6584e}{%
+           family={Klaver},
+           familyi={K\bibinitperiod},
+           given={Caroline},
+           giveni={C\bibinitperiod}}}%
+        {{hash=4c010ac6c1c5c921a51c6cdbe507b7b1}{%
+           family={Sánchez},
+           familyi={S\bibinitperiod},
+           given={Clara\bibnamedelima I},
+           giveni={C\bibinitperiod\bibinitdelim I\bibinitperiod}}}%
+        {{hash=17eb95b041d7ca41cf1a8d6939aa659e}{%
+           family={Schmidt-Erfurth},
+           familyi={S\bibinithyphendelim E\bibinitperiod},
+           given={Ursula},
+           giveni={U\bibinitperiod}}}%
+      }
+      \strng{namehash}{ffbacf1e860257f06e9fa85b60597bb0}
+      \strng{fullhash}{1f1d2ff80023ff4c1a30f801270be827}
+      \strng{bibnamehash}{ffbacf1e860257f06e9fa85b60597bb0}
+      \strng{authorbibnamehash}{ffbacf1e860257f06e9fa85b60597bb0}
+      \strng{authornamehash}{ffbacf1e860257f06e9fa85b60597bb0}
+      \strng{authorfullhash}{1f1d2ff80023ff4c1a30f801270be827}
+      \field{extraname}{2}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{8}
+      \field{journaltitle}{IEEE Transactions on Medical Imaging}
+      \field{title}{{RETOUCH: The Retinal OCT Fluid Detection and Segmentation Benchmark and Challenge}}
+      \field{volume}{38}
+      \field{year}{2019}
+      \field{pages}{1858\bibrangedash 1874}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1109/TMI.2019.2901398
+      \endverb
+      \keyw{Retina;Image segmentation;Diseases;Biomedical imaging;Image analysis;Fluids;Benchmark testing;Evaluation;image segmentation;image classification;optical coherence tomography;retina}
+    \endentry
+    \entry{Chiu2015}{article}{}
+      \name{author}{6}{}{%
+        {{hash=a9bd21dc58438229ebcabe4d26ea6175}{%
+           family={Chiu},
+           familyi={C\bibinitperiod},
+           given={Stephanie\bibnamedelima J},
+           giveni={S\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=c7adbda593789e19ee710b2100580a2f}{%
+           family={Allingham},
+           familyi={A\bibinitperiod},
+           given={Michael\bibnamedelima J},
+           giveni={M\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=70de2a35c3f7062848a42e7e88ed584d}{%
+           family={Mettu},
+           familyi={M\bibinitperiod},
+           given={Priyatham\bibnamedelima S},
+           giveni={P\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=729ef426c777995f3a5d012855ce4ae9}{%
+           family={Cousins},
+           familyi={C\bibinitperiod},
+           given={Scott\bibnamedelima W},
+           giveni={S\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=3021ce7692e373f99d356425ac7975ea}{%
+           family={Izatt},
+           familyi={I\bibinitperiod},
+           given={Joseph\bibnamedelima A},
+           giveni={J\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=f0bbabbe6172a8156696c9cc255c4bd1}{%
+           family={Farsiu},
+           familyi={F\bibinitperiod},
+           given={Sina},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Optica Publishing Group}%
+      }
+      \strng{namehash}{62db41f84a086d2879baa766af63dba2}
+      \strng{fullhash}{5001daef0b14d2378296ff6188d96820}
+      \strng{bibnamehash}{5001daef0b14d2378296ff6188d96820}
+      \strng{authorbibnamehash}{5001daef0b14d2378296ff6188d96820}
+      \strng{authornamehash}{62db41f84a086d2879baa766af63dba2}
+      \strng{authorfullhash}{5001daef0b14d2378296ff6188d96820}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{4}
+      \field{journaltitle}{Biomed. Opt. Express}
+      \field{month}{4}
+      \field{title}{{Kernel regression based segmentation of optical coherence tomography images with diabetic macular edema}}
+      \field{volume}{6}
+      \field{year}{2015}
+      \field{pages}{1172\bibrangedash 1194}
+      \range{pages}{23}
+      \verb{doi}
+      \verb 10.1364/BOE.6.001172
+      \endverb
+      \verb{urlraw}
+      \verb https://opg.optica.org/boe/abstract.cfm?URI=boe-6-4-1172
+      \endverb
+      \verb{url}
+      \verb https://opg.optica.org/boe/abstract.cfm?URI=boe-6-4-1172
+      \endverb
+      \keyw{Image processing; Ophthalmology; Optical coherence tomography; Image enhancement; Image metrics; Image quality; Optical coherence tomography; Segmentation; Spectral domain optical coherence tomography}
+    \endentry
+    \entry{Rashno2017}{article}{}
+      \name{author}{7}{}{%
+        {{hash=99700f201470992290451467011158b1}{%
+           family={Rashno},
+           familyi={R\bibinitperiod},
+           given={Abdolreza},
+           giveni={A\bibinitperiod}}}%
+        {{hash=488e2cda107c08fe9471889c8e21583a}{%
+           family={Nazari},
+           familyi={N\bibinitperiod},
+           given={Behzad},
+           giveni={B\bibinitperiod}}}%
+        {{hash=045f3c4b988367e42d2ddf044d8c3d64}{%
+           family={Koozekanani},
+           familyi={K\bibinitperiod},
+           given={Dara\bibnamedelima D},
+           giveni={D\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=b1c265e9980f7d939b82acc0e7a88faf}{%
+           family={Drayna},
+           familyi={D\bibinitperiod},
+           given={Paul\bibnamedelima M},
+           giveni={P\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=6eed57d9cf0d1680f3208f26b9f10ad1}{%
+           family={Sadri},
+           familyi={S\bibinitperiod},
+           given={Saeed},
+           giveni={S\bibinitperiod}}}%
+        {{hash=5ab3280fca50fb438cdbbf3e7788f164}{%
+           family={Rabbani},
+           familyi={R\bibinitperiod},
+           given={Hossein},
+           giveni={H\bibinitperiod}}}%
+        {{hash=ba11345c6ff55f9edde7bf138c3e479d}{%
+           family={Parhi},
+           familyi={P\bibinitperiod},
+           given={Keshab\bibnamedelima K},
+           giveni={K\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Public Library of Science}%
+      }
+      \strng{namehash}{5e5bab1146ef17ecb81678f55abfeaca}
+      \strng{fullhash}{dd47cb8a4ef1d7e2aabdd4d333f6464a}
+      \strng{bibnamehash}{5e5bab1146ef17ecb81678f55abfeaca}
+      \strng{authorbibnamehash}{5e5bab1146ef17ecb81678f55abfeaca}
+      \strng{authornamehash}{5e5bab1146ef17ecb81678f55abfeaca}
+      \strng{authorfullhash}{dd47cb8a4ef1d7e2aabdd4d333f6464a}
+      \field{extraname}{1}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{10}
+      \field{journaltitle}{PLOS ONE}
+      \field{month}{12}
+      \field{title}{{Fully-automated segmentation of fluid regions in exudative age-related macular degeneration subjects: Kernel graph cut in neutrosophic domain}}
+      \field{volume}{12}
+      \field{year}{2017}
+      \field{pages}{1\bibrangedash 26}
+      \range{pages}{26}
+      \verb{doi}
+      \verb 10.1371/journal.pone.0186949
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1371/journal.pone.0186949
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1371/journal.pone.0186949
+      \endverb
+    \endentry
+    \entry{Rashno2018}{article}{}
+      \name{author}{7}{}{%
+        {{hash=99700f201470992290451467011158b1}{%
+           family={Rashno},
+           familyi={R\bibinitperiod},
+           given={Abdolreza},
+           giveni={A\bibinitperiod}}}%
+        {{hash=045f3c4b988367e42d2ddf044d8c3d64}{%
+           family={Koozekanani},
+           familyi={K\bibinitperiod},
+           given={Dara\bibnamedelima D},
+           giveni={D\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=b1c265e9980f7d939b82acc0e7a88faf}{%
+           family={Drayna},
+           familyi={D\bibinitperiod},
+           given={Paul\bibnamedelima M},
+           giveni={P\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=488e2cda107c08fe9471889c8e21583a}{%
+           family={Nazari},
+           familyi={N\bibinitperiod},
+           given={Behzad},
+           giveni={B\bibinitperiod}}}%
+        {{hash=6eed57d9cf0d1680f3208f26b9f10ad1}{%
+           family={Sadri},
+           familyi={S\bibinitperiod},
+           given={Saeed},
+           giveni={S\bibinitperiod}}}%
+        {{hash=5ab3280fca50fb438cdbbf3e7788f164}{%
+           family={Rabbani},
+           familyi={R\bibinitperiod},
+           given={Hossein},
+           giveni={H\bibinitperiod}}}%
+        {{hash=ba11345c6ff55f9edde7bf138c3e479d}{%
+           family={Parhi},
+           familyi={P\bibinitperiod},
+           given={Keshab\bibnamedelima K},
+           giveni={K\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+      }
+      \strng{namehash}{5e5bab1146ef17ecb81678f55abfeaca}
+      \strng{fullhash}{9be5ad25cd5fb70ac25a75d5ba849f67}
+      \strng{bibnamehash}{5e5bab1146ef17ecb81678f55abfeaca}
+      \strng{authorbibnamehash}{5e5bab1146ef17ecb81678f55abfeaca}
+      \strng{authornamehash}{5e5bab1146ef17ecb81678f55abfeaca}
+      \strng{authorfullhash}{9be5ad25cd5fb70ac25a75d5ba849f67}
+      \field{extraname}{2}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{5}
+      \field{journaltitle}{IEEE Transactions on Biomedical Engineering}
+      \field{title}{{Fully Automated Segmentation of Fluid/Cyst Regions in Optical Coherence Tomography Images With Diabetic Macular Edema Using Neutrosophic Sets and Graph Algorithms}}
+      \field{volume}{65}
+      \field{year}{2018}
+      \field{pages}{989\bibrangedash 1001}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1109/TBME.2017.2734058
+      \endverb
+      \keyw{Image segmentation;Retina;Two dimensional displays;Three-dimensional displays;Cost function;Diabetes;Signal processing algorithms;Diabetic macular edema;fluid/cyst segmentation;graph theory;neutrosophic set;optical coherence tomography}
+    \endentry
+    \entry{Tennakoon2018}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=f590ea24817fcb05a4ad4c36b566322f}{%
+           family={Tennakoon},
+           familyi={T\bibinitperiod},
+           given={Ruwan},
+           giveni={R\bibinitperiod}}}%
+        {{hash=37bbc85894608a570405b178f3da6648}{%
+           family={Gostar},
+           familyi={G\bibinitperiod},
+           given={Amirali\bibnamedelima K},
+           giveni={A\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=e18638dd96b804eb0852bbca53f76b6b}{%
+           family={Hoseinnezhad},
+           familyi={H\bibinitperiod},
+           given={Reza},
+           giveni={R\bibinitperiod}}}%
+        {{hash=71d418b2b47a1c6aa84eab54a04f93fb}{%
+           family={Bab-Hadiashar},
+           familyi={B\bibinithyphendelim H\bibinitperiod},
+           given={Alireza},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{336ed173b6dbb81f5d1dad156abb4d47}
+      \strng{fullhash}{f41df6ea12e954c23ccd081928063b32}
+      \strng{bibnamehash}{f41df6ea12e954c23ccd081928063b32}
+      \strng{authorbibnamehash}{f41df6ea12e954c23ccd081928063b32}
+      \strng{authornamehash}{336ed173b6dbb81f5d1dad156abb4d47}
+      \strng{authorfullhash}{f41df6ea12e954c23ccd081928063b32}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2018 IEEE 15th International Symposium on Biomedical Imaging (ISBI 2018)}
+      \field{title}{{Retinal fluid segmentation in OCT images using adversarial loss based convolutional neural networks}}
+      \field{year}{2018}
+      \field{pages}{1436\bibrangedash 1440}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1109/ISBI.2018.8363842
+      \endverb
+      \keyw{Image segmentation;Retina;Training;Pathology;Biomedical imaging;Three-dimensional displays;Fluids;retinal fluid segmentation;Optical Coherence Tomography (OCT);OCT segmentation;macular edema;deep learning;GAN}
+    \endentry
+    \entry{Shamir2019}{article}{}
+      \name{author}{5}{}{%
+        {{hash=7cced72a2cb401b50cb708de8b7cca78}{%
+           family={Shamir},
+           familyi={S\bibinitperiod},
+           given={Reuben\bibnamedelima R},
+           giveni={R\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=94ab063f0493dff1fa24309778bd6ab3}{%
+           family={Duchin},
+           familyi={D\bibinitperiod},
+           given={Yuval},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=bbd417c7d3f13fe2bc6b308dd07c9466}{%
+           family={Kim},
+           familyi={K\bibinitperiod},
+           given={Jinyoung},
+           giveni={J\bibinitperiod}}}%
+        {{hash=c8b95715cbbf5962b79737d877773fee}{%
+           family={Sapiro},
+           familyi={S\bibinitperiod},
+           given={Guillermo},
+           giveni={G\bibinitperiod}}}%
+        {{hash=a0f61c8f5276b16b9cba874aaa1f2ae5}{%
+           family={Harel},
+           familyi={H\bibinitperiod},
+           given={Noam},
+           giveni={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{ed5beaa1ccce7e057179fb9f768ba880}
+      \strng{fullhash}{93601626e6c7129a2441b85f4fbc31d5}
+      \strng{bibnamehash}{93601626e6c7129a2441b85f4fbc31d5}
+      \strng{authorbibnamehash}{93601626e6c7129a2441b85f4fbc31d5}
+      \strng{authornamehash}{ed5beaa1ccce7e057179fb9f768ba880}
+      \strng{authorfullhash}{93601626e6c7129a2441b85f4fbc31d5}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv e-prints}
+      \field{month}{6}
+      \field{title}{{Continuous Dice Coefficient: a Method for Evaluating Probabilistic Segmentations}}
+      \field{year}{2019}
+      \field{pages}{arXiv:1906.11031}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.48550/arXiv.1906.11031
+      \endverb
+      \keyw{Computer Science - Computer Vision and Pattern Recognition,Electrical Engineering and Systems Science - Image and Video Processing}
+    \endentry
+    \entry{Melo2023}{article}{}
+      \name{author}{4}{}{%
+        {{hash=bd342ed48037ee13ef4f8eb6ca148053}{%
+           family={Melo},
+           familyi={M\bibinitperiod},
+           given={Tânia},
+           giveni={T\bibinitperiod}}}%
+        {{hash=90a2da66cad97752b3f912ba2dd70dd2}{%
+           family={Carneiro},
+           familyi={C\bibinitperiod},
+           given={Ângela},
+           giveni={Â\bibinitperiod}}}%
+        {{hash=ace173bb3c63a891d05fd810a3932d00}{%
+           family={Campilho},
+           familyi={C\bibinitperiod},
+           given={Aurélio},
+           giveni={A\bibinitperiod}}}%
+        {{hash=f169ffebdabfcc532c8867833206177c}{%
+           family={Mendonça},
+           familyi={M\bibinitperiod},
+           given={Ana\bibnamedelima Maria},
+           giveni={A\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {SPIE}%
+      }
+      \strng{namehash}{053021dafc5b1d0a981ea080396eb7a8}
+      \strng{fullhash}{0a5623baed15273031df749bbf842d4e}
+      \strng{bibnamehash}{0a5623baed15273031df749bbf842d4e}
+      \strng{authorbibnamehash}{0a5623baed15273031df749bbf842d4e}
+      \strng{authornamehash}{053021dafc5b1d0a981ea080396eb7a8}
+      \strng{authorfullhash}{0a5623baed15273031df749bbf842d4e}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{1}
+      \field{journaltitle}{Journal of Medical Imaging}
+      \field{title}{{Retinal layer and fluid segmentation in optical coherence tomography images using a hierarchical framework}}
+      \field{volume}{10}
+      \field{year}{2023}
+      \field{pages}{14006}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1117/1.JMI.10.1.014006
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1117/1.JMI.10.1.014006
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1117/1.JMI.10.1.014006
+      \endverb
+      \keyw{Cross validation,Deep learning,Education and training,Image segmentation,Lithium,Matrices,Optical coherence tomography,Performance modeling,Retina,Retinal diseases,computer-aided diagnosis,fluid segmentation,hierarchical framework,optical coherence tomography,retina,retinal layer segmentation}
+    \endentry
+    \entry{Goodfellow2014}{inproceedings}{}
+      \name{author}{8}{}{%
+        {{hash=5d2585c11210cf1d4512e6e0a03ec315}{%
+           family={Goodfellow},
+           familyi={G\bibinitperiod},
+           given={Ian},
+           giveni={I\bibinitperiod}}}%
+        {{hash=a341d25f80a8118cdbb90b272adc8b4f}{%
+           family={Pouget-Abadie},
+           familyi={P\bibinithyphendelim A\bibinitperiod},
+           given={Jean},
+           giveni={J\bibinitperiod}}}%
+        {{hash=9e80f4779b032f68a6106e1424345450}{%
+           family={Mirza},
+           familyi={M\bibinitperiod},
+           given={Mehdi},
+           giveni={M\bibinitperiod}}}%
+        {{hash=743dd6cdaa6639320289d219d351d7b7}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Bing},
+           giveni={B\bibinitperiod}}}%
+        {{hash=e8151f1b8f85a048cacb34f374ec922b}{%
+           family={Warde-Farley},
+           familyi={W\bibinithyphendelim F\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=9ca00ffd7cc35f7cfb8f698aa9239c76}{%
+           family={Ozair},
+           familyi={O\bibinitperiod},
+           given={Sherjil},
+           giveni={S\bibinitperiod}}}%
+        {{hash=ccec1ccd2e1aa86960eb2e872c6b7020}{%
+           family={Courville},
+           familyi={C\bibinitperiod},
+           given={Aaron},
+           giveni={A\bibinitperiod}}}%
+        {{hash=40a8e4774982146adc2688546f54efb2}{%
+           family={Bengio},
+           familyi={B\bibinitperiod},
+           given={Yoshua},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \name{editor}{5}{}{%
+        {{hash=b8fd0c0f416ef8a8bbb50286418e9df8}{%
+           family={Ghahramani},
+           familyi={G\bibinitperiod},
+           given={Z},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=064d84a432787740019dc765d9115718}{%
+           family={Welling},
+           familyi={W\bibinitperiod},
+           given={M},
+           giveni={M\bibinitperiod}}}%
+        {{hash=c294bbcb0687bdb5113cc4c4cd6ebad3}{%
+           family={Cortes},
+           familyi={C\bibinitperiod},
+           given={C},
+           giveni={C\bibinitperiod}}}%
+        {{hash=5fa5574879f8e77bee73db4442b005f7}{%
+           family={Lawrence},
+           familyi={L\bibinitperiod},
+           given={N},
+           giveni={N\bibinitperiod}}}%
+        {{hash=ad5ed31dbb8d37755c6cb48bedfdfe1d}{%
+           family={Weinberger},
+           familyi={W\bibinitperiod},
+           given={K\bibnamedelima Q},
+           giveni={K\bibinitperiod\bibinitdelim Q\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Curran Associates, Inc.}%
+      }
+      \strng{namehash}{d17e6557c5836d2d978179999ea1037f}
+      \strng{fullhash}{fa2b4fb373e75fcf07b4b987e4507545}
+      \strng{bibnamehash}{d17e6557c5836d2d978179999ea1037f}
+      \strng{authorbibnamehash}{d17e6557c5836d2d978179999ea1037f}
+      \strng{authornamehash}{d17e6557c5836d2d978179999ea1037f}
+      \strng{authorfullhash}{fa2b4fb373e75fcf07b4b987e4507545}
+      \strng{editorbibnamehash}{b2f067643f7898bb0a30922a39443e6d}
+      \strng{editornamehash}{65b7e9a4aa080eb7f3776176b707f81c}
+      \strng{editorfullhash}{b2f067643f7898bb0a30922a39443e6d}
+      \field{extraname}{1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Advances in Neural Information Processing Systems}
+      \field{title}{{Generative Adversarial Nets}}
+      \field{volume}{27}
+      \field{year}{2014}
+      \verb{urlraw}
+      \verb https://proceedings.neurips.cc/paper_files/paper/2014/file/5ca3e9b122f61f8f06494c97b1afccf3-Paper.pdf
+      \endverb
+      \verb{url}
+      \verb https://proceedings.neurips.cc/paper_files/paper/2014/file/5ca3e9b122f61f8f06494c97b1afccf3-Paper.pdf
+      \endverb
+    \endentry
+    \entry{Goodfellow2020}{article}{}
+      \name{author}{8}{}{%
+        {{hash=5d2585c11210cf1d4512e6e0a03ec315}{%
+           family={Goodfellow},
+           familyi={G\bibinitperiod},
+           given={Ian},
+           giveni={I\bibinitperiod}}}%
+        {{hash=a341d25f80a8118cdbb90b272adc8b4f}{%
+           family={Pouget-Abadie},
+           familyi={P\bibinithyphendelim A\bibinitperiod},
+           given={Jean},
+           giveni={J\bibinitperiod}}}%
+        {{hash=9e80f4779b032f68a6106e1424345450}{%
+           family={Mirza},
+           familyi={M\bibinitperiod},
+           given={Mehdi},
+           giveni={M\bibinitperiod}}}%
+        {{hash=743dd6cdaa6639320289d219d351d7b7}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Bing},
+           giveni={B\bibinitperiod}}}%
+        {{hash=e8151f1b8f85a048cacb34f374ec922b}{%
+           family={Warde-Farley},
+           familyi={W\bibinithyphendelim F\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=9ca00ffd7cc35f7cfb8f698aa9239c76}{%
+           family={Ozair},
+           familyi={O\bibinitperiod},
+           given={Sherjil},
+           giveni={S\bibinitperiod}}}%
+        {{hash=ccec1ccd2e1aa86960eb2e872c6b7020}{%
+           family={Courville},
+           familyi={C\bibinitperiod},
+           given={Aaron},
+           giveni={A\bibinitperiod}}}%
+        {{hash=40a8e4774982146adc2688546f54efb2}{%
+           family={Bengio},
+           familyi={B\bibinitperiod},
+           given={Yoshua},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{d17e6557c5836d2d978179999ea1037f}
+      \strng{fullhash}{fa2b4fb373e75fcf07b4b987e4507545}
+      \strng{bibnamehash}{d17e6557c5836d2d978179999ea1037f}
+      \strng{authorbibnamehash}{d17e6557c5836d2d978179999ea1037f}
+      \strng{authornamehash}{d17e6557c5836d2d978179999ea1037f}
+      \strng{authorfullhash}{fa2b4fb373e75fcf07b4b987e4507545}
+      \field{extraname}{2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0001-0782}
+      \field{issue}{11}
+      \field{journaltitle}{Commun. ACM}
+      \field{month}{10}
+      \field{title}{{Generative adversarial networks}}
+      \field{volume}{63}
+      \field{year}{2020}
+      \field{pages}{139\bibrangedash 144}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1145/3422622
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1145/3422622
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1145/3422622
+      \endverb
+    \endentry
+    \entry{Creswell2018}{article}{}
+      \name{author}{6}{}{%
+        {{hash=cf3ed69ffa12affe8b3589bfcf031d85}{%
+           family={Creswell},
+           familyi={C\bibinitperiod},
+           given={Antonia},
+           giveni={A\bibinitperiod}}}%
+        {{hash=fec0f7585932951edb687003842f3da9}{%
+           family={White},
+           familyi={W\bibinitperiod},
+           given={Tom},
+           giveni={T\bibinitperiod}}}%
+        {{hash=1328d3ceef6add8461994fc364c664df}{%
+           family={Dumoulin},
+           familyi={D\bibinitperiod},
+           given={Vincent},
+           giveni={V\bibinitperiod}}}%
+        {{hash=eca38a4081d81852b36ec45aaa371607}{%
+           family={Arulkumaran},
+           familyi={A\bibinitperiod},
+           given={Kai},
+           giveni={K\bibinitperiod}}}%
+        {{hash=2a5b5e85cdc16ac45a86c17b9bf2802e}{%
+           family={Sengupta},
+           familyi={S\bibinitperiod},
+           given={Biswa},
+           giveni={B\bibinitperiod}}}%
+        {{hash=15eb32e7bc0f3a64ef4dcf36b8bd7ce8}{%
+           family={Bharath},
+           familyi={B\bibinitperiod},
+           given={Anil\bibnamedelima A},
+           giveni={A\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{da701db478ea32936513816c3c30beba}
+      \strng{fullhash}{f9e1012de33e73ee07c1630a0cddea03}
+      \strng{bibnamehash}{f9e1012de33e73ee07c1630a0cddea03}
+      \strng{authorbibnamehash}{f9e1012de33e73ee07c1630a0cddea03}
+      \strng{authornamehash}{da701db478ea32936513816c3c30beba}
+      \strng{authorfullhash}{f9e1012de33e73ee07c1630a0cddea03}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{1}
+      \field{journaltitle}{IEEE Signal Processing Magazine}
+      \field{title}{{Generative Adversarial Networks: An Overview}}
+      \field{volume}{35}
+      \field{year}{2018}
+      \field{pages}{53\bibrangedash 65}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1109/MSP.2017.2765202
+      \endverb
+      \keyw{Machine learning;Generators;Training data;Data models;Convolutional codes;Image resolution;Signal resolution;Semantics}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

@@ -1,0 +1,124 @@
+\chapter{Methods}\label{Methods}
+The Methods section starts with an overview of the dataset selected for the fluid segmentation and intermediate slice synthesis tasks, while regarding the requirements needed for the training of each model and the reasoning behind the selection. Afterwards, it provides an explanation of the experiments that will be done during the dissertation, regarding fluid segmentation, inter-slice generation, and fluid volume estimation, while explaining the methodologies that will be implemented.
+
+\section{Dataset}
+The application of deep learning to fluid segmentation in OCT volumes requires a large number of images annotated with the three retinal fluids for the training process. The manual segmentation of large amounts of B-scans is a laborious process, which results in a shortage of publicly available annotated OCT datasets. Consequently, the majority of these datasets contain a limited quantity of images.
+\par
+The dataset selected for this dissertation is the RETOUCH dataset \cite{Bogunovic2019b}. This dataset consists of 112 OCT volumes, obtained with four different devices: 38 from the Cirrus HD-OCT (Zeiss Meditec), 38 from the Spectralis (Heidelberg Engineering), and 36 from the \mbox{T-1000}/T-2000 (Topcon). The 112 volumes are split into training (70 volumes) and testing (42 volumes). Only those in the training set have annotations of the retinal fluids (IRF, SRF, and PED). For the training and testing of the segmentation models, only the annotated volumes will be used.
+\par
+From the 70 volumes, 24 were obtained with the Cirrus, 24 volumes were acquired with the Spectralis, and 22 were obtained with the two Topcon devices. The number of B-scans per volume, the dimensions of the B-scans, and the axial resolutions vary according to the device utilized to obtain the OCT. The volumes acquired using the Cirrus have 128 B-scans, while those obtained with Spectralis have 49 B-scans. The volumes acquired using the \mbox{T-2000} have 128 B-scans and those obtained with the \mbox{T-1000} have 64 \mbox{B-scans}. Of the 22 Topcon volumes, 20 were obtained using the \mbox{T-2000} and 2 were acquired using the \mbox{T-1000}. In total, 6838 B-scans will be used on the train and test of the segmentation model.
+\par
+When compared with other renown OCT datasets annotated with retinal fluid, such as the Duke dataset \cite{Chiu2015}, the two datasets from the University of Minnesota \cite{Rashno2017, Rashno2018}, and the Lu \textit{et al.} \cite{Lu2019} dataset, the RETOUCH presents a significantly larger quantity of annotated volumes. It also shows more variety since the volumes were obtained using four different devices instead of including volumes from just one device, as done in the mentioned datasets.
+\par
+For these reasons, the RETOUCH dataset is regarded as a diverse and large dataset, widely used in the literature that aims to perform fluid segmentation using deep learning, as done in \cite{Rahil2023, Zhang2023, Xing2022, Tang2022, Liu2024, Li2023, Hassan2021b, Lu2019}. These aspects motivated the selection of the RETOUCH as the dataset that will be used for implementing the models for fluid segmentation in OCT volumes in this dissertation.
+\par
+In intermediate slice synthesis, the 112 OCT volumes that constitute the RETOUCH dataset will be used for the training and evaluation of the models. The volumes that do not have segmentation masks can also be included since these masks are not necessary in the intermediate slice generation task.
+\par
+The consistent number of slices per volume and large quantity of OCT volumes make the RETOUCH dataset suitable for the training and evaluation of the models developed to generate intermediate slices.
+
+\section{Experiments}\label{Experiments}
+In this subsection, the experiments that will be conducted during the dissertation are explained in depth. The subsection begins with a description of the data split, followed by the experiments in fluid segmentation and in fluid volume estimation.
+
+\subsection{Cross-validation}
+To promote consistency across all experiments, the conditions will be held identical. The train-test split will follow a 5-fold split. This split will be applied to the volumes used in fluid segmentation and will be common to all fluid segmentation experiments. Similarly, the 5-fold split will be applied to the volumes used in intermediate slice synthesis and the resulting split will be the same for all the experiments in slice generation.
+\par 
+The 5-fold split will be applied to each vendor (Cirrus, Spectralis, and Topcon) to ensure consistent vendor representation across all folds. The split will be applied to the volumes and not to the slices since the slices of the same volumes must be kept together to train the 2.5D segmentation model (\ref{Experiment4} Experiment 4).
+\par
+In the beginning, each model will be trained using three folds. The fourth fold will be utilized for evaluating the effect of the changes done to the hyperparameters, and, when the best performing hyperparameters are found, the fifth fold will be dedicated to test the model. Afterwards, the training will be conducted using four folds and the testing will be done using one fold. Table \ref{tab:FiveFoldSplit} illustrates a potential 5-fold split in the RETOUCH dataset, for the training of the fluid segmentation models, in which 70 OCT volumes will be used. In the intermediate slice synthesis, the process will be the same but more volumes will be included.
+
+\begin{table*}[!ht]
+	\setlength{\tabcolsep}{6pt}
+	\renewcommand{\arraystretch}{1.3}
+	\caption{Number of OCT volumes per vendor in each fold, considering 5-fold validation.}
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		& \textbf{1$^{st}$} & \textbf{2$^{nd}$} & \textbf{3$^{rd}$} & \textbf{4$^{th}$} & \textbf{5$^{th}$} \\
+		\hline
+		\textbf{Cirrus} & 5 & 5 & 5 & 5 & 4 \\
+		\textbf{Spectralis} & 5 & 5 & 5 & 5 & 4 \\
+		\textbf{Topcon} & 4$^{a}$ + 1$^{b}$ & 4$^{a}$ + 1$^{b}$ & 4$^{a}$ & 4$^{a}$ & 4$^{a}$ \\
+		\hline
+		\multicolumn{4}{l}{Volumes marked with \textbf{\textit{a}} consist of 128 B-scans.} \\
+		\multicolumn{4}{l}{Volumes marked with \textbf{\textit{b}} consist of 64 B-scans.}
+	\end{tabular}
+	\label{tab:FiveFoldSplit}
+\end{table*}
+
+\subsection{Fluid Segmentation}
+The initial experiments of this dissertation will focus on training networks on the fluid segmentation task. The goal of these experiments is to determine which segmentation network performs the best in the considered task, which will be later required for the fluid volume estimation.
+\par
+The training will be performed on patches, following the same implementation as the one in Tennakoon et al. \cite{Tennakoon2018}. The extraction of patches aims at prioritizing the B-scan information relevant for the segmentation. To achieve this, the patches are not distributed uniformly. Instead, in each image, 12 patches are extracted from a random location inside the region of interest (ROI) and 2 patches are extracted from a random location outside the ROI. The image's ROI is the part of the image where the entropy is above a determined threshold or where there retinal fluid is present. The patches are then augmented by rotation and flipping.
+\par
+In the first three experiments, the U-Net \cite{Ronneberger2015} will perform multi-class segmentation of the fluid regions in each B-scan. The U-Net is distinguished by its encoder-decoder structure, which resembles the letter U (see Figure \ref{fig:UNet}). In the encoder path, two 3x3 unpadded convolutions are applied to the input image, with each being followed by a rectified linear unit (ReLU) and a 2x2 max pooling operation with a stride of 2, downsampling the image. In each downsampling step, the number of channels is doubled. In the expanding path, a 2x2 up-convolution is used, resulting in the halving of the number of channels. The result is then concatenated with the cropped feature map from the respective contracting path. A 1x1 convolution is applied to the final layer.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.75\linewidth]{../figures/UNet}
+	\caption{U-Net architecture \cite{Ronneberger2015}}
+	\label{fig:UNet}
+\end{figure}
+
+\par
+The evaluation of all networks will be conducted using the Dice coefficient. The Dice coefficient is a commonly used metric for evaluating the similarity between two sets. In this context, it will be used for assessing the similarity between the segmentation mask generated by the segmentation network and the GT. The equation that describes the Dice coefficient can be seen in Equation \ref{eq:DiceCoefficient}, where $A$ is a set that represents the GT binary mask of one fluid and $B$ is another set that represents the predicted binary mask of the same fluid \cite{Shamir2019}. Considering $a_{i}$ and $b_{i}$ the binary pixels, the Dice coefficient can be rewritten as shown in Equation \ref{eq:DiceCoefficientPixels}. The network that performs the best will be selected to estimate the fluid volumes in the fluid volume estimation experiments.
+\begin{equation}
+	\text{Dice}(A, B) = \frac{2|A \cap B|}{|A| + |B|}
+	\label{eq:DiceCoefficient}
+\end{equation}
+
+\begin{equation}
+	\text{Dice}(A, B) = \frac{2\sum_{i} a_{i} b_{i}}{\sum_{i} a_{i} + \sum_{i} b_{i}}
+	\label{eq:DiceCoefficientPixels}
+\end{equation}
+
+\paragraph{Experiment 1}
+In the first experiment, the base U-Net model, with no changes to the input, will be trained to perform 2D multi-class segmentation of the retinal fluids in OCT volumes. While this experiment is expected to perform worse than the following, it represents the baseline experiment, allowing for a comparison with the other fluid segmentation models that will be implemented.
+
+\paragraph{Experiment 2}
+Similarly, in the second experiment, three U-Nets will be used for the segmentation task, one U-Net for each fluid type: one U-Net for the segmentation of IRF, one for SRF, and one for PED. This approach aligns with the methodology described in \cite{Rahil2023, Padilla2022} and allows each network to specialize in the semantic segmentation of its fluid, improving the performance.
+
+\paragraph{Experiment 3}
+The subsequent experiment will be a repetition of the two previous experiments with an additional input. In papers such as \cite{Tang2022, Lu2019, Rahil2023}, a relative distance map was used as an additional input channel to the network (see Figure \ref{fig:PreSegmentationAndFluidSegmentation}). This requires the initial delineation of the retina between the ILM and BM for which the retinal layer segmentation model developed by Melo \textit{et al.} (2023) \cite{Melo2023} will be utilized. Afterwards, the relative distance map will be extracted, considering only the mentioned layers, for each B-scan that compose the dataset. By providing information on the fluid location in the retina, this additional input significantly improved the performance of the segmentation models in \cite{Tang2022, Lu2019, Rahil2023}.
+
+\paragraph{Experiment 4}\label{Experiment4}
+The final experiment in the fluid segmentation task is inspired by the framework of Tennakoon \textit{et al.} (2018) \cite{Tennakoon2018}. In this paper, 2.5D multi-class fluid segmentation is performed and patches of three consecutive slices are considered in the training phase. In order to keep the conditions equal across the experiments, the preprocessing and post-processing used in the original paper will not be performed. The network utilized in this framework, shown in Figure \ref{fig:TennakoonNetwork}, is similar to a U-Net, with the inclusion of batch normalization to improve training efficiency and dropout to prevent overfitting. With the inclusion of multiple slices in the input, it is expected an improvement on the segmentation.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.7\linewidth]{../figures/TennakoonNetwork}
+	\caption{The segmentation network in \cite{Tennakoon2018}.}
+	\label{fig:TennakoonNetwork}
+\end{figure}
+
+\subsection{Intermediate Slice Synthesis}
+The objective of the subsequent experiments is to improve the resolution between slices, thus approximating the fluid volume that will be estimated to the true value.
+\par
+The intermediate slices will be generated using the RETOUCH dataset. In this experiment, subvolumes that consist of overlapping triplets of consecutive slices, sampled with a step size of 1, will be used. The first and the last slice of these triplets will be used for the generation of the middle slice. Consequently, it is possible to evaluate the generated slice in comparison to the original one, as done in other examples of the literature. For each volume, the number of potential subsets is then determined to be $n-2$, where $n$ represents the number of slices within the same volume.
+\par
+As proposed in the fluid segmentation experiments, the split between the train, test, and validation sets will remain consistent. In the slice generation experiments, since the entire slice is necessary for generation and not just the fraction that contains fluid, the B-scans will not be patched.
+\par
+The generation of slices can be evaluated in specific metrics, as well as through qualitative assessment. To assess the efficacy of the generation model, the model utilized for fluid segmentation could be used for the estimation of the fluid's area in the generated image and to compare the resulting mask with the original image's mask. This comparison can be conducted using the Dice coefficient \cite{Lopez2023} (see Equation \ref{eq:DiceCoefficientPixels}). However, this metric is insufficient for evaluating the generation performance, as it requires comparisons that encompass the entire slice and not just the fluid. Examples of such metrics include the mean absolute error (MAE) \cite{Lopez2023, Wu2022, Zhang2022}, the peak signal-to-noise ratio (PSNR) \cite{Xia2021, YChen2018, Sanchez2018, Fang2022, Nimitha2024, Kudo2019, You2020, Zhang2024, Zhang2022}, and the structural similarity index measure (SSIM) \cite{YChen2018, Sanchez2018, Fang2022, Nimitha2024, Kudo2019, You2020, Zhang2024, Zhang2022}.
+
+\paragraph{Experiment 5}
+In the first experiment focused on intermediate slice synthesis, a GAN will be used. The underlying principle of a GAN, originally proposed by Goodfellow \textit{et al.} in 2014 \cite{Goodfellow2014}, is based on a competitive game between two networks. The generator network starts with the first and last slice of a subvolume, which is composed of three consecutive B-scans from an OCT scan, and aims to generate the intermediate slice. In contrast, the discriminator network is trained to distinguish between the generated and real slices. When the discriminator correctly labels generated slices as fake, the generator will be penalized, motivating it to fool the discriminator and consequently improving its generation, resulting in outputs more similar to the real inputs. However, the discriminator network loss also penalizes misclassifications, dependent on the probability of the prediction. As a result, as the generator improves, so does the discriminator \cite{Goodfellow2020}. The overall framework for GANs is illustrated in Figure \ref{fig:GANFramework}.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.7\linewidth]{../figures/GANFramework}
+	\caption{Example of a GAN framework, where $\mathcal{D}$ is the discriminator and $\mathcal{G}$ is the generator \cite{Creswell2018}.}
+	\label{fig:GANFramework}
+\end{figure}
+
+\paragraph{Experiment 6}
+As in the previous experiment, the intermediate slice will be generated using the first and last slices of a subvolume that consists of three consecutive B-scans from an OCT scan. However, in this experiment, inspired by the work of \cite{Nishimoto2024}, the intermediate slice will be generated using a U-Net. While the U-Net is more commonly applied in segmentation, as seen in the reviewed literature, \cite{Nishimoto2024} apply it to generate the intermediate slices of a subvolume. The U-Net receives the edge slices as input and forces the output of the intermediate ones. In the paper \cite{Nishimoto2024}, this was tested for three, four, and five slices. However, in this experiment it will be utilized to generate a single intermediate slice.
+
+\subsection{Fluid Volume Estimation}
+The estimation of fluid volume will be done once the optimal segmentation and intermediate slice generation models have been selected. Afterwards, the intermediate slice generation model will synthesize slices in the OCT volumes. The segmentation model will then be applied to both the unaltered volumes and the volumes with generated slices. 
+\par
+The area of each fluid in each OCT scan will be estimated considering the resolution of each OCT scan, which varies according to the device utilized to obtain the OCT volume. Afterwards, the area will be multiplied by the axial distance (half the axial distance to the previous slice plus half the axial distance to the following slice) to obtain the volume of fluid per slice. In the first and last slice of an OCT volume, the area will be multiplied by half of the axial distance (half the axial distance to the neighboring slice). The total volume of fluid in an OCT scan can be estimated by summing the fluid volumes of all individual B-scans. This allows the volume estimation of IRF, SRF, and PED, as well as the overall fluid volume in the OCT scan.
+
+\paragraph{Experiment 7}
+In this experiment, the fluid volumes will be calculated for the OCT scans without the generated slices. The best segmentation model will segment the fluid in three classes and the volume will be estimated for each class as described. The results from this experiment will allow the comparison with the values obtained in the following experiment, where slice generation will be used.
+
+\paragraph{Experiment 8}
+This experiment will consist of the fluid volume estimation in OCT scans with generated images. Similar to the previous experiment, the best segmentation model will predict the fluid masks and the fluid volume will be estimated. The values obtained will be compared with those calculated in the previous experiment. It is expected that the volumes will not vary more than one order of magnitude between experiments. In case a significant difference is observed, the generated images and their respective masks must be analyzed.
