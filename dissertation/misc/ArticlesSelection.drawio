@@ -1,0 +1,58 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" version="27.0.3">
+  <diagram name="ArticlesSelection" id="jamtwrOvTJwfkREujlh_">
+    <mxGraphModel dx="834" dy="450" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-2" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;2D Fluid Segmentation&lt;br&gt;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;[15-34]&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fillColor=#f5f5f5;gradientColor=#b3b3b3;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="359.45" y="30" width="119" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-5" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.annotation_2;align=left;labelPosition=right;pointerEvents=1;rotation=90;" parent="1" vertex="1">
+          <mxGeometry x="393.95" y="-28.69" width="50" height="289.38" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-7" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.annotation_2;align=left;labelPosition=right;pointerEvents=1;rotation=90;" parent="1" vertex="1">
+          <mxGeometry x="250" y="143" width="50" height="147.5" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-8" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;CNN [16-20]&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;glass=0;shadow=0;gradientColor=#97d077;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="144" y="237.5" width="114" height="42.5" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-9" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Transformer [15]&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcd28;strokeColor=#d79b00;glass=0;shadow=0;gradientColor=#ffa500;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="290" y="237.5" width="116" height="42.5" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-10" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.annotation_2;align=left;labelPosition=right;pointerEvents=1;rotation=90;" parent="1" vertex="1">
+          <mxGeometry x="540" y="145" width="49" height="143.5" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-11" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;CNN [21, 22-27, 29-34]&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;glass=0;shadow=0;gradientColor=#97d077;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="418.5" y="237.5" width="151.5" height="42.5" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-12" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Transformer&amp;nbsp;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;[22, 28]&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcd28;strokeColor=#d79b00;glass=0;shadow=0;gradientColor=#ffa500;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="600" y="237.5" width="108" height="42.5" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-13" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Retinal Delimitation&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;[16]&lt;/span&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6d0de;strokeColor=#996185;glass=0;shadow=0;gradientColor=#d5739d;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="140" y="310" width="122" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-15" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Retinal Delimitation&amp;nbsp;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;[21, 25-27, 30, 31, 34]&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6d0de;strokeColor=#996185;glass=0;shadow=0;gradientColor=#d5739d;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="423.88" y="305" width="140.75" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-16" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1;" parent="1" source="6lrZ7uDYgWv-Zom-KdMy-8" target="6lrZ7uDYgWv-Zom-KdMy-13" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="240" as="sourcePoint" />
+            <mxPoint x="440" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-17" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1;" parent="1" source="6lrZ7uDYgWv-Zom-KdMy-11" target="6lrZ7uDYgWv-Zom-KdMy-15" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="482.5" y="270" as="sourcePoint" />
+            <mxPoint x="482.5" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-6" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Multi-class Fluid Segmentation&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;[21-34]&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;gradientColor=#ea6b66;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="500" y="135" width="129" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-4" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Binary Fluid Segmentation&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;[15-20]&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;glass=0;shadow=0;gradientColor=#7ea6e0;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="219" y="135" width="111" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
