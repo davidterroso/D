@@ -6,9 +6,9 @@ The application of deep learning to fluid segmentation in OCT volumes requires a
 \par
 The dataset selected for this dissertation is the RETOUCH dataset \parencite{Bogunovic2019b}. This dataset consists of 112 OCT volumes, obtained with four different devices: 38 from the Cirrus HD-OCT (Zeiss Meditec), 38 from the Spectralis (Heidelberg Engineering), and 36 from the \mbox{T-1000}/T-2000 (Topcon). The 112 volumes are split into training (70 volumes) and testing (42 volumes). Only those in the training set have annotations of the retinal fluids (IRF, SRF, and PED). For the training and testing of the segmentation models, only the annotated volumes will be used.
 \par
-From the 70 volumes, 24 were obtained with the Cirrus, 24 volumes were acquired with the Spectralis, and 22 were obtained with the two Topcon devices. The number of B-scans per volume, the dimensions of the B-scans, and the axial resolutions vary according to the device utilized to obtain the OCT. The volumes acquired using the Cirrus have 128 B-scans, while those obtained with Spectralis have 49 B-scans. The volumes acquired using the \mbox{T-2000} have 128 B-scans and those obtained with the \mbox{T-1000} have 64 \mbox{B-scans}. Of the 22 Topcon volumes, 20 were obtained using the \mbox{T-2000} and 2 were acquired using the \mbox{T-1000}. In total, 6838 B-scans will be used on the train and test of the segmentation model.
+From the 70 volumes, 24 were obtained with the Cirrus, 24 volumes were acquired with the Spectralis, and 22 were obtained with the two Topcon devices. The number of B-scans per volume, the dimensions of the B-scans, and the axial resolutions vary according to the device utilized to obtain the OCT. The volumes acquired using the Cirrus have 128 B-scans, while those obtained with Spectralis have 49 B-scans. The volumes acquired using Topcon devices (\mbox{T-2000} or \mbox{T-1000}) have 128 B-scans, but there are two volumes that only contain 64 \mbox{B-scans}. In total, 6838 B-scans will be used on the train and test of the segmentation model.
 \par
-When compared with other renown OCT datasets annotated with retinal fluid, such as the Duke dataset \parencite{Chiu2015}, the two datasets from the University of Minnesota \parencite{Rashno2017, Rashno2018}, and the \textcite{Lu2019} dataset, the RETOUCH presents a significantly larger quantity of annotated volumes. It also shows more variety since the volumes were obtained using four different devices instead of including volumes from just one device, as done in the mentioned datasets.
+When compared with other renown OCT datasets annotated with retinal fluid, such as the Duke dataset \parencite{Chiu2015}, the two datasets from the University of Minnesota \parencite{Rashno2017, Rashno2018}, and the \textcite{Lu2019} dataset, the RETOUCH presents a significantly larger quantity of annotated volumes. It also shows more variety since the volumes were obtained using four different devices instead of including volumes from just one device, as done in the mentioned datasets. In Table \ref{tab:DatasetsSummary}, a comparison between the number of annotated B-scans in each of the mentioned datasets is shown, as well as the devices utilized to obtain the OCT images, the diseases of the patients, and the distribution of annotated B-scans per OCT volume.
 
 \begin{table*}[!ht]
 	\caption{Volumes, B-scans per volume, the total number of B-scans, and macular diseases in each dataset}
@@ -37,7 +37,7 @@ When compared with other renown OCT datasets annotated with retinal fluid, such 
 	\footnotesize{$^{a}$ 24 volumes from Cirrus, 22 volumes from Topcon, and 24 volumes from Spectralis.}
 	\par 
 	\justifying
-	\footnotesize{$^{b}$ Volumes from Topcon were obtained using two different devices, resulting in volumes from the same vendor with different dimensions. Two of the training volumes have 64 slices.}
+	\footnotesize{$^{b}$ Two of the training volumes obtained using the Topcon devices have only 64 slices.}
 \end{table*}
 
 \par

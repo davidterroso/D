@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  12 MAY 2025 16:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  12 MAY 2025 18:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1131,7 +1131,7 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 37.
  [13] [14]
-<figures//../figures/UNet.png, id=533, 426.09187pt x 287.57437pt>
+<figures//../figures/UNet.png, id=534, 426.09187pt x 287.57437pt>
 File: figures//../figures/UNet.png Graphic file (type png)
 <use figures//../figures/UNet.png>
 Package pdftex.def Info: figures//../figures/UNet.png  used on input line 88.
@@ -1144,7 +1144,7 @@ Package pdftex.def Info: figures//../figures/TennakoonNetwork.png  used on inpu
 t line 119.
 (pdftex.def)             Requested size: 298.75264pt x 222.00275pt.
  [16 <./figures//../figures/TennakoonNetwork.png>]
-<figures//../figures/GANFramework.png, id=600, 616.55344pt x 347.79938pt>
+<figures//../figures/GANFramework.png, id=601, 616.55344pt x 347.79938pt>
 File: figures//../figures/GANFramework.png Graphic file (type png)
 <use figures//../figures/GANFramework.png>
 Package pdftex.def Info: figures//../figures/GANFramework.png  used on input li
@@ -1272,9 +1272,9 @@ ype1/urw/times/utmbi8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/
 type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/
 type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/
 type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (37 pages, 2266379 bytes).
+Output written on thesis.pdf (37 pages, 2266624 bytes).
 PDF statistics:
- 881 PDF objects out of 1000 (max. 8388607)
+ 882 PDF objects out of 1000 (max. 8388607)
  154 named destinations out of 1000 (max. 500000)
  216 words of extra memory for PDF output out of 10000 (max. 10000000)
 
