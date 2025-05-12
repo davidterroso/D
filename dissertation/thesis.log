@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  11 MAY 2025 20:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  12 MAY 2025 15:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1062,12 +1062,6 @@ RetinalLayers.png>]
 
  (literature_review.tex
 Chapter 2.
-
-Overfull \hbox (9.24341pt too wide) in paragraph at lines 6--7
-\T1/ptm/m/n/10.95 ``CNN" OR ``neu-ral net-work")". Us-ing the query, pa-pers we
-re re-trieved from four dif-fer-ent databases:
- []
-
 [4
 
 
@@ -1270,7 +1264,7 @@ ype1/urw/times/utmbi8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/
 type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/
 type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/
 type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (36 pages, 2262011 bytes).
+Output written on thesis.pdf (36 pages, 2261922 bytes).
 PDF statistics:
  867 PDF objects out of 1000 (max. 8388607)
  152 named destinations out of 1000 (max. 500000)
