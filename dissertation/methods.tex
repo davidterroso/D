@@ -9,6 +9,37 @@ The dataset selected for this dissertation is the RETOUCH dataset \parencite{Bog
 From the 70 volumes, 24 were obtained with the Cirrus, 24 volumes were acquired with the Spectralis, and 22 were obtained with the two Topcon devices. The number of B-scans per volume, the dimensions of the B-scans, and the axial resolutions vary according to the device utilized to obtain the OCT. The volumes acquired using the Cirrus have 128 B-scans, while those obtained with Spectralis have 49 B-scans. The volumes acquired using the \mbox{T-2000} have 128 B-scans and those obtained with the \mbox{T-1000} have 64 \mbox{B-scans}. Of the 22 Topcon volumes, 20 were obtained using the \mbox{T-2000} and 2 were acquired using the \mbox{T-1000}. In total, 6838 B-scans will be used on the train and test of the segmentation model.
 \par
 When compared with other renown OCT datasets annotated with retinal fluid, such as the Duke dataset \parencite{Chiu2015}, the two datasets from the University of Minnesota \parencite{Rashno2017, Rashno2018}, and the \textcite{Lu2019} dataset, the RETOUCH presents a significantly larger quantity of annotated volumes. It also shows more variety since the volumes were obtained using four different devices instead of including volumes from just one device, as done in the mentioned datasets.
+
+\begin{table*}[!ht]
+	\caption{Volumes, B-scans per volume, the total number of B-scans, and macular diseases in each dataset}
+	\centering
+	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		& & & & & \\ [-1.5ex] % Used to center the text vertically
+		& \textbf{DUKE2015 \cite{Chiu2015}} & \textbf{UMN2017 \cite{Rashno2017}} & \textbf{UMN2018 \cite{Rashno2018}} & \textbf{LU2019 \cite{Lu2019}} & \textbf{RETOUCH \cite{Bogunovic2019b}} \\ [1ex]
+		\hline
+		& & & & & \\ [-2.0ex]
+		\textbf{Volumes} & 10 & 24 & 29 & 528 & 70$^{a}$ \\
+		& & & & & \\ [-2.5ex]
+		\textbf{B-scans/Volume} & 11 & 25 & 25 & Variable & 128 (Cirrus and Topcon$^{b}$), 64 (Topcon$^{b}$), 49 (Spectralis) \\
+		& & & & & \\ [-2.5ex]
+		\textbf{B-scans} & 110 & 600 & 725 & 750 & 6838 \\
+		& & & & & \\ [-2.5ex]
+		\textbf{Device} & Spectralis & Spectralis & Spectralis & Spectralis & Cirrus, Topcon and Spectralis \\
+		& & & & & \\ [-2.5ex]
+		\textbf{Disease} & DME & AMD & DME & DME & AMD and RVO \\
+		\hline
+		\multicolumn{4}{l}{}
+	\end{tabular}}
+	\label{tab:DatasetsSummary}
+	\par
+	\justifying
+	\footnotesize{$^{a}$ 24 volumes from Cirrus, 22 volumes from Topcon, and 24 volumes from Spectralis.}
+	\par 
+	\justifying
+	\footnotesize{$^{b}$ Volumes from Topcon were obtained using two different devices, resulting in volumes from the same vendor with different dimensions. Two of the training volumes have 64 slices.}
+\end{table*}
+
 \par
 For these reasons, the RETOUCH dataset is regarded as a diverse and large dataset, widely used in the literature that aims to perform fluid segmentation using deep learning, as done in \parencite{Rahil2023, Zhang2023, Xing2022, Tang2022, Liu2024, Li2023, Hassan2021b, Lu2019}. These aspects motivated the selection of the RETOUCH as the dataset that will be used for implementing the models for fluid segmentation in OCT volumes in this dissertation.
 \par
