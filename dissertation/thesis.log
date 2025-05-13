@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  12 MAY 2025 18:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  13 MAY 2025 19:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -114,7 +114,17 @@ LaTeX Info: Redefining \Relbar on input line 971.
 LaTeX Info: Redefining \[ on input line 2953.
 LaTeX Info: Redefining \] on input line 2954.
 )
-(feupteses.sty
+(C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)) (feupteses.sty
 Package: feupteses 2024/10/07 1.1.3 
 
 Document Style `FEUP Teses' 1.1.3 <2024/10/07>
@@ -205,8 +215,8 @@ LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
 (Font)                  OMX/cmex/m/n --> OMX/ztmcm/m/n on input line 31.
 LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
 (Font)                  OMX/cmex/m/n --> OMX/ztmcm/m/n on input line 31.
-\symbold=\mathgroup4
-\symitalic=\mathgroup5
+\symbold=\mathgroup6
+\symitalic=\mathgroup7
 LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 34.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
 (Font)                  OT1/cmr/bx/n --> OT1/ptm/bx/n on input line 34.
@@ -782,7 +792,7 @@ Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
 Package csquotes Info: Adjusting default style.
 Package csquotes Info: Redefining alias 'default' -> 'english'.
-LaTeX Font Info:    Trying to load font information for T1+ptm on input line 16
+LaTeX Font Info:    Trying to load font information for T1+ptm on input line 17
 .
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1ptm.fd
@@ -793,24 +803,24 @@ File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 (appendix1.aux))
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -891,9 +901,9 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'thesis.bbl' found.
  (thesis.bbl)
-Package biblatex Info: Reference section=0 on input line 16.
-Package biblatex Info: Reference segment=0 on input line 16.
-Package hyperref Info: Link coloring ON on input line 16.
+Package biblatex Info: Reference section=0 on input line 17.
+Package biblatex Info: Reference segment=0 on input line 17.
+Package hyperref Info: Link coloring ON on input line 17.
  (thesis.out) (thesis.out)
 \@outlinefile=\write4
 \openout4 = `thesis.out'.
@@ -902,15 +912,15 @@ Package hyperref Info: Link coloring ON on input line 16.
 <figures//uporto-feup.pdf, id=83, 338.26375pt x 126.4725pt>
 File: figures//uporto-feup.pdf Graphic file (type pdf)
 <use figures//uporto-feup.pdf>
-Package pdftex.def Info: figures//uporto-feup.pdf  used on input line 39.
+Package pdftex.def Info: figures//uporto-feup.pdf  used on input line 40.
 (pdftex.def)             Requested size: 204.85983pt x 76.59618pt.
  [-3
 
 
 {C:/Users/david/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map} <./figures//u
 porto-feup.pdf>]
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 3
-9.
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 4
+0.
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
@@ -1130,116 +1140,115 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 37.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 37.
- [13] [14]
-<figures//../figures/UNet.png, id=534, 426.09187pt x 287.57437pt>
+ [13] [14] [15]
+<figures//../figures/UNet.png, id=549, 426.09187pt x 287.57437pt>
 File: figures//../figures/UNet.png Graphic file (type png)
 <use figures//../figures/UNet.png>
-Package pdftex.def Info: figures//../figures/UNet.png  used on input line 88.
+Package pdftex.def Info: figures//../figures/UNet.png  used on input line 111.
 (pdftex.def)             Requested size: 320.0935pt x 216.04884pt.
- [15 <./figures//../figures/UNet.png>]
-<figures//../figures/TennakoonNetwork.png, id=565, 436.63126pt x 324.46219pt>
+ [16 <./figures//../figures/UNet.png>]
+<figures//../figures/TennakoonNetwork.png, id=577, 436.63126pt x 324.46219pt>
 File: figures//../figures/TennakoonNetwork.png Graphic file (type png)
 <use figures//../figures/TennakoonNetwork.png>
 Package pdftex.def Info: figures//../figures/TennakoonNetwork.png  used on inpu
-t line 119.
+t line 142.
 (pdftex.def)             Requested size: 298.75264pt x 222.00275pt.
- [16 <./figures//../figures/TennakoonNetwork.png>]
-<figures//../figures/GANFramework.png, id=601, 616.55344pt x 347.79938pt>
+ [17 <./figures//../figures/TennakoonNetwork.png>]
+<figures//../figures/GANFramework.png, id=612, 616.55344pt x 347.79938pt>
 File: figures//../figures/GANFramework.png Graphic file (type png)
 <use figures//../figures/GANFramework.png>
 Package pdftex.def Info: figures//../figures/GANFramework.png  used on input li
-ne 138.
+ne 161.
 (pdftex.def)             Requested size: 298.75264pt x 168.52858pt.
- [17]) [18 <./figures//../figures/GANFramework.png>]
-[19]
+ [18]) [19 <./figures//../figures/GANFramework.png>] [20]
 LaTeX Font Info:    Trying to load font information for T1+pcrs on input line 6
-3.
+4.
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/courier-scaled\t1pcrs.f
 d
 File: t1pcrs.fd 2004/07/09 scalable font definitions for T1/pcrs.
 )
 LaTeX Font Info:    Font shape `T1/pcrs/m/n' will be
-(Font)              scaled to size 10.40245pt on input line 63.
+(Font)              scaled to size 10.40245pt on input line 64.
 
-Overfull \hbox (23.31725pt too wide) in paragraph at lines 63--63
+Overfull \hbox (23.31725pt too wide) in paragraph at lines 64--64
 [][]$\T1/pcrs/m/n/10.95 https : / / www . sciencedirect . com / science / artic
 le / pii / S0140673612602827$[][]\T1/ptm/m/n/10.95 . 
  []
 
 
-Overfull \hbox (23.31725pt too wide) in paragraph at lines 63--63
+Overfull \hbox (23.31725pt too wide) in paragraph at lines 64--64
 [][]$\T1/pcrs/m/n/10.95 https : / / www . sciencedirect . com / science / artic
 le / pii / S1350946207000444$[][]\T1/ptm/m/n/10.95 . 
  []
 
-[20
+[21
 
 
 
 
 ]
-Overfull \hbox (0.69101pt too wide) in paragraph at lines 63--63
+Overfull \hbox (0.69101pt too wide) in paragraph at lines 64--64
 \T1/ptm/m/n/10.95 op-ti-cal co-her-ence to-mog-ra-phy (OCT): A com-pre-hen-sive
  sur-vey,^^Q \T1/ptm/m/it/10.95 Neu-ro-com-put-ing\T1/ptm/m/n/10.95 , vol. 507,
 
  []
 
 
-Overfull \hbox (1.58675pt too wide) in paragraph at lines 63--63
+Overfull \hbox (1.58675pt too wide) in paragraph at lines 64--64
 \T1/pcrs/m/n/10.95 2022 . 08 . 021$[][]\T1/ptm/m/n/10.95 . [On-line]. Avail-abl
 e: [][]$\T1/pcrs/m/n/10.95 https : / / www . sciencedirect . com / science /
  []
 
-[21]
-Overfull \hbox (0.44347pt too wide) in paragraph at lines 63--63
+[22]
+Overfull \hbox (0.44347pt too wide) in paragraph at lines 64--64
 []\T1/ptm/m/n/10.95 H. Liu et al., ^^P  Se-man-tic un-cer-tainty Guided Cross-T
 ransformer for en-hanced mac-u-lar edema
  []
 
-[22]
-Overfull \hbox (23.31725pt too wide) in paragraph at lines 63--63
+[23]
+Overfull \hbox (23.31725pt too wide) in paragraph at lines 64--64
 [][]$\T1/pcrs/m/n/10.95 https : / / www . sciencedirect . com / science / artic
 le / pii / S1361841519300386$[][]\T1/ptm/m/n/10.95 . 
  []
 
 
-Overfull \hbox (19.33269pt too wide) in paragraph at lines 63--63
+Overfull \hbox (19.33269pt too wide) in paragraph at lines 64--64
 \T1/ptm/m/n/10.95 Sys-tem-atic Re-view of Re-cent De-vel-op-ments and Chal-leng
 es,^^Q \T1/ptm/m/it/10.95 arXiv e-prints\T1/ptm/m/n/10.95 , arXiv:2407.00116,
  []
 
 
-Overfull \hbox (46.68745pt too wide) in paragraph at lines 63--63
+Overfull \hbox (46.68745pt too wide) in paragraph at lines 64--64
 \T1/ptm/m/n/10.95 able: [][]$\T1/pcrs/m/n/10.95 https : / / www . sciencedirect
  . com / science / article / pii / S1361841521000839$[][]\T1/ptm/m/n/10.95 . 
  []
 
-[23] [24]
-Overfull \hbox (38.6628pt too wide) in paragraph at lines 63--63
+[24] [25]
+Overfull \hbox (38.6628pt too wide) in paragraph at lines 64--64
 \T1/ptm/m/n/10.95 berger, Eds., vol. 27, Cur-ran As-so-ciates, Inc., 2014. [On-
 line]. Avail-able: [][]$\T1/pcrs/m/n/10.95 https : / / proceedings .
  []
 
 
-Overfull \hbox (52.28711pt too wide) in paragraph at lines 63--63
+Overfull \hbox (52.28711pt too wide) in paragraph at lines 64--64
 \T1/pcrs/m/n/10.95 neurips . cc / paper _ files / paper / 2014 / file / 5ca3e9b
 122f61f8f06494c97b1afccf3 -[]
  []
 
 
-Overfull \hbox (10.93967pt too wide) in paragraph at lines 63--63
+Overfull \hbox (10.93967pt too wide) in paragraph at lines 64--64
 \T1/ptm/m/n/10.95 ^^P  Gen-er-a-tive Ad-ver-sar-ial Net-works: An Overview,^^Q 
 \T1/ptm/m/it/10.95 IEEE Sig-nal Pro-cess-ing Mag-a-zine\T1/ptm/m/n/10.95 , vol.
  35,
  []
 
-[25]
+[26]
 \openout2 = `appendix1.aux'.
 
  (appendix1.tex
 Appendix A.
-) [26
+) [27
 
 
 ] (thesis.aux (abstract.aux) (un-sdg.aux) (acknowledgements.aux)
@@ -1252,29 +1261,31 @@ Package logreq Info: Writing requests to 'thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 22424 strings out of 476339
- 410337 string characters out of 5788120
- 1873340 words of memory out of 5000000
- 42293 multiletter control sequences out of 15000+600000
- 592139 words of font info for 121 fonts, out of 8000000 for 9000
+ 22946 strings out of 476339
+ 416409 string characters out of 5788120
+ 1872340 words of memory out of 5000000
+ 42798 multiletter control sequences out of 15000+600000
+ 596717 words of font info for 138 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  78i,12n,82p,1399b,2950s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}<C:
-/Users/david/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi1
+/Users/david/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex1
 0.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
-/cm/cmr10.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/type1/public/
-amsfonts/cm/cmsy10.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/type
-1/public/rsfs/rsfs10.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/ty
-pe1/urw/courier/ucrr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/
-type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/t
-ype1/urw/times/utmb8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/t
-ype1/urw/times/utmbi8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/
-type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/
-type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/
-type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (37 pages, 2266624 bytes).
+/cm/cmmi10.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/type1/public
+/amsfonts/cm/cmr10.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/type
+1/public/amsfonts/cm/cmsy10.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/f
+onts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Users/david/AppData/Local/Pro
+grams/MiKTeX/fonts/type1/public/rsfs/rsfs10.pfb><C:/Users/david/AppData/Local/P
+rograms/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/david/AppData/Local
+/Programs/MiKTeX/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/
+Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/david/AppData/Local/
+Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/david/AppData/Local
+/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local
+/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local
+/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on thesis.pdf (38 pages, 2285162 bytes).
 PDF statistics:
- 882 PDF objects out of 1000 (max. 8388607)
- 154 named destinations out of 1000 (max. 500000)
+ 902 PDF objects out of 1000 (max. 8388607)
+ 157 named destinations out of 1000 (max. 500000)
  216 words of extra memory for PDF output out of 10000 (max. 10000000)
 
