@@ -166,7 +166,7 @@ def train_gan(
             writer.writerow(["Epoch", "Adversarial Loss", 
                                 "Generator Loss", "Real Loss", 
                                 "Fake Loss", "Discriminator Loss", 
-                                "Epoch Validation PSNR"])
+                                "Epoch Validation Generator Loss"])
             
         with open(csv_batch_filename, mode="w", newline="") as file:
             # Declares which information will be saved in the logging file
@@ -246,9 +246,9 @@ def train_gan(
     val_loader = torch.utils.data.DataLoader(val_set, shuffle=True, num_workers=12, persistent_workers=True, batch_size=batch_size, pin_memory=True)
 
     # Initiates the validation 
-    # PSNR as 0 and the MAE as 
-    # infinite 
-    best_val_psnr = 0
+    # generator loss and the 
+    # MAE as infinite 
+    best_val_loss = float('inf')
     best_val_mae = float('inf')
 
     # Iterates through the total 
@@ -440,13 +440,13 @@ def train_gan(
 
         print(f"Validating Epoch {epoch}")
         # Calls the function that evaluates the output of the generator and returns the 
-        # respective result of the peak signal-to-noise ratio (PSNR)
+        # respective result of the generator loss
         if model_name == "GAN":
-            val_psnr = evaluate_gan(model_name=model_name, generator=generator, 
+            val_loss = evaluate_gan(model_name=model_name, generator=generator, 
                                     dataloader=val_loader, device=device, amp=amp, 
-                                    n_val=len(val_set))
+                                    n_val=len(val_set), discriminator=discriminator)
             # Logs the results of the validation
-            logging.info(f"Validation Mean PSNR: {val_psnr}")
+            logging.info(f"Validation Mean Generator Loss: {val_loss}")
         elif model_name == "UNet":
             val_mae = evaluate_gan(model_name=model_name, generator=unet, 
                                     dataloader=val_loader, device=device, amp=amp, 
@@ -463,22 +463,23 @@ def train_gan(
                                 epoch_real_loss / len(val_loader), 
                                 epoch_fake_loss / len(val_loader), 
                                 epoch_d_loss / len(val_loader),
-                                val_psnr])
+                                val_loss])
         elif model_name == "UNet":
             with open(csv_epoch_filename, mode="a", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerow([epoch, epoch_loss / len(train_loader), val_mae])
 
         if model_name == "GAN":
-            # In case the validation PSNR is better 
-            # than the previous, the model is saved 
-            # as the best model
-            if val_psnr > best_val_psnr:
+            # In case the validation generator loss 
+            # is better than the previous, the model 
+            # is saved as the best model
+            if val_loss < best_val_loss:
                 # Creates the folder models in case 
                 # it does not exist yet
                 makedirs("models", exist_ok=True)
-                # Updates the best value of PSNR
-                best_val_psnr = val_psnr
+                # Updates the best value 
+                # of the generator loss
+                best_val_loss = val_loss
                 patience_counter = 0
                 # Both the generator and the discriminator are saved with a name 
                 # that depends on the argument input and the name of the model
@@ -493,14 +494,14 @@ def train_gan(
             else:
                 patience_counter += 1
         elif model_name == "UNet":
-            # In case the validation PSNR is better 
+            # In case the validation MAE is better 
             # than the previous, the model is saved 
             # as the best model
             if val_mae < best_val_mae:
                 # Creates the folder models in case 
                 # it does not exist yet
                 makedirs("models", exist_ok=True)
-                # Updates the best value of PSNR
+                # Updates the best value of MAE
                 best_val_mae = val_mae
                 patience_counter = 0
                 # Both the generator and the discriminator are saved with a name 
