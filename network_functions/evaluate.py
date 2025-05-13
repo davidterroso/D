@@ -3,7 +3,7 @@ from IPython import get_ipython
 from torch.nn import Module
 from torch.utils.data import DataLoader
 from torch.nn.functional import one_hot, softmax
-from networks.loss import multiclass_balanced_cross_entropy_loss, psnr
+from networks.loss import generator_loss, multiclass_balanced_cross_entropy_loss, psnr
 
 # Imports tqdm depending on whether 
 # it is being called from the 
@@ -93,7 +93,8 @@ def evaluate(model_name: str, model: Module, dataloader: DataLoader,
 @torch.inference_mode()
 def evaluate_gan(model_name: str, generator: Module, 
                  dataloader: DataLoader, device: str, 
-                 amp: bool, n_val: int):
+                 amp: bool, n_val: int, 
+                 discriminator: Module=None):
     """
     Function used to evaluate the GAN model
 
@@ -145,12 +146,18 @@ def evaluate_gan(model_name: str, generator: Module,
                     # Generates the image using the generator and the 
                     # previous and following images
                     if model_name == "GAN":
+                        # Sets the label associated with true images to 0.95. The reason 
+                        # this value is set to 0.95 and not 1 is called label smoothing and 
+                        # prevents the model of becoming too overconfident, improving training 
+                        # stability
+                        valid = torch.Tensor(stack.shape[0], 1, 1, 1).fill_(0.95).to(device)
                         gen_imgs = generator(prev_imgs.detach(), next_imgs.detach())
                         # Calculates the PSNR for the original 
                         # image and the generated image
-                        val_loss = psnr(gen_imgs, mid_imgs.unsqueeze(1))
+                        # val_loss = psnr(gen_imgs, mid_imgs.unsqueeze(1))
+                        adv_loss, val_loss = generator_loss(device, discriminator, gen_imgs, mid_imgs, valid)
                     elif model_name =="UNet":
-                        unet_input = torch.stack([prev_imgs, next_imgs], dim=1).detach().float() / 255.0
+                        unet_input = torch.stack([prev_imgs, next_imgs], dim=1)
                         gen_imgs = generator(unet_input.to(device=device))
                         # Calculates the loss of the generator, which 
                         # compares the generated images with the real images
