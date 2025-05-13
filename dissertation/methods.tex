@@ -48,14 +48,10 @@ In intermediate slice synthesis, the 112 OCT volumes that constitute the RETOUCH
 The consistent number of slices per volume and large quantity of OCT volumes make the RETOUCH dataset suitable for the training and evaluation of the models developed to generate intermediate slices.
 
 \section{Experiments}\label{Experiments}
-In this subsection, the experiments that will be conducted during the dissertation are explained in depth. The subsection begins with a description of the data split, followed by the experiments in fluid segmentation and in fluid volume estimation.
+In this subsection, the experiments conducted during the dissertation are explained in depth. The subsection begins with a description of how the data was split, followed by the experiments in fluid segmentation and in fluid volume estimation.
 
 \subsection{Cross-validation}
-To promote consistency across all experiments, the conditions will be held identical. The train-test split will follow a 5-fold split. This split will be applied to the volumes used in fluid segmentation and will be common to all fluid segmentation experiments. Similarly, the 5-fold split will be applied to the volumes used in intermediate slice synthesis and the resulting split will be the same for all the experiments in slice generation.
-\par 
-The 5-fold split will be applied to each vendor (Cirrus, Spectralis, and Topcon) to ensure consistent vendor representation across all folds. The split will be applied to the volumes and not to the slices since the slices of the same volumes must be kept together to train the 2.5D segmentation model (\ref{Experiment4} Experiment 4).
-\par
-In the beginning, each model will be trained using three folds. The fourth fold will be utilized for evaluating the effect of the changes done to the hyperparameters, and, when the best performing hyperparameters are found, the fifth fold will be dedicated to test the model. Afterwards, the training will be conducted using four folds and the testing will be done using one fold. Table \ref{tab:FiveFoldSplit} illustrates a potential 5-fold split in the RETOUCH dataset, for the training of the fluid segmentation models, in which 70 OCT volumes will be used. In the intermediate slice synthesis, the process will be the same but more volumes will be included.
+To promote consistency across all experiments, the conditions will be held identical. In every experiment, the train-test split followed a 5-fold split. In the first experiment, two different 5-fold splits were tested: one done ensuring a balanced distribution of the quantity of each fluid per vendor across the folds, and one with random fluid distribution of the OCT volumes, ensuring equal number of volumes per vendor across the folds fold. A possible distribution of the later case can be seen in Table \ref{tab:FiveFoldSplit}, where a potential split in the RETOUCH dataset is illustrated, where 70 OCT volumes are be used. The split was applied to the volumes and not to the slices since the slices of the same volumes must be kept together to train the 2.5D segmentation model (\ref{Experiment4} Experiment 4). Since the models trained on the stratified 5-fold split performed better and more consistently in different folds, this approach was used across all fluid segmentation experiments.
 
 \begin{table*}[!ht]
 	\setlength{\tabcolsep}{6pt}
@@ -75,6 +71,33 @@ In the beginning, each model will be trained using three folds. The fourth fold 
 	\end{tabular}
 	\label{tab:FiveFoldSplit}
 \end{table*}
+
+For the fluid segmentation task, finding the optimal partition that better distributes the quantity of fluid across folds is too computationally expensive, due to the large number of OCT volumes available in the dataset and the variables to consider (quantity of IRF, SRF, and PED, number of slices, and vendor in each OCT volume). For this reason, two different algorithms were implemented in order to attempt to achieve a fair distribution of fluids across folds. 
+\par
+The partition was done for each vendor separately, to ensure a similar number of slices per vendor in each fold and due to the different dimensions of the OCT volumes depending on the vendors. For example, since volumes obtained with Cirrus are composed of 128 slices with an height of 1024 pixels and a width of 512 pixels, while the volumes obtained with Spectralis are composed of 49 slices with an height of 496 pixels and width of 512 pixels, an OCT scan of the same patient obtained with these two devices will result in a significantly larger total number of pixels with fluid in the volume obtained with Cirrus than in the volume obtained with Spectralis.
+\par
+In the first implemented algorithm, five volumes from a vendor were randomly selected and distributed across the five folds. In each fold, the absolute difference between the total number of voxels for each fluid and the expected number of voxels for each fluid in the fold was calculated. The sum of these three absolute differences was considered as the error of the fold. For a vendor $v$, which can be Cirrus, Spectralis, or Topcon, the error in a fold $f$ is calculated as seen in Equation \ref{eq:FoldLoss}, where $x_{i,c,f}$ is the total number of voxels labeled as fluid $c$ in an OCT volume of index $i$ belonging to the fold $f$, and $k$ is 5.
+\par
+Then, all the possible arrangements of the five volumes across the five folds ($5!$ possibilities) were iterated and had the error for each fold calculated. The arrangement that resulted in the smallest total error across all folds, calculated as seen in Equation \ref{eq:AllFoldsLoss} for a vendor $v$, was then kept. Afterwards, another five volumes of the same vendor were randomly selected from the remaining volumes. This process was repeated until all the volumes from the vendor had been distributed, before continuing to a new vendor.
+
+\begin{equation}
+	\mathcal{L}_{v, f \in [0,4]} = \sum_{c \in \{\mathrm{IRF}, \mathrm{SRF}, \mathrm{PED}\}} \left( 
+	| k\, \mathbb{E}_{c,v} - \sum_{i} x_{i,c,f} |
+	\right)
+	\label{eq:FoldLoss}
+\end{equation}
+
+\begin{equation}
+	\mathcal{L}_{v} = \sum_{f \in [0,4]} \mathcal{L}_{v, f} 
+	\label{eq:AllFoldsLoss}
+\end{equation}
+
+\par
+Meanwhile, the second algorithm starts with the random ordering of the folds. Following this order, the OCT volume which leads to the smallest error for the fold, calculated as done in the first algorithm (see Equation \ref{eq:FoldLoss}), is allocated to it. Then, the folds are randomly ordered again and a new selection of volumes begins. This is done until no OCT volume is left, for each vendor at a time.
+\par 
+In both algorithms, the distribution of the volumes with a larger number of voxels belonging to a fluid class is encouraged, since it is associated with a smaller fold error. Therefore, towards the end of the distribution, volumes with smaller quantities of fluid are left. Since these are easier to distribute than those with larger quantities of fluid, the final partition tends to an even distribution. However, both algorithms include random sampling, thus leading to different results in every iteration.
+\par
+In order to compare both algorithms, it was calculated, for each fold of the resulting split from each algorithm, the difference between the expected number of voxels for a five fold split and the number of voxels present in the fold, for each vendor and fluid. Then, the results were summed across the five folds and compared between algorithms. The results can be seen in Table .
 
 \subsection{Fluid Segmentation}
 The initial experiments of this dissertation will focus on training networks on the fluid segmentation task. The goal of these experiments is to determine which segmentation network performs the best in the considered task, which will be later required for the fluid volume estimation.
