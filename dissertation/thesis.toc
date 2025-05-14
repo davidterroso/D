@@ -11,15 +11,16 @@
 \contentsline {section}{\numberline {3.2}Experiments}{13}{section.3.2}%
 \contentsline {subsection}{\numberline {3.2.1}Cross-validation}{13}{subsection.3.2.1}%
 \contentsline {subsection}{\numberline {3.2.2}Fluid Segmentation}{17}{subsection.3.2.2}%
-\contentsline {paragraph}{Experiment 1}{18}{section*.21}%
-\contentsline {paragraph}{Experiment 2}{18}{section*.22}%
-\contentsline {paragraph}{Experiment 3}{18}{section*.23}%
-\contentsline {paragraph}{Experiment 4}{19}{section*.24}%
-\contentsline {subsection}{\numberline {3.2.3}Intermediate Slice Synthesis}{19}{subsection.3.2.3}%
-\contentsline {paragraph}{Experiment 5}{20}{section*.26}%
-\contentsline {paragraph}{Experiment 6}{20}{section*.28}%
-\contentsline {subsection}{\numberline {3.2.4}Fluid Volume Estimation}{21}{subsection.3.2.4}%
-\contentsline {paragraph}{Experiment 7}{21}{section*.29}%
-\contentsline {paragraph}{Experiment 8}{21}{section*.30}%
-\contentsline {chapter}{References}{22}{section*.31}%
-\contentsline {chapter}{\numberline {A}Lorem Ipsum}{28}{appendix.A}%
+\contentsline {subsubsection}{\numberline {3.2.2.1}Experiment 1}{19}{subsubsection.3.2.2.1}%
+\contentsline {paragraph}{Experiment 1.1}{19}{section*.21}%
+\contentsline {subsubsection}{\numberline {3.2.2.2}Experiment 2}{19}{subsubsection.3.2.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.2.3}Experiment 3}{19}{subsubsection.3.2.2.3}%
+\contentsline {subsubsection}{\numberline {3.2.2.4}Experiment 4}{20}{subsubsection.3.2.2.4}%
+\contentsline {subsection}{\numberline {3.2.3}Intermediate Slice Synthesis}{20}{subsection.3.2.3}%
+\contentsline {paragraph}{Experiment 5}{21}{section*.23}%
+\contentsline {paragraph}{Experiment 6}{21}{section*.25}%
+\contentsline {subsection}{\numberline {3.2.4}Fluid Volume Estimation}{22}{subsection.3.2.4}%
+\contentsline {paragraph}{Experiment 7}{22}{section*.26}%
+\contentsline {paragraph}{Experiment 8}{22}{section*.27}%
+\contentsline {chapter}{References}{23}{section*.28}%
+\contentsline {chapter}{\numberline {A}Lorem Ipsum}{29}{appendix.A}%
