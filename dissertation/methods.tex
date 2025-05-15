@@ -50,7 +50,7 @@ The consistent number of slices per volume and large quantity of OCT volumes mak
 \section{Experiments}\label{Experiments}
 In this subsection, the experiments conducted during the dissertation are explained in depth. The subsection begins with a description of how the data was split, followed by the experiments in fluid segmentation and in fluid volume estimation.
 
-\subsection{Cross-validation}
+\subsection{Cross-validation}\label{CrossValidation}
 To promote consistency across all experiments, the conditions will be held identical. In every experiment, the train-test split followed a 5-fold split. In the first experiment, two different 5-fold splits were tested: one done ensuring a balanced distribution of the quantity of each fluid per vendor across the folds, and one with random fluid distribution of the OCT volumes, ensuring equal number of volumes per vendor across the folds fold. A possible distribution of the later case can be seen in Table \ref{tab:FiveFoldSplit}, where a potential split in the RETOUCH dataset is illustrated, where 70 OCT volumes are be used. The split was applied to the volumes and not to the slices since the slices of the same volumes must be kept together to train the 2.5D segmentation model (\ref{Experiment4} Experiment 4). Since the models trained on the stratified 5-fold split performed better and more consistently in different folds, this approach was used across all fluid segmentation experiments.
 
 \begin{table*}[!ht]
@@ -214,12 +214,43 @@ However, this loss component is not enough to correctly label the pixels in thei
 \subsubsection{Experiment 1}
 In the first experiment, the base U-Net model was trained to perform 2D multi-class segmentation of the retinal fluids in OCT volumes. This is the baseline experiment to which all the other fluid segmentation models implemented will be compared.
 \par
-This was the most extensive experiments, where many variables were tested. Different patch shapes, transformations, and hyperparameters were experimented, until the best training settings were determined. The best settings were used in \ref{Experiment2} Experiment 2 and \ref{Experiment3} Experiment 3.
+This was the most extensive experiments, where many variables were tested. Different patch shapes, transformations, and hyperparameters were experimented, until the best training settings were determined. The best settings were used in \ref{Experiment2} Experiment 2 and \ref{Experiment3} Experiment 3. All the experiments were done using the Adam optimizer \parencite{Kingma2017} with a learning rate of $2 \times 10^{-5}$.
 
 \paragraph{Experiment 1.1}
-The model was initially trained on patches with 256 pixels of height and 128 pixels of width, following the same implementation as the one in \textcite{Tennakoon2018}. The extraction of patches aims at prioritizing the B-scan information relevant for the segmentation. To achieve this, the patches are not distributed uniformly. Instead, in every epoch, 10 patches are extracted from a random location inside the region of interest (ROI) of each image. The image's ROI is the part of the image where the entropy is above a determined threshold or where there retinal fluid is present. The patches are then augmented by a rotation between 0 and 10 degrees, and horizontal flipping. Of the patches with no fluid, 75\% of them were dropped. 
+The model was initially trained on patches with 256 pixels of height and 128 pixels of width, following the same implementation as the one in \textcite{Tennakoon2018}. The extraction of patches aims at prioritizing the B-scan information relevant for the segmentation. To achieve this, the patches are not distributed uniformly. Instead, in every epoch, 10 patches are extracted from a random location inside the region of interest (ROI) of each image. The image's ROI is the part of the image where the entropy is above a determined threshold or where there retinal fluid is present. The patches are then augmented by a rotation between 0 and 10 degrees, and horizontal flipping. Of the patches with no fluid, 75\% of them were dropped.
 \par
-In the Experiment 1.1, multiple of these conditions were changed to better understand their impact. The model was trained with patches being extracted randomly only once in the first epoch and every epoch as done originally. Then, the model was trained in 100 epochs and 200 epochs to understand if more epochs were beneficial. Lastly, multiple values of patch dropping percentage were experimented.
+The training data used in this experiment were the volumes present in two of five folds, with one being used to monitor the progress of the network training, one for evaluation of the best model, and one for reserved for comparison between different experiments. The folds were split randomly without minding the quantity of fluid present in each OCT volume.
+\par
+In the Experiment 1.1, multiple of these conditions were changed to better understand their impact. The model was trained with patches being extracted randomly only once in the first epoch and every epoch as done originally. Then, the model was trained in 100 epochs and 200 epochs to understand if more epochs were beneficial. Lastly, multiple values of patch dropping percentage were experimented. A resume of the variables changed in training in this Experiment can be seen in Table \ref{tab:Experiments1.1}.
+
+\begin{table*}[!ht]
+	\setlength{\tabcolsep}{6pt}
+	\renewcommand{\arraystretch}{1.3}
+	\caption{Parameters of each run in Experiment 1.1.}
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		\textbf{Run's ID} & \textbf{Epochs} & \textbf{Patch Extraction} & \textbf{Drop Percentage}\\
+		\hline
+		\textbf{1} & 100 & One extraction & 75\% \\
+		\textbf{2} & 200 & One extraction & 75\% \\
+		\textbf{3} & 100 & Every epoch & 0\% \\
+		\textbf{4} & 100 & Every epoch & 75\% \\
+		\textbf{5} & 100 & One extraction & 0\% \\
+		\textbf{6} & 100 & One extraction & 50\% \\
+		\textbf{7} & 100 & One extraction & 25\% \\
+		\textbf{8} & 100 & One extraction & 100\% \\
+		\hline
+	\end{tabular}
+	\label{tab:Experiments1.1}
+\end{table*}
+
+\paragraph{Experiment 1.2}
+In Experiment 1.2, the changes from Experiment 1.1 were the data splitting and the number of folds used in training. To improve the model performance, the dataset was split in five folds, using the second algorithm mentioned in \ref{CrossValidation} Cross-validation. Of the five resulting folds, three were used in training, one for the monitoring of the model during training and its evaluation, and one reserved for comparison with the experiments that follow.
+\par
+The model was trained on 256x128 patches, randomly extracted in the beginning of the training from the ROI. The patches were transformed by randomly performing a maximum rotation of 10 degrees and an horizontal flip. The training was performed on 100 epochs with a batch size of 32.
+\par
+In total, eight runs were performed in these settings, with two training sessions being performed using each fold as validation data, g
 
 \subsubsection{Experiment 2}\label{Experiment2}
 Similarly, in the second experiment, three U-Nets will be used for the segmentation task, one U-Net for each fluid type: one U-Net for the segmentation of IRF, one for SRF, and one for PED. This approach aligns with the methodology described in \textcite{Rahil2023, Padilla2022} and allows each network to specialize in the semantic segmentation of its fluid, improving the performance.
