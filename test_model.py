@@ -1,3 +1,4 @@
+from typing import List
 import numpy as np
 import torch
 import matplotlib.colors as mcolors
@@ -397,6 +398,8 @@ def test_model (
         resize_images: bool=False,
         save_images: bool=True,
         split: str="competitive_fold_selection.csv",
+        selected_models: List[int]=None,
+        mode: str=None
     ):
     """
     Function used to test the trained models
@@ -410,26 +413,38 @@ def test_model (
         batch_size (int): size of the batch used in testing
         device_name (str): indicates whether the network will 
             be trained using the CPU or the GPU
-        final_test (bool): indicates that the final test will be 
-            performed, changing the name of the saved files. Since final
-            testing is rare, the default value is False 
-        fluid (str): name of the fluid that is desired to segment
+        final_test (bool): indicates that the final test will 
+            be performed, changing the name of the saved files. 
+            Since final testing is rare, the default value is 
+            False 
+        fluid (str): name of the fluid that is desired to 
+            segment
         number_of_channels (int): number of channels the 
             input will present
         number_of_classes (int): number of classes the 
             output will present
-        patch_type (str): string that indicates what type of patches 
-            will be used. Can be "small", where patches of size 
-            256x128 are extracted using the extract_patches function,
-            "big", where patches of shape 496x512 are extracted from 
-            each image, and patches of shape 496x128 are extracted from
-            the slices
-        resize_images (bool): flag that indicates whether the images 
-            will be resized or not in testing 
+        patch_type (str): string that indicates what type of 
+            patches will be used. Can be "small", where patches 
+            of size 256x128 are extracted using the 
+            extract_patches function, "big", where patches of 
+            shape 496x512 are extracted from each image, and 
+            patches of shape 496x128 are extracted from the 
+            slices
+        resize_images (bool): flag that indicates whether the 
+            images will be resized or not in testing 
         save_images (bool): flag that indicates whether the 
             predicted images will be saved or not
         split (str): name of the k-fold split file that will be 
             used in this run
+        selected_models (List[int]): list of the run's best 
+            model that will be used in evaluation. The order is:
+            IRF, SRF, PED
+        mode (str): name of the way the overlapping masks will 
+            be handled. Can be 'priority', where the masks are 
+            laid by priority with the most important being SRF,
+            then IRF, and finally PED. It can also be 
+            'highest_prob' where the class predicted, for the 
+            same voxel, with highest confidence is selected
             
     Return:
         None
@@ -476,14 +491,51 @@ def test_model (
     # Saves the variable device as torch.device 
     device = torch.device(device_name)
     
-    # Gets the selected model and assigns the device to it
-    model = models.get(model_name)
-    model = model.to(device=device, memory_format=torch.channels_last)
+    # In case this is the final test for the binary 
+    # segmentation models, the data will be handled
+    # as it would be in a multi-class U-Net, 
+    # regarding matters such as the labels in the 
+    # masks and the evaluation
+    if model_name == "UNet3" and final_test and selected_models is not None:
+        model_name = "UNet"
 
-    # Loads the trained model and informs the model about evaluation mode
-    model.load_state_dict(torch.load(weights_path, weights_only=True, map_location=device))
-    model.eval()
+        # Loads the IRF model
+        model_irf = UNet(in_channels=number_of_channels, num_classes=number_of_classes)
+        model_irf = model_irf.to(device=device, memory_format=torch.channels_last)
+        # Declares the path to the weights of the IRF model
+        irf_weights_path = f"models\\Run{str(selected_models[0]).zfill(3)}_IRF_UNet3_best_model.pth"
+        # Loads the trained model and informs the model about evaluation mode
+        model_irf.load_state_dict(torch.load(irf_weights_path, weights_only=True, map_location=device))
+        model_irf.eval()
 
+        # Loads the SRF model
+        model_srf = UNet(in_channels=number_of_channels, num_classes=number_of_classes)
+        model_srf = model_srf.to(device=device, memory_format=torch.channels_last)
+        # Declares the path to the weights of the SRF model
+        srf_weights_path = f"models\\Run{str(selected_models[1]).zfill(3)}_SRF_UNet3_best_model.pth"
+        # Loads the trained model and informs the model about evaluation mode
+        model_srf.load_state_dict(torch.load(srf_weights_path, weights_only=True, map_location=device))
+        model_srf.eval()
+
+        # Loads the PED model
+        model_ped = UNet(in_channels=number_of_channels, num_classes=number_of_classes)
+        model_ped = model_ped.to(device=device, memory_format=torch.channels_last)
+        # Declares the path to the weights of the PED model
+        ped_weights_path = f"models\\Run{str(selected_models[2]).zfill(3)}_PED_UNet3_best_model.pth"
+        # Loads the trained model and informs the model about evaluation mode
+        model_ped.load_state_dict(torch.load(ped_weights_path, weights_only=True, map_location=device))
+        model_ped.eval()
+
+        number_of_classes = 4
+
+    else:
+        # Gets the selected model and assigns the device to it
+        model = models.get(model_name)
+        model = model.to(device=device, memory_format=torch.channels_last)
+
+        # Loads the trained model and informs the model about evaluation mode
+        model.load_state_dict(torch.load(weights_path, weights_only=True, map_location=device))
+        model.eval()
     # Initiates resize shape for the cases where 
     # resize_images is False to not raise the error 
     # of calling an unassigned variable 
@@ -556,12 +608,56 @@ def test_model (
                 images = images.permute(0, 3, 1, 2)
 
                 # Predicts the output of the batch
-                outputs = model(images)
+                if model_name == "UNet" and final_test and selected_models is not None:
+                    # Predicts the masks of IRF
+                    output_irf = model_irf(images)
+                    preds_irf = torch.argmax(output_irf, dim=1)
 
-                # Apply sigmoid activation and one-hot encoding for binary tasks
-                # The prediction is assumed as the value 
-                # that has a higher logit
-                preds = torch.argmax(outputs, dim=1)
+                    # Predicts the masks of SRF
+                    output_srf = model_srf(images)
+                    preds_srf = torch.argmax(output_srf, dim=1)
+
+                    # Predicts the masks of PED
+                    output_ped = model_ped(images)
+                    preds_ped = torch.argmax(output_ped, dim=1)
+
+                    # Initiates the final predictions 
+                    # as a matrix of zeros
+                    preds = torch.zeros_like(preds_irf)
+
+                    # Handles overlapping by 
+                    # defining the priority as:
+                    # SRF > IRF > PED
+                    if mode == 'priority':
+                        # Assign PED first
+                        preds[preds_ped == 1] = 3
+                        # Overwrite with IRF if present (ignoring background)
+                        preds[preds_irf == 1] = 1
+                        # Overwrite with SRF if present (ignoring background)
+                        preds[preds_srf == 1] = 2
+
+                    elif mode == 'highest_prob':
+                        # Extract logits for each label
+                        prob_irf = torch.softmax(output_irf, dim=1)[:, 1, :, :]
+                        prob_srf = torch.softmax(output_srf, dim=1)[:, 1, :, :]
+                        prob_ped = torch.softmax(output_ped, dim=1)[:, 1, :, :]
+
+                        # Stack logits and get max class index for each pixel
+                        probs_stack  = torch.stack([prob_irf, prob_srf, prob_ped], dim=1)  # Shape: (B, 3, H, W)
+                        max_logits, max_indices = torch.max(probs_stack , dim=1)
+
+                        # Only apply mask where at least one of the models predicted non-background
+                        mask_present = ((preds_irf == 1) | (preds_srf == 1) | (preds_ped == 1))
+                        preds[mask_present] = max_indices[mask_present] + 1
+
+                    else:
+                        raise ValueError("Invalid mode. Choose 'priority' or 'highest_prob'.")
+
+                else:
+                    outputs = model(images)
+                    # The prediction is assumed as the value 
+                    # that has a higher logit
+                    preds = torch.argmax(outputs, dim=1)
 
                 # Calculates the Dice coefficient of the predicted mask, and gets the result of the union and intersection between the GT and 
                 # the predicted mask 
@@ -572,57 +668,118 @@ def test_model (
 
                 # Saves the predicted masks and the GT, in case it is desired
                 if save_images:
-                    # Declares the name under which the masks will be saved and writes the path to the original B-scan
-                    predicted_mask_name = folder_to_save + image_name[:-5] + "_predicted" + ".tiff"
-                    gt_mask_name = folder_to_save + image_name[:-5] + "_gt" + ".tiff"
+                    if model_name == "UNet" and final_test and selected_models is not None:
+                        # Declares the name under which the masks will be saved and writes the path to the original B-scan
+                        predicted_mask_name = folder_to_save + image_name[:-5] + "_predicted" + ".tiff"
+                        gt_mask_name = folder_to_save + image_name[:-5] + "_gt" + ".tiff"
 
-                    # Gets the original OCT B-scan
-                    oct_image = images[0].cpu().numpy()[0]
+                        # Gets the original OCT B-scan
+                        oct_image = images[0].cpu().numpy()[0]
 
-                    # Converts each voxel classified as background to 
-                    # NaN so that it will not appear in the overlaying
-                    # mask
-                    preds = np.array(preds.cpu().numpy(), dtype=np.float32)[0]
-                    preds[preds == 0] = np.nan
+                        # Get individual masks
+                        preds_irf_np = preds_irf[0].cpu().numpy()
+                        preds_srf_np = preds_srf[0].cpu().numpy()
+                        preds_ped_np = preds_ped[0].cpu().numpy()
 
-                    true_masks = np.array(true_masks.cpu().numpy(), dtype=np.float32)[0]
-                    true_masks[true_masks == 0] = np.nan
+                        # Final combined mask already resolved via previous logic (preds)
+                        combined_mask = preds[0].cpu().numpy()
 
-                    # Converts the mask from 
-                    # binary to the correct class 
-                    if fluid is not None:
-                        preds = preds * int(fluids_to_label.get(fluid))
-                        true_masks = true_masks * int(fluids_to_label.get(fluid))
+                        # Prepare separate masks with NaN background
+                        irf_mask = np.where(preds_irf_np == 1, 1, np.nan)
+                        srf_mask = np.where(preds_srf_np == 1, 2, np.nan)
+                        ped_mask = np.where(preds_ped_np == 1, 3, np.nan)
+                        combined_mask = np.where(combined_mask == 0, np.nan, combined_mask)
 
-                    # The voxels classified in "IRF", "SRF", and "PED" 
-                    # will be converted to color as Red for IRF, green 
-                    # for SRF, and blue for PED
-                    fluid_colors = ["red", "green", "blue"]
-                    fluid_cmap = mcolors.ListedColormap(fluid_colors)
-                    # Declares in which part of the color bar each
-                    # label is going to be placed
-                    fluid_bounds = [1, 2, 3, 4]
-                    # Normalizes the color map according to the 
-                    # bounds declared.
-                    fluid_norm = mcolors.BoundaryNorm(fluid_bounds, fluid_cmap.N)
+                        # Colormap: Red = IRF, Green = SRF, Blue = PED
+                        fluid_colors = ["red", "green", "blue"]
+                        fluid_cmap = mcolors.ListedColormap(fluid_colors)
+                        fluid_bounds = [1, 2, 3, 4]
+                        fluid_norm = mcolors.BoundaryNorm(fluid_bounds, fluid_cmap.N)
 
-                    # Saves the OCT scan with an overlay of the predicted masks
-                    plt.figure(figsize=(oct_image.shape[1] / 100, oct_image.shape[0] / 100))
-                    plt.imshow(oct_image, cmap=plt.cm.gray)
-                    plt.imshow(preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
-                    plt.axis("off")
-                    plt.savefig(predicted_mask_name, bbox_inches='tight', pad_inches=0)
+                        # Plot 2x2 grid
+                        fig, axs = plt.subplots(2, 2, figsize=(8, 8), dpi=200)
+                        fig.suptitle(f"Overlay Masks for {image_name}", fontsize=16)
 
-                    # Saves the OCT scan with an overlay of the ground-truth masks
-                    plt.figure(figsize=(oct_image.shape[1] / 100, oct_image.shape[0] / 100))
-                    plt.imshow(oct_image, cmap=plt.cm.gray)
-                    plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
-                    plt.axis("off")
-                    plt.savefig(gt_mask_name, bbox_inches="tight", pad_inches=0)
+                        masks = [irf_mask, srf_mask, ped_mask, combined_mask]
+                        titles = ["IRF Mask (Red)", "SRF Mask (Green)", "PED Mask (Blue)", f"Combined Mask ({mode.title()} Mode)"]
 
-                    # Closes the figure
-                    plt.clf()
-                    plt.close("all")
+                        for ax, mask, title in zip(axs.flat, masks, titles):
+                            ax.imshow(oct_image, cmap=plt.cm.gray)
+                            ax.imshow(mask, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm, vmin=1, vmax=3)
+                            ax.set_title(title)
+                            ax.axis("off")
+
+                        plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+                        plt.savefig(predicted_mask_name, bbox_inches="tight", pad_inches=0, dpi=300)
+                        plt.clf()
+                        plt.close("all")
+
+                        # Save GT as before
+                        true_masks = np.array(true_masks.cpu().numpy(), dtype=np.float32)[0]
+                        true_masks[true_masks == 0] = np.nan
+                        if fluid is not None:
+                            true_masks = true_masks * int(fluids_to_label.get(fluid))
+
+                        plt.figure(figsize=(8,8), dpi=200)
+                        plt.imshow(oct_image, cmap=plt.cm.gray)
+                        plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm, vmin=1, vmax=3)
+                        plt.axis("off")
+                        plt.title(f"Ground Truth Mask for {image_name}")
+                        plt.savefig(gt_mask_name, bbox_inches="tight", pad_inches=0, dpi=300)
+                        plt.clf()
+                        plt.close("all")
+                    else:
+                        # Declares the name under which the masks will be saved and writes the path to the original B-scan
+                        predicted_mask_name = folder_to_save + image_name[:-5] + "_predicted" + ".tiff"
+                        gt_mask_name = folder_to_save + image_name[:-5] + "_gt" + ".tiff"
+
+                        # Gets the original OCT B-scan
+                        oct_image = images[0].cpu().numpy()[0]
+
+                        # Converts each voxel classified as background to 
+                        # NaN so that it will not appear in the overlaying
+                        # mask
+                        preds = np.array(preds.cpu().numpy(), dtype=np.float32)[0]
+                        preds[preds == 0] = np.nan
+
+                        true_masks = np.array(true_masks.cpu().numpy(), dtype=np.float32)[0]
+                        true_masks[true_masks == 0] = np.nan
+
+                        # Converts the mask from 
+                        # binary to the correct class 
+                        if fluid is not None:
+                            preds = preds * int(fluids_to_label.get(fluid))
+                            true_masks = true_masks * int(fluids_to_label.get(fluid))
+
+                        # The voxels classified in "IRF", "SRF", and "PED" 
+                        # will be converted to color as Red for IRF, green 
+                        # for SRF, and blue for PED
+                        fluid_colors = ["red", "green", "blue"]
+                        fluid_cmap = mcolors.ListedColormap(fluid_colors)
+                        # Declares in which part of the color bar each
+                        # label is going to be placed
+                        fluid_bounds = [1, 2, 3, 4]
+                        # Normalizes the color map according to the 
+                        # bounds declared.
+                        fluid_norm = mcolors.BoundaryNorm(fluid_bounds, fluid_cmap.N)
+
+                        # Saves the OCT scan with an overlay of the predicted masks
+                        plt.figure(figsize=(oct_image.shape[1] / 100, oct_image.shape[0] / 100))
+                        plt.imshow(oct_image, cmap=plt.cm.gray)
+                        plt.imshow(preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+                        plt.axis("off")
+                        plt.savefig(predicted_mask_name, bbox_inches='tight', pad_inches=0)
+
+                        # Saves the OCT scan with an overlay of the ground-truth masks
+                        plt.figure(figsize=(oct_image.shape[1] / 100, oct_image.shape[0] / 100))
+                        plt.imshow(oct_image, cmap=plt.cm.gray)
+                        plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+                        plt.axis("off")
+                        plt.savefig(gt_mask_name, bbox_inches="tight", pad_inches=0)
+
+                        # Closes the figure
+                        plt.clf()
+                        plt.close("all")
 
                 # Update the progress bar
                 progress_bar.update(1)
