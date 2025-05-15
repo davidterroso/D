@@ -97,24 +97,89 @@ Meanwhile, the second algorithm starts with the random ordering of the folds. Fo
 \par 
 In both algorithms, the distribution of the volumes with a larger number of voxels belonging to a fluid class is encouraged, since it is associated with a smaller fold error. Therefore, towards the end of the distribution, volumes with smaller quantities of fluid are left. Since these are easier to distribute than those with larger quantities of fluid, the final partition tends to an even distribution. However, both algorithms include random sampling, thus leading to different results in every iteration.
 \par
-In order to compare both algorithms, it was calculated, for each fold of the resulting split from each algorithm, the difference between the expected number of voxels for a five fold split and the number of voxels present in the fold, for each vendor and fluid. Then, the results were summed across the five folds and compared between algorithms. The results can be seen in Table .
+In order to compare both algorithms, it was calculated, for each fold of the resulting split from each algorithm, the difference between the expected number of voxels for a five fold split and the number of voxels present in the fold, for each vendor and fluid. Then, the mean and standard deviation of the absolute errors were calculated across the five folds and compared between algorithms. The results for both can be seen in Table \ref{tab:ErrorsInFirstAlgorithm}.
+
+\begin{table*}[!ht]
+	\caption{Mean and standard deviation of the errors across the five folds. The best results are highlighted in bold}
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		& \multicolumn{3}{c|}{\textbf{First Algorithm}} \\
+		\hline
+		& \textbf{IRF} & \textbf{SRF} & \textbf{PED} \\
+		\hline
+		\textbf{Cirrus} & 329914.47 (196454.69) & 942659.97 (497244.77) & 837517.75 (503258.31) \\
+		\textbf{Spectralis} & 182953.67 (141029.98) & 148278.12 (86475.24) & 96457.01 (63646.69) \\
+		\textbf{Topcon} & 198889.9 (118964.3) & 185916.66 (40916.17) & \textbf{678554.68 (394820.09)} \\
+		\hline
+		& \multicolumn{3}{c|}{\textbf{Second Algorithm}} \\
+		\hline
+		& \textbf{IRF} & \textbf{SRF} & \textbf{PED} \\
+		\hline
+		\textbf{Cirrus} & \textbf{120978.78 (162079.2)} & \textbf{503032.7 (491762.28)} & \textbf{771456.05 (550130.84)} \\
+		\textbf{Spectralis} & \textbf{65626.33 (54826.65)} & \textbf{47618.12 (46505.26)} & \textbf{18065.83 (7874.38)} \\
+		\textbf{Topcon} & \textbf{67991.1 (109580.24)} & \textbf{154463.86 (41110.21)} & 765510.85 (503445.75) \\
+		\hline
+	\end{tabular}
+	\label{tab:ErrorsInFirstAlgorithm}
+\end{table*}
+
+By observation of the resulting errors, the second algorithm performs better than the first in almost all conditions. Therefore, this was the algorithm selected to perform the 5-fold split for the fluid segmentation experiments.
+\par
+In \ref{Experiment2} Experiment 2, where the model performs binary segmentation of each fluid, the volumes can be redistributed using the same algorithm, with less bounds. In this experiment, it is relevant to split the volumes in folds based only on their vendors and quantity of the fluid to segment, thus eliminating the restrictions imposed by the quantity of other two fluids. For this situation, we apply the same algorithm as before, but change the error in each fold to only consider the fluid desired to segment, $c$, as seen in Equation \ref{eq:BinaryFoldLoss}.
+
+\begin{equation}
+	\mathcal{L}_{v, f} = 
+	| k\, \mathbb{E}_{c,v} - \sum_{i} x_{i,c,f} |
+	\label{eq:BinaryFoldLoss}
+\end{equation}
+
+From the 5-fold split, one fold is randomly selected for comparison between experiments. The remaining four are split in training and validation, with three folds being used in training and one in validation. In every epoch, the model is trained with all the images in the three training folds and evaluated with the images in the validation fold. By monitoring the loss obtained in the validation data, it is possible to determine if the model is learning or overfitting, allowing us to save the best model and employ early stopping when it is no longer improving. In the first experiment, training with two folds, while monitoring the model with one fold, and evaluating the best model with another fold was also tested. In \ref{Experiment2} Experiment 2, the split kept the same reserved fold as in the multi-class split, only dividing the remaining volumes.
+\par
+In the interslice generation experiments, the 5-fold split was not done by considering the fluids quantity in each fold. Since in this experiment the test volumes of the RETOUCH dataset were used and there are no fluid masks available, the quantity of fluid in each test volume is unknown. Therefore, it is not possible to apply the mentioned algorithms to these volumes. However, one of the folds in the interslice split is the one reserved in the multi-class segmentation split.
+\par
+The split was performed by taking into consideration solely the number of slices per device. In this experiments, the characteristic's of each device are important, since each device has a specific interslice distance, which is different even across devices of the same vendor and an important characteristic in generation.
+\par
+Considering both training and testing volumes of the RETOUCH dataset, there are 38 Cirrus, 38 Spectralis, 13 Topcon T-1000 and 23 Topcon T-2000 (two of which with 64 slices). The fold reserved in the multi-class segmentation task is composed of the following volumes: 4 Cirrus, 5 Spectralis, 3 Topcon T-1000, and 2 Topcon T-2000 (one of which with 64 slices). The volumes remaining for the four folds used in the generation task can be distributed as in the Table \ref{tab:FourFoldSplit}.
+
+\begin{table*}[!ht]
+	\setlength{\tabcolsep}{6pt}
+	\renewcommand{\arraystretch}{1.3}
+	\caption{Number of OCT volumes per device in each fold, in the four remaining folds.}
+	\centering
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		& \textbf{1$^{st}$} & \textbf{2$^{nd}$} & \textbf{3$^{rd}$} & \textbf{4$^{th}$} \\
+		\hline
+		\textbf{Cirrus} & 9 & 9 & 8 & 8 \\
+		\textbf{Spectralis} & 9 & 8 & 8 & 8 \\
+		\textbf{T-1000} & 5 & 5 & 5 & 4 \\
+		\textbf{T-2000} & 3 & 2 & 2 & 2 \\
+		\textbf{T-2000$^{a}$} & 1 & 0 & 0 & 0 \\
+		\hline
+		\multicolumn{5}{l}{\textbf{\textit{a}}: volumes with 64 B-scans.} \\
+	\end{tabular}
+	\label{tab:FourFoldSplit}
+\end{table*}
+
+Since the partition is not bounded by the quantity of fluid in each volume, it is possible to compute the best possible partition by iterating through all the combination. In each combination, the standard deviation of the total number of B-scans in a fold is calculated. The combination with the smallest deviation was used. 
+\par
+Similar to what was done in the fluid segmentation task, three folds will be used in training while one will be used in validation. The reserved fold will be used as a comparison between generative models.
 
 \subsection{Fluid Segmentation}
-The initial experiments of this dissertation will focus on training networks on the fluid segmentation task. The goal of these experiments is to determine which segmentation network performs the best in the considered task, which will be later required for the fluid volume estimation.
-\par
-The training will be performed on patches, following the same implementation as the one in \textcite{Tennakoon2018}. The extraction of patches aims at prioritizing the B-scan information relevant for the segmentation. To achieve this, the patches are not distributed uniformly. Instead, in each image, 12 patches are extracted from a random location inside the region of interest (ROI) and 2 patches are extracted from a random location outside the ROI. The image's ROI is the part of the image where the entropy is above a determined threshold or where there retinal fluid is present. The patches are then augmented by rotation and flipping.
+The initial experiments of this dissertation focused on training networks on the fluid segmentation task. The goal of these experiments is to determine which segmentation network performs the best in the considered task, which were be later required for the fluid volume estimation.
 \par
 In the first three experiments, the U-Net \parencite{Ronneberger2015} will perform multi-class segmentation of the fluid regions in each B-scan. The U-Net is distinguished by its encoder-decoder structure, which resembles the letter U (see Figure \ref{fig:UNet}). In the encoder path, two 3x3 unpadded convolutions are applied to the input image, with each being followed by a rectified linear unit (ReLU) and a 2x2 max pooling operation with a stride of 2, downsampling the image. In each downsampling step, the number of channels is doubled. In the expanding path, a 2x2 up-convolution is used, resulting in the halving of the number of channels. The result is then concatenated with the cropped feature map from the respective contracting path. A 1x1 convolution is applied to the final layer.
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.75\linewidth]{../figures/UNet}
-	\caption{U-Net architecture \cite{Ronneberger2015}}
+	\caption{U-Net architecture \cite{Ronneberger2015}.}
 	\label{fig:UNet}
 \end{figure}
 
-\par
 The evaluation of all networks will be conducted using the Dice coefficient. The Dice coefficient is a commonly used metric for evaluating the similarity between two sets. In this context, it will be used for assessing the similarity between the segmentation mask generated by the segmentation network and the GT. The equation that describes the Dice coefficient can be seen in Equation \ref{eq:DiceCoefficient}, where $A$ is a set that represents the GT binary mask of one fluid and $B$ is another set that represents the predicted binary mask of the same fluid \cite{Shamir2019}. Considering $a_{i}$ and $b_{i}$ the binary pixels, the Dice coefficient can be rewritten as shown in Equation \ref{eq:DiceCoefficientPixels}. The network that performs the best will be selected to estimate the fluid volumes in the fluid volume estimation experiments.
+
 \begin{equation}
 	\text{Dice}(A, B) = \frac{2|A \cap B|}{|A| + |B|}
 	\label{eq:DiceCoefficient}
@@ -125,16 +190,44 @@ The evaluation of all networks will be conducted using the Dice coefficient. The
 	\label{eq:DiceCoefficientPixels}
 \end{equation}
 
-\paragraph{Experiment 1}
-In the first experiment, the base U-Net model, with no changes to the input, will be trained to perform 2D multi-class segmentation of the retinal fluids in OCT volumes. While this experiment is expected to perform worse than the following, it represents the baseline experiment, allowing for a comparison with the other fluid segmentation models that will be implemented.
+The loss function that regularized the training in the fluid segmentation experiments was the same as the one used in \textcite{Tennakoon2018}. This loss is described as seen in Equation \ref{eq:SegmentationLoss}, where $\lambda_{D}$ is the weight of the Dice component, $\mathcal{L}_{D}$, and $\lambda_{CE}$ is the weight of the cross-entropy component $\mathcal{L}_{CE}$, with both weights being 0.5.
 
-\paragraph{Experiment 2}
+\begin{equation}
+	\mathcal{L} = \lambda_{D} \mathcal{L}_{D} + \lambda_{CE} \mathcal{L}_{CE}
+	\label{eq:SegmentationLoss}
+\end{equation}
+
+The component $\mathcal{L_{D}}$ is the Dice loss of the foreground. This translates to how good the model is at detecting the fluid in the B-scans. For any image, where each pixel is associated with an index $j$, the loss can be described through Equation \ref{eq:SegmentationDice}, where $s_{j\overline{0}}$ is a binary variable that is 0 when the pixel $j$ belongs to the class 0 (background) and is 1 whenever the pixel $j$ belongs to any class that is not 0 (foreground). $p_{j\overline{0}}$ corresponds to the predicted probability of the pixel $j$ belonging to the foreground.
+
+\begin{equation}
+	\mathcal{L}_{D} = 1 - \left( \frac{2 \sum_{j} s_{j\overline{0}} p_{j\overline{0}}}{\sum_{j} s_{j\overline{0}} + \sum_{j} p_{j\overline{0}}} \right)
+	\label{eq:SegmentationDice}
+\end{equation}
+
+However, this loss component is not enough to correctly label the pixels in their respective classes and, for that reason, the cross-entropy component was used. Due to the large class imbalance in the images, with the background occupying the majority of them, the cross-entropy is balanced by taking into account the number of pixels belonging to each class. The cross-entropy is calculated for each pixel of index $j$ belonging to the image. Then, for each class, the cross-entropy of all pixels in the image is summed, before being divided by the number of pixels that belong to the class. The mean of the values obtained for each class result finally in $\mathcal{L}_{CE}$, as can be seen in Equation \ref{eq:SegmentationCE}.
+
+\begin{equation}
+	\mathcal{L}_{CE} = - \sum_{c \in C} \frac{1}{4}\left( \frac{1}{\sum_{j} s_{j,c}} \sum_{j} s_{j,c} \text{ln} p_{j,c} \right)
+	\label{eq:SegmentationCE}
+\end{equation}
+
+\subsubsection{Experiment 1}
+In the first experiment, the base U-Net model was trained to perform 2D multi-class segmentation of the retinal fluids in OCT volumes. This is the baseline experiment to which all the other fluid segmentation models implemented will be compared.
+\par
+This was the most extensive experiments, where many variables were tested. Different patch shapes, transformations, and hyperparameters were experimented, until the best training settings were determined. The best settings were used in \ref{Experiment2} Experiment 2 and \ref{Experiment3} Experiment 3.
+
+\paragraph{Experiment 1.1}
+The model was initially trained on patches with 256 pixels of height and 128 pixels of width, following the same implementation as the one in \textcite{Tennakoon2018}. The extraction of patches aims at prioritizing the B-scan information relevant for the segmentation. To achieve this, the patches are not distributed uniformly. Instead, in every epoch, 10 patches are extracted from a random location inside the region of interest (ROI) of each image. The image's ROI is the part of the image where the entropy is above a determined threshold or where there retinal fluid is present. The patches are then augmented by a rotation between 0 and 10 degrees, and horizontal flipping. Of the patches with no fluid, 75\% of them were dropped. 
+\par
+In the Experiment 1.1, multiple of these conditions were changed to better understand their impact. The model was trained with patches being extracted randomly only once in the first epoch and every epoch as done originally. Then, the model was trained in 100 epochs and 200 epochs to understand if more epochs were beneficial. Lastly, multiple values of patch dropping percentage were experimented.
+
+\subsubsection{Experiment 2}\label{Experiment2}
 Similarly, in the second experiment, three U-Nets will be used for the segmentation task, one U-Net for each fluid type: one U-Net for the segmentation of IRF, one for SRF, and one for PED. This approach aligns with the methodology described in \textcite{Rahil2023, Padilla2022} and allows each network to specialize in the semantic segmentation of its fluid, improving the performance.
 
-\paragraph{Experiment 3}
+\subsubsection{Experiment 3}\label{Experiment3}
 The subsequent experiment will be a repetition of the two previous experiments with an additional input. In papers such as \parencite{Tang2022, Lu2019, Rahil2023}, a relative distance map was used as an additional input channel to the network (see Figure \ref{fig:PreSegmentationAndFluidSegmentation}). This requires the initial delineation of the retina between the ILM and BM for which the retinal layer segmentation model developed by \textcite{Melo2023} will be utilized. Afterwards, the relative distance map will be extracted, considering only the mentioned layers, for each B-scan that compose the dataset. By providing information on the fluid location in the retina, this additional input significantly improved the performance of the segmentation models in \parencite{Tang2022, Lu2019, Rahil2023}.
 
-\paragraph{Experiment 4}\label{Experiment4}
+\subsubsection{Experiment 4}\label{Experiment4}
 The final experiment in the fluid segmentation task is inspired by the framework of \textcite{Tennakoon2018}. In this paper, 2.5D multi-class fluid segmentation is performed and patches of three consecutive slices are considered in the training phase. In order to keep the conditions equal across the experiments, the preprocessing and post-processing used in the original paper will not be performed. The network utilized in this framework, shown in Figure \ref{fig:TennakoonNetwork}, is similar to a U-Net, with the inclusion of batch normalization to improve training efficiency and dropout to prevent overfitting. With the inclusion of multiple slices in the input, it is expected an improvement on the segmentation.
 
 \begin{figure}[!ht]

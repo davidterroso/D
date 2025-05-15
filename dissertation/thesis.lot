@@ -4,4 +4,6 @@
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {3.1}{\ignorespaces Volumes, B-scans per volume, the total number of B-scans, and macular diseases in each dataset\relax }}{13}{table.caption.16}%
 \contentsline {table}{\numberline {3.2}{\ignorespaces Number of OCT volumes per vendor in each fold, considering 5-fold validation.\relax }}{14}{table.caption.17}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Mean and standard deviation of the errors across the five folds. The best results are highlighted in bold\relax }}{15}{table.caption.18}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Number of OCT volumes per device in each fold, in the four remaining folds.\relax }}{17}{table.caption.19}%
 \addvspace {10\p@ }
