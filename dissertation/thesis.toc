@@ -13,14 +13,15 @@
 \contentsline {subsection}{\numberline {3.2.2}Fluid Segmentation}{17}{subsection.3.2.2}%
 \contentsline {subsubsection}{\numberline {3.2.2.1}Experiment 1}{19}{subsubsection.3.2.2.1}%
 \contentsline {paragraph}{Experiment 1.1}{19}{section*.21}%
-\contentsline {subsubsection}{\numberline {3.2.2.2}Experiment 2}{19}{subsubsection.3.2.2.2}%
-\contentsline {subsubsection}{\numberline {3.2.2.3}Experiment 3}{19}{subsubsection.3.2.2.3}%
+\contentsline {paragraph}{Experiment 1.2}{20}{section*.23}%
+\contentsline {subsubsection}{\numberline {3.2.2.2}Experiment 2}{20}{subsubsection.3.2.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.2.3}Experiment 3}{20}{subsubsection.3.2.2.3}%
 \contentsline {subsubsection}{\numberline {3.2.2.4}Experiment 4}{20}{subsubsection.3.2.2.4}%
-\contentsline {subsection}{\numberline {3.2.3}Intermediate Slice Synthesis}{20}{subsection.3.2.3}%
-\contentsline {paragraph}{Experiment 5}{21}{section*.23}%
-\contentsline {paragraph}{Experiment 6}{21}{section*.25}%
+\contentsline {subsection}{\numberline {3.2.3}Intermediate Slice Synthesis}{21}{subsection.3.2.3}%
+\contentsline {paragraph}{Experiment 5}{22}{section*.25}%
+\contentsline {paragraph}{Experiment 6}{22}{section*.27}%
 \contentsline {subsection}{\numberline {3.2.4}Fluid Volume Estimation}{22}{subsection.3.2.4}%
-\contentsline {paragraph}{Experiment 7}{22}{section*.26}%
-\contentsline {paragraph}{Experiment 8}{22}{section*.27}%
-\contentsline {chapter}{References}{23}{section*.28}%
-\contentsline {chapter}{\numberline {A}Lorem Ipsum}{29}{appendix.A}%
+\contentsline {paragraph}{Experiment 7}{23}{section*.28}%
+\contentsline {paragraph}{Experiment 8}{23}{section*.29}%
+\contentsline {chapter}{References}{24}{section*.30}%
+\contentsline {chapter}{\numberline {A}Lorem Ipsum}{30}{appendix.A}%
