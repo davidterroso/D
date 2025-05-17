@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  17 MAY 2025 15:20
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  17 MAY 2025 15:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1054,13 +1054,13 @@ Chapter 1.
 
 
 ]
-<figures//../figures/SegmentedFluidsOCT.png, id=242, 551.81157pt x 313.17pt>
+<figures//../figures/SegmentedFluidsOCT.png, id=245, 551.81157pt x 313.17pt>
 File: figures//../figures/SegmentedFluidsOCT.png Graphic file (type png)
 <use figures//../figures/SegmentedFluidsOCT.png>
 Package pdftex.def Info: figures//../figures/SegmentedFluidsOCT.png  used on in
 put line 18.
 (pdftex.def)             Requested size: 320.0935pt x 181.67216pt.
-<figures//../figures/RetinalLayers.png, id=246, 712.91344pt x 282.30469pt>
+<figures//../figures/RetinalLayers.png, id=249, 712.91344pt x 282.30469pt>
 File: figures//../figures/RetinalLayers.png Graphic file (type png)
 <use figures//../figures/RetinalLayers.png>
 Package pdftex.def Info: figures//../figures/RetinalLayers.png  used on input l
@@ -1078,13 +1078,13 @@ Chapter 2.
 
 
 ]
-<figures//../figures/ArticlesSelection.png, id=305, 582.175pt x 342.27875pt>
+<figures//../figures/ArticlesSelection.png, id=308, 582.175pt x 342.27875pt>
 File: figures//../figures/ArticlesSelection.png Graphic file (type png)
 <use figures//../figures/ArticlesSelection.png>
 Package pdftex.def Info: figures//../figures/ArticlesSelection.png  used on inp
 ut line 18.
 (pdftex.def)             Requested size: 320.0935pt x 188.19643pt.
-<figures//../figures/BinarySegmentationExample.png, id=306, 685.05937pt x 331.9
+<figures//../figures/BinarySegmentationExample.png, id=309, 685.05937pt x 331.9
 9031pt>
 File: figures//../figures/BinarySegmentationExample.png Graphic file (type png)
 
@@ -1094,7 +1094,7 @@ d on input line 24.
 (pdftex.def)             Requested size: 426.79135pt x 206.83487pt.
  [5 <./figures//../figures/ArticlesSelection.png>] [6 <./figures//../figures/Bi
 narySegmentationExample.png>]
-<figures//../figures/PreSegmentationAndFluidSegmentation.png, id=399, 759.58781
+<figures//../figures/PreSegmentationAndFluidSegmentation.png, id=402, 759.58781
 pt x 315.42844pt>
 File: figures//../figures/PreSegmentationAndFluidSegmentation.png Graphic file 
 (type png)
@@ -1103,7 +1103,7 @@ Package pdftex.def Info: figures//../figures/PreSegmentationAndFluidSegmentatio
 n.png  used on input line 51.
 (pdftex.def)             Requested size: 426.79135pt x 177.23553pt.
  [7] [8 <./figures//../figures/PreSegmentationAndFluidSegmentation.png>]
-<figures//../figures/GANGenerationFramework.png, id=457, 505.89pt x 499.11469pt
+<figures//../figures/GANGenerationFramework.png, id=460, 505.89pt x 499.11469pt
 >
 File: figures//../figures/GANGenerationFramework.png Graphic file (type png)
 <use figures//../figures/GANGenerationFramework.png>
@@ -1111,7 +1111,7 @@ Package pdftex.def Info: figures//../figures/GANGenerationFramework.png  used o
 n input line 74.
 (pdftex.def)             Requested size: 320.0935pt x 315.81476pt.
  [9]
-<figures//../figures/FangArchitecture.png, id=476, 753.5653pt x 283.81032pt>
+<figures//../figures/FangArchitecture.png, id=479, 753.5653pt x 283.81032pt>
 File: figures//../figures/FangArchitecture.png Graphic file (type png)
 <use figures//../figures/FangArchitecture.png>
 Package pdftex.def Info: figures//../figures/FangArchitecture.png  used on inpu
@@ -1141,34 +1141,41 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 37.
  [13] [14]
-<figures//../figures/UNet.png, id=538, 426.09187pt x 287.57437pt>
+<figures//../figures/UNet.png, id=541, 426.09187pt x 287.57437pt>
 File: figures//../figures/UNet.png Graphic file (type png)
 <use figures//../figures/UNet.png>
 Package pdftex.def Info: figures//../figures/UNet.png  used on input line 120.
 (pdftex.def)             Requested size: 320.0935pt x 216.04884pt.
  [15] [16 <./figures//../figures/UNet.png>]
-<figures//../figures/FluidAndROI.png, id=571, 963.6pt x 312.951pt>
+<figures//../figures/FluidAndROI.png, id=573, 963.6pt x 312.951pt>
 File: figures//../figures/FluidAndROI.png Graphic file (type png)
 <use figures//../figures/FluidAndROI.png>
 Package pdftex.def Info: figures//../figures/FluidAndROI.png  used on input lin
 e 168.
 (pdftex.def)             Requested size: 426.79135pt x 138.60616pt.
- [17] [18 <./figures//../figures/FluidAndROI.png>]
-<figures//../figures/TennakoonNetwork.png, id=602, 436.63126pt x 324.46219pt>
+ [17]
+<figures//../figures/BigPatchExtraction.png, id=584, 237.88875pt x 331.2375pt>
+File: figures//../figures/BigPatchExtraction.png Graphic file (type png)
+<use figures//../figures/BigPatchExtraction.png>
+Package pdftex.def Info: figures//../figures/BigPatchExtraction.png  used on in
+put line 183.
+(pdftex.def)             Requested size: 213.39568pt x 297.14561pt.
+ [18 <./figures//../figures/FluidAndROI.png>]
+<figures//../figures/TennakoonNetwork.png, id=605, 436.63126pt x 324.46219pt>
 File: figures//../figures/TennakoonNetwork.png Graphic file (type png)
 <use figures//../figures/TennakoonNetwork.png>
 Package pdftex.def Info: figures//../figures/TennakoonNetwork.png  used on inpu
-t line 194.
+t line 199.
 (pdftex.def)             Requested size: 298.75264pt x 222.00275pt.
- [19 <./figures//../figures/TennakoonNetwork.png>]
-<figures//../figures/GANFramework.png, id=636, 616.55344pt x 347.79938pt>
+ [19 <./figures//../figures/BigPatchExtraction.png>] [20 <./figures//../figures
+/TennakoonNetwork.png>]
+<figures//../figures/GANFramework.png, id=647, 616.55344pt x 347.79938pt>
 File: figures//../figures/GANFramework.png Graphic file (type png)
 <use figures//../figures/GANFramework.png>
 Package pdftex.def Info: figures//../figures/GANFramework.png  used on input li
-ne 213.
+ne 218.
 (pdftex.def)             Requested size: 298.75264pt x 168.52858pt.
-
-[20 <./figures//../figures/GANFramework.png>]) [21]
+ [21 <./figures//../figures/GANFramework.png>]) [22]
 LaTeX Font Info:    Trying to load font information for T1+pcrs on input line 6
 3.
 
@@ -1190,7 +1197,7 @@ Overfull \hbox (23.31725pt too wide) in paragraph at lines 63--63
 le / pii / S1350946207000444$[][]\T1/ptm/m/n/10.95 . 
  []
 
-[22
+[23
 
 
 
@@ -1208,13 +1215,13 @@ Overfull \hbox (1.58675pt too wide) in paragraph at lines 63--63
 e: [][]$\T1/pcrs/m/n/10.95 https : / / www . sciencedirect . com / science /
  []
 
-[23]
+[24]
 Overfull \hbox (0.44347pt too wide) in paragraph at lines 63--63
 []\T1/ptm/m/n/10.95 H. Liu et al., ^^P  Se-man-tic un-cer-tainty Guided Cross-T
 ransformer for en-hanced mac-u-lar edema
  []
 
-[24]
+[25]
 Overfull \hbox (23.31725pt too wide) in paragraph at lines 63--63
 [][]$\T1/pcrs/m/n/10.95 https : / / www . sciencedirect . com / science / artic
 le / pii / S1361841519300386$[][]\T1/ptm/m/n/10.95 . 
@@ -1232,7 +1239,7 @@ Overfull \hbox (46.68745pt too wide) in paragraph at lines 63--63
  . com / science / article / pii / S1361841521000839$[][]\T1/ptm/m/n/10.95 . 
  []
 
-[25] [26]
+[26] [27]
 Overfull \hbox (38.6628pt too wide) in paragraph at lines 63--63
 \T1/ptm/m/n/10.95 berger, Eds., vol. 27, Cur-ran As-so-ciates, Inc., 2014. [On-
 line]. Avail-able: [][]$\T1/pcrs/m/n/10.95 https : / / proceedings .
@@ -1251,28 +1258,28 @@ Overfull \hbox (10.93967pt too wide) in paragraph at lines 63--63
  35,
  []
 
-[27]
+[28]
 \openout2 = `appendix1.aux'.
 
  (appendix1.tex
 Appendix A.
-) [28
+) [29
 
 
 ] (thesis.aux (abstract.aux) (un-sdg.aux) (acknowledgements.aux)
 (quote.aux) (abbrevs.aux) (introduction.aux) (literature_review.aux)
 (methods.aux) (appendix1.aux))
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: D80459F2EFD58CDB4C22C97D4EE67AED;3008.
+(rerunfilecheck)             Checksum: A1136C722D9188CD5373A84A3C7CFFD1;3008.
 Package logreq Info: Writing requests to 'thesis.run.xml'.
 \openout1 = `thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 22972 strings out of 476339
- 417115 string characters out of 5788120
+ 22984 strings out of 476339
+ 417546 string characters out of 5788120
  1873340 words of memory out of 5000000
- 42816 multiletter control sequences out of 15000+600000
+ 42825 multiletter control sequences out of 15000+600000
  596717 words of font info for 138 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  78i,12n,82p,1399b,2950s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1291,9 +1298,9 @@ X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (39 pages, 5154965 bytes).
+Output written on thesis.pdf (40 pages, 5313044 bytes).
 PDF statistics:
- 927 PDF objects out of 1000 (max. 8388607)
- 164 named destinations out of 1000 (max. 500000)
- 221 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 935 PDF objects out of 1000 (max. 8388607)
+ 166 named destinations out of 1000 (max. 500000)
+ 226 words of extra memory for PDF output out of 10000 (max. 10000000)
 
