@@ -174,11 +174,16 @@ The model was initially trained on patches of size 256 $\times$ 128 (H $\times$ 
 In the Experiment 1.1, two sets of four training runs were performed, using each fold as validation. In both sets, the conditions were exactly the same, except the input patches. This experiment aimed to understand the effect that the random patch extraction has on the model performances.
 
 \paragraph{Experiment 1.2}
-In Experiment 1.2, the changes from Experiment 1.1 were the data splitting and the number of folds used in training. To improve the model performance, the dataset was split in five folds, using the second algorithm mentioned in \ref{CrossValidation} Cross-validation. Of the five resulting folds, three were used in training, one for the monitoring of the model during training and its evaluation, and one reserved for comparison with the experiments that follow.
+In Experiment 1.2, the patch shape was changed from 256 $\times$ 128 to 496 $\times$ 512. By using such shape, the model receives a larger context of the B-scan as input, allowing it to learn the anatomic references that characterize and limit the fluids.
 \par
-The model was trained on 256x128 patches, randomly extracted in the beginning of the training from the ROI. The patches were transformed by randomly performing a maximum rotation of 10 degrees and an horizontal flip. The training was performed on 100 epochs with a batch size of 32.
-\par
-In total, eight runs were performed in these settings, with two training sessions being performed using each fold as validation data, g
+The patches used in this experiment were no longer randomly extracted from the ROI. Instead, the patches were extracted from top to bottom so that every section of the image would be present in at least one patch. In a Cirrus B-scan, with shape 1024 $\times$ 512, the first patch would correspond to section from $y=528$ to $y=1024$, while the second patch would be from $y=32$ to $y=528$. The last patch would then start on the bottom of the image, at $y=0$, to $y=496$. A representation of this process can be seen in Figure \ref{fig:BigPatchExtraction}. The patches are extracted from top to bottom so that the retina and the fluid would not be split in two patches, damaging the quality of the input data.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.5\linewidth]{../figures/BigPatchExtraction.png}
+	\caption{Cirrus B-scan and its respective three patches of shape 496 $\times$ 512.}
+	\label{fig:BigPatchExtraction}
+\end{figure}
 
 \subsubsection{Experiment 2}\label{Experiment2}
 Similarly, in the second experiment, three U-Nets will be used for the segmentation task, one U-Net for each fluid type: one U-Net for the segmentation of IRF, one for SRF, and one for PED. This approach aligns with the methodology described in \textcite{Rahil2023, Padilla2022} and allows each network to specialize in the semantic segmentation of its fluid, improving the performance.
