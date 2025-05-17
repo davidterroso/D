@@ -51,7 +51,9 @@ The consistent number of slices per volume and large quantity of OCT volumes mak
 In this subsection, the experiments conducted during the dissertation are explained in depth. The subsection begins with a description of how the data was split, followed by the experiments in fluid segmentation and in fluid volume estimation.
 
 \subsection{Cross-validation}\label{CrossValidation}
-To promote consistency across all experiments, the conditions were held identical. In every experiment, the train-test split followed a 5-fold split. During training, all the images in three folds were used in the training of the model, while the images from one fold was used in its validation. The images in the fold that was used in validation allowed an insight of how the model was learning. The instance of the model that achieved the lowest loss on validation data was saved, as this typically indicates the best generalization performance on unseen data. Also, when the model was no longer improving, training could be stopped, saving computational resources. One fold was reserved and used to compare the performance between the best model from different experiments. 
+To promote consistency across all experiments, the conditions were held identical. In every experiment, the train-test split followed a 5-fold split. During training, all the images in three folds were used in the training of the model, while the images from one fold was used in its validation. One fold was reserved and used to compare the performance between the best model from different experiments. Therefore, four training runs are completed in each experiment, rotating the validation fold across runs.
+\par
+The images in the fold that was used in validation allowed an insight of how the model was learning. The instance of the model that achieved the lowest loss on validation data was saved, as this typically indicates the best generalization performance on unseen data. Also, when the model was no longer improving, training could be stopped, saving computational resources.
 \par
 The dataset was split so that the quantity of each fluid per vendor and the number of volumes per vendor was equally distributed across the folds. By equally distributing the volumes, it is easier to assess the model's learning capability and its behavior towards data with different characteristics (e.g. data from different vendors). To accomplish a fair data split, a custom algorithm was elaborated. This algorithm sought to divide the data in five folds while minimizing the differences of fluid per vendor and the number of slices per vendor in each fold.
 \par
@@ -111,7 +113,7 @@ Similar to what was done in the fluid segmentation task, three folds will be use
 \subsection{Fluid Segmentation}
 The initial experiments of this dissertation focused on training networks on the fluid segmentation task. The goal of these experiments is to determine which segmentation network performs the best in the considered task, which were be later required for the fluid volume estimation.
 \par
-In the first three experiments, the U-Net \parencite{Ronneberger2015} will perform multi-class segmentation of the fluid regions in each B-scan. The U-Net is distinguished by its encoder-decoder structure, which resembles the letter U (see Figure \ref{fig:UNet}). In the encoder path, two 3x3 unpadded convolutions are applied to the input image, with each being followed by a rectified linear unit (ReLU) and a 2x2 max pooling operation with a stride of 2, downsampling the image. In each downsampling step, the number of channels is doubled. In the expanding path, a 2x2 up-convolution is used, resulting in the halving of the number of channels. The result is then concatenated with the cropped feature map from the respective contracting path. A 1x1 convolution is applied to the final layer.
+In these experiments, the U-Net \parencite{Ronneberger2015} was used in the multi-class segmentation of the fluid regions in each B-scan. The U-Net is distinguished by its encoder-decoder structure, which resembles the letter U (see Figure \ref{fig:UNet}). In the encoder path, two 3x3 unpadded convolutions are applied to the input image, with each being followed by a rectified linear unit (ReLU) and a 2x2 max pooling operation with a stride of 2, downsampling the image. In each downsampling step, the number of channels is doubled. In the expanding path, a 2x2 up-convolution is used, resulting in the halving of the number of channels. The result is then concatenated with the cropped feature map from the respective contracting path. A 1x1 convolution is applied to the final layer.
 
 \begin{figure}[!ht]
 	\centering
@@ -132,17 +134,17 @@ The evaluation of all networks will be conducted using the Dice coefficient. The
 	\label{eq:DiceCoefficientPixels}
 \end{equation}
 
-The loss function that regularized the training in the fluid segmentation experiments was the same as the one used in \textcite{Tennakoon2018}. This loss is described as seen in Equation \ref{eq:SegmentationLoss}, where $\lambda_{D}$ is the weight of the Dice component, $\mathcal{L}_{D}$, and $\lambda_{CE}$ is the weight of the cross-entropy component $\mathcal{L}_{CE}$, with both weights being 0.5.
+The loss function that regularized the training in the fluid segmentation experiments was the same as the one used in \textcite{Tennakoon2018}, whose segmentation model was previously implemented by the authors. This loss is described as seen in Equation \ref{eq:SegmentationLoss}, where $\lambda_{D}$ is the weight of the Dice component, $\mathcal{L}_{D}$, and $\lambda_{CE}$ is the weight of the cross-entropy component $\mathcal{L}_{CE}$, with both weights being 0.5.
 
 \begin{equation}
 	\mathcal{L} = \lambda_{D} \mathcal{L}_{D} + \lambda_{CE} \mathcal{L}_{CE}
 	\label{eq:SegmentationLoss}
 \end{equation}
 
-The component $\mathcal{L_{D}}$ is the Dice loss of the foreground. This translates to how good the model is at detecting the fluid in the B-scans. For any image, where each pixel is associated with an index $j$, the loss can be described through Equation \ref{eq:SegmentationDice}, where $s_{j\overline{0}}$ is a binary variable that is 0 when the pixel $j$ belongs to the class 0 (background) and is 1 whenever the pixel $j$ belongs to any class that is not 0 (foreground). $p_{j\overline{0}}$ corresponds to the predicted probability of the pixel $j$ belonging to the foreground.
+The component $\mathcal{L_{D}}$ is the Dice loss of the foreground. This translates to how good the model is at detecting and segmenting the fluid present in the B-scans. For any image, where each pixel is associated with an index $j$, the loss can be described through Equation \ref{eq:SegmentationDice}, where $s_{j\overline{0}}$ is a binary variable that is 0 when the pixel $j$ belongs to the class 0 (background) and is 1 whenever the pixel $j$ belongs to any class that is not 0 (foreground). $p_{j\overline{0}}$ corresponds to the predicted probability of the pixel $j$ belonging to the foreground. The $\epsilon$ constant is a small value utilized to prevent division by zero.
 
 \begin{equation}
-	\mathcal{L}_{D} = 1 - \left( \frac{2 \sum_{j} s_{j\overline{0}} p_{j\overline{0}}}{\sum_{j} s_{j\overline{0}} + \sum_{j} p_{j\overline{0}}} \right)
+	\mathcal{L}_{D} = 1 - \left( \frac{2 \sum_{j} s_{j\overline{0}} p_{j\overline{0}}}{\sum_{j} s_{j\overline{0}} + \sum_{j} p_{j\overline{0}} + \epsilon} \right)
 	\label{eq:SegmentationDice}
 \end{equation}
 
@@ -154,38 +156,22 @@ However, this loss component is not enough to correctly label the pixels in thei
 \end{equation}
 
 \subsubsection{Experiment 1}
-In the first experiment, the base U-Net model was trained to perform 2D multi-class segmentation of the retinal fluids in OCT volumes. This is the baseline experiment to which all the other fluid segmentation models implemented will be compared.
+In the first experiment, the base U-Net model was trained to perform 2D multi-class segmentation of the retinal fluids in OCT volumes.
 \par
-This was the most extensive experiments, where many variables were tested. Different patch shapes, transformations, and hyperparameters were experimented, until the best training settings were determined. The best settings were used in \ref{Experiment2} Experiment 2 and \ref{Experiment3} Experiment 3. All the experiments were done using the Adam optimizer \parencite{Kingma2017} with a learning rate of $2 \times 10^{-5}$.
+This was the most extensive experiments, where many variables were tested. Different patch shapes, transformations, and hyperparameters were experimented, until the best training settings were determined. The best settings were then used in \ref{Experiment2} Experiment 2. All the experiments were done using the Adam optimizer \parencite{Kingma2017} with a learning rate of $2 \times 10^{-5}$.
 
 \paragraph{Experiment 1.1}
-The model was initially trained on patches with 256 pixels of height and 128 pixels of width, following the same implementation as the one in \textcite{Tennakoon2018}. The extraction of patches aims at prioritizing the B-scan information relevant for the segmentation. To achieve this, the patches are not distributed uniformly. Instead, in every epoch, 10 patches are extracted from a random location inside the region of interest (ROI) of each image. The image's ROI is the part of the image where the entropy is above a determined threshold or where there retinal fluid is present. The patches are then augmented by a rotation between 0 and 10 degrees, and horizontal flipping. Of the patches with no fluid, 75\% of them were dropped.
-\par
-The training data used in this experiment were the volumes present in two of five folds, with one being used to monitor the progress of the network training, one for evaluation of the best model, and one for reserved for comparison between different experiments. The folds were split randomly without minding the quantity of fluid present in each OCT volume.
-\par
-In the Experiment 1.1, multiple of these conditions were changed to better understand their impact. The model was trained with patches being extracted randomly only once in the first epoch and every epoch as done originally. Then, the model was trained in 100 epochs and 200 epochs to understand if more epochs were beneficial. Lastly, multiple values of patch dropping percentage were experimented. A resume of the variables changed in training in this Experiment can be seen in Table \ref{tab:Experiments1.1}.
+The model was initially trained on patches of size 256 $\times$ 128 (H $\times$ W), following the same implementation as the one in \textcite{Tennakoon2018}. The extraction of patches aims at prioritizing the B-scan information relevant for the segmentation. To achieve this, the patches are not distributed uniformly. Instead, 10 patches are extracted from a random location inside the region of interest (ROI) of each image. The image's ROI is the part of the image where the entropy is above a determined threshold or where there retinal fluid is present. The patches are then augmented by a rotation between 0 and 10 degrees, and horizontal flipping. Of the patches with no fluid, 75\% of them were dropped. In Figure \ref{fig:FluidAndROI}, it is possible to see the overlaying of the fluid masks and the ROI, with a red bounding box signing a patch that would be used as input to train the U-Net.
 
-\begin{table*}[!ht]
-	\setlength{\tabcolsep}{6pt}
-	\renewcommand{\arraystretch}{1.3}
-	\caption{Parameters of each run in Experiment 1.1.}
+\begin{figure}[!ht]
 	\centering
-	\begin{tabular}{|c|c|c|c|}
-		\hline
-		\textbf{Run's ID} & \textbf{Epochs} & \textbf{Patch Extraction} & \textbf{Drop Percentage}\\
-		\hline
-		\textbf{1} & 100 & One extraction & 75\% \\
-		\textbf{2} & 200 & One extraction & 75\% \\
-		\textbf{3} & 100 & Every epoch & 0\% \\
-		\textbf{4} & 100 & Every epoch & 75\% \\
-		\textbf{5} & 100 & One extraction & 0\% \\
-		\textbf{6} & 100 & One extraction & 50\% \\
-		\textbf{7} & 100 & One extraction & 25\% \\
-		\textbf{8} & 100 & One extraction & 100\% \\
-		\hline
-	\end{tabular}
-	\label{tab:Experiments1.1}
-\end{table*}
+	\includegraphics[width=1.0\linewidth]{../figures/FluidAndROI.png}
+	\caption{Cirrus B-scan (left), fluid masks overlay (middle) with IRF in red, SRF in green, and PED in blue, and the ROI mask overlaid in purple (right).}
+	\label{fig:FluidAndROI}
+\end{figure}
+
+\par
+In the Experiment 1.1, two sets of four training runs were performed, using each fold as validation. In both sets, the conditions were exactly the same, except the input patches. This experiment aimed to understand the effect that the random patch extraction has on the model performances.
 
 \paragraph{Experiment 1.2}
 In Experiment 1.2, the changes from Experiment 1.1 were the data splitting and the number of folds used in training. To improve the model performance, the dataset was split in five folds, using the second algorithm mentioned in \ref{CrossValidation} Cross-validation. Of the five resulting folds, three were used in training, one for the monitoring of the model during training and its evaluation, and one reserved for comparison with the experiments that follow.
