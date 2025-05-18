@@ -50,8 +50,14 @@ The consistent number of slices per volume and large quantity of OCT volumes mak
 \section{Experiments}\label{Experiments}
 In this subsection, the experiments conducted during the dissertation are explained in depth. The subsection begins with a description of how the data was split, followed by the experiments in fluid segmentation and in fluid volume estimation.
 
-\subsection{Cross-validation}
-To promote consistency across all experiments, the conditions will be held identical. In every experiment, the train-test split followed a 5-fold split. In the first experiment, two different 5-fold splits were tested: one done ensuring a balanced distribution of the quantity of each fluid per vendor across the folds, and one with random fluid distribution of the OCT volumes, ensuring equal number of volumes per vendor across the folds fold. A possible distribution of the later case can be seen in Table \ref{tab:FiveFoldSplit}, where a potential split in the RETOUCH dataset is illustrated, where 70 OCT volumes are be used. The split was applied to the volumes and not to the slices since the slices of the same volumes must be kept together to train the 2.5D segmentation model (\ref{Experiment4} Experiment 4). Since the models trained on the stratified 5-fold split performed better and more consistently in different folds, this approach was used across all fluid segmentation experiments.
+\subsection{Cross-validation}\label{CrossValidation}
+To promote consistency across all experiments, the conditions were held identical. In every experiment, the train-test split followed a 5-fold split. During training, all the images in three folds were used in the training of the model, while the images from one fold was used in its validation. One fold was reserved and used to compare the performance between the best model from different experiments. Therefore, four training runs are completed in each experiment, rotating the validation fold across runs.
+\par
+The images in the fold that was used in validation allowed an insight of how the model was learning. The instance of the model that achieved the lowest loss on validation data was saved, as this typically indicates the best generalization performance on unseen data. Also, when the model was no longer improving, training could be stopped, saving computational resources.
+\par
+The dataset was split so that the quantity of each fluid per vendor and the number of volumes per vendor was equally distributed across the folds. By equally distributing the volumes, it is easier to assess the model's learning capability and its behavior towards data with different characteristics (e.g. data from different vendors). To accomplish a fair data split, a custom algorithm was elaborated. This algorithm sought to divide the data in five folds while minimizing the differences of fluid per vendor and the number of slices per vendor in each fold.
+\par
+A possible distribution of 70 OCT volumes from the RETOUCH dataset, which were used in the training of fluid segmentation, can be seen in Table \ref{tab:FiveFoldSplit}. The split was applied to the volumes and not to the slices. The slices of the same volumes must be kept together to prevent data leakage, where similar images, obtained from the same patient, are present both in training and validation, leading to over-optimistic performance metrics.
 
 \begin{table*}[!ht]
 	\setlength{\tabcolsep}{6pt}
@@ -72,71 +78,9 @@ To promote consistency across all experiments, the conditions will be held ident
 	\label{tab:FiveFoldSplit}
 \end{table*}
 
-For the fluid segmentation task, finding the optimal partition that better distributes the quantity of fluid across folds is too computationally expensive, due to the large number of OCT volumes available in the dataset and the variables to consider (quantity of IRF, SRF, and PED, number of slices, and vendor in each OCT volume). For this reason, two different algorithms were implemented in order to attempt to achieve a fair distribution of fluids across folds. 
+In \ref{Experiment2} Experiment 2, where the model performs binary segmentation of each fluid, the volumes can be redistributed using the same algorithm, with less bounds. In this experiment, it is relevant to split the volumes in folds based only on their vendors and quantity of the fluid to segment, thus eliminating the restrictions imposed by the quantity of other two fluids. Nevertheless, the volumes that are in the previously defined reserved fold can not be used nor in training nor in validation.
 \par
-The partition was done for each vendor separately, to ensure a similar number of slices per vendor in each fold and due to the different dimensions of the OCT volumes depending on the vendors. For example, since volumes obtained with Cirrus are composed of 128 slices with an height of 1024 pixels and a width of 512 pixels, while the volumes obtained with Spectralis are composed of 49 slices with an height of 496 pixels and width of 512 pixels, an OCT scan of the same patient obtained with these two devices will result in a significantly larger total number of pixels with fluid in the volume obtained with Cirrus than in the volume obtained with Spectralis.
-\par
-In the first implemented algorithm, five volumes from a vendor were randomly selected and distributed across the five folds. In each fold, the absolute difference between the total number of voxels for each fluid and the expected number of voxels for each fluid in the fold was calculated. The sum of these three absolute differences was considered as the error of the fold. For a vendor $v$, which can be Cirrus, Spectralis, or Topcon, the error in a fold $f$ is calculated as seen in Equation \ref{eq:FoldLoss}, where $x_{i,c,f}$ is the total number of voxels labeled as fluid $c$ in an OCT volume of index $i$ belonging to the fold $f$, and $k$ is 5.
-\par
-Then, all the possible arrangements of the five volumes across the five folds ($5!$ possibilities) were iterated and had the error for each fold calculated. The arrangement that resulted in the smallest total error across all folds, calculated as seen in Equation \ref{eq:AllFoldsLoss} for a vendor $v$, was then kept. Afterwards, another five volumes of the same vendor were randomly selected from the remaining volumes. This process was repeated until all the volumes from the vendor had been distributed, before continuing to a new vendor.
-
-\begin{equation}
-	\mathcal{L}_{v, f \in [0,4]} = \sum_{c \in \{\mathrm{IRF}, \mathrm{SRF}, \mathrm{PED}\}} \left( 
-	| k\, \mathbb{E}_{c,v} - \sum_{i} x_{i,c,f} |
-	\right)
-	\label{eq:FoldLoss}
-\end{equation}
-
-\begin{equation}
-	\mathcal{L}_{v} = \sum_{f \in [0,4]} \mathcal{L}_{v, f} 
-	\label{eq:AllFoldsLoss}
-\end{equation}
-
-\par
-Meanwhile, the second algorithm starts with the random ordering of the folds. Following this order, the OCT volume which leads to the smallest error for the fold, calculated as done in the first algorithm (see Equation \ref{eq:FoldLoss}), is allocated to it. Then, the folds are randomly ordered again and a new selection of volumes begins. This is done until no OCT volume is left, for each vendor at a time.
-\par 
-In both algorithms, the distribution of the volumes with a larger number of voxels belonging to a fluid class is encouraged, since it is associated with a smaller fold error. Therefore, towards the end of the distribution, volumes with smaller quantities of fluid are left. Since these are easier to distribute than those with larger quantities of fluid, the final partition tends to an even distribution. However, both algorithms include random sampling, thus leading to different results in every iteration.
-\par
-In order to compare both algorithms, it was calculated, for each fold of the resulting split from each algorithm, the difference between the expected number of voxels for a five fold split and the number of voxels present in the fold, for each vendor and fluid. Then, the mean and standard deviation of the absolute errors were calculated across the five folds and compared between algorithms. The results for both can be seen in Table \ref{tab:ErrorsInFirstAlgorithm}.
-
-\begin{table*}[!ht]
-	\caption{Mean and standard deviation of the errors across the five folds. The best results are highlighted in bold}
-	\centering
-	\begin{tabular}{|c|c|c|c|}
-		\hline
-		& \multicolumn{3}{c|}{\textbf{First Algorithm}} \\
-		\hline
-		& \textbf{IRF} & \textbf{SRF} & \textbf{PED} \\
-		\hline
-		\textbf{Cirrus} & 329914.47 (196454.69) & 942659.97 (497244.77) & 837517.75 (503258.31) \\
-		\textbf{Spectralis} & 182953.67 (141029.98) & 148278.12 (86475.24) & 96457.01 (63646.69) \\
-		\textbf{Topcon} & 198889.9 (118964.3) & 185916.66 (40916.17) & \textbf{678554.68 (394820.09)} \\
-		\hline
-		& \multicolumn{3}{c|}{\textbf{Second Algorithm}} \\
-		\hline
-		& \textbf{IRF} & \textbf{SRF} & \textbf{PED} \\
-		\hline
-		\textbf{Cirrus} & \textbf{120978.78 (162079.2)} & \textbf{503032.7 (491762.28)} & \textbf{771456.05 (550130.84)} \\
-		\textbf{Spectralis} & \textbf{65626.33 (54826.65)} & \textbf{47618.12 (46505.26)} & \textbf{18065.83 (7874.38)} \\
-		\textbf{Topcon} & \textbf{67991.1 (109580.24)} & \textbf{154463.86 (41110.21)} & 765510.85 (503445.75) \\
-		\hline
-	\end{tabular}
-	\label{tab:ErrorsInFirstAlgorithm}
-\end{table*}
-
-By observation of the resulting errors, the second algorithm performs better than the first in almost all conditions. Therefore, this was the algorithm selected to perform the 5-fold split for the fluid segmentation experiments.
-\par
-In \ref{Experiment2} Experiment 2, where the model performs binary segmentation of each fluid, the volumes can be redistributed using the same algorithm, with less bounds. In this experiment, it is relevant to split the volumes in folds based only on their vendors and quantity of the fluid to segment, thus eliminating the restrictions imposed by the quantity of other two fluids. For this situation, we apply the same algorithm as before, but change the error in each fold to only consider the fluid desired to segment, $c$, as seen in Equation \ref{eq:BinaryFoldLoss}.
-
-\begin{equation}
-	\mathcal{L}_{v, f} = 
-	| k\, \mathbb{E}_{c,v} - \sum_{i} x_{i,c,f} |
-	\label{eq:BinaryFoldLoss}
-\end{equation}
-
-From the 5-fold split, one fold is randomly selected for comparison between experiments. The remaining four are split in training and validation, with three folds being used in training and one in validation. In every epoch, the model is trained with all the images in the three training folds and evaluated with the images in the validation fold. By monitoring the loss obtained in the validation data, it is possible to determine if the model is learning or overfitting, allowing us to save the best model and employ early stopping when it is no longer improving. In the first experiment, training with two folds, while monitoring the model with one fold, and evaluating the best model with another fold was also tested. In \ref{Experiment2} Experiment 2, the split kept the same reserved fold as in the multi-class split, only dividing the remaining volumes.
-\par
-In the interslice generation experiments, the 5-fold split was not done by considering the fluids quantity in each fold. Since in this experiment the test volumes of the RETOUCH dataset were used and there are no fluid masks available, the quantity of fluid in each test volume is unknown. Therefore, it is not possible to apply the mentioned algorithms to these volumes. However, one of the folds in the interslice split is the one reserved in the multi-class segmentation split.
+In the interslice generation experiments, the 5-fold split was not done by considering the fluids quantity in each fold. Since in this experiment the test volumes of the RETOUCH dataset were used and there are no fluid masks available, the quantity of fluid in each test volume is unknown. However, one of the folds in the interslice 5-fold split is the one reserved in the multi-class segmentation split.
 \par
 The split was performed by taking into consideration solely the number of slices per device. In this experiments, the characteristic's of each device are important, since each device has a specific interslice distance, which is different even across devices of the same vendor and an important characteristic in generation.
 \par
@@ -162,14 +106,14 @@ Considering both training and testing volumes of the RETOUCH dataset, there are 
 	\label{tab:FourFoldSplit}
 \end{table*}
 
-Since the partition is not bounded by the quantity of fluid in each volume, it is possible to compute the best possible partition by iterating through all the combination. In each combination, the standard deviation of the total number of B-scans in a fold is calculated. The combination with the smallest deviation was used. 
+Since the partition is not bounded by the quantity of fluid in each volume, it is possible to compute the best partition by iterating through all the possible combinations. In each combination, the standard deviation of the total number of B-scans in each fold is calculated. The combination with the smallest deviation was used. 
 \par
-Similar to what was done in the fluid segmentation task, three folds will be used in training while one will be used in validation. The reserved fold will be used as a comparison between generative models.
+Similar to what was done in the fluid segmentation task, three folds will be used in training while one will be used in validation. The reserved fold was used as a comparison between the best generative models from different experiments.
 
 \subsection{Fluid Segmentation}
 The initial experiments of this dissertation focused on training networks on the fluid segmentation task. The goal of these experiments is to determine which segmentation network performs the best in the considered task, which were be later required for the fluid volume estimation.
 \par
-In the first three experiments, the U-Net \parencite{Ronneberger2015} will perform multi-class segmentation of the fluid regions in each B-scan. The U-Net is distinguished by its encoder-decoder structure, which resembles the letter U (see Figure \ref{fig:UNet}). In the encoder path, two 3x3 unpadded convolutions are applied to the input image, with each being followed by a rectified linear unit (ReLU) and a 2x2 max pooling operation with a stride of 2, downsampling the image. In each downsampling step, the number of channels is doubled. In the expanding path, a 2x2 up-convolution is used, resulting in the halving of the number of channels. The result is then concatenated with the cropped feature map from the respective contracting path. A 1x1 convolution is applied to the final layer.
+In these experiments, the U-Net \parencite{Ronneberger2015} was used in the multi-class segmentation of the fluid regions in each B-scan. The U-Net is distinguished by its encoder-decoder structure, which resembles the letter U (see Figure \ref{fig:UNet}). In the encoder path, two 3x3 unpadded convolutions are applied to the input image, with each being followed by a rectified linear unit (ReLU) and a 2x2 max pooling operation with a stride of 2, downsampling the image. In each downsampling step, the number of channels is doubled. In the expanding path, a 2x2 up-convolution is used, resulting in the halving of the number of channels. The result is then concatenated with the cropped feature map from the respective contracting path. A 1x1 convolution is applied to the final layer.
 
 \begin{figure}[!ht]
 	\centering
@@ -190,17 +134,17 @@ The evaluation of all networks will be conducted using the Dice coefficient. The
 	\label{eq:DiceCoefficientPixels}
 \end{equation}
 
-The loss function that regularized the training in the fluid segmentation experiments was the same as the one used in \textcite{Tennakoon2018}. This loss is described as seen in Equation \ref{eq:SegmentationLoss}, where $\lambda_{D}$ is the weight of the Dice component, $\mathcal{L}_{D}$, and $\lambda_{CE}$ is the weight of the cross-entropy component $\mathcal{L}_{CE}$, with both weights being 0.5.
+The loss function that regularized the training in the fluid segmentation experiments was the same as the one used in \textcite{Tennakoon2018}, whose segmentation model was previously implemented by the authors. This loss is described as seen in Equation \ref{eq:SegmentationLoss}, where $\lambda_{D}$ is the weight of the Dice component, $\mathcal{L}_{D}$, and $\lambda_{CE}$ is the weight of the cross-entropy component $\mathcal{L}_{CE}$, with both weights being 0.5.
 
 \begin{equation}
 	\mathcal{L} = \lambda_{D} \mathcal{L}_{D} + \lambda_{CE} \mathcal{L}_{CE}
 	\label{eq:SegmentationLoss}
 \end{equation}
 
-The component $\mathcal{L_{D}}$ is the Dice loss of the foreground. This translates to how good the model is at detecting the fluid in the B-scans. For any image, where each pixel is associated with an index $j$, the loss can be described through Equation \ref{eq:SegmentationDice}, where $s_{j\overline{0}}$ is a binary variable that is 0 when the pixel $j$ belongs to the class 0 (background) and is 1 whenever the pixel $j$ belongs to any class that is not 0 (foreground). $p_{j\overline{0}}$ corresponds to the predicted probability of the pixel $j$ belonging to the foreground.
+The component $\mathcal{L_{D}}$ is the Dice loss of the foreground. This translates to how good the model is at detecting and segmenting the fluid present in the B-scans. For any image, where each pixel is associated with an index $j$, the loss can be described through Equation \ref{eq:SegmentationDice}, where $s_{j\overline{0}}$ is a binary variable that is 0 when the pixel $j$ belongs to the class 0 (background) and is 1 whenever the pixel $j$ belongs to any class that is not 0 (foreground). $p_{j\overline{0}}$ corresponds to the predicted probability of the pixel $j$ belonging to the foreground. The $\epsilon$ constant is a small value utilized to prevent division by zero.
 
 \begin{equation}
-	\mathcal{L}_{D} = 1 - \left( \frac{2 \sum_{j} s_{j\overline{0}} p_{j\overline{0}}}{\sum_{j} s_{j\overline{0}} + \sum_{j} p_{j\overline{0}}} \right)
+	\mathcal{L}_{D} = 1 - \left( \frac{2 \sum_{j} s_{j\overline{0}} p_{j\overline{0}}}{\sum_{j} s_{j\overline{0}} + \sum_{j} p_{j\overline{0}} + \epsilon} \right)
 	\label{eq:SegmentationDice}
 \end{equation}
 
@@ -212,14 +156,34 @@ However, this loss component is not enough to correctly label the pixels in thei
 \end{equation}
 
 \subsubsection{Experiment 1}
-In the first experiment, the base U-Net model was trained to perform 2D multi-class segmentation of the retinal fluids in OCT volumes. This is the baseline experiment to which all the other fluid segmentation models implemented will be compared.
+In the first experiment, the base U-Net model was trained to perform 2D multi-class segmentation of the retinal fluids in OCT volumes.
 \par
-This was the most extensive experiments, where many variables were tested. Different patch shapes, transformations, and hyperparameters were experimented, until the best training settings were determined. The best settings were used in \ref{Experiment2} Experiment 2 and \ref{Experiment3} Experiment 3.
+This was the most extensive experiments, where many variables were tested. Different patch shapes, transformations, and hyperparameters were experimented, until the best training settings were determined. The best settings were then used in \ref{Experiment2} Experiment 2. All the experiments were done using the Adam optimizer \parencite{Kingma2017} with a learning rate of $2 \times 10^{-5}$.
 
 \paragraph{Experiment 1.1}
-The model was initially trained on patches with 256 pixels of height and 128 pixels of width, following the same implementation as the one in \textcite{Tennakoon2018}. The extraction of patches aims at prioritizing the B-scan information relevant for the segmentation. To achieve this, the patches are not distributed uniformly. Instead, in every epoch, 10 patches are extracted from a random location inside the region of interest (ROI) of each image. The image's ROI is the part of the image where the entropy is above a determined threshold or where there retinal fluid is present. The patches are then augmented by a rotation between 0 and 10 degrees, and horizontal flipping. Of the patches with no fluid, 75\% of them were dropped. 
+The model was initially trained on patches of size 256 $\times$ 128 (H $\times$ W), following the same implementation as the one in \textcite{Tennakoon2018}. The extraction of patches aims at prioritizing the B-scan information relevant for the segmentation. To achieve this, the patches are not distributed uniformly. Instead, 10 patches are extracted from a random location inside the region of interest (ROI) of each image. The image's ROI is the part of the image where the entropy is above a determined threshold or where there retinal fluid is present. The patches are then augmented by a rotation between 0 and 10 degrees, and horizontal flipping. Of the patches with no fluid, 75\% of them were dropped. In Figure \ref{fig:FluidAndROI}, it is possible to see the overlaying of the fluid masks and the ROI, with a red bounding box signing a patch that would be used as input to train the U-Net.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1.0\linewidth]{../figures/FluidAndROI.png}
+	\caption{Cirrus B-scan (left), fluid masks overlay (middle) with IRF in red, SRF in green, and PED in blue, and the ROI mask overlaid in purple (right).}
+	\label{fig:FluidAndROI}
+\end{figure}
+
 \par
-In the Experiment 1.1, multiple of these conditions were changed to better understand their impact. The model was trained with patches being extracted randomly only once in the first epoch and every epoch as done originally. Then, the model was trained in 100 epochs and 200 epochs to understand if more epochs were beneficial. Lastly, multiple values of patch dropping percentage were experimented.
+In the Experiment 1.1, two sets of four training runs were performed, using each fold as validation. In both sets, the conditions were exactly the same, except the input patches. This experiment aimed to understand the effect that the random patch extraction has on the model performances.
+
+\paragraph{Experiment 1.2}
+In Experiment 1.2, the patch shape was changed from 256 $\times$ 128 to 496 $\times$ 512. By using such shape, the model receives a larger context of the B-scan as input, allowing it to learn the anatomic references that characterize and limit the fluids.
+\par
+The patches used in this experiment were no longer randomly extracted from the ROI. Instead, the patches were extracted from top to bottom so that every section of the image would be present in at least one patch. In a Cirrus B-scan, with shape 1024 $\times$ 512, the first patch would correspond to section from $y=528$ to $y=1024$, while the second patch would be from $y=32$ to $y=528$. The last patch would then start on the bottom of the image, at $y=0$, to $y=496$. A representation of this process can be seen in Figure \ref{fig:BigPatchExtraction}. The patches are extracted from top to bottom so that the retina and the fluid would not be split in two patches, damaging the quality of the input data.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.5\linewidth]{../figures/BigPatchExtraction.png}
+	\caption{Cirrus B-scan and its respective three patches of shape 496 $\times$ 512.}
+	\label{fig:BigPatchExtraction}
+\end{figure}
 
 \subsubsection{Experiment 2}\label{Experiment2}
 Similarly, in the second experiment, three U-Nets will be used for the segmentation task, one U-Net for each fluid type: one U-Net for the segmentation of IRF, one for SRF, and one for PED. This approach aligns with the methodology described in \textcite{Rahil2023, Padilla2022} and allows each network to specialize in the semantic segmentation of its fluid, improving the performance.
