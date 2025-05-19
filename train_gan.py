@@ -251,6 +251,9 @@ def train_gan(
     best_val_loss = float('inf')
     best_val_mae = float('inf')
 
+    # Initiates the patience counter
+    patience_counter = 0
+
     # Iterates through the total 
     # number of possible epochs
     for epoch in range(1, epochs + 1):
@@ -470,29 +473,30 @@ def train_gan(
                 writer.writerow([epoch, epoch_loss / len(train_loader), val_mae])
 
         if model_name == "GAN":
-            # In case the validation generator loss 
-            # is better than the previous, the model 
-            # is saved as the best model
-            if val_loss < best_val_loss:
-                # Creates the folder models in case 
-                # it does not exist yet
-                makedirs("models", exist_ok=True)
-                # Updates the best value 
-                # of the generator loss
-                best_val_loss = val_loss
-                patience_counter = 0
-                # Both the generator and the discriminator are saved with a name 
-                # that depends on the argument input and the name of the model
-                torch.save(generator.state_dict(), 
-                            f"models/{run_name}_generator_best_model.pth")
-                torch.save(discriminator.state_dict(),
-                            f"models/{run_name}_discriminator_best_model.pth")
-                print("Models saved.")
-            # In case the model has not 
-            # obtained a better performance, 
-            # the patience counter increases
-            else:
-                patience_counter += 1
+            if epoch > 40:
+                # In case the validation generator loss 
+                # is better than the previous, the model 
+                # is saved as the best model
+                if val_loss < best_val_loss:
+                    # Creates the folder models in case 
+                    # it does not exist yet
+                    makedirs("models", exist_ok=True)
+                    # Updates the best value 
+                    # of the generator loss
+                    best_val_loss = val_loss
+                    patience_counter = 0
+                    # Both the generator and the discriminator are saved with a name 
+                    # that depends on the argument input and the name of the model
+                    torch.save(generator.state_dict(), 
+                                f"models/{run_name}_generator_best_model.pth")
+                    torch.save(discriminator.state_dict(),
+                                f"models/{run_name}_discriminator_best_model.pth")
+                    print("Models saved.")
+                # In case the model has not 
+                # obtained a better performance, 
+                # the patience counter increases
+                else:
+                    patience_counter += 1
         elif model_name == "UNet":
             # In case the validation MAE is better 
             # than the previous, the model is saved 
