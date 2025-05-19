@@ -166,7 +166,7 @@ The model was initially trained on patches of size 256 $\times$ 128 (H $\times$ 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1.0\linewidth]{../figures/FluidAndROI.png}
-	\caption{Cirrus B-scan (left), fluid masks overlay (middle) with IRF in red, SRF in green, and PED in blue, and the ROI mask overlaid in purple (right).}
+	\caption{Cirrus B-scan (left), fluid masks overlay (middle) with IRF in red, SRF in green, and PED in blue, and the ROI mask overlaid in purple (right). The red bounding box signals a possible 256 $\times$ 128 patch that could be extracted.}
 	\label{fig:FluidAndROI}
 \end{figure}
 
@@ -177,29 +177,53 @@ In the Experiment 1.1, two sets of four training runs were performed, using each
 In Experiment 1.2, the patch shape was changed from 256 $\times$ 128 to 496 $\times$ 512. By using such shape, the model receives a larger context of the B-scan as input, allowing it to learn the anatomic references that characterize and limit the fluids.
 \par
 The patches used in this experiment were no longer randomly extracted from the ROI. Instead, the patches were extracted from top to bottom so that every section of the image would be present in at least one patch. In a Cirrus B-scan, with shape 1024 $\times$ 512, the first patch would correspond to section from $y=528$ to $y=1024$, while the second patch would be from $y=32$ to $y=528$. The last patch would then start on the bottom of the image, at $y=0$, to $y=496$. A representation of this process can be seen in Figure \ref{fig:BigPatchExtraction}. The patches are extracted from top to bottom so that the retina and the fluid would not be split in two patches, damaging the quality of the input data.
+\par
+In this experiment, due to the larger size of the patches that are being loaded, the batch size had to be reduced from the usual 32 to 16. It was trained on 100 epochs with the same transformations as in the previous experiment.
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.5\linewidth]{../figures/BigPatchExtraction.png}
+	\includegraphics[width=0.4\linewidth]{../figures/BigPatchExtraction.png}
 	\caption{Cirrus B-scan and its respective three patches of shape 496 $\times$ 512.}
 	\label{fig:BigPatchExtraction}
 \end{figure}
 
-\subsubsection{Experiment 2}\label{Experiment2}
-Similarly, in the second experiment, three U-Nets will be used for the segmentation task, one U-Net for each fluid type: one U-Net for the segmentation of IRF, one for SRF, and one for PED. This approach aligns with the methodology described in \textcite{Rahil2023, Padilla2022} and allows each network to specialize in the semantic segmentation of its fluid, improving the performance.
-
-\subsubsection{Experiment 3}\label{Experiment3}
-The subsequent experiment will be a repetition of the two previous experiments with an additional input. In papers such as \parencite{Tang2022, Lu2019, Rahil2023}, a relative distance map was used as an additional input channel to the network (see Figure \ref{fig:PreSegmentationAndFluidSegmentation}). This requires the initial delineation of the retina between the ILM and BM for which the retinal layer segmentation model developed by \textcite{Melo2023} will be utilized. Afterwards, the relative distance map will be extracted, considering only the mentioned layers, for each B-scan that compose the dataset. By providing information on the fluid location in the retina, this additional input significantly improved the performance of the segmentation models in \parencite{Tang2022, Lu2019, Rahil2023}.
-
-\subsubsection{Experiment 4}\label{Experiment4}
-The final experiment in the fluid segmentation task is inspired by the framework of \textcite{Tennakoon2018}. In this paper, 2.5D multi-class fluid segmentation is performed and patches of three consecutive slices are considered in the training phase. In order to keep the conditions equal across the experiments, the preprocessing and post-processing used in the original paper will not be performed. The network utilized in this framework, shown in Figure \ref{fig:TennakoonNetwork}, is similar to a U-Net, with the inclusion of batch normalization to improve training efficiency and dropout to prevent overfitting. With the inclusion of multiple slices in the input, it is expected an improvement on the segmentation.
+\paragraph{Experiment 1.3}
+Another patch shape was experimented in Experiment 1.3. In this experiment, the images from different vendors were resized from their original dimensions to 496 $\times$ 512, the shape of the smaller images of the dataset, obtained with the Spectralis device. 
+\par
+The dimensions of the voxels in the OCT volumes change according to the device that was utilized to obtain the volume, resulting in images with different appearances across the vendors. For example, each voxel in the Cirrus volumes has an height of 1.95 $\mu$m, while each voxel in the Spectralis volumes has an height of 3.87 $\mu$m. For the same image, these differences in height lead to the same structures appearing bigger in Cirrus B-scans (see Figure \ref{fig:CirrusSpectralisRetinalLayerComparison}). These differences across vendors makes the learning of the segmentation harder. Therefore, by resizing all the images to the same shape, the structures will have more consistent dimensions across vendors and the voxels will roughly translate to the same dimensions, leading to a easier learning process for the model.
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.7\linewidth]{../figures/TennakoonNetwork}
-	\caption{The segmentation network in \cite{Tennakoon2018}.}
-	\label{fig:TennakoonNetwork}
+	\includegraphics[width=0.4\linewidth]{../figures/CirrusSpectralisRetinalLayerComparison.png}
+	\caption{B-scan of the retinal layers in different patients, using Cirrus (left) and Spectralis (right) devices. In Cirrus, the retinal layers appear much larger than in Spectralis.}
+	\label{fig:CirrusSpectralisRetinalLayerComparison}
 \end{figure}
+
+Then, vertical patches, of shape 496 $\times$ 128, were extracted from each B-scan. The number of patches extracted from each image was changed, experimenting with four (Figure \ref{fig:CirrusFourPatchExtraction}), seven (Figure \ref{fig:CirrusSevenPatchExtraction}) and thirteen (Figure \ref{fig:CirrusThirteenPatchExtraction}) patches. The advantage of extracting vertical patches is that each image contains both the complete retinal layer and the background. This does not happen in the previous experiments, where the patches are either too small to contain both background and the retinal layers (in Experiment 1.1) or the retinal layers are cropped during patch extraction (in Experiment 1.2, as seen in Figure \ref{fig:BigPatchExtraction}).
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.7\linewidth]{../figures/CirrusFourPatchExtraction.png}
+	\caption{Four vertical patches of shape 496 $\times$ 128 extracted from a Cirrus B-scan.}
+	\label{fig:CirrusFourPatchExtraction}
+\end{figure}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.7\linewidth]{../figures/CirrusSevenPatchExtraction.png}
+	\caption{Seven vertical patches of shape 496 $\times$ 128 extracted from a Cirrus B-scan.}
+	\label{fig:CirrusSevenPatchExtraction}
+\end{figure}
+
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.7\linewidth]{../figures/CirrusThirteenPatchExtraction.png}
+	\caption{Thirteen vertical patches of shape 496 $\times$ 128 extracted from a Cirrus B-scan.}
+	\label{fig:CirrusThirteenPatchExtraction}
+\end{figure}
+
+The number of patches that performed best was then experimented with three different rotations: no rotation, maximum rotation of $5^{\circ}$, and maximum rotation of $10^{\circ}$. These values were tested for a better understanding of how the rotation of the image affects the segmentation and the model's understanding of anatomic references.
 
 \subsection{Intermediate Slice Synthesis}
 The objective of the subsequent experiments is to improve the resolution between slices, thus approximating the fluid volume that will be estimated to the true value.
