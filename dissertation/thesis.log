@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  19 MAY 2025 14:59
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  19 MAY 2025 16:14
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1140,34 +1140,27 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 37.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 37.
- [13]
-
-LaTeX Warning: Reference `Experiment2' on page 14 undefined on input line 81.
-
-[14]
-<figures//../figures/UNet.png, id=543, 426.09187pt x 287.57437pt>
+ [13] [14]
+<figures//../figures/UNet.png, id=545, 426.09187pt x 287.57437pt>
 File: figures//../figures/UNet.png Graphic file (type png)
 <use figures//../figures/UNet.png>
 Package pdftex.def Info: figures//../figures/UNet.png  used on input line 120.
 (pdftex.def)             Requested size: 320.0935pt x 216.04884pt.
  [15] [16 <./figures//../figures/UNet.png>]
-
-LaTeX Warning: Reference `Experiment2' on page 17 undefined on input line 161.
-
-<figures//../figures/FluidAndROI.png, id=575, 963.6pt x 312.951pt>
+<figures//../figures/FluidAndROI.png, id=578, 963.6pt x 312.951pt>
 File: figures//../figures/FluidAndROI.png Graphic file (type png)
 <use figures//../figures/FluidAndROI.png>
 Package pdftex.def Info: figures//../figures/FluidAndROI.png  used on input lin
 e 168.
 (pdftex.def)             Requested size: 426.79135pt x 138.60616pt.
-[17]
-<figures//../figures/BigPatchExtraction.png, id=586, 237.88875pt x 331.2375pt>
+ [17]
+<figures//../figures/BigPatchExtraction.png, id=589, 237.88875pt x 331.2375pt>
 File: figures//../figures/BigPatchExtraction.png Graphic file (type png)
 <use figures//../figures/BigPatchExtraction.png>
 Package pdftex.def Info: figures//../figures/BigPatchExtraction.png  used on in
 put line 185.
 (pdftex.def)             Requested size: 170.71393pt x 237.71245pt.
-<figures//../figures/CirrusSpectralisRetinalLayerComparison.png, id=588, 567.86
+<figures//../figures/CirrusSpectralisRetinalLayerComparison.png, id=591, 567.86
 7pt x 545.967pt>
 File: figures//../figures/CirrusSpectralisRetinalLayerComparison.png Graphic fi
 le (type png)
@@ -1176,7 +1169,7 @@ Package pdftex.def Info: figures//../figures/CirrusSpectralisRetinalLayerCompar
 ison.png  used on input line 197.
 (pdftex.def)             Requested size: 170.71393pt x 164.12459pt.
  [18 <./figures//../figures/FluidAndROI.png>]
-<figures//../figures/CirrusFourPatchExtraction.png, id=600, 799.131pt x 503.7pt
+<figures//../figures/CirrusFourPatchExtraction.png, id=604, 799.131pt x 503.7pt
 >
 File: figures//../figures/CirrusFourPatchExtraction.png Graphic file (type png)
 
@@ -1184,7 +1177,7 @@ File: figures//../figures/CirrusFourPatchExtraction.png Graphic file (type png)
 Package pdftex.def Info: figures//../figures/CirrusFourPatchExtraction.png  use
 d on input line 206.
 (pdftex.def)             Requested size: 298.75264pt x 188.3029pt.
-<figures//../figures/CirrusSevenPatchExtraction.png, id=601, 828.477pt x 509.39
+<figures//../figures/CirrusSevenPatchExtraction.png, id=605, 828.477pt x 509.39
 4pt>
 File: figures//../figures/CirrusSevenPatchExtraction.png Graphic file (type png
 )
@@ -1192,7 +1185,7 @@ File: figures//../figures/CirrusSevenPatchExtraction.png Graphic file (type png
 Package pdftex.def Info: figures//../figures/CirrusSevenPatchExtraction.png  us
 ed on input line 213.
 (pdftex.def)             Requested size: 298.75264pt x 183.68483pt.
-<figures//../figures/CirrusThirteenPatchExtraction.png, id=602, 886.074pt x 503
+<figures//../figures/CirrusThirteenPatchExtraction.png, id=606, 886.074pt x 503
 .7pt>
 File: figures//../figures/CirrusThirteenPatchExtraction.png Graphic file (type 
 png)
@@ -1207,14 +1200,14 @@ LaTeX Warning: Text page 20 contains only floats.
 
 [20 <./figures//../figures/CirrusFourPatchExtraction.png> <./figures//../figure
 s/CirrusSevenPatchExtraction.png> <./figures//../figures/CirrusThirteenPatchExt
-raction.png>]
-<figures//../figures/GANFramework.png, id=642, 616.55344pt x 347.79938pt>
+raction.png>] [21]
+<figures//../figures/GANFramework.png, id=651, 616.55344pt x 347.79938pt>
 File: figures//../figures/GANFramework.png Graphic file (type png)
 <use figures//../figures/GANFramework.png>
 Package pdftex.def Info: figures//../figures/GANFramework.png  used on input li
-ne 242.
+ne 249.
 (pdftex.def)             Requested size: 298.75264pt x 168.52858pt.
- [21]) [22 <./figures//../figures/GANFramework.png>] [23]
+ [22 <./figures//../figures/GANFramework.png>]) [23]
 LaTeX Font Info:    Trying to load font information for T1+pcrs on input line 6
 3.
 
@@ -1323,10 +1316,10 @@ Package logreq Info: Writing requests to 'thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 23011 strings out of 476339
- 419118 string characters out of 5788120
+ 23013 strings out of 476339
+ 419152 string characters out of 5788120
  1873340 words of memory out of 5000000
- 42847 multiletter control sequences out of 15000+600000
+ 42848 multiletter control sequences out of 15000+600000
  596717 words of font info for 138 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  78i,12n,82p,1399b,2950s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1345,9 +1338,9 @@ X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (41 pages, 23998275 bytes).
+Output written on thesis.pdf (41 pages, 23999563 bytes).
 PDF statistics:
- 937 PDF objects out of 1000 (max. 8388607)
- 168 named destinations out of 1000 (max. 500000)
+ 943 PDF objects out of 1000 (max. 8388607)
+ 169 named destinations out of 1000 (max. 500000)
  241 words of extra memory for PDF output out of 10000 (max. 10000000)
 
