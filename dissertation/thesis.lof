@@ -10,8 +10,11 @@
 \contentsline {figure}{\numberline {2.5}{\ignorespaces Pipeline of the methodology utilized by Fang \textit {et al}., 2022 \blx@tocontentsinit {0}\cite {Fang2022}.\relax }}{11}{figure.caption.15}%
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {3.1}{\ignorespaces U-Net architecture \blx@tocontentsinit {0}\cite {Ronneberger2015}.\relax }}{16}{figure.caption.19}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Cirrus B-scan (left), fluid masks overlay (middle) with IRF in red, SRF in green, and PED in blue, and the ROI mask overlaid in purple (right).\relax }}{18}{figure.caption.21}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Cirrus B-scan (left), fluid masks overlay (middle) with IRF in red, SRF in green, and PED in blue, and the ROI mask overlaid in purple (right). The red bounding box signals a possible 256 $\times $ 128 patch that could be extracted.\relax }}{18}{figure.caption.21}%
 \contentsline {figure}{\numberline {3.3}{\ignorespaces Cirrus B-scan and its respective three patches of shape 496 $\times $ 512.\relax }}{19}{figure.caption.23}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces The segmentation network in \blx@tocontentsinit {0}\cite {Tennakoon2018}.\relax }}{20}{figure.caption.24}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Example of a GAN framework, where $\mathcal {D}$ is the discriminator and $\mathcal {G}$ is the generator \blx@tocontentsinit {0}\cite {Creswell2018}.\relax }}{21}{figure.caption.26}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces B-scan of the retinal layers in different patients, using Cirrus (left) and Spectralis (right) devices. In Cirrus, the retinal layers appear much larger than in Spectralis.\relax }}{19}{figure.caption.25}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Four vertical patches of shape 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }}{20}{figure.caption.26}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Seven vertical patches of shape 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }}{20}{figure.caption.27}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Thirteen vertical patches of shape 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }}{20}{figure.caption.28}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Example of a GAN framework, where $\mathcal {D}$ is the discriminator and $\mathcal {G}$ is the generator \blx@tocontentsinit {0}\cite {Creswell2018}.\relax }}{22}{figure.caption.30}%
 \addvspace {10\p@ }
