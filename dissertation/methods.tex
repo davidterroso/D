@@ -155,7 +155,7 @@ However, this loss component is not enough to correctly label the pixels in thei
 	\label{eq:SegmentationCE}
 \end{equation}
 
-\subsubsection{Experiment 1}
+\subsubsection{Experiment 1}\label{Experiment1}
 In the first experiment, the base U-Net model was trained to perform 2D multi-class segmentation of the retinal fluids in OCT volumes.
 \par
 This was the most extensive experiments, where many variables were tested. Different patch shapes, transformations, and hyperparameters were experimented, until the best training settings were determined. The best settings were then used in \ref{Experiment2} Experiment 2. All the experiments were done using the Adam optimizer \parencite{Kingma2017} with a learning rate of $2 \times 10^{-5}$.
@@ -199,7 +199,7 @@ The dimensions of the voxels in the OCT volumes change according to the device t
 	\label{fig:CirrusSpectralisRetinalLayerComparison}
 \end{figure}
 
-Then, vertical patches, of shape 496 $\times$ 128, were extracted from each B-scan. The number of patches extracted from each image was changed, experimenting with four (Figure \ref{fig:CirrusFourPatchExtraction}), seven (Figure \ref{fig:CirrusSevenPatchExtraction}) and thirteen (Figure \ref{fig:CirrusThirteenPatchExtraction}) patches. The advantage of extracting vertical patches is that each image contains both the complete retinal layer and the background. This does not happen in the previous experiments, where the patches are either too small to contain both background and the retinal layers (in Experiment 1.1) or the retinal layers are cropped during patch extraction (in Experiment 1.2, as seen in Figure \ref{fig:BigPatchExtraction}).
+Then, vertical patches, of shape 496 $\times$ 128, were extracted from each B-scan. The number of patches extracted from each image was changed, experimenting with four (Figure \ref{fig:CirrusFourPatchExtraction}), seven (Figure \ref{fig:CirrusSevenPatchExtraction}) and thirteen (Figure \ref{fig:CirrusThirteenPatchExtraction}) patches. The advantage of extracting vertical patches is that each image contains both the complete retinal layer and the background. This does not happen in the previous experiments, where the patches are either too small to contain both background and the retinal layers (in \ref{Experiment1} Experiment 1.1) or the retinal layers are cropped during patch extraction (in Experiment 1.2, as seen in Figure \ref{fig:BigPatchExtraction}).
 
 \begin{figure}[!ht]
 	\centering
@@ -224,6 +224,13 @@ Then, vertical patches, of shape 496 $\times$ 128, were extracted from each B-sc
 \end{figure}
 
 The number of patches that performed best was then experimented with three different rotations: no rotation, maximum rotation of $5^{\circ}$, and maximum rotation of $10^{\circ}$. These values were tested for a better understanding of how the rotation of the image affects the segmentation and the model's understanding of anatomic references.
+
+\subsubsection{Experiment 2}\label{Experiment2}
+The second experiment also involved multi-class segmentation of the retinal fluids. Contrasting with the first experiment, where the segmentation was done using a U-Net, in this experiment three U-Nets were used, one for each fluid. Each U-Net model focus only on the segmentation of one fluid, with one model for IRF, one for SRF, and one for PED.
+\par
+One of the main problems with multi-class segmentation performed by binary models is the merging of the multiple masks. In this context, multiple fluid classes can be predicted for the same voxel, while only one of those can be correct. In this experiment, two alternatives were explored: order of priority, where the merging of the fluid masks follows a predefined hierarchy that determines which fluid takes precedence, and highest probability, where the assigned class is the one that was predicted with highest probability by its model.
+\par
+Two different losses were used to regulate the model. Initially, the same loss as the one used in \ref{Experiment1} Experiment 1, with only two classes (background and the fluid that would be segmented), and then, the weighted cross-entropy, using weights that balance the larger quantity of background voxels.
 
 \subsection{Intermediate Slice Synthesis}
 The objective of the subsequent experiments is to improve the resolution between slices, thus approximating the fluid volume that will be estimated to the true value.
