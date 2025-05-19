@@ -199,7 +199,7 @@ The dimensions of the voxels in the OCT volumes change according to the device t
 	\label{fig:CirrusSpectralisRetinalLayerComparison}
 \end{figure}
 
-Then, vertical patches, of shape 496 $\times$ 128, were extracted from each B-scan. The number of patches extracted from each image was changed, experimenting with four (Figure \ref{fig:CirrusFourPatchExtraction}), seven (Figure \ref{fig:CirrusSevenPatchExtraction}) and thirteen (Figure \ref{fig:CirrusThirteenPatchExtraction}) patches. The advantage of extracting vertical patches is that each image contains both the complete retinal layer and the background. This does not happen in the previous experiments, where the patches are either too small to contain both background and the retinal layers (in \ref{Experiment1} Experiment 1.1) or the retinal layers are cropped during patch extraction (in Experiment 1.2, as seen in Figure \ref{fig:BigPatchExtraction}).
+Then, vertical patches, of shape 496 $\times$ 128, were extracted from each B-scan. The number of patches extracted from each image was changed, experimenting with four (Figure \ref{fig:CirrusFourPatchExtraction}), seven (Figure \ref{fig:CirrusSevenPatchExtraction}) and thirteen (Figure \ref{fig:CirrusThirteenPatchExtraction}) patches. The advantage of extracting vertical patches is that each image contains both the complete retinal layer and the background. This does not happen in the previous experiments, where the patches are either too small to contain both background and the retinal layers (in Experiment 1.1) or the retinal layers are cropped during patch extraction (in Experiment 1.2, as seen in Figure \ref{fig:BigPatchExtraction}).
 
 \begin{figure}[!ht]
 	\centering
@@ -235,13 +235,44 @@ Two different losses were used to regulate the model. Initially, the same loss a
 \subsection{Intermediate Slice Synthesis}
 The objective of the subsequent experiments is to improve the resolution between slices, thus approximating the fluid volume that will be estimated to the true value.
 \par
-The intermediate slices will be generated using the RETOUCH dataset. In this experiment, subvolumes that consist of overlapping triplets of consecutive slices, sampled with a step size of 1, will be used. The first and the last slice of these triplets will be used for the generation of the middle slice. Consequently, it is possible to evaluate the generated slice in comparison to the original one, as done in other examples of the literature. For each volume, the number of potential subsets is then determined to be $n-2$, where $n$ represents the number of slices within the same volume.
-\par
-As proposed in the fluid segmentation experiments, the split between the train, test, and validation sets will remain consistent. In the slice generation experiments, since the entire slice is necessary for generation and not just the fraction that contains fluid, the B-scans will not be patched.
-\par
-The generation of slices can be evaluated in specific metrics, as well as through qualitative assessment. To assess the efficacy of the generation model, the model utilized for fluid segmentation could be used for the estimation of the fluid's area in the generated image and to compare the resulting mask with the original image's mask. This comparison can be conducted using the Dice coefficient \parencite{Lopez2023} (see Equation \ref{eq:DiceCoefficientPixels}). However, this metric is insufficient for evaluating the generation performance, as it requires comparisons that encompass the entire slice and not just the fluid. Examples of such metrics include the mean absolute error (MAE) \parencite{Lopez2023, Wu2022, Zhang2022}, the peak signal-to-noise ratio (PSNR) \parencite{Xia2021, YChen2018, Sanchez2018, Fang2022, Nimitha2024, Kudo2019, You2020, Zhang2024, Zhang2022}, and the structural similarity index measure (SSIM) \parencite{YChen2018, Sanchez2018, Fang2022, Nimitha2024, Kudo2019, You2020, Zhang2024, Zhang2022}.
+The intermediate slices will be generated using the RETOUCH dataset. In this experiment, subvolumes that consist of overlapping triplets of consecutive slices, sampled with a step size of 1, will be used, as shown in Figure \ref{fig:FrameInterpolationFramework}. The first and the last slice of these triplets will be used for the generation of the middle slice. Consequently, it is possible to evaluate the generated slice in comparison to the original one, as done in other examples of the literature. For each volume, the number of potential subsets is then determined to be $n-2$, where $n$ represents the number of slices within the same volume.
 
-\paragraph{Experiment 5}
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1.0\linewidth]{../figures/FrameInterpolationFramework.png}
+	\caption{Scheme explaining the input data of the generative models. Each frame refers to B-scan from an OCT volume. Extracted from \textcite{Tran2020}.}
+	\label{fig:FrameInterpolationFramework}
+\end{figure}
+
+The generation of slices can be evaluated in specific metrics, as well as through qualitative assessment. To assess the efficacy of the generation model, the model utilized for fluid segmentation could be used for the estimation of the fluid's area in the generated image and to compare the resulting mask with the original image's mask. This comparison can be conducted using the Dice coefficient \parencite{Lopez2023} (see Equation \ref{eq:DiceCoefficientPixels}). However, this metric is insufficient for evaluating the generation performance, as it requires comparisons that encompass the entire slice and not just the fluid. Examples of such metrics include the mean absolute error (MAE) \parencite{Lopez2023, Wu2022, Zhang2022}, the peak signal-to-noise ratio (PSNR) \parencite{Xia2021, YChen2018, Sanchez2018, Fang2022, Nimitha2024, Kudo2019, You2020, Zhang2024, Zhang2022}, and the structural similarity index measure (SSIM) \parencite{YChen2018, Sanchez2018, Fang2022, Nimitha2024, Kudo2019, You2020, Zhang2024, Zhang2022}.
+\par
+The MAE and MSE quantify the errors between the original image and the generated image. For every pixel, the difference between the value in the original image and the generated image is calculated. In MAE, the absolute value of this difference is calculated, and then the mean of all pixels in the image is computed. Meanwhile, in MSE, the difference is squared before computing the mean. In Equation \ref{eq:MAEEquation} and Equation \ref{eq:MSEEquation}, MAE and MSE are described, respectively, where $x_{i}$ is the intensity of the pixel of index $i$ in the predicted image, while $y_{i}$ is the intensity of the pixel with index $i$ in the original image \parencite{Sara2019, Rajkumar2016}.
+
+\begin{equation}
+	\text{MAE} = \frac{1}{N} \sum_{i=1}^{N} |x_i - y_i|
+	\label{eq:MAEEquation}
+\end{equation}
+
+\begin{equation}
+	\text{MSE} = \frac{1}{N} \sum_{i=1}^{N} \left( x_i - y_i \right)^{2}
+	\label{eq:MSEEquation}
+\end{equation}
+
+PSNR is a metric used to calculate the ratio between the maximum signal power (which corresponds to the maximum value of a pixel in the image) and the power of the distorting noise, which affects the quality of its representation. Therefore, the PSNR, described in Equation \ref{eq:PSNREquation}, is inversely proportional to the mean squared error. PSNR can also be understood as the representation of absolute error in dB \parencite{Sara2019}.
+
+\begin{equation}
+	\text{PSNR} = 10 \cdot \log_{10} \left( \frac{L^2}{\text{MSE}} \right)
+	\label{eq:PSNREquation}
+\end{equation}
+
+While the previous metrics focus on the differences between two images at a pixel level, the SSIM is based on the perception of the image. This metric considers the change of perception in structural information, estimating the perceived quality of images and videos. SSIM measures the similarity between the original image and the generated. The SSIM is calculated as shown in Equation \ref{eq:SSIMEquation}, where $\mu_{x}$ and $\mu_{y}$ are the local means, $\sigma_{x}$ and $\sigma_{y}$ are the standard deviations, and $C_{1}$ and $C_{2}$ are small constants that stabilize the division \parencite{Sara2019}.
+
+\begin{equation}
+	\text{SSIM}(x, y) = \frac{(2\mu_x \mu_y + C_1)(2\sigma_{xy} + C_2)}{(\mu_x^2 + \mu_y^2 + C_1)(\sigma_x^2 + \sigma_y^2 + C_2)}
+	\label{eq:SSIMEquation}
+\end{equation}
+
+\paragraph{Experiment 3}
 In the first experiment focused on intermediate slice synthesis, a GAN will be used. The underlying principle of a GAN, originally proposed by \textcite{Goodfellow2014}, is based on a competitive game between two networks. The generator network starts with the first and last slice of a subvolume, which is composed of three consecutive B-scans from an OCT scan, and aims to generate the intermediate slice. In contrast, the discriminator network is trained to distinguish between the generated and real slices. When the discriminator correctly labels generated slices as fake, the generator will be penalized, motivating it to fool the discriminator and consequently improving its generation, resulting in outputs more similar to the real inputs. However, the discriminator network loss also penalizes misclassifications, dependent on the probability of the prediction. As a result, as the generator improves, so does the discriminator \parencite{Goodfellow2020}. The overall framework for GANs is illustrated in Figure \ref{fig:GANFramework}.
 
 \begin{figure}[!ht]
@@ -251,7 +282,7 @@ In the first experiment focused on intermediate slice synthesis, a GAN will be u
 	\label{fig:GANFramework}
 \end{figure}
 
-\paragraph{Experiment 6}
+\paragraph{Experiment 4}
 As in the previous experiment, the intermediate slice will be generated using the first and last slices of a subvolume that consists of three consecutive B-scans from an OCT scan. However, in this experiment, inspired by the work of \textcite{Nishimoto2024}, the intermediate slice will be generated using a U-Net. While the U-Net is more commonly applied in segmentation, as seen in the reviewed literature, \textcite{Nishimoto2024} apply it to generate the intermediate slices of a subvolume. The U-Net receives the edge slices as input and forces the output of the intermediate ones. In the paper \parencite{Nishimoto2024}, this was tested for three, four, and five slices. However, in this experiment it will be utilized to generate a single intermediate slice.
 
 \subsection{Fluid Volume Estimation}
@@ -259,8 +290,8 @@ The estimation of fluid volume will be done once the optimal segmentation and in
 \par
 The area of each fluid in each OCT scan will be estimated considering the resolution of each OCT scan, which varies according to the device utilized to obtain the OCT volume. Afterwards, the area will be multiplied by the axial distance (half the axial distance to the previous slice plus half the axial distance to the following slice) to obtain the volume of fluid per slice. In the first and last slice of an OCT volume, the area will be multiplied by half of the axial distance (half the axial distance to the neighboring slice). The total volume of fluid in an OCT scan can be estimated by summing the fluid volumes of all individual B-scans. This allows the volume estimation of IRF, SRF, and PED, as well as the overall fluid volume in the OCT scan.
 
-\paragraph{Experiment 7}
+\paragraph{Experiment 5}
 In this experiment, the fluid volumes will be calculated for the OCT scans without the generated slices. The best segmentation model will segment the fluid in three classes and the volume will be estimated for each class as described. The results from this experiment will allow the comparison with the values obtained in the following experiment, where slice generation will be used.
 
-\paragraph{Experiment 8}
+\paragraph{Experiment 6}
 This experiment will consist of the fluid volume estimation in OCT scans with generated images. Similar to the previous experiment, the best segmentation model will predict the fluid masks and the fluid volume will be estimated. The values obtained will be compared with those calculated in the previous experiment. It is expected that the volumes will not vary more than one order of magnitude between experiments. In case a significant difference is observed, the generated images and their respective masks must be analyzed.
