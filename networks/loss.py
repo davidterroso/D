@@ -786,7 +786,7 @@ def generator_loss(device: str, discriminator: Module,
             + gdl_lambda * gd_loss \
             + ms_ssim_lambda * ms_ssim_loss
 
-    return adv_loss, g_loss
+    return adv_loss, l1_loss, gd_loss, ms_ssim_loss, g_loss
 
 def discriminator_loss(device: str, 
                        ground_truth_distingue: torch.Tensor, 
