@@ -414,40 +414,13 @@ def test_gan(
                     return
 
                 # Generates the middle image
-                # In the case of the GAN, since we are dealing 
-                # with 64x64 patches, the original image is 
-                # patched in multiple others of this shape
-                # so that the model, which was also trained in 
-                # patches can generate the intermediate patch
-                # Then, these patches are stitched together
+                # In the case of the GAN, even though we are 
+                # dealing with 64x64 patches, the original 
+                # we can input the whole image at the same time
+                # due to the fully convolutional layer of the 
+                # discriminator network
                 if model_name == "GAN":
-                    # Initiates a list that will contain the 
-                    # outputted patches resulting from the 
-                    # 64x64 patches extracted from the loaded 
-                    # image 
-                    patches_out = []
-
-                    # Calls a function that returns all the 
-                    # 1x64x64 patches that make up the image
-                    prev_patches = extract_patches(prev_imgs[0])
-                    next_patches = extract_patches(next_imgs[0])
-
-                    # Iterates through all the extracted patches
-                    for patch in range(prev_patches.shape[0]):
-                        # Converts each image to a BxCxHxW format and assigns it to the GPU 
-                        prev_patch = prev_patches[patch].unsqueeze(0).unsqueeze(0).to(device)
-                        next_patch = next_patches[patch].unsqueeze(0).unsqueeze(0).to(device)
-
-                        # With the previous and following patch 
-                        # generates the intermediate one
-                        gen_patch = generator(prev_patch, next_patch)
-                        # Appends the patch to the list of patches as 
-                        # a NumPy array
-                        patches_out.append(gen_patch.squeeze(0).cpu())
-
-                    # Stitches all the resulting patches together forming an 
-                    # image with shape 496x512 that can be compared
-                    gen_imgs = stitch_patches(patches_out, mid_imgs[0].shape)
+                    gen_imgs = generator(prev_imgs.unsqueeze(1).detach(), next_imgs.unsqueeze(1).detach())
 
                 elif model_name == "UNet":
                     gen_imgs = generator(torch.stack([prev_imgs, next_imgs], dim=1).detach().to(device=device))
