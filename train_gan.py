@@ -166,7 +166,11 @@ def train_gan(
             writer.writerow(["Epoch", "Adversarial Loss", 
                                 "Generator Loss", "Real Loss", 
                                 "Fake Loss", "Discriminator Loss", 
-                                "Epoch Validation Generator Loss"])
+                                "Epoch Validation Generator Loss",
+                                "Epoch Validation MS-SSIM",
+                                "Epoch Validation GD Loss",
+                                "Epoch Validation MAE",
+                                "Epoch Validation Adversarial Loss"])
             
         with open(csv_batch_filename, mode="w", newline="") as file:
             # Declares which information will be saved in the logging file
@@ -333,7 +337,7 @@ def train_gan(
                         gen_imgs = generator(prev_imgs, next_imgs)
                         # Calculates the loss of the generator, which compares the generated images 
                         # with the real images
-                        adv_loss, g_loss = generator_loss(device, discriminator, gen_imgs, mid_imgs, valid)
+                        adv_loss, l1_loss, gd_loss, ms_ssim_loss, g_loss = generator_loss(device, discriminator, gen_imgs, mid_imgs, valid)
                         # Acumulates scaled gradients
                         grad_scaler.scale(g_loss).backward()
                         # Unscales the gradients so that 
@@ -445,7 +449,7 @@ def train_gan(
         # Calls the function that evaluates the output of the generator and returns the 
         # respective result of the generator loss
         if model_name == "GAN":
-            val_loss = evaluate_gan(model_name=model_name, generator=generator, 
+            val_loss, val_ssim, val_gd, val_l1, val_adv = evaluate_gan(model_name=model_name, generator=generator, 
                                     dataloader=val_loader, device=device, amp=amp, 
                                     n_val=len(val_set), discriminator=discriminator)
             # Logs the results of the validation
@@ -466,7 +470,8 @@ def train_gan(
                                 epoch_real_loss / len(val_loader), 
                                 epoch_fake_loss / len(val_loader), 
                                 epoch_d_loss / len(val_loader),
-                                val_loss])
+                                val_loss, val_ssim, val_gd, val_l1, 
+                                val_adv])
         elif model_name == "UNet":
             with open(csv_epoch_filename, mode="a", newline="") as file:
                 writer = csv.writer(file)
