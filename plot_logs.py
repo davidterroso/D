@@ -150,7 +150,7 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
     fake_loss = []
     dis_loss = []
     real_loss = []
-    val_ssim = []
+    val_loss = []
     # Opens the file with the loss in epochs
     with open(epochs_loss_csv) as file:
         # Reads the lines in the CSV file
@@ -168,7 +168,7 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
                 real_loss.append(float(row[3]))
                 fake_loss.append(float(row[4]))
                 dis_loss.append(float(row[5]))
-                val_ssim.append(float(row[6]))
+                val_loss.append(float(row[6]))
             elif model_name == "UNet":
                 adv_loss.append(float(row[1]))
             else:
@@ -206,25 +206,36 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
         ax2.set_xticks(ticks_epoch) 
 
         ax3.plot(x_epoch, real_loss, 
-                color = 'b', linestyle = 'dashed', 
-                marker = 'o')
+                color='b', linestyle='dashed', 
+                marker='o')
         ax3.set_title("Real Loss/Epoch")
         ax3.set(xlabel="Epochs", ylabel="Real Loss")
         ax3.set_xticks(ticks_epoch)
 
         ax4.plot(x_epoch, fake_loss, 
-                color = 'y', linestyle = 'dashed', 
-                marker = 'o')
+                color='y', linestyle='dashed', 
+                marker='o')
         ax4.set_title("Fake Loss/Epoch")
         ax4.set(xlabel="Epochs", ylabel="Fake Loss")
         ax4.set_xticks(ticks_epoch)
 
         ax5.plot(x_epoch, dis_loss, 
-                color = 'k', linestyle = 'dashed', 
-                marker = 'o')
+                color='k', linestyle='dashed', 
+                marker='o')
         ax5.set_title("Discriminator Loss/Epoch")
         ax5.set(xlabel="Epochs", ylabel="Discriminator Loss")
         ax5.set_xticks(ticks_epoch)
+
+        ax6.plot(x_epoch, val_loss, 
+                 color='m', linestyle='dashed', 
+                 marker='o')
+        ax6.set_title("Validation Loss")
+        ax6.set(xlabel="Epochs", ylabel="Loss")
+        ax6.set_xticks(ticks_epoch)
+
+        # Adjusts the layout 
+        # to prevent overlays
+        plt.tight_layout()
 
         # Declares the path to save
         img_path = f"{imgs_folder}\{run_name}_training_epoch_error.png"
@@ -232,7 +243,7 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
         plt.savefig(img_path)
 
         # Shows the image
-        # plt.show()
+        plt.show()
 
         # Initiates the list with the number of batches and
         # the value obtained for the loss during training 
@@ -270,6 +281,7 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
         ax1.set_title("Adversarial Loss/Batch")
         ax1.set(xlabel="Batches", ylabel="Adversarial Loss")
         ax1.set_xticks(ticks_batch)
+        ax1.tick_params(axis='x', labelrotation=20)
 
         ax2.plot(x_batch, batch_gen_loss, 
                 color='r', linestyle='dashed', 
@@ -277,6 +289,7 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
         ax2.set_title("Generator Loss/Batch")
         ax2.set(xlabel="Batches", ylabel="Generator Loss")
         ax2.set_xticks(ticks_batch) 
+        ax2.tick_params(axis='x', labelrotation=20)
 
         ax3.plot(x_batch, batch_real_loss, 
                 color = 'b', linestyle = 'dashed', 
@@ -284,6 +297,7 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
         ax3.set_title("Real Loss/Batch")
         ax3.set(xlabel="Batches", ylabel="Real Loss")
         ax3.set_xticks(ticks_batch)
+        ax3.tick_params(axis='x', labelrotation=20)
 
         ax4.plot(x_batch, batch_fake_loss, 
                 color = 'y', linestyle = 'dashed', 
@@ -291,6 +305,7 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
         ax4.set_title("Fake Loss/Batch")
         ax4.set(xlabel="Batches", ylabel="Fake Loss")
         ax4.set_xticks(ticks_batch)
+        ax4.tick_params(axis='x', labelrotation=20)
 
         ax5.plot(x_batch, batch_dis_loss, 
                 color = 'k', linestyle = 'dashed', 
@@ -298,6 +313,15 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
         ax5.set_title("Discriminator Loss/Batch")
         ax5.set(xlabel="Batches", ylabel="Discriminator Loss")
         ax5.set_xticks(ticks_batch)
+        ax5.tick_params(axis='x', labelrotation=20)
+
+        # Removes the unused 
+        # axis from the subplot
+        fig.delaxes(ax6)
+
+        # Adjusts the layout 
+        # to prevent overlays
+        plt.tight_layout()
 
         # Declares the path to save
         img_path = f"{imgs_folder}\{run_name}_training_batch_error.png"
@@ -306,33 +330,7 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
         plt.savefig(img_path)
 
         # Shows the image
-        # plt.show()
-
-        # Declares the information that is going 
-        # to be plotted, the labels on the axes 
-        # and the title of the subplot
-        # Also informs the color, the style of 
-        # the line that connects the data points
-        # and the marker of a data point
-        # Sets the ticks to show only every 5 
-        # or 10 values
-        len_epoch = len(x_epoch) - 1
-        ticks_epoch = linspace(0, len_epoch, 10)
-
-        # Plots the validation PSNR logs
-        fig, ax = plt.subplots(figsize=(16, 8))
-        ax.plot(x_epoch, val_ssim, color='r', linestyle='dashed', marker='o')
-        fig.suptitle(f"{run_name} Validation PSNR")
-        ax.set_xticks(ticks_epoch)
-        ax.set(xlabel="Epochs", ylabel="PSNR")
-
-        # Declares the path to save
-        img_path = f"{imgs_folder}\{run_name}_training_val_error.png"
-
-        # Saves the image to the designated path
-        plt.savefig(img_path)
-
-        # plt.show()
+        plt.show()
 
     elif model_name == "UNet":
         # Initiates the list with the number of epochs, 
