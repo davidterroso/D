@@ -120,8 +120,13 @@ def evaluate_gan(model_name: str, generator: Module,
     # Calculates the number of batches 
     # used to validate the network
     num_val_batches = len(dataloader)
-    # Initiates the loss as zero
+    # Initiates the losses as zero
     total_loss = 0
+    total_gen_loss = 0
+    total_adv = 0
+    total_l1 = 0
+    total_gd = 0
+    total_ssim = 0
 
     # Allows for mixed precision calculations, attributes a device to be used in these calculations
     with torch.autocast(device_type=device.type if device.type != "mps" else "cpu", enabled=amp):       
@@ -152,21 +157,31 @@ def evaluate_gan(model_name: str, generator: Module,
                         # stability
                         valid = torch.Tensor(stack.shape[0], 1, 1, 1).fill_(0.95).to(device)
                         gen_imgs = generator(prev_imgs.detach(), next_imgs.detach())
-                        # Calculates the PSNR for the original 
-                        # image and the generated image
-                        # val_loss = psnr(gen_imgs, mid_imgs.unsqueeze(1))
-                        adv_loss, val_loss = generator_loss(device, discriminator, gen_imgs, mid_imgs, valid)
-                    elif model_name =="UNet":
+                        # Calculates the generator loss and its components for the original image 
+                        # and the generated image
+                        adv_loss, l1_loss, gd_loss, ms_ssim_loss, gen_loss = generator_loss(device, 
+                                                                                            discriminator, 
+                                                                                            gen_imgs, 
+                                                                                            mid_imgs, 
+                                                                                            valid)
+                        # Accumulates the loss for this 
+                        # validation 
+                        total_adv += adv_loss.item()
+                        total_l1 += l1_loss.item()
+                        total_gd += gd_loss.item()
+                        total_ssim += ms_ssim_loss.item()
+                        total_gen_loss += gen_loss.item()
+
+                    elif model_name == "UNet":
                         unet_input = torch.stack([prev_imgs, next_imgs], dim=1)
                         gen_imgs = generator(unet_input.to(device=device))
                         # Calculates the loss of the generator, which 
                         # compares the generated images with the real images
                         criterion = torch.nn.L1Loss()
                         val_loss = criterion(gen_imgs, mid_imgs.unsqueeze(1))
-
-                    # Accumulates the loss for this 
-                    # validation 
-                    total_loss += val_loss.item()
+                        # Accumulates the loss for this 
+                        # validation 
+                        total_loss += val_loss.item()
 
                     # Updates the progress bar
                     progress_bar.update(stack.shape[0])
@@ -176,7 +191,14 @@ def evaluate_gan(model_name: str, generator: Module,
     # Returns the weighted mean of the total 
     # loss according to the fluid voxels
     # Also avoids division by zero
-    return total_loss / max(num_val_batches, 1)
+    if model_name == "GAN":
+        return (total_gen_loss / max(num_val_batches, 1), 
+                total_ssim / max(num_val_batches, 1), 
+                total_gd / max(num_val_batches, 1), 
+                total_l1 / max(num_val_batches, 1), 
+                total_adv / max(num_val_batches, 1))
+    elif model_name=="UNet":
+        return total_loss / max(num_val_batches, 1)
 
 @torch.inference_mode()
 def evaluate_pix2pix(model_name: str, dataloader: DataLoader, 
