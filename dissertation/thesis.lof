@@ -18,4 +18,5 @@
 \contentsline {figure}{\numberline {3.7}{\ignorespaces Thirteen vertical patches of shape 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }}{20}{figure.caption.28}%
 \contentsline {figure}{\numberline {3.8}{\ignorespaces Scheme explaining the input data of the generative models. Each frame refers to B-scan from an OCT volume. Extracted from \blx@tocontentsinit {0}\textcite {Tran2020}.\relax }}{22}{figure.caption.29}%
 \contentsline {figure}{\numberline {3.9}{\ignorespaces Example of a GAN framework, where $\mathcal {D}$ is the discriminator and $\mathcal {G}$ is the generator \blx@tocontentsinit {0}\cite {Creswell2018}.\relax }}{23}{figure.caption.31}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Patches with shape 64 $\times $ 64 extracted from a Cirrus B-scan which was resized to 496 $\times $ 512.\relax }}{24}{figure.caption.32}%
 \addvspace {10\p@ }
