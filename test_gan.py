@@ -440,9 +440,11 @@ def test_gan(
                                 use_sample_covariance=False,
                                 win_size=11
                             ), 3)
+                
+                img_mse = torch.nn.functional.mse_loss(mid_imgs.to(device=device), gen_imgs.to(device=device)).item()
 
                 # Appends the images to the list of results
-                slice_results.append([mid_image_name, img_psnr, img_ssim])
+                slice_results.append([mid_image_name, img_psnr, img_ssim, img_mse])
 
                 # Saves the images
                 if save_images:
@@ -460,7 +462,7 @@ def test_gan(
     makedirs("results", exist_ok=True)
 
     # Converts the information into a DataFrame
-    slice_df = DataFrame(slice_results, columns=["Slice", "PSNR", "SSIM"])
+    slice_df = DataFrame(slice_results, columns=["Slice", "PSNR", "SSIM", "MSE"])
 
     # Saves the DataFrame as a CSV file
     if not final_test:
@@ -501,16 +503,16 @@ def test_gan(
     slice_df = slice_df.drop(columns=["volume_key"])
 
     # Groups the PSNR and SSIM by the mean of all slices, for each Device
-    device_df_mean = slice_df[["Device", "PSNR", "SSIM"]].groupby("Device").mean()
+    device_df_mean = slice_df[["Device", "PSNR", "SSIM", "MSE"]].groupby("Device").mean()
     device_df_mean.index.name = "Device"
-    device_df_std = slice_df[["Device", "PSNR", "SSIM"]].groupby("Device").std()
+    device_df_std = slice_df[["Device", "PSNR", "SSIM", "MSE"]].groupby("Device").std()
     device_df_std.index.name = "Device"
     resulting_device_df = device_df_mean.astype(str) + " (" + device_df_std.astype(str) + ")"
 
     # Groups the PSNR and SSIM by the mean of all slices
-    slice_df_mean = slice_df[["PSNR", "SSIM"]].mean().to_frame().T
+    slice_df_mean = slice_df[["PSNR", "SSIM", "MSE"]].mean().to_frame().T
     slice_df_mean.index.name = "AllDevices"
-    slice_df_std = slice_df[["PSNR", "SSIM"]].std().to_frame().T
+    slice_df_std = slice_df[["PSNR", "SSIM", "MSE"]].std().to_frame().T
     slice_df_std.index.name = "AllDevices"
     resulting_slice_df = slice_df_mean.astype(str) + " (" + slice_df_std.astype(str) + ")"
 
