@@ -295,6 +295,58 @@ In the original implementation, one patch is randomly extracted from the triplet
 	\label{fig:CirrusSixtyFourPatchExtraction}
 \end{figure}
 
+The generator of the GAN is composed of contracting and expanding path. In the contracting path, convolutions are applied to the images and feature maps, followed by batch normalization, and a leaky ReLU activation function. After the images are downsampled to 512 $\times$ 8 $\times$ 8, reaching the bottleneck, the expanding path begins, where deconvolutions are applied, followed by batch normalization, and a leaky ReLU. Finally, after the last deconvolution, the hyperbolic tangent function is used as the final activation function, resulting in an output of size 64 $\times$ 64, in range -1 to 1. An illustrative scheme of the generator can be seen in Figure \ref{fig:GeneratorArchitecture}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1.0\linewidth]{figures/GeneratorArchitecture}
+	\caption{Architecture of the Generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \parencite{Tran2020}.}
+	\label{fig:GeneratorArchitecture}
+\end{figure}
+
+
+To match the needs of our application, some changes had to be made in the generator regarding the input shape. As shown in Figure \ref{fig:GeneratorArchitecture}, the input has six channels, one red, one green, and one blue (RGB) for each input patch. Similarly, the output has three channels, for the generated middle patch. In our application, each patch in the input only had one channel, since the OCT B-scans are images in gray scale, instead of RGB, as in the original implementation. Therefore, the output only had one channel. 
+\par
+The final activation function, the hyperbolic tangent, outputs values between -1 and 1. Since the output images were compared to images in range 0 to 1, the final activation function was changed to the sigmoid. This function converts the values output from the last convolution to the range 0 to 1, where it can be compared to the GT images.
+\par
+The GAN's discriminator receives as input a patch of shape 64 $\times$ 64, and outputs a probability of the input patch being real. The discriminator is composed of five consecutive convolutions. The first convolution is followed by a leaky ReLU activation function. The second, third, and fourth convolutions are followed by a batch normalization and a leaky ReLU activation function. After the last convolution, the sigmoid is applied and converts the final output to a value between 0 and 1 that represents the probability of the image being real. In Table \ref{tab:GeneratorDiscriminatorArchitecture}, the layers that compose the discriminator and the generator are explained, including the shape of the outputs.
+
+\begin{table*}[!ht]
+	\setlength{\tabcolsep}{6pt}
+	\renewcommand{\arraystretch}{1.3}
+	\caption{Layers that compose the generator and the discriminator. Each convolution is represented by Conv2d(K, OC, S), where K is the kernel size, OC is the number of output channels, and S is the stride. The same notation is used in deconvolutions, represented by TransposedConv2d. The output size is shown following C $\times$ H $\times$ W notation, where C is the number of channels, H is the height, and W is the width. The inputs have shape $1 \times 64 \times 64$.}
+	\centering
+	\resizebox{\textwidth}{!}{\begin{tabular}{c c c}
+		\hline
+		\hline
+		\multicolumn{3}{c}{\textbf{Generator}} \\
+		\hline
+		\textbf{Layers} & \textbf{Details} & \textbf{Output Size (C $\times$ H $\times$ W)} \\
+		\hline
+		\textbf{1} & Conv2d(3, 128, 1), BatchNorm2d, LeakyReLU & 128 $\times$ 64 $\times$ 64 \\
+		\textbf{2} & Conv2d(4, 128, 2), BatchNorm2d, LeakyReLU & 128 $\times$ 32 $\times$ 32 \\
+		\textbf{3} & Conv2d(4, 256, 2), BatchNorm2d, LeakyReLU & 256 $\times$ 16 $\times$ 16 \\
+		\textbf{4} & Conv2d(4, 512, 2), BatchNorm2d, LeakyReLU & 512 $\times$ 8 $\times$ 8 \\
+		\textbf{5} & TransposedConv2d(4, 256, 2), BatchNorm2d, LeakyReLU & 256 $\times$ 16 $\times$ 16 \\
+		\textbf{6} & TransposedConv2d(4, 128, 2), BatchNorm2d, LeakyReLU & 128 $\times$ 32 $\times$ 32 \\
+		\textbf{7} & TransposedConv2d(4, 64, 2), BatchNorm2d, LeakyReLU & 64 $\times$ 64 $\times$ 64 \\
+		\textbf{8} & TransposedConv2d(3, 1, 1), Sigmoid & 3 $\times$ 64 $\times$ 64 \\
+		\hline
+		\hline
+		\multicolumn{3}{c}{\textbf{Discriminator}} \\
+		\hline
+		\textbf{Layers} & \textbf{Details} & \textbf{Output Size (C $\times$ H $\times$ W)} \\
+		\hline
+		\textbf{1} & Conv2d(4, 64, 1), LeakyReLU & 64 $\times$ 32 $\times$ 32 \\
+		\textbf{2} & Conv2d(4, 128, 2), BatchNorm2d, LeakyReLU & 128 $\times$ 16 $\times$ 16 \\
+		\textbf{3} & Conv2d(4, 256, 2), BatchNorm2d, LeakyReLU & 256 $\times$ 8 $\times$ 8 \\
+		\textbf{4} & Conv2d(4, 512, 2), BatchNorm2d, LeakyReLU & 512 $\times$ 4 $\times$ 4 \\
+		\textbf{5} & Conv2d(4, 1, 1), Sigmoid & 1 $\times$ 1 $\times$ 1 \\
+
+	\end{tabular}}
+	\label{tab:GeneratorDiscriminatorArchitecture}
+\end{table*}
+
 \paragraph{Experiment 4}
 As in the previous experiment, the intermediate slice will be generated using the first and last slices of a subvolume that consists of three consecutive B-scans from an OCT scan. However, in this experiment, inspired by the work of \textcite{Nishimoto2024}, the intermediate slice will be generated using a U-Net. While the U-Net is more commonly applied in segmentation, as seen in the reviewed literature, \textcite{Nishimoto2024} apply it to generate the intermediate slices of a subvolume. The U-Net receives the edge slices as input and forces the output of the intermediate ones. In the paper \parencite{Nishimoto2024}, this was tested for three, four, and five slices. However, in this experiment it will be utilized to generate a single intermediate slice.
 
