@@ -66,7 +66,7 @@ A possible distribution of 70 OCT volumes from the RETOUCH dataset, which were u
 	\centering
 	\begin{tabular}{|c|c|c|c|c|c|}
 		\hline
-		& \textbf{1$^{st}$} & \textbf{2$^{nd}$} & \textbf{3$^{rd}$} & \textbf{4$^{th}$} & \textbf{5$^{th}$} \\
+		\textbf{Vendors} & \textbf{1$^{st}$} & \textbf{2$^{nd}$} & \textbf{3$^{rd}$} & \textbf{4$^{th}$} & \textbf{5$^{th}$} \\
 		\hline
 		\textbf{Cirrus} & 5 & 5 & 5 & 5 & 4 \\
 		\textbf{Spectralis} & 5 & 5 & 5 & 5 & 4 \\
@@ -93,7 +93,7 @@ Considering both training and testing volumes of the RETOUCH dataset, there are 
 	\centering
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
-		& \textbf{1$^{st}$} & \textbf{2$^{nd}$} & \textbf{3$^{rd}$} & \textbf{4$^{th}$} \\
+		\textbf{Devices} & \textbf{1$^{st}$} & \textbf{2$^{nd}$} & \textbf{3$^{rd}$} & \textbf{4$^{th}$} \\
 		\hline
 		\textbf{Cirrus} & 9 & 9 & 8 & 8 \\
 		\textbf{Spectralis} & 9 & 8 & 8 & 8 \\
@@ -141,7 +141,7 @@ The loss function that regularized the training in the fluid segmentation experi
 	\label{eq:SegmentationLoss}
 \end{equation}
 
-The component $\mathcal{L_{D}}$ is the Dice loss of the foreground. This translates to how good the model is at detecting and segmenting the fluid present in the B-scans. For any image, where each pixel is associated with an index $j$, the loss can be described through Equation \ref{eq:SegmentationDice}, where $s_{j\overline{0}}$ is a binary variable that is 0 when the pixel $j$ belongs to the class 0 (background) and is 1 whenever the pixel $j$ belongs to any class that is not 0 (foreground). $p_{j\overline{0}}$ corresponds to the predicted probability of the pixel $j$ belonging to the foreground. The $\epsilon$ constant is a small value utilized to prevent division by zero.
+The component $\mathcal{L}_{D}$ is the Dice loss of the foreground. This translates to how good the model is at detecting and segmenting the fluid present in the B-scans. For any image, where each pixel is associated with an index $j$, the loss can be described through Equation \ref{eq:SegmentationDice}, where $s_{j\overline{0}}$ is a binary variable that is 0 when the pixel $j$ belongs to the class 0 (background) and is 1 whenever the pixel $j$ belongs to any class that is not 0 (foreground). $p_{j\overline{0}}$ corresponds to the predicted probability of the pixel $j$ belonging to the foreground. The $\epsilon$ constant is a small value utilized to prevent division by zero.
 
 \begin{equation}
 	\mathcal{L}_{D} = 1 - \left( \frac{2 \sum_{j} s_{j\overline{0}} p_{j\overline{0}}}{\sum_{j} s_{j\overline{0}} + \sum_{j} p_{j\overline{0}} + \epsilon} \right)
@@ -265,11 +265,11 @@ PSNR is a metric used to calculate the ratio between the maximum signal power (w
 	\label{eq:PSNREquation}
 \end{equation}
 
-While the previous metrics focus on the differences between two images at a pixel level, the SSIM is based on the perception of the image. This metric considers the change of perception in structural information, estimating the perceived quality of images and videos. SSIM measures the similarity between the original image and the generated. The SSIM is calculated as shown in Equation \ref{eq:SSIMEquation}, where $x$ and $y$ represent the generated and the original images, respectively, so that $\mu_{x}$ and $\mu_{y}$ are their local means, $\sigma_{x}$ and $\sigma_{y}$ are their standard deviations, while $C_{1}$ and $C_{2}$ are small constants that stabilize the division \parencite{Sara2019}.
+While the previous metrics focus on the differences between two images at a pixel level, the SSIM is based on the perception of the image. This metric considers the change of perception in structural information, estimating the perceived quality of images and videos. SSIM measures the similarity between the original image and the generated. The SSIM is calculated as shown in Equation \ref{eq:SSIMEquation}, where $x$ and $y$ represent the generated and the original images, respectively, so that $\mu_{x}$ and $\mu_{y}$ are their local means, $\sigma_{x}$ and $\sigma_{y}$ are their standard deviations, while $C_{1}$ and $C_{2}$ are small constants that stabilize the division. The contrast sensitivity between the images $x$ and $y$ is represented by $CS(x,y)$ \parencite{Sara2019}.
 
 \begin{equation}
-	\text{SSIM}(x, y) = \frac{(2\mu_x \mu_y + C_1)(2\sigma_{xy} + C_2)}{(\mu_x^2 + \mu_y^2 + C_1)(\sigma_x^2 + \sigma_y^2 + C_2)}
-	\label{eq:SSIMEquation}
+	\text{SSIM}(x, y) = \left( \frac{2\mu_x \mu_y + C_1}{\mu_x^2 + \mu_y^2 + C_1} \right) \cdot \left( \frac{2\sigma_{xy} + C_2}{\sigma_x^2 + \sigma_y^2 + C_2} \right) = \left( \frac{2\mu_x \mu_y + C_1}{\mu_x^2 + \mu_y^2 + C_1} \right) \cdot CS(x, y)
+	\label{eq:SSIMEquation} 
 \end{equation}
 
 Since the best performing models in segmentation resized the images to 496 $\times$ 512, the images were be generated to match those dimensions. Therefore, regardless of the device utilized to obtain the OCT volume, all its B-scans were resized to 496 $\times$ 512 for both experiments of image generation.
@@ -300,7 +300,7 @@ The generator of the GAN is composed of contracting and expanding path. In the c
 \begin{figure}
 	\centering
 	\includegraphics[width=1.0\linewidth]{figures/GeneratorArchitecture}
-	\caption{Architecture of the Generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \parencite{Tran2020}.}
+	\caption{Architecture of the generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \parencite{Tran2020}.}
 	\label{fig:GeneratorArchitecture}
 \end{figure}
 
@@ -314,7 +314,7 @@ The GAN's discriminator receives as input a patch of shape 64 $\times$ 64, and o
 \begin{table*}[!ht]
 	\setlength{\tabcolsep}{6pt}
 	\renewcommand{\arraystretch}{1.3}
-	\caption{Layers that compose the generator and the discriminator. Each convolution is represented by Conv2d(K, OC, S), where K is the kernel size, OC is the number of output channels, and S is the stride. The same notation is used in deconvolutions, represented by TransposedConv2d. The output size is shown following C $\times$ H $\times$ W notation, where C is the number of channels, H is the height, and W is the width. The inputs have shape $1 \times 64 \times 64$.}
+	\caption{Layers that compose the generator and the discriminator. Each convolution is represented by Conv2d(K, OC, S), where K is the kernel size, OC is the number of output channels, and S is the stride. The same notation is used in deconvolutions, represented by TransposedConv2d. The output size is shown following C $\times$ H $\times$ W notation, where C is the number of channels, H is the height, and W is the width. The inputs have shape $1 \times 64 \times 64$. Adapted from \textcite{Tran2020}.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{c c c}
 		\hline
@@ -342,10 +342,39 @@ The GAN's discriminator receives as input a patch of shape 64 $\times$ 64, and o
 		\textbf{3} & Conv2d(4, 256, 2), BatchNorm2d, LeakyReLU & 256 $\times$ 8 $\times$ 8 \\
 		\textbf{4} & Conv2d(4, 512, 2), BatchNorm2d, LeakyReLU & 512 $\times$ 4 $\times$ 4 \\
 		\textbf{5} & Conv2d(4, 1, 1), Sigmoid & 1 $\times$ 1 $\times$ 1 \\
-
+		\hline
+		\hline
 	\end{tabular}}
 	\label{tab:GeneratorDiscriminatorArchitecture}
 \end{table*}
+
+In the training of a GAN, both the generator and the discriminator are being trained sequentially and independently. First, the generator, which receives the previous and following patch of the input triplet, attempts to generate the intermediate patch. The generated image is then compared to the original image, using the generator loss, which is then used in the updating of the generator weights. The generator loss is composed of four components: the adversarial, the MAE, the multi-scale SSIM (MS-SSIM), and the gradient difference loss (GDL). The overall loss function is described in Equation \ref{eq:GeneratorLoss}, where $\lambda_{\text{adv}}=0.05$, $\lambda_{\text{MAE}}=1.0$, $\lambda_{\text{MS-SSIM}}=6.0$, and $\lambda_{\text{GDL}}=1.0$, representing the weights of each loss component.
+
+\begin{equation}
+	\mathcal{L}_{\text{Gen}} = \lambda_{\text{adv}} \times \mathcal{L}_{\text{adv}} + \lambda_{\text{MAE}} \times \mathcal{L}_{\text{MAE}} + \lambda_{\text{MS-SSIM}} \times \mathcal{L}_{\text{MS-SSIM}} + \lambda_{\text{GDL}} \times \mathcal{L}_{\text{GDL}}
+	\label{eq:GeneratorLoss}
+\end{equation}
+
+The adversarial loss is used in the evaluation of how good the output from the generator fools the discriminator. This evaluation is done using the binary cross-entropy (BCE). To calculate this, the generated image is input into the discriminator, which then outputs the probability of being real. Afterwards, the BCE is calculated for the predicted probability and 1, the label when the image is real. The better the generator fools the discriminator, the closer the output of the discriminator will be to one, and, therefore, the closer the adversarial loss will be to 0. The adversarial loss is explained in Equation \ref{eq:AdversarialLoss}, where $\mathcal{D}$ is the discriminator, $x$ is the generated image, and $y=1$ is the label that indicates that the image is real.
+
+\begin{equation}
+	\mathcal{L}_{\text{adv}} (\mathcal{D}(x), y) = \mathcal{L}_{\text{BCE}} (\mathcal{D}(x), y) = y \text{log}(\mathcal{D}(x)) + (1 - y)\text{log}(1 - \mathcal{D}(x)) = - \text{log} (\mathcal{D}(x))
+	\label{eq:AdversarialLoss}
+\end{equation}
+
+The MAE loss, also referred as $L_{1}$ loss, performs a pixel-by-pixel comparison between the generated image, $x$, and the real image, $y$, as described in Equation \ref{eq:MAEEquation}, where $i$ is the index of a pixel. While this loss gives an insight of close the images are, on average, this loss can be deceiving, since the model can blur the output to attain better MAE values. For this reason, this loss must be combined with other reconstructive losses, such as the MS-SSIM and the GDL.
+\par
+The MS-SSIM loss seeks to preserve the structural similarity, at different scales, between the real and the generated image, facilitating a smoother output. This loss, originally suggested by \textcite{Wang2003}, is described in Equation \ref{eq:MSSSIMLoss}, while the MS-SSIM used in this implementation is explained in Equation \ref{eq:MSSSIM}, using the concepts of SSIM and CS explained in Equation \ref{eq:SSIMEquation}. This version of the MS-SSIM is faster than the original implementation \parencite{Wang2003}, but uses the same array of weights $\beta$. $M$ is 5 and corresponds to the number of levels used in this MS-SSIM implementation. Therefore, the MS-SSIM corresponds to the product of the contrast sensitivity in the image for first three levels and the SSIM of the image in the last level, all raised to the power of the respective level's weights.
+
+\begin{equation}
+	\mathcal{L}_{\text{MS-SSIM}} (x, y) = 1 - \text{MS-SSIM}(x, y)
+	\label{eq:MSSSIMLoss}
+\end{equation}
+
+\begin{equation}
+	\text{MS-SSIM}(x, y) = \prod_{j=1}^{M-1} \left[ \text{CS}_j(x, y) \right]^{\beta_j} \cdot \left[ \text{SSIM}_M(x, y) \right]^{\beta_M}
+	\label{eq:MSSSIM}
+\end{equation}
 
 \paragraph{Experiment 4}
 As in the previous experiment, the intermediate slice will be generated using the first and last slices of a subvolume that consists of three consecutive B-scans from an OCT scan. However, in this experiment, inspired by the work of \textcite{Nishimoto2024}, the intermediate slice will be generated using a U-Net. While the U-Net is more commonly applied in segmentation, as seen in the reviewed literature, \textcite{Nishimoto2024} apply it to generate the intermediate slices of a subvolume. The U-Net receives the edge slices as input and forces the output of the intermediate ones. In the paper \parencite{Nishimoto2024}, this was tested for three, four, and five slices. However, in this experiment it will be utilized to generate a single intermediate slice.
