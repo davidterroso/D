@@ -3964,6 +3964,38 @@
       \verb 10.1109/ACSSC.2003.1292216
       \endverb
     \endentry
+    \entry{Mathieu2016}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=c8e0f85f89c92f05a8a7ee998755b202}{%
+           family={Mathieu},
+           familyi={M\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+        {{hash=f19e2a99ad9edfa217542eeff292dbe3}{%
+           family={Couprie},
+           familyi={C\bibinitperiod},
+           given={Camille},
+           giveni={C\bibinitperiod}}}%
+        {{hash=6a1aa6b7eab12b931ca7c7e3f927231d}{%
+           family={LeCun},
+           familyi={L\bibinitperiod},
+           given={Yann},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \strng{namehash}{c5ac3f2d26003c85010607fd188d840a}
+      \strng{fullhash}{ac8ff43488f297a94dd7794a2a4ed844}
+      \strng{bibnamehash}{ac8ff43488f297a94dd7794a2a4ed844}
+      \strng{authorbibnamehash}{ac8ff43488f297a94dd7794a2a4ed844}
+      \strng{authornamehash}{c5ac3f2d26003c85010607fd188d840a}
+      \strng{authorfullhash}{ac8ff43488f297a94dd7794a2a4ed844}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{4th International Conference on Learning Representations, ICLR 2016}
+      \field{title}{Deep multi-scale video prediction beyond mean square error}
+      \field{year}{2016}
+    \endentry
   \enddatalist
 \endrefsection
 \endinput

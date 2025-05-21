@@ -265,7 +265,7 @@ PSNR is a metric used to calculate the ratio between the maximum signal power (w
 	\label{eq:PSNREquation}
 \end{equation}
 
-While the previous metrics focus on the differences between two images at a pixel level, the SSIM is based on the perception of the image. This metric considers the change of perception in structural information, estimating the perceived quality of images and videos. SSIM measures the similarity between the original image and the generated. The SSIM is calculated as shown in Equation \ref{eq:SSIMEquation}, where $x$ and $y$ represent the generated and the original images, respectively, so that $\mu_{x}$ and $\mu_{y}$ are their local means, $\sigma_{x}$ and $\sigma_{y}$ are their standard deviations, while $C_{1}$ and $C_{2}$ are small constants that stabilize the division. The contrast sensitivity between the images $x$ and $y$ is represented by $CS(x,y)$ \parencite{Sara2019}.
+While the previous metrics focus on the differences between two images at a pixel level, the SSIM is based on the perception of the image. This metric considers the change of perception in structural information, estimating the perceived quality of images and videos. SSIM measures the similarity between the original image and the generated. The SSIM is calculated as shown in Equation \ref{eq:SSIMEquation}, where $x$ and $y$ represent the generated and the original images, respectively, so that $\mu_{x}$ and $\mu_{y}$ are their local means, $\sigma_{x}$ and $\sigma_{y}$ are their standard deviations, while $C_{1}$ and $C_{2}$ are small constants that stabilize the division. The contrast sensitivity (CS) between the images $x$ and $y$ is represented by $CS(x,y)$ \parencite{Sara2019}.
 
 \begin{equation}
 	\text{SSIM}(x, y) = \left( \frac{2\mu_x \mu_y + C_1}{\mu_x^2 + \mu_y^2 + C_1} \right) \cdot \left( \frac{2\sigma_{xy} + C_2}{\sigma_x^2 + \sigma_y^2 + C_2} \right) = \left( \frac{2\mu_x \mu_y + C_1}{\mu_x^2 + \mu_y^2 + C_1} \right) \cdot CS(x, y)
@@ -355,10 +355,10 @@ In the training of a GAN, both the generator and the discriminator are being tra
 	\label{eq:GeneratorLoss}
 \end{equation}
 
-The adversarial loss is used in the evaluation of how good the output from the generator fools the discriminator. This evaluation is done using the binary cross-entropy (BCE). To calculate this, the generated image is input into the discriminator, which then outputs the probability of being real. Afterwards, the BCE is calculated for the predicted probability and 1, the label when the image is real. The better the generator fools the discriminator, the closer the output of the discriminator will be to one, and, therefore, the closer the adversarial loss will be to 0. The adversarial loss is explained in Equation \ref{eq:AdversarialLoss}, where $\mathcal{D}$ is the discriminator, $x$ is the generated image, and $y=1$ is the label that indicates that the image is real.
+The adversarial loss is used in the evaluation of how good the output from the generator fools the discriminator. This evaluation is done using the binary cross-entropy (BCE). To calculate this, the generated image is input into the discriminator, which then outputs the probability of being real. Afterwards, the BCE is calculated for the predicted probability and 1, the label when the image is real. The better the generator fools the discriminator, the closer the output of the discriminator will be to one, and, therefore, the closer the adversarial loss will be to 0. The adversarial loss is explained in Equation \ref{eq:AdversarialLoss}, where $\mathcal{D}$ is the discriminator, $x$ is the generated image, and $y$ is the label that indicates that the image is real. It is important to note that in the generator training, the images that are input to the discriminator are detached, not contributing to the updating of the discriminator weights in this step.
 
 \begin{equation}
-	\mathcal{L}_{\text{adv}} (\mathcal{D}(x), y) = \mathcal{L}_{\text{BCE}} (\mathcal{D}(x), y) = y \text{log}(\mathcal{D}(x)) + (1 - y)\text{log}(1 - \mathcal{D}(x)) = - \text{log} (\mathcal{D}(x))
+	\mathcal{L}_{\text{adv}} (\mathcal{D}(x), y) = \mathcal{L}_{\text{BCE}} (\mathcal{D}(x), y) = y \text{log}(\mathcal{D}(x)) + (1 - y)\text{log}(1 - \mathcal{D}(x))
 	\label{eq:AdversarialLoss}
 \end{equation}
 
@@ -375,6 +375,15 @@ The MS-SSIM loss seeks to preserve the structural similarity, at different scale
 	\text{MS-SSIM}(x, y) = \prod_{j=1}^{M-1} \left[ \text{CS}_j(x, y) \right]^{\beta_j} \cdot \left[ \text{SSIM}_M(x, y) \right]^{\beta_M}
 	\label{eq:MSSSIM}
 \end{equation}
+
+The last component of the loss is the GDL, proposed originally by \textcite{Mathieu2016}. This component is used to reduce the motion blur in the generated images, a problem in video datasets. In this loss, the relative difference of neighboring pixels between the generated and true images is considered, as shown in Equation \ref{eq:GDLLoss}. In this equation, $i$ and $j$ are the index of row and column, respectively, that identify a pixel of the image, while $\alpha$ was set to 2.
+
+\begin{equation}
+	\mathcal{L}_{\text{GDL}}(x, y) = \sum_{i,j} \left( \left|\,|x_{i,j} - x_{i-1,j}| - |y_{i,j} - y_{i-1,j}|\,\right|^{\alpha} + \left|\,|x_{i,j} - x_{i,j-1}| - |y_{i,j} - y_{i,j-1}|\,\right|^{\alpha} \right)
+	\label{eq:GDLLoss}
+\end{equation}
+
+After the images are generated and evaluated using the previously defined generator loss, two images are input, subsequently, to the discriminator, with one of them being fake while the other is real. The discriminator outputs the probability of each image being real and its result is compared to the true label of each image using the discriminator loss. This loss is much simpler than the generator loss as it is just the BCE for the predicted probabilities and respective labels, described in Equation \ref{eq:AdversarialLoss}.
 
 \paragraph{Experiment 4}
 As in the previous experiment, the intermediate slice will be generated using the first and last slices of a subvolume that consists of three consecutive B-scans from an OCT scan. However, in this experiment, inspired by the work of \textcite{Nishimoto2024}, the intermediate slice will be generated using a U-Net. While the U-Net is more commonly applied in segmentation, as seen in the reviewed literature, \textcite{Nishimoto2024} apply it to generate the intermediate slices of a subvolume. The U-Net receives the edge slices as input and forces the output of the intermediate ones. In the paper \parencite{Nishimoto2024}, this was tested for three, four, and five slices. However, in this experiment it will be utilized to generate a single intermediate slice.

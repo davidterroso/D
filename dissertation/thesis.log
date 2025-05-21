@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  21 MAY 2025 20:14
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  21 MAY 2025 22:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1233,7 +1233,7 @@ Package pdftex.def Info: figures/GeneratorArchitecture.png  used on input line
 (pdftex.def)             Requested size: 426.79135pt x 186.88394pt.
  [24 <./figures//../figures/CirrusSixtyFourPatchExtraction.png>] [25 <./figures
 /GeneratorArchitecture.png>]
-[26]) [27] [28]
+[26] [27]) [28]
 LaTeX Font Info:    Trying to load font information for T1+pcrs on input line 6
 3.
 
@@ -1334,10 +1334,10 @@ Package logreq Info: Writing requests to 'thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 23077 strings out of 476339
- 421124 string characters out of 5788120
+ 23083 strings out of 476339
+ 421300 string characters out of 5788120
  1874340 words of memory out of 5000000
- 42883 multiletter control sequences out of 15000+600000
+ 42887 multiletter control sequences out of 15000+600000
  598581 words of font info for 141 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  78i,12n,82p,1399b,3225s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1356,9 +1356,9 @@ X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (47 pages, 29421649 bytes).
+Output written on thesis.pdf (47 pages, 29424999 bytes).
 PDF statistics:
- 1032 PDF objects out of 1200 (max. 8388607)
- 190 named destinations out of 1000 (max. 500000)
+ 1037 PDF objects out of 1200 (max. 8388607)
+ 192 named destinations out of 1000 (max. 500000)
  256 words of extra memory for PDF output out of 10000 (max. 10000000)
 
