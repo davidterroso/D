@@ -54,17 +54,21 @@
 \newlabel{fig:GANFramework}{{3.9}{23}{Example of a GAN framework, where $\mathcal {D}$ is the discriminator and $\mathcal {G}$ is the generator \cite {Creswell2018}.\relax }{figure.caption.31}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3.10}{\ignorespaces Patches with shape 64 $\times $ 64 extracted from a Cirrus B-scan which was resized to 496 $\times $ 512.\relax }}{24}{figure.caption.32}\protected@file@percent }
 \newlabel{fig:CirrusSixtyFourPatchExtraction}{{3.10}{24}{Patches with shape 64 $\times $ 64 extracted from a Cirrus B-scan which was resized to 496 $\times $ 512.\relax }{figure.caption.32}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.11}{\ignorespaces Architecture of the Generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \blx@tocontentsinit {0}\parencite {Tran2020}.\relax }}{25}{figure.caption.33}\protected@file@percent }
-\newlabel{fig:GeneratorArchitecture}{{3.11}{25}{Architecture of the Generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \parencite {Tran2020}.\relax }{figure.caption.33}{}}
-\@writefile{toc}{\contentsline {paragraph}{Experiment 4}{25}{section*.35}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.4}Fluid Volume Estimation}{25}{subsection.3.2.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3.4}{\ignorespaces Layers that compose the generator and the discriminator. Each convolution is represented by Conv2d(K, OC, S), where K is the kernel size, OC is the number of output channels, and S is the stride. The same notation is used in deconvolutions, represented by TransposedConv2d. The output size is shown following C $\times $ H $\times $ W notation, where C is the number of channels, H is the height, and W is the width. The inputs have shape $1 \times 64 \times 64$.\relax }}{26}{table.caption.34}\protected@file@percent }
-\newlabel{tab:GeneratorDiscriminatorArchitecture}{{3.4}{26}{Layers that compose the generator and the discriminator. Each convolution is represented by Conv2d(K, OC, S), where K is the kernel size, OC is the number of output channels, and S is the stride. The same notation is used in deconvolutions, represented by TransposedConv2d. The output size is shown following C $\times $ H $\times $ W notation, where C is the number of channels, H is the height, and W is the width. The inputs have shape $1 \times 64 \times 64$.\relax }{table.caption.34}{}}
-\@writefile{toc}{\contentsline {paragraph}{Experiment 5}{26}{section*.36}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Experiment 6}{26}{section*.37}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.11}{\ignorespaces Architecture of the generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \blx@tocontentsinit {0}\parencite {Tran2020}.\relax }}{25}{figure.caption.33}\protected@file@percent }
+\newlabel{fig:GeneratorArchitecture}{{3.11}{25}{Architecture of the generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \parencite {Tran2020}.\relax }{figure.caption.33}{}}
+\newlabel{eq:GeneratorLoss}{{3.10}{25}{Experiment 3}{equation.3.2.10}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3.4}{\ignorespaces Layers that compose the generator and the discriminator. Each convolution is represented by Conv2d(K, OC, S), where K is the kernel size, OC is the number of output channels, and S is the stride. The same notation is used in deconvolutions, represented by TransposedConv2d. The output size is shown following C $\times $ H $\times $ W notation, where C is the number of channels, H is the height, and W is the width. The inputs have shape $1 \times 64 \times 64$. Adapted from \blx@tocontentsinit {0}\textcite {Tran2020}.\relax }}{26}{table.caption.34}\protected@file@percent }
+\newlabel{tab:GeneratorDiscriminatorArchitecture}{{3.4}{26}{Layers that compose the generator and the discriminator. Each convolution is represented by Conv2d(K, OC, S), where K is the kernel size, OC is the number of output channels, and S is the stride. The same notation is used in deconvolutions, represented by TransposedConv2d. The output size is shown following C $\times $ H $\times $ W notation, where C is the number of channels, H is the height, and W is the width. The inputs have shape $1 \times 64 \times 64$. Adapted from \textcite {Tran2020}.\relax }{table.caption.34}{}}
+\newlabel{eq:AdversarialLoss}{{3.11}{26}{Experiment 3}{equation.3.2.11}{}}
+\newlabel{eq:MSSSIMLoss}{{3.12}{27}{Experiment 3}{equation.3.2.12}{}}
+\newlabel{eq:MSSSIM}{{3.13}{27}{Experiment 3}{equation.3.2.13}{}}
+\@writefile{toc}{\contentsline {paragraph}{Experiment 4}{27}{section*.35}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.4}Fluid Volume Estimation}{27}{subsection.3.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Experiment 5}{27}{section*.36}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Experiment 6}{27}{section*.37}\protected@file@percent }
 \@setckpt{methods}{
-\setcounter{page}{27}
-\setcounter{equation}{9}
+\setcounter{page}{29}
+\setcounter{equation}{13}
 \setcounter{enumi}{5}
 \setcounter{enumii}{0}
 \setcounter{enumiii}{0}
@@ -85,7 +89,7 @@
 \setcounter{continuedfloat}{0}
 \setcounter{float@type}{4}
 \setcounter{linenumber}{0}
-\setcounter{LN@truepage}{37}
+\setcounter{LN@truepage}{39}
 \setcounter{tabx@nest}{0}
 \setcounter{listtotal}{0}
 \setcounter{listcount}{0}
@@ -95,7 +99,7 @@
 \setcounter{citetotal}{0}
 \setcounter{multicitecount}{0}
 \setcounter{multicitetotal}{0}
-\setcounter{instcount}{237}
+\setcounter{instcount}{242}
 \setcounter{maxnames}{2}
 \setcounter{minnames}{1}
 \setcounter{maxitems}{3}

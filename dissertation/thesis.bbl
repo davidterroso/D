@@ -530,8 +530,8 @@
       \strng{authorbibnamehash}{036f94b10b252abfb923d921e17bf714}
       \strng{authornamehash}{036f94b10b252abfb923d921e17bf714}
       \strng{authorfullhash}{dbe69d80f27c68d8553363a2ddea9eca}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issue}{5035}
@@ -713,8 +713,8 @@
       \strng{authorbibnamehash}{67386e27ed3b1c9a051e4812e7e85c25}
       \strng{authornamehash}{806250ffe3c9bea5961f1e859c9562c0}
       \strng{authorfullhash}{67386e27ed3b1c9a051e4812e7e85c25}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0010-4825}
@@ -759,8 +759,8 @@
       \strng{authorbibnamehash}{d23421d4e498089b1a87b1c753b30b2a}
       \strng{authornamehash}{3734d4e5d01158695fbccd2cca93df7a}
       \strng{authorfullhash}{d23421d4e498089b1a87b1c753b30b2a}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{2297-8747}
@@ -1126,6 +1126,7 @@
       \strng{authorbibnamehash}{893b7c8f61a999c92475b0fff7896136}
       \strng{authornamehash}{893b7c8f61a999c92475b0fff7896136}
       \strng{authorfullhash}{898cbe7eac1ecbeb73f0a93fde154279}
+      \field{extraname}{1}
       \field{sortinit}{3}
       \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
@@ -2245,8 +2246,8 @@
       \strng{authorbibnamehash}{c0db6e31d214cb90a9557639a905cee8}
       \strng{authornamehash}{5b195b34f54d3e071b82ddb71e157be1}
       \strng{authorfullhash}{c0db6e31d214cb90a9557639a905cee8}
-      \field{sortinit}{6}
-      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issue}{4}
@@ -2666,8 +2667,8 @@
       \strng{authornamehash}{40e19b9ee1f46e0c7eb74c6680cf0059}
       \strng{authorfullhash}{54691633689522b97576ad65339b9b8c}
       \field{extraname}{2}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0169-2607}
@@ -2727,8 +2728,8 @@
       \strng{authorbibnamehash}{b6e4d85c7cd8dbc9f3688b203e62d353}
       \strng{authornamehash}{d0e943b2731b86a41312a4cd2c60f808}
       \strng{authorfullhash}{b6e4d85c7cd8dbc9f3688b203e62d353}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}
@@ -2757,8 +2758,8 @@
       \strng{authorbibnamehash}{85eca6d79ece4125776b25eedd909e1d}
       \strng{authornamehash}{85eca6d79ece4125776b25eedd909e1d}
       \strng{authorfullhash}{85eca6d79ece4125776b25eedd909e1d}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0730-725X}
@@ -2803,8 +2804,8 @@
       \strng{authorbibnamehash}{b5ad7d875b27a67ce7d45ddb7c447222}
       \strng{authornamehash}{cfea5fe02c77ca991244a6b05de026f0}
       \strng{authorfullhash}{b5ad7d875b27a67ce7d45ddb7c447222}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Access}
@@ -2890,8 +2891,8 @@
       \strng{editorbibnamehash}{4504e97799f514c5463e2d0ad8cc6641}
       \strng{editornamehash}{18b3f694259f08f7fd2048c63a39bab3}
       \strng{editorfullhash}{4504e97799f514c5463e2d0ad8cc6641}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Medical Image Computing and Computer Assisted Intervention – MICCAI 2018}
@@ -2920,8 +2921,8 @@
       \strng{authorbibnamehash}{f8d17b65155a0bcfde5e55b1fcaf7f9c}
       \strng{authornamehash}{f8d17b65155a0bcfde5e55b1fcaf7f9c}
       \strng{authorfullhash}{f8d17b65155a0bcfde5e55b1fcaf7f9c}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{arXiv e-prints}
@@ -2993,8 +2994,8 @@
       \strng{editorbibnamehash}{f05dbe3ffb62935de70b0dffe8ba65af}
       \strng{editornamehash}{21e38e116df3a210187687f0575acf41}
       \strng{editorfullhash}{f05dbe3ffb62935de70b0dffe8ba65af}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Machine Learning for Medical Image Reconstruction}
@@ -3049,8 +3050,8 @@
       \strng{authornamehash}{fd39ad20ece493dadbbf99861688abdb}
       \strng{authorfullhash}{45d7da65be6b0273f74b1e93a65232cb}
       \field{extraname}{3}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{2379-139X}
@@ -3921,6 +3922,47 @@
       \verb 10.1109/MSP.2017.2765202
       \endverb
       \keyw{Machine learning;Generators;Training data;Data models;Convolutional codes;Image resolution;Signal resolution;Semantics}
+    \endentry
+    \entry{Wang2003}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=cc4aadc875d7abdbaf96dfa4a83d8b77}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Z},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=c612751faf324b3d812b233478fc67b3}{%
+           family={Simoncelli},
+           familyi={S\bibinitperiod},
+           given={Eero},
+           giveni={E\bibinitperiod}}}%
+        {{hash=67707b40c35689829d61ca7672b3ce59}{%
+           family={Bovik},
+           familyi={B\bibinitperiod},
+           given={Alan},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{3deddfd5334afe8de95e47549d6b5a86}
+      \strng{fullhash}{8799c591b622109c47b2a70565312a49}
+      \strng{bibnamehash}{8799c591b622109c47b2a70565312a49}
+      \strng{authorbibnamehash}{8799c591b622109c47b2a70565312a49}
+      \strng{authornamehash}{3deddfd5334afe8de95e47549d6b5a86}
+      \strng{authorfullhash}{8799c591b622109c47b2a70565312a49}
+      \field{extraname}{2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Conference Record of the Asilomar Conference on Signals, Systems and Computers}
+      \field{isbn}{0-7803-8104-1}
+      \field{month}{5}
+      \field{title}{Multiscale structural similarity for image quality assessment}
+      \field{volume}{2}
+      \field{year}{2003}
+      \field{pages}{1398\bibrangedash 1402 Vol.2}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1109/ACSSC.2003.1292216
+      \endverb
     \endentry
   \enddatalist
 \endrefsection
