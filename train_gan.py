@@ -249,10 +249,10 @@ def train_gan(
     train_loader = torch.utils.data.DataLoader(train_set, shuffle=True, num_workers=12, persistent_workers=True, batch_size=batch_size, pin_memory=True)
     val_loader = torch.utils.data.DataLoader(val_set, shuffle=True, num_workers=12, persistent_workers=True, batch_size=batch_size, pin_memory=True)
 
-    # Initiates the validation 
-    # generator loss and the 
-    # MAE as infinite 
-    best_val_loss = float('inf')
+    # Initiates the best generator 
+    # loss and the best MAE as 
+    # infinite 
+    best_gen_loss = float('inf')
     best_val_mae = float('inf')
 
     # Initiates the patience counter
@@ -465,11 +465,11 @@ def train_gan(
         if model_name == "GAN":
             with open(csv_epoch_filename, mode="a", newline="") as file:
                 writer = csv.writer(file)
-                writer.writerow([epoch, epoch_adv_loss / len(val_loader), 
-                                epoch_g_loss / len(val_loader), 
-                                epoch_real_loss / len(val_loader), 
-                                epoch_fake_loss / len(val_loader), 
-                                epoch_d_loss / len(val_loader),
+                writer.writerow([epoch, epoch_adv_loss / len(train_loader), 
+                                epoch_g_loss / len(train_loader), 
+                                epoch_real_loss / len(train_loader), 
+                                epoch_fake_loss / len(train_loader), 
+                                epoch_d_loss / len(train_loader),
                                 val_loss, val_ssim, val_gd, val_l1, 
                                 val_adv])
         elif model_name == "UNet":
@@ -478,17 +478,20 @@ def train_gan(
                 writer.writerow([epoch, epoch_loss / len(train_loader), val_mae])
 
         if model_name == "GAN":
-            if epoch > 40:
+            # Only saves the model after 50 epochs, since 
+            # the loss is over-confident due to the 
+            # inexperience of the discriminator
+            if epoch > 50:
                 # In case the validation generator loss 
                 # is better than the previous, the model 
                 # is saved as the best model
-                if val_loss < best_val_loss:
+                if  (epoch_g_loss / len(train_loader)) < best_gen_loss:
                     # Creates the folder models in case 
                     # it does not exist yet
                     makedirs("models", exist_ok=True)
                     # Updates the best value 
                     # of the generator loss
-                    best_val_loss = val_loss
+                    best_gen_loss = (epoch_g_loss / len(train_loader))
                     patience_counter = 0
                     # Both the generator and the discriminator are saved with a name 
                     # that depends on the argument input and the name of the model

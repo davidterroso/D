@@ -538,7 +538,7 @@ class MS_SSIM(Module):
         for i in range(levels):
             # Calls the function that calculates the SSIM for the current images
             # It returns the SSIM for each channel and the contrast sensitivity
-            ssim_per_channel, cs = ssim_tensor(gen, gt, data_range=255, win=win)
+            ssim_per_channel, cs = ssim_tensor(gen, gt, data_range=1.0, win=win)
             
             # For all the scales, except the
             # last one, downsampling is performed
@@ -752,7 +752,7 @@ def generator_loss(device: str, discriminator: Module,
     gd_loss = gd_loss(generated_imgs, expected_imgs)
     # Initiates the BCE loss and allocates it 
     # to the used device
-    adv_loss = BCEWithLogitsLoss().to(device)
+    adv_loss = BCELoss().to(device)
     # Calculates the BCE loss for the classification predicted by the 
     # discriminator and compares it to the true label. This might 
     # sound counter-intuitive since the loss is being calculated for 
