@@ -3573,7 +3573,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{ICLR 2015}
-      \field{title}{Adam: A Method for Stochastic Optimization}
+      \field{title}{{Adam: A Method for Stochastic Optimization}}
       \field{year}{2017}
       \verb{doi}
       \verb https://doi.org/10.48550/arXiv.1412.6980
@@ -3611,7 +3611,7 @@
       \field{issn}{2076-3417}
       \field{issue}{18}
       \field{journaltitle}{Applied Sciences}
-      \field{title}{Efficient Video Frame Interpolation Using Generative Adversarial Networks}
+      \field{title}{{Efficient Video Frame Interpolation Using Generative Adversarial Networks}}
       \field{volume}{10}
       \field{year}{2020}
       \verb{doi}
@@ -3657,7 +3657,7 @@
       \field{labeltitlesource}{title}
       \field{issue}{3}
       \field{journaltitle}{Journal of Computer and Communications}
-      \field{title}{Image quality assessment through FSIM, SSIM, MSE and PSNR—a comparative study}
+      \field{title}{{Image quality assessment through FSIM, SSIM, MSE and PSNR—a comparative study}}
       \field{volume}{7}
       \field{year}{2019}
       \field{pages}{8\bibrangedash 18}
@@ -3688,7 +3688,7 @@
       \field{labeltitlesource}{title}
       \field{issue}{34}
       \field{journaltitle}{Indian J. Sci. Technol}
-      \field{title}{A comparative analysis on image quality assessment for real time satellite images}
+      \field{title}{{A comparative analysis on image quality assessment for real time satellite images}}
       \field{volume}{9}
       \field{year}{2016}
       \field{pages}{1\bibrangedash 11}
@@ -3786,10 +3786,10 @@
       \field{volume}{27}
       \field{year}{2014}
       \verb{urlraw}
-      \verb https://proceedings.neurips.cc/paper_files/paper/2014/file/5ca3e9b122f61f8f06494c97b1afccf3-Paper.pdf
+      \verb https://arxiv.org/abs/1406.2661
       \endverb
       \verb{url}
-      \verb https://proceedings.neurips.cc/paper_files/paper/2014/file/5ca3e9b122f61f8f06494c97b1afccf3-Paper.pdf
+      \verb https://arxiv.org/abs/1406.2661
       \endverb
     \endentry
     \entry{Goodfellow2020}{article}{}
@@ -3955,7 +3955,7 @@
       \field{booktitle}{Conference Record of the Asilomar Conference on Signals, Systems and Computers}
       \field{isbn}{0-7803-8104-1}
       \field{month}{5}
-      \field{title}{Multiscale structural similarity for image quality assessment}
+      \field{title}{{Multiscale structural similarity for image quality assessment}}
       \field{volume}{2}
       \field{year}{2003}
       \field{pages}{1398\bibrangedash 1402 Vol.2}
@@ -3993,7 +3993,7 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{4th International Conference on Learning Representations, ICLR 2016}
-      \field{title}{Deep multi-scale video prediction beyond mean square error}
+      \field{title}{{Deep multi-scale video prediction beyond mean square error}}
       \field{year}{2016}
     \endentry
   \enddatalist

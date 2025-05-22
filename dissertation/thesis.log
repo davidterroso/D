@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  21 MAY 2025 22:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  22 MAY 2025 13:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1201,7 +1201,7 @@ LaTeX Warning: Text page 20 contains only floats.
 [20 <./figures//../figures/CirrusFourPatchExtraction.png> <./figures//../figure
 s/CirrusSevenPatchExtraction.png> <./figures//../figures/CirrusThirteenPatchExt
 raction.png>]
-<figures//../figures/FrameInterpolationFramework.png, id=634, 511.9125pt x 281.
+<figures//../figures/FrameInterpolationFramework.png, id=635, 511.9125pt x 281.
 25075pt>
 File: figures//../figures/FrameInterpolationFramework.png Graphic file (type pn
 g)
@@ -1210,14 +1210,14 @@ Package pdftex.def Info: figures//../figures/FrameInterpolationFramework.png  u
 sed on input line 242.
 (pdftex.def)             Requested size: 426.79135pt x 234.48518pt.
  [21] [22 <./figures//../figures/FrameInterpolationFramework.png>]
-<figures//../figures/GANFramework.png, id=685, 616.55344pt x 347.79938pt>
+<figures//../figures/GANFramework.png, id=686, 616.55344pt x 347.79938pt>
 File: figures//../figures/GANFramework.png Graphic file (type png)
 <use figures//../figures/GANFramework.png>
 Package pdftex.def Info: figures//../figures/GANFramework.png  used on input li
 ne 282.
 (pdftex.def)             Requested size: 298.75264pt x 168.52858pt.
 [23 <./figures//../figures/GANFramework.png>]
-<figures//../figures/CirrusSixtyFourPatchExtraction.png, id=699, 880.161pt x 47
+<figures//../figures/CirrusSixtyFourPatchExtraction.png, id=700, 880.161pt x 47
 8.953pt>
 File: figures//../figures/CirrusSixtyFourPatchExtraction.png Graphic file (type
  png)
@@ -1225,7 +1225,7 @@ File: figures//../figures/CirrusSixtyFourPatchExtraction.png Graphic file (type
 Package pdftex.def Info: figures//../figures/CirrusSixtyFourPatchExtraction.png
   used on input line 293.
 (pdftex.def)             Requested size: 298.75264pt x 162.56415pt.
-<figures/GeneratorArchitecture.png, id=701, 489.62926pt x 214.401pt>
+<figures/GeneratorArchitecture.png, id=702, 489.62926pt x 214.401pt>
 File: figures/GeneratorArchitecture.png Graphic file (type png)
 <use figures/GeneratorArchitecture.png>
 Package pdftex.def Info: figures/GeneratorArchitecture.png  used on input line 
@@ -1233,7 +1233,7 @@ Package pdftex.def Info: figures/GeneratorArchitecture.png  used on input line
 (pdftex.def)             Requested size: 426.79135pt x 186.88394pt.
  [24 <./figures//../figures/CirrusSixtyFourPatchExtraction.png>] [25 <./figures
 /GeneratorArchitecture.png>]
-[26] [27]) [28]
+[26] [27] [28]) [29]
 LaTeX Font Info:    Trying to load font information for T1+pcrs on input line 6
 3.
 
@@ -1255,7 +1255,7 @@ Overfull \hbox (23.31725pt too wide) in paragraph at lines 63--63
 le / pii / S1350946207000444$[][]\T1/ptm/m/n/10.95 . 
  []
 
-[29
+[30
 
 
 
@@ -1273,13 +1273,13 @@ Overfull \hbox (1.58675pt too wide) in paragraph at lines 63--63
 e: [][]$\T1/pcrs/m/n/10.95 https : / / www . sciencedirect . com / science /
  []
 
-[30]
+[31]
 Overfull \hbox (0.44347pt too wide) in paragraph at lines 63--63
 []\T1/ptm/m/n/10.95 H. Liu et al., ^^P  Se-man-tic un-cer-tainty Guided Cross-T
 ransformer for en-hanced mac-u-lar edema
  []
 
-[31]
+[32]
 Overfull \hbox (23.31725pt too wide) in paragraph at lines 63--63
 [][]$\T1/pcrs/m/n/10.95 https : / / www . sciencedirect . com / science / artic
 le / pii / S1361841519300386$[][]\T1/ptm/m/n/10.95 . 
@@ -1297,16 +1297,10 @@ Overfull \hbox (46.68745pt too wide) in paragraph at lines 63--63
  . com / science / article / pii / S1361841521000839$[][]\T1/ptm/m/n/10.95 . 
  []
 
-[32] [33]
-Overfull \hbox (38.6628pt too wide) in paragraph at lines 63--63
+[33] [34]
+Overfull \hbox (1.21397pt too wide) in paragraph at lines 63--63
 \T1/ptm/m/n/10.95 berger, Eds., vol. 27, Cur-ran As-so-ciates, Inc., 2014. [On-
-line]. Avail-able: [][]$\T1/pcrs/m/n/10.95 https : / / proceedings .
- []
-
-
-Overfull \hbox (52.28711pt too wide) in paragraph at lines 63--63
-\T1/pcrs/m/n/10.95 neurips . cc / paper _ files / paper / 2014 / file / 5ca3e9b
-122f61f8f06494c97b1afccf3 -[]
+line]. Avail-able: [][]$\T1/pcrs/m/n/10.95 https : / / arxiv .
  []
 
 
@@ -1316,12 +1310,12 @@ Overfull \hbox (10.93967pt too wide) in paragraph at lines 63--63
  35,
  []
 
-[34] [35]
+[35] [36]
 \openout2 = `appendix1.aux'.
 
  (appendix1.tex
 Appendix A.
-) [36
+) [37
 
 
 ] (thesis.aux (abstract.aux) (un-sdg.aux) (acknowledgements.aux)
@@ -1334,13 +1328,13 @@ Package logreq Info: Writing requests to 'thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 23083 strings out of 476339
- 421300 string characters out of 5788120
+ 23088 strings out of 476339
+ 421388 string characters out of 5788120
  1874340 words of memory out of 5000000
- 42887 multiletter control sequences out of 15000+600000
+ 42889 multiletter control sequences out of 15000+600000
  598581 words of font info for 141 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 78i,12n,82p,1399b,3225s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 78i,18n,82p,1399b,3225s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}<C:
 /Users/david/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex1
 0.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
@@ -1356,9 +1350,9 @@ X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (47 pages, 29424999 bytes).
+Output written on thesis.pdf (48 pages, 29430645 bytes).
 PDF statistics:
- 1037 PDF objects out of 1200 (max. 8388607)
- 192 named destinations out of 1000 (max. 500000)
+ 1046 PDF objects out of 1200 (max. 8388607)
+ 195 named destinations out of 1000 (max. 500000)
  256 words of extra memory for PDF output out of 10000 (max. 10000000)
 
