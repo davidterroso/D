@@ -240,7 +240,7 @@ Two different losses were used to regulate the model. Initially, the same loss a
 \par
 When using the loss from \ref{Experiment1} Experiment 1, each model was trained on two different splits: the split used in the multi-class segmentation experiments and a split created specifically for the segmentation of the fluid that was being segmented. 
 \par
-The balanced cross-entropy loss was tested on the best and worse performing folds of the IRF split, for the segmentation of IRF, in the same conditions. However, since the results were much worse than those obtained with the initial loss, no more folds or fluids were tested.
+The balanced cross-entropy loss was tested on the best performing folds of the multi-class and IRF splits, for the segmentation of IRF, in the same conditions. However, since the results were much worse than those obtained with the initial loss, no more folds or fluids were considered.
 \par
 All the models were trained with seven vertical patches extracted from each B-scan, on a minimum of 100 epochs, after which a patience of 25 epochs was applied, like what was done in the last runs of \ref{Experiment1} Experiment 1. Similarly, the random transformations applied to the images consisted of horizontal flipping and a maximum rotation of $5^{\circ}$.
 
