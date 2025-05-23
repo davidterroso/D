@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  23 MAY 2025 11:37
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  23 MAY 2025 11:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1151,21 +1151,20 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 <figures//../figures/UNet.png, id=572, 426.09187pt x 287.57437pt>
 File: figures//../figures/UNet.png Graphic file (type png)
 <use figures//../figures/UNet.png>
-Package pdftex.def Info: figures//../figures/UNet.png  used on input line 120.
+Package pdftex.def Info: figures//../figures/UNet.png  used on input line 122.
 (pdftex.def)             Requested size: 320.0935pt x 216.04884pt.
- [17 <./figures//../figures/UNet.png>]
-<figures//../figures/FluidAndROI.png, id=600, 963.6pt x 312.951pt>
+ [17 <./figures//../figures/UNet.png>] [18]
+<figures//../figures/FluidAndROI.png, id=610, 963.6pt x 312.951pt>
 File: figures//../figures/FluidAndROI.png Graphic file (type png)
 <use figures//../figures/FluidAndROI.png>
 Package pdftex.def Info: figures//../figures/FluidAndROI.png  used on input lin
-e 168.
+e 170.
 (pdftex.def)             Requested size: 426.79135pt x 138.60616pt.
- [18]
 <figures//../figures/BigPatchExtraction.png, id=612, 237.88875pt x 331.2375pt>
 File: figures//../figures/BigPatchExtraction.png Graphic file (type png)
 <use figures//../figures/BigPatchExtraction.png>
 Package pdftex.def Info: figures//../figures/BigPatchExtraction.png  used on in
-put line 185.
+put line 187.
 (pdftex.def)             Requested size: 170.71393pt x 237.71245pt.
  [19 <./figures//../figures/FluidAndROI.png>]
 <figures//../figures/CirrusSpectralisRetinalLayerComparison.png, id=621, 567.86
@@ -1174,7 +1173,7 @@ File: figures//../figures/CirrusSpectralisRetinalLayerComparison.png Graphic fi
 le (type png)
 <use figures//../figures/CirrusSpectralisRetinalLayerComparison.png>
 Package pdftex.def Info: figures//../figures/CirrusSpectralisRetinalLayerCompar
-ison.png  used on input line 197.
+ison.png  used on input line 199.
 (pdftex.def)             Requested size: 170.71393pt x 164.12459pt.
  [20 <./figures//../figures/BigPatchExtraction.png> <./figures//../figures/Cirr
 usSpectralisRetinalLayerComparison.png>]
@@ -1184,7 +1183,7 @@ File: figures//../figures/CirrusFourPatchExtraction.png Graphic file (type png)
 
 <use figures//../figures/CirrusFourPatchExtraction.png>
 Package pdftex.def Info: figures//../figures/CirrusFourPatchExtraction.png  use
-d on input line 206.
+d on input line 208.
 (pdftex.def)             Requested size: 277.41176pt x 174.85269pt.
 <figures//../figures/CirrusSevenPatchExtraction.png, id=634, 828.477pt x 509.39
 4pt>
@@ -1192,7 +1191,7 @@ File: figures//../figures/CirrusSevenPatchExtraction.png Graphic file (type png
 )
 <use figures//../figures/CirrusSevenPatchExtraction.png>
 Package pdftex.def Info: figures//../figures/CirrusSevenPatchExtraction.png  us
-ed on input line 213.
+ed on input line 215.
 (pdftex.def)             Requested size: 277.41176pt x 170.56448pt.
 <figures//../figures/CirrusThirteenPatchExtraction.png, id=635, 925.275pt x 508
 .299pt>
@@ -1200,7 +1199,7 @@ File: figures//../figures/CirrusThirteenPatchExtraction.png Graphic file (type
 png)
 <use figures//../figures/CirrusThirteenPatchExtraction.png>
 Package pdftex.def Info: figures//../figures/CirrusThirteenPatchExtraction.png 
- used on input line 221.
+ used on input line 223.
 (pdftex.def)             Requested size: 320.0935pt x 175.84421pt.
  [21 <./figures//../figures/CirrusFourPatchExtraction.png> <./figures//../figur
 es/CirrusSevenPatchExtraction.png>] [22 <./figures//../figures/CirrusThirteenPa
@@ -1211,14 +1210,14 @@ File: figures//../figures/FrameInterpolationFramework.png Graphic file (type pn
 g)
 <use figures//../figures/FrameInterpolationFramework.png>
 Package pdftex.def Info: figures//../figures/FrameInterpolationFramework.png  u
-sed on input line 254.
+sed on input line 256.
 (pdftex.def)             Requested size: 426.79135pt x 234.48518pt.
- [23 <./figures//../figures/FrameInterpolationFramework.png>] [24]
+ [23] [24 <./figures//../figures/FrameInterpolationFramework.png>]
 <figures//../figures/GANFramework.png, id=704, 616.55344pt x 347.79938pt>
 File: figures//../figures/GANFramework.png Graphic file (type png)
 <use figures//../figures/GANFramework.png>
 Package pdftex.def Info: figures//../figures/GANFramework.png  used on input li
-ne 294.
+ne 296.
 (pdftex.def)             Requested size: 298.75264pt x 168.52858pt.
 
 [25 <./figures//../figures/GANFramework.png>]
@@ -1228,13 +1227,13 @@ File: figures//../figures/CirrusSixtyFourPatchExtraction.png Graphic file (type
  png)
 <use figures//../figures/CirrusSixtyFourPatchExtraction.png>
 Package pdftex.def Info: figures//../figures/CirrusSixtyFourPatchExtraction.png
-  used on input line 305.
+  used on input line 307.
 (pdftex.def)             Requested size: 298.75264pt x 162.56415pt.
 <figures/GeneratorArchitecture.png, id=719, 489.62926pt x 214.401pt>
 File: figures/GeneratorArchitecture.png Graphic file (type png)
 <use figures/GeneratorArchitecture.png>
 Package pdftex.def Info: figures/GeneratorArchitecture.png  used on input line 
-314.
+316.
 (pdftex.def)             Requested size: 426.79135pt x 186.88394pt.
  [26 <./figures//../figures/CirrusSixtyFourPatchExtraction.png>] [27 <./figures
 /GeneratorArchitecture.png>]
@@ -1367,7 +1366,7 @@ X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (50 pages, 31200896 bytes).
+Output written on thesis.pdf (50 pages, 31201080 bytes).
 PDF statistics:
  1066 PDF objects out of 1200 (max. 8388607)
  198 named destinations out of 1000 (max. 500000)

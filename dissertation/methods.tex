@@ -49,6 +49,8 @@ The consistent number of slices per volume and large quantity of OCT volumes mak
 
 \section{Experiments}\label{Experiments}
 In this subsection, the experiments conducted during the dissertation are explained in depth. The subsection begins with a description of how the data was split, followed by the experiments in fluid segmentation, intermediate slice generation, and in fluid volume estimation.
+\par
+All the experiments were conducted using an NVIDIA GeForce RTX 3080 GPU and the \hbox{PyTorch} machine learning library (version 2.5.1).
 
 \subsection{Cross-validation}\label{CrossValidation}
 To promote consistency across all experiments, the conditions were held identical. In every experiment, the train-test split followed a 5-fold split, with different splits being used for the segmentation and generation tasks. During training, all the images in three folds were utilized to train the model, while the images from one fold were used in its validation. One fold was reserved and used to compare the performance between the best model from different experiments. Therefore, four training runs are completed in each experiment, rotating the validation fold across runs. The reserved fold consists of the same OCT volumes for all experiments, allowing for further comparisons on data not seen by any of the models.
