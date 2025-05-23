@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  22 MAY 2025 22:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  23 MAY 2025 10:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -800,7 +800,7 @@ File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 )
 (thesis.aux (abstract.aux) (un-sdg.aux) (acknowledgements.aux) (quote.aux)
 (abbrevs.aux) (introduction.aux) (literature_review.aux) (methods.aux)
-(appendix1.aux))
+(results_discussion.aux) (conclusion.aux) (appendix1.aux))
 \openout1 = `thesis.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
@@ -1232,23 +1232,29 @@ Package pdftex.def Info: figures/GeneratorArchitecture.png  used on input line
  [25 <./figures//../figures/CirrusSixtyFourPatchExtraction.png>] [26 <./figures
 /GeneratorArchitecture.png>]
 [27] [28] [29]) [30]
+\openout2 = `results_discussion.aux'.
+
+ (results_discussion.tex)
+\openout2 = `conclusion.aux'.
+
+ (conclusion.tex)
 LaTeX Font Info:    Trying to load font information for T1+pcrs on input line 6
-3.
+5.
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/courier-scaled\t1pcrs.f
 d
 File: t1pcrs.fd 2004/07/09 scalable font definitions for T1/pcrs.
 )
 LaTeX Font Info:    Font shape `T1/pcrs/m/n' will be
-(Font)              scaled to size 10.40245pt on input line 63.
+(Font)              scaled to size 10.40245pt on input line 65.
 
-Overfull \hbox (23.31725pt too wide) in paragraph at lines 63--63
+Overfull \hbox (23.31725pt too wide) in paragraph at lines 65--65
 [][]$\T1/pcrs/m/n/10.95 https : / / www . sciencedirect . com / science / artic
 le / pii / S0140673612602827$[][]\T1/ptm/m/n/10.95 . 
  []
 
 
-Overfull \hbox (23.31725pt too wide) in paragraph at lines 63--63
+Overfull \hbox (23.31725pt too wide) in paragraph at lines 65--65
 [][]$\T1/pcrs/m/n/10.95 https : / / www . sciencedirect . com / science / artic
 le / pii / S1350946207000444$[][]\T1/ptm/m/n/10.95 . 
  []
@@ -1258,51 +1264,57 @@ le / pii / S1350946207000444$[][]\T1/ptm/m/n/10.95 .
 
 
 
+
+
+
+
+
+
 ]
-Overfull \hbox (0.69101pt too wide) in paragraph at lines 63--63
+Overfull \hbox (0.69101pt too wide) in paragraph at lines 65--65
 \T1/ptm/m/n/10.95 op-ti-cal co-her-ence to-mog-ra-phy (OCT): A com-pre-hen-sive
  sur-vey,^^Q \T1/ptm/m/it/10.95 Neu-ro-com-put-ing\T1/ptm/m/n/10.95 , vol. 507,
 
  []
 
 
-Overfull \hbox (1.58675pt too wide) in paragraph at lines 63--63
+Overfull \hbox (1.58675pt too wide) in paragraph at lines 65--65
 \T1/pcrs/m/n/10.95 2022 . 08 . 021$[][]\T1/ptm/m/n/10.95 . [On-line]. Avail-abl
 e: [][]$\T1/pcrs/m/n/10.95 https : / / www . sciencedirect . com / science /
  []
 
 [32]
-Overfull \hbox (0.44347pt too wide) in paragraph at lines 63--63
+Overfull \hbox (0.44347pt too wide) in paragraph at lines 65--65
 []\T1/ptm/m/n/10.95 H. Liu et al., ^^P  Se-man-tic un-cer-tainty Guided Cross-T
 ransformer for en-hanced mac-u-lar edema
  []
 
 [33]
-Overfull \hbox (23.31725pt too wide) in paragraph at lines 63--63
+Overfull \hbox (23.31725pt too wide) in paragraph at lines 65--65
 [][]$\T1/pcrs/m/n/10.95 https : / / www . sciencedirect . com / science / artic
 le / pii / S1361841519300386$[][]\T1/ptm/m/n/10.95 . 
  []
 
 
-Overfull \hbox (19.33269pt too wide) in paragraph at lines 63--63
+Overfull \hbox (19.33269pt too wide) in paragraph at lines 65--65
 \T1/ptm/m/n/10.95 Sys-tem-atic Re-view of Re-cent De-vel-op-ments and Chal-leng
 es,^^Q \T1/ptm/m/it/10.95 arXiv e-prints\T1/ptm/m/n/10.95 , arXiv:2407.00116,
  []
 
 
-Overfull \hbox (46.68745pt too wide) in paragraph at lines 63--63
+Overfull \hbox (46.68745pt too wide) in paragraph at lines 65--65
 \T1/ptm/m/n/10.95 able: [][]$\T1/pcrs/m/n/10.95 https : / / www . sciencedirect
  . com / science / article / pii / S1361841521000839$[][]\T1/ptm/m/n/10.95 . 
  []
 
 [34] [35]
-Overfull \hbox (1.21397pt too wide) in paragraph at lines 63--63
+Overfull \hbox (1.21397pt too wide) in paragraph at lines 65--65
 \T1/ptm/m/n/10.95 berger, Eds., vol. 27, Cur-ran As-so-ciates, Inc., 2014. [On-
 line]. Avail-able: [][]$\T1/pcrs/m/n/10.95 https : / / arxiv .
  []
 
 
-Overfull \hbox (10.93967pt too wide) in paragraph at lines 63--63
+Overfull \hbox (10.93967pt too wide) in paragraph at lines 65--65
 \T1/ptm/m/n/10.95 ^^P  Gen-er-a-tive Ad-ver-sar-ial Net-works: An Overview,^^Q 
 \T1/ptm/m/it/10.95 IEEE Sig-nal Pro-cess-ing Mag-a-zine\T1/ptm/m/n/10.95 , vol.
  35,
@@ -1318,7 +1330,7 @@ Appendix A.
 
 ] (thesis.aux (abstract.aux) (un-sdg.aux) (acknowledgements.aux)
 (quote.aux) (abbrevs.aux) (introduction.aux) (literature_review.aux)
-(methods.aux) (appendix1.aux))
+(methods.aux) (results_discussion.aux) (conclusion.aux) (appendix1.aux))
 Package rerunfilecheck Info: File `thesis.out' has not changed.
 (rerunfilecheck)             Checksum: 387262F619724FCE15362350923BE809;3008.
 Package logreq Info: Writing requests to 'thesis.run.xml'.
@@ -1326,10 +1338,10 @@ Package logreq Info: Writing requests to 'thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 23089 strings out of 476339
- 421435 string characters out of 5788120
+ 23145 strings out of 476339
+ 423465 string characters out of 5788120
  1874340 words of memory out of 5000000
- 42889 multiletter control sequences out of 15000+600000
+ 42931 multiletter control sequences out of 15000+600000
  598581 words of font info for 141 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  78i,18n,82p,1399b,3225s stack positions out of 10000i,1000n,20000p,200000b,200000s
