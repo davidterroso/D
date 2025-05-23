@@ -635,6 +635,73 @@
       \endverb
       \keyw{Anomaly segmentation,Deep learning,OCT,Optical coherence tomography,Retinal layer segmentation,Semantic segmentation}
     \endentry
+    \entry{Jain2010}{article}{}
+      \name{author}{7}{}{%
+        {{hash=2255049c5cd52e64a24c97e11358bd33}{%
+           family={Jain},
+           familyi={J\bibinitperiod},
+           given={Nieraj},
+           giveni={N\bibinitperiod}}}%
+        {{hash=f0bbabbe6172a8156696c9cc255c4bd1}{%
+           family={Farsiu},
+           familyi={F\bibinitperiod},
+           given={Sina},
+           giveni={S\bibinitperiod}}}%
+        {{hash=ff6f74b4dde20f7fbda2324859b8babc}{%
+           family={Khanifar},
+           familyi={K\bibinitperiod},
+           given={Aziz\bibnamedelima A},
+           giveni={A\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=892189b9cca7a45482521bb16f5885be}{%
+           family={Bearelly},
+           familyi={B\bibinitperiod},
+           given={Srilaxmi},
+           giveni={S\bibinitperiod}}}%
+        {{hash=4e5831861817be751738e60ec88ebc25}{%
+           family={Smith},
+           familyi={S\bibinitperiod},
+           given={R\bibnamedelima Theodore},
+           giveni={R\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+        {{hash=3021ce7692e373f99d356425ac7975ea}{%
+           family={Izatt},
+           familyi={I\bibinitperiod},
+           given={Joseph\bibnamedelima A},
+           giveni={J\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=f54d1b7f79e950861a8afc100729c0ba}{%
+           family={Toth},
+           familyi={T\bibinitperiod},
+           given={Cynthia\bibnamedelima A},
+           giveni={C\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{b6b6367047e04335fc437edb21c6b44b}
+      \strng{fullhash}{20876a48581233259919385033812b82}
+      \strng{bibnamehash}{b6b6367047e04335fc437edb21c6b44b}
+      \strng{authorbibnamehash}{b6b6367047e04335fc437edb21c6b44b}
+      \strng{authornamehash}{b6b6367047e04335fc437edb21c6b44b}
+      \strng{authorfullhash}{20876a48581233259919385033812b82}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1552-5783}
+      \field{issue}{10}
+      \field{journaltitle}{Investigative Ophthalmology \& Visual Science}
+      \field{month}{5}
+      \field{title}{{Quantitative Comparison of Drusen Segmented on SD-OCT versus Drusen Delineated on Color Fundus Photographs}}
+      \field{volume}{51}
+      \field{year}{2010}
+      \field{pages}{4875\bibrangedash 4883}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1167/iovs.09-4962
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1167/iovs.09-4962
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1167/iovs.09-4962
+      \endverb
+    \endentry
     \entry{Almonte2020}{article}{}
       \name{author}{4}{}{%
         {{hash=ebfe218c5e6818a41d63b9ee7f9fdf5c}{%
@@ -664,8 +731,8 @@
       \strng{authorbibnamehash}{1dcf97b6bf66a1e3e5bb67677a695bc3}
       \strng{authornamehash}{77f50424a0206f82eeb258d242a91428}
       \strng{authorfullhash}{1dcf97b6bf66a1e3e5bb67677a695bc3}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Therapeutic Advances in Chronic Disease}
@@ -2499,8 +2566,8 @@
       \strng{authorbibnamehash}{1d02ca420e71ba714ee485c2b7f78014}
       \strng{authornamehash}{483e8dbebfdecf3ad8c3be14109e3bcd}
       \strng{authorfullhash}{1d02ca420e71ba714ee485c2b7f78014}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{1361-8415}
@@ -2551,8 +2618,8 @@
       \strng{authornamehash}{44c670fdadfa8181725811e4c0fc65ee}
       \strng{authorfullhash}{a7814fbbadb1957821e3cf1e07086dba}
       \field{extraname}{2}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0010-4825}
@@ -2607,8 +2674,8 @@
       \strng{authorbibnamehash}{e392121a6a49e24d413f4d874aa71a73}
       \strng{authornamehash}{7f28b21f49deb42efd379b831efac8f6}
       \strng{authorfullhash}{e392121a6a49e24d413f4d874aa71a73}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{medRxiv}
@@ -3242,8 +3309,8 @@
       \strng{authornamehash}{ffbacf1e860257f06e9fa85b60597bb0}
       \strng{authorfullhash}{1f1d2ff80023ff4c1a30f801270be827}
       \field{extraname}{2}
-      \field{sortinit}{9}
-      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issue}{8}
@@ -3300,8 +3367,8 @@
       \strng{authorbibnamehash}{5001daef0b14d2378296ff6188d96820}
       \strng{authornamehash}{62db41f84a086d2879baa766af63dba2}
       \strng{authorfullhash}{5001daef0b14d2378296ff6188d96820}
-      \field{sortinit}{9}
-      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issue}{4}
@@ -3371,8 +3438,8 @@
       \strng{authornamehash}{5e5bab1146ef17ecb81678f55abfeaca}
       \strng{authorfullhash}{dd47cb8a4ef1d7e2aabdd4d333f6464a}
       \field{extraname}{1}
-      \field{sortinit}{9}
-      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issue}{10}
@@ -3438,8 +3505,8 @@
       \strng{authornamehash}{5e5bab1146ef17ecb81678f55abfeaca}
       \strng{authorfullhash}{9be5ad25cd5fb70ac25a75d5ba849f67}
       \field{extraname}{2}
-      \field{sortinit}{9}
-      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issue}{5}
