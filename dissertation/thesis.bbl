@@ -3613,43 +3613,29 @@
       \endverb
       \keyw{Image segmentation;Retina;Training;Pathology;Biomedical imaging;Three-dimensional displays;Fluids;retinal fluid segmentation;Optical Coherence Tomography (OCT);OCT segmentation;macular edema;deep learning;GAN}
     \endentry
-    \entry{Kingma2017}{misc}{}
-      \name{author}{2}{}{%
+    \entry{Kingma2015}{inproceedings}{}
+      \name{author}{1}{}{%
         {{hash=b6fbd171848aad4edf3925543f1f1522}{%
            family={Kingma},
            familyi={K\bibinitperiod},
            given={Diederik\bibnamedelima P},
            giveni={D\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
-        {{hash=8aa66e8231cc2fdbe67aa4f18ca970c6}{%
-           family={Ba},
-           familyi={B\bibinitperiod},
-           given={Jimmy},
-           giveni={J\bibinitperiod}}}%
       }
-      \list{publisher}{1}{%
-        {arXiv}%
-      }
-      \strng{namehash}{a09df9f123146b8e2c7f1134c9496932}
-      \strng{fullhash}{a09df9f123146b8e2c7f1134c9496932}
-      \strng{bibnamehash}{a09df9f123146b8e2c7f1134c9496932}
-      \strng{authorbibnamehash}{a09df9f123146b8e2c7f1134c9496932}
-      \strng{authornamehash}{a09df9f123146b8e2c7f1134c9496932}
-      \strng{authorfullhash}{a09df9f123146b8e2c7f1134c9496932}
+      \strng{namehash}{b6fbd171848aad4edf3925543f1f1522}
+      \strng{fullhash}{b6fbd171848aad4edf3925543f1f1522}
+      \strng{bibnamehash}{b6fbd171848aad4edf3925543f1f1522}
+      \strng{authorbibnamehash}{b6fbd171848aad4edf3925543f1f1522}
+      \strng{authornamehash}{b6fbd171848aad4edf3925543f1f1522}
+      \strng{authorfullhash}{b6fbd171848aad4edf3925543f1f1522}
       \field{sortinit}{1}
       \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{ICLR 2015}
-      \field{title}{{Adam: A Method for Stochastic Optimization}}
-      \field{year}{2017}
+      \field{booktitle}{{3rd International Conference for Learning Representations}}
+      \field{title}{{Adam: A method for stochastic optimization}}
+      \field{year}{2015}
       \verb{doi}
       \verb https://doi.org/10.48550/arXiv.1412.6980
-      \endverb
-      \verb{urlraw}
-      \verb https://arxiv.org/abs/1412.6980
-      \endverb
-      \verb{url}
-      \verb https://arxiv.org/abs/1412.6980
       \endverb
     \endentry
     \entry{Tran2020}{article}{}
