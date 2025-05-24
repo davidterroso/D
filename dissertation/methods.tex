@@ -82,9 +82,9 @@ A possible distribution of 70 OCT volumes from the RETOUCH dataset, which were u
 
 In \ref{Experiment2} Experiment 2, where the model performs binary segmentation of each fluid, the volumes can be redistributed using the same algorithm, with less bounds. In this experiment, it is relevant to split the volumes in folds based only on their vendors and quantity of the fluid to segment, thus eliminating the restrictions imposed by the quantity of other two fluids. Nevertheless, the volumes that are in the previously defined reserved fold can not be used nor in training nor in validation.
 \par
-In the interslice generation experiments, the 5-fold split was not done by considering the fluids quantity in each fold. Since in this experiment the test volumes of the RETOUCH dataset were used and there are no fluid masks available, the quantity of fluid in each test volume is unknown. However, one of the folds in the interslice 5-fold split is the one reserved in the multi-class segmentation split.
+In the inter-slice generation experiments, the 5-fold split was not done by considering the fluids quantity in each fold. Since in this experiment the test volumes of the RETOUCH dataset were used and there are no fluid masks available, the quantity of fluid in each test volume is unknown. However, one of the folds in the inter-slice 5-fold split is the one reserved in the multi-class segmentation split.
 \par
-The split was performed by taking into consideration solely the number of slices per device. In this experiments, the characteristic's of each device are important, since each device has a specific interslice distance, which is different even across devices of the same vendor and an important characteristic in image generation.
+The split was performed by taking into consideration solely the number of slices per device. In this experiments, the characteristic's of each device are important, since each device has a specific inter-slice distance, which is different even across devices of the same vendor and an important characteristic in image generation.
 \par
 Considering both training and testing volumes of the RETOUCH dataset, there are 38 Cirrus, 38 Spectralis, 13 Topcon T-1000 and 23 Topcon T-2000 (two of which with 64 slices). The fold reserved in the multi-class segmentation task is composed of the following volumes: 4 Cirrus, 5 Spectralis, 3 Topcon T-1000, and 2 Topcon T-2000 (one of which with 64 slices). The volumes remaining for the four folds used in the generation task can be distributed as in the Table \ref{tab:FourFoldSplit}.
 
@@ -119,7 +119,7 @@ In these experiments, the U-Net \parencite{Ronneberger2015} was used in the mult
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.75\linewidth]{../figures/UNet}
+	\includegraphics[width=0.75\linewidth]{figures/UNet}
 	\caption{U-Net architecture \cite{Ronneberger2015}.}
 	\label{fig:UNet}
 \end{figure}
@@ -167,7 +167,7 @@ The model was initially trained on patches of size 256 $\times$ 128 (H $\times$ 
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=1.0\linewidth]{../figures/FluidAndROI.png}
+	\includegraphics[width=1.0\linewidth]{figures/FluidAndROI.png}
 	\caption{Cirrus B-scan (left), fluid masks overlay (middle) with IRF in red, SRF in green, and PED in blue, and the ROI mask overlaid in purple (right). The red bounding box signals a possible 256 $\times$ 128 patch that could be extracted.}
 	\label{fig:FluidAndROI}
 \end{figure}
@@ -184,7 +184,7 @@ In this experiment, due to the larger size of the patches that are being loaded,
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.4\linewidth]{../figures/BigPatchExtraction.png}
+	\includegraphics[width=0.4\linewidth]{figures/BigPatchExtraction.png}
 	\caption{Cirrus B-scan and its respective three patches of shape 496 $\times$ 512.}
 	\label{fig:BigPatchExtraction}
 \end{figure}
@@ -196,7 +196,7 @@ The dimensions of the voxels in the OCT volumes change according to the device t
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.4\linewidth]{../figures/CirrusSpectralisRetinalLayerComparison.png}
+	\includegraphics[width=0.4\linewidth]{figures/CirrusSpectralisRetinalLayerComparison.png}
 	\caption{B-scan of the retinal layers in different patients, using Cirrus (left) and Spectralis (right) devices. In Cirrus, the retinal layers appear much larger than in Spectralis.}
 	\label{fig:CirrusSpectralisRetinalLayerComparison}
 \end{figure}
@@ -205,14 +205,14 @@ Then, vertical patches, of shape 496 $\times$ 128, were extracted from each B-sc
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.65\linewidth]{../figures/CirrusFourPatchExtraction.png}
+	\includegraphics[width=0.65\linewidth]{figures/CirrusFourPatchExtraction.png}
 	\caption{Four vertical patches of shape 496 $\times$ 128 extracted from a Cirrus B-scan.}
 	\label{fig:CirrusFourPatchExtraction}
 \end{figure}
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.65\linewidth]{../figures/CirrusSevenPatchExtraction.png}
+	\includegraphics[width=0.65\linewidth]{figures/CirrusSevenPatchExtraction.png}
 	\caption{Seven vertical patches of shape 496 $\times$ 128 extracted from a Cirrus B-scan.}
 	\label{fig:CirrusSevenPatchExtraction}
 \end{figure}
@@ -220,7 +220,7 @@ Then, vertical patches, of shape 496 $\times$ 128, were extracted from each B-sc
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.75\linewidth]{../figures/CirrusThirteenPatchExtraction.png}
+	\includegraphics[width=0.75\linewidth]{figures/CirrusThirteenPatchExtraction.png}
 	\caption{Thirteen vertical patches of shape 496 $\times$ 128 extracted from a Cirrus B-scan.}
 	\label{fig:CirrusThirteenPatchExtraction}
 \end{figure}
@@ -253,7 +253,7 @@ The intermediate slices were generated using the RETOUCH dataset as training and
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=1.0\linewidth]{../figures/FrameInterpolationFramework.png}
+	\includegraphics[width=1.0\linewidth]{figures/FrameInterpolationFramework.png}
 	\caption{Scheme explaining the input data of the generative models. Each frame refers to B-scan from an OCT volume. Extracted from \textcite{Tran2020}.}
 	\label{fig:FrameInterpolationFramework}
 \end{figure}
@@ -293,7 +293,7 @@ In the first experiment focused on intermediate slice synthesis, a GAN was used.
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.7\linewidth]{../figures/GANFramework}
+	\includegraphics[width=0.7\linewidth]{figures/GANFramework}
 	\caption{Example of a GAN framework, where $\mathcal{D}$ is the discriminator and $\mathcal{G}$ is the generator \cite{Creswell2018}.}
 	\label{fig:GANFramework}
 \end{figure}
@@ -304,7 +304,7 @@ In the original implementation, one patch is randomly extracted from the triplet
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.7\linewidth]{../figures/CirrusSixtyFourPatchExtraction.png}
+	\includegraphics[width=0.7\linewidth]{figures/CirrusSixtyFourPatchExtraction.png}
 	\caption{Patches with shape 64 $\times$ 64 extracted from a Cirrus B-scan which was resized to 496 $\times$ 512.}
 	\label{fig:CirrusSixtyFourPatchExtraction}
 \end{figure}

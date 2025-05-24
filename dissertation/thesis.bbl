@@ -299,8 +299,8 @@
       \strng{authorbibnamehash}{31a34c173e929ecfb3a547aec60de00c}
       \strng{authornamehash}{e6c4eb3c19e8573bbc9a722271b92925}
       \strng{authorfullhash}{31a34c173e929ecfb3a547aec60de00c}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0039-6257}
@@ -381,8 +381,8 @@
       \strng{editorbibnamehash}{5f59176114bd5a30ff2d064a8ff9b183}
       \strng{editornamehash}{8d9dc26cae69adf2f402d0f056cd1091}
       \strng{editorfullhash}{5f59176114bd5a30ff2d064a8ff9b183}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{isbn}{978-3-319-96157-6}
@@ -414,8 +414,8 @@
       \strng{authorbibnamehash}{22d2369ccbe6cbb00b1aa08a4895051e}
       \strng{authornamehash}{22d2369ccbe6cbb00b1aa08a4895051e}
       \strng{authorfullhash}{22d2369ccbe6cbb00b1aa08a4895051e}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issue}{22}
@@ -2098,8 +2098,8 @@
       \strng{editorbibnamehash}{33938a515d73fb8b00fd2bd7509d5e86}
       \strng{editornamehash}{7d63d752dc1fd3abad4ee5f250821c1c}
       \strng{editorfullhash}{33938a515d73fb8b00fd2bd7509d5e86}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Medical Image Computing and Computer-Assisted Intervention – MICCAI 2015}
@@ -2346,8 +2346,8 @@
       \strng{authorbibnamehash}{27e2c17192330161a0b02e848944e706}
       \strng{authornamehash}{27e2c17192330161a0b02e848944e706}
       \strng{authorfullhash}{757329811b9544488a9138d57d62e683}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{arXiv e-prints}
@@ -3120,6 +3120,47 @@
       \field{year}{2020}
       \verb{doi}
       \verb 10.3390/app10186245
+      \endverb
+    \endentry
+    \entry{Isola2017}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=cae9f806bc99a5f19fadea538fc2db04}{%
+           family={Isola},
+           familyi={I\bibinitperiod},
+           given={Phillip},
+           giveni={P\bibinitperiod}}}%
+        {{hash=9fbb4b31963f07f34a13b375b4997338}{%
+           family={Zhu},
+           familyi={Z\bibinitperiod},
+           given={Jun-Yan},
+           giveni={J\bibinithyphendelim Y\bibinitperiod}}}%
+        {{hash=fbb5fac74ecd20c0f90a3884d6a93cdf}{%
+           family={Zhou},
+           familyi={Z\bibinitperiod},
+           given={Tinghui},
+           giveni={T\bibinitperiod}}}%
+        {{hash=5a663b27298722834a8cf09bb93d8c94}{%
+           family={Efros},
+           familyi={E\bibinitperiod},
+           given={Alexei\bibnamedelima A},
+           giveni={A\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \strng{namehash}{dd9b478c7b76d20d978868251cf3ad35}
+      \strng{fullhash}{18664a8c078ce7dff4c499de4e40bf2f}
+      \strng{bibnamehash}{18664a8c078ce7dff4c499de4e40bf2f}
+      \strng{authorbibnamehash}{18664a8c078ce7dff4c499de4e40bf2f}
+      \strng{authornamehash}{dd9b478c7b76d20d978868251cf3ad35}
+      \strng{authorfullhash}{18664a8c078ce7dff4c499de4e40bf2f}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}
+      \field{month}{7}
+      \field{title}{{Image-To-Image Translation With Conditional Adversarial Networks}}
+      \field{year}{2017}
+      \verb{doi}
+      \verb 10.48550/arXiv.1611.07004
       \endverb
     \endentry
     \entry{Bogunovic2019b}{article}{}
