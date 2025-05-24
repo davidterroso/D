@@ -23,4 +23,4 @@
 \contentsline {subsubsection}{\numberline {3.2.4.1}Experiment 5}{31}{subsubsection.3.2.4.1}%
 \contentsline {subsubsection}{\numberline {3.2.4.2}Experiment 6}{31}{subsubsection.3.2.4.2}%
 \contentsline {chapter}{References}{32}{section*.35}%
-\contentsline {chapter}{\numberline {A}Lorem Ipsum}{39}{appendix.A}%
+\contentsline {chapter}{\numberline {A}Lorem Ipsum}{38}{appendix.A}%

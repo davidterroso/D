@@ -45,12 +45,6 @@
       \verb{doi}
       \verb 10.3389/fpsyg.2019.02246
       \endverb
-      \verb{urlraw}
-      \verb https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2019.02246
-      \endverb
-      \verb{url}
-      \verb https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2019.02246
-      \endverb
     \endentry
     \entry{Bogunovic2019a}{inbook}{}
       \name{author}{4}{}{%
@@ -116,13 +110,7 @@
       \field{pages}{273\bibrangedash 298}
       \range{pages}{26}
       \verb{doi}
-      \verb https://doi.org/10.1016/B978-0-08-102816-2.00015-0
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/B9780081028162000150
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/B9780081028162000150
+      \verb 10.1016/B978-0-08-102816-2.00015-0
       \endverb
       \keyw{Anti-VEGF,Image classification,Image segmentation,Optical coherence tomography,Retina}
     \endentry
@@ -173,13 +161,7 @@
       \field{pages}{1728\bibrangedash 1738}
       \range{pages}{11}
       \verb{doi}
-      \verb https://doi.org/10.1016/S0140-6736(12)60282-7
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S0140673612602827
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S0140673612602827
+      \verb 10.1016/S0140-6736(12)60282-7
       \endverb
     \endentry
     \entry{Mitchell2018}{article}{}
@@ -229,12 +211,6 @@
       \range{pages}{13}
       \verb{doi}
       \verb 10.1016/S0140-6736(18)31550-2
-      \endverb
-      \verb{urlraw}
-      \verb https://doi.org/10.1016/S0140-6736(18)31550-2
-      \endverb
-      \verb{url}
-      \verb https://doi.org/10.1016/S0140-6736(18)31550-2
       \endverb
     \endentry
     \entry{Musat2015}{article}{}
@@ -336,13 +312,7 @@
       \field{pages}{1\bibrangedash 32}
       \range{pages}{32}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.survophthal.2008.10.001
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S0039625708001811
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S0039625708001811
+      \verb 10.1016/j.survophthal.2008.10.001
       \endverb
       \keyw{AGEs,OCT,PEDF,PKC,RAGE,VEGF,angiotensin II,blood retinal barrier,clinically significant macular edema,diabetic macular edema,intravitreal steroid injection,laser photocoagulation,leukostasis,micropulse sub-threshold laser,retinal thickness analyzer,steroids,vasoactive factors,vitrectomy,vitreoretinal interface}
     \endentry
@@ -424,12 +394,6 @@
       \verb{doi}
       \verb 10.1007/978-3-319-96157-6_3
       \endverb
-      \verb{urlraw}
-      \verb https://doi.org/10.1007/978-3-319-96157-6_3
-      \endverb
-      \verb{url}
-      \verb https://doi.org/10.1007/978-3-319-96157-6_3
-      \endverb
     \endentry
     \entry{Wong2010}{article}{}
       \name{author}{2}{}{%
@@ -463,12 +427,6 @@
       \range{pages}{10}
       \verb{doi}
       \verb 10.1056/NEJMcp1003934
-      \endverb
-      \verb{urlraw}
-      \verb https://www.nejm.org/doi/full/10.1056/NEJMcp1003934
-      \endverb
-      \verb{url}
-      \verb https://www.nejm.org/doi/full/10.1056/NEJMcp1003934
       \endverb
     \endentry
     \entry{Huang1991}{article}{}
@@ -530,6 +488,7 @@
       \strng{authorbibnamehash}{036f94b10b252abfb923d921e17bf714}
       \strng{authornamehash}{036f94b10b252abfb923d921e17bf714}
       \strng{authorfullhash}{dbe69d80f27c68d8553363a2ddea9eca}
+      \field{extraname}{1}
       \field{sortinit}{2}
       \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
@@ -542,6 +501,9 @@
       \field{year}{1991}
       \field{pages}{1178\bibrangedash 1181}
       \range{pages}{4}
+      \verb{doi}
+      \verb 10.1126/science.1957169
+      \endverb
     \endentry
     \entry{Drexler2008}{article}{}
       \name{author}{2}{}{%
@@ -575,13 +537,7 @@
       \field{pages}{45\bibrangedash 88}
       \range{pages}{44}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.preteyeres.2007.07.005
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S1350946207000444
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S1350946207000444
+      \verb 10.1016/j.preteyeres.2007.07.005
       \endverb
     \endentry
     \entry{Viedma2022}{article}{}
@@ -625,13 +581,7 @@
       \field{pages}{247\bibrangedash 264}
       \range{pages}{18}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.neucom.2022.08.021
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S092523122200995X
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S092523122200995X
+      \verb 10.1016/j.neucom.2022.08.021
       \endverb
       \keyw{Anomaly segmentation,Deep learning,OCT,Optical coherence tomography,Retinal layer segmentation,Semantic segmentation}
     \endentry
@@ -694,12 +644,6 @@
       \range{pages}{9}
       \verb{doi}
       \verb 10.1167/iovs.09-4962
-      \endverb
-      \verb{urlraw}
-      \verb https://doi.org/10.1167/iovs.09-4962
-      \endverb
-      \verb{url}
-      \verb https://doi.org/10.1167/iovs.09-4962
       \endverb
     \endentry
     \entry{Almonte2020}{article}{}
@@ -792,13 +736,7 @@
       \field{pages}{107214}
       \range{pages}{1}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.compbiomed.2023.107214
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S0010482523006790
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S0010482523006790
+      \verb 10.1016/j.compbiomed.2023.107214
       \endverb
       \keyw{3D volume,Convolutional neural networks,GAN,Medical synthesis,OCT,Optical coherence tomography,Resolution increase,Slice synthesis}
     \endentry
@@ -840,12 +778,6 @@
       \range{pages}{10}
       \verb{doi}
       \verb 10.3390/mca18030511
-      \endverb
-      \verb{urlraw}
-      \verb https://www.mdpi.com/2297-8747/18/3/511
-      \endverb
-      \verb{url}
-      \verb https://www.mdpi.com/2297-8747/18/3/511
       \endverb
     \endentry
     \entry{Quek2022}{article}{}
@@ -937,12 +869,6 @@
       \verb{doi}
       \verb 10.1007/s13167-022-00301-5
       \endverb
-      \verb{urlraw}
-      \verb https://doi.org/10.1007/s13167-022-00301-5
-      \endverb
-      \verb{url}
-      \verb https://doi.org/10.1007/s13167-022-00301-5
-      \endverb
     \endentry
     \entry{Pawan2021}{article}{}
       \name{author}{9}{}{%
@@ -1013,12 +939,6 @@
       \verb{doi}
       \verb 10.1007/s11517-021-02364-4
       \endverb
-      \verb{urlraw}
-      \verb https://doi.org/10.1007/s11517-021-02364-4
-      \endverb
-      \verb{url}
-      \verb https://doi.org/10.1007/s11517-021-02364-4
-      \endverb
     \endentry
     \entry{Liu2021}{article}{}
       \name{author}{5}{}{%
@@ -1067,13 +987,7 @@
       \field{pages}{576\bibrangedash 591}
       \range{pages}{16}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.neucom.2020.07.143
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S0925231220319135
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S0925231220319135
+      \verb 10.1016/j.neucom.2020.07.143
       \endverb
       \keyw{Attention mechanism,Deep learning,Fluid region segmentation,Medical image segmentation,Optical coherence tomography,U-Net}
     \endentry
@@ -1131,12 +1045,6 @@
       \range{pages}{1}
       \verb{doi}
       \verb 10.1167/tvst.9.2.54
-      \endverb
-      \verb{urlraw}
-      \verb https://doi.org/10.1167/tvst.9.2.54
-      \endverb
-      \verb{url}
-      \verb https://doi.org/10.1167/tvst.9.2.54
       \endverb
     \endentry
     \entry{Wang2021}{article}{}
@@ -1208,12 +1116,6 @@
       \range{pages}{1}
       \verb{doi}
       \verb 10.1038/s41598-021-92458-8
-      \endverb
-      \verb{urlraw}
-      \verb https://doi.org/10.1038/s41598-021-92458-8
-      \endverb
-      \verb{url}
-      \verb https://doi.org/10.1038/s41598-021-92458-8
       \endverb
     \endentry
     \entry{Wu2023}{article}{}
@@ -1309,13 +1211,7 @@
       \field{pages}{213\bibrangedash 222}
       \range{pages}{10}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.ophtha.2022.09.014
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S0161642022007497
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S0161642022007497
+      \verb 10.1016/j.ophtha.2022.09.014
       \endverb
       \keyw{Cross-domain learning,Macula,OCT,Retina,Unsupervised learning}
     \endentry
@@ -1445,13 +1341,7 @@
       \field{pages}{108458}
       \range{pages}{1}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.compbiomed.2024.108458
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S0010482524005420
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S0010482524005420
+      \verb 10.1016/j.compbiomed.2024.108458
       \endverb
       \keyw{Cross-Transformer,Macular edema,OCT,Semantic uncertainty}
     \endentry
@@ -1506,13 +1396,7 @@
       \field{pages}{106650}
       \range{pages}{1}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.compbiomed.2023.106650
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S0010482523001154
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S0010482523001154
+      \verb 10.1016/j.compbiomed.2023.106650
       \endverb
       \keyw{Adversarial transfer learning,Medical image segmentation,Optical coherence tomography,Self-training,Unsupervised domain adaptation}
     \endentry
@@ -1587,13 +1471,7 @@
       \field{pages}{69\bibrangedash 80}
       \range{pages}{12}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.cmpb.2019.04.027
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S0169260718318327
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S0169260718318327
+      \verb 10.1016/j.cmpb.2019.04.027
       \endverb
       \keyw{Central serous chorioretinopathy,Double-branched and area-constraint fully convolutional networks,Medical image segmentation,Spectral domain optical coherence tomography}
     \endentry
@@ -1654,13 +1532,7 @@
       \field{pages}{104727}
       \range{pages}{1}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.compbiomed.2021.104727
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S0010482521005217
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S0010482521005217
+      \verb 10.1016/j.compbiomed.2021.104727
       \endverb
       \keyw{Deep learning,Lesions detection,Medical image analysis,Optical coherence tomography (OCT),Radiomics,Retinal fluids segmentation}
     \endentry
@@ -1720,13 +1592,7 @@
       \field{pages}{100\bibrangedash 110}
       \range{pages}{11}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.media.2019.02.011
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S1361841519300167
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S1361841519300167
+      \verb 10.1016/j.media.2019.02.011
       \endverb
       \keyw{Fully convolutional network,Multiclass segmentation and detection,Optical coherence tomography,Retinal fluid}
     \endentry
@@ -1833,12 +1699,6 @@
       \verb{doi}
       \verb 10.1364/BOE.486276
       \endverb
-      \verb{urlraw}
-      \verb https://opg.optica.org/boe/abstract.cfm?URI=boe-14-7-3294
-      \endverb
-      \verb{url}
-      \verb https://opg.optica.org/boe/abstract.cfm?URI=boe-14-7-3294
-      \endverb
       \keyw{Deep learning; High throughput optics; Machine vision; Neural networks; Segmentation; Spatial resolution}
     \endentry
     \entry{Sappa2021}{article}{}
@@ -1899,12 +1759,6 @@
       \range{pages}{14}
       \verb{doi}
       \verb 10.1007/s10278-021-00459-w
-      \endverb
-      \verb{urlraw}
-      \verb https://doi.org/10.1007/s10278-021-00459-w
-      \endverb
-      \verb{url}
-      \verb https://doi.org/10.1007/s10278-021-00459-w
       \endverb
     \endentry
     \entry{Xing2022}{article}{}
@@ -2034,12 +1888,6 @@
       \verb{doi}
       \verb 10.1088/1361-6560/ac7378
       \endverb
-      \verb{urlraw}
-      \verb https://dx.doi.org/10.1088/1361-6560/ac7378
-      \endverb
-      \verb{url}
-      \verb https://dx.doi.org/10.1088/1361-6560/ac7378
-      \endverb
     \endentry
     \entry{Padilla2022}{article}{}
       \name{author}{5}{}{%
@@ -2091,12 +1939,6 @@
       \verb{doi}
       \verb 10.1167/tvst.11.9.29
       \endverb
-      \verb{urlraw}
-      \verb https://doi.org/10.1167/tvst.11.9.29
-      \endverb
-      \verb{url}
-      \verb https://doi.org/10.1167/tvst.11.9.29
-      \endverb
     \endentry
     \entry{Hu2019}{article}{}
       \name{author}{3}{}{%
@@ -2134,13 +1976,7 @@
       \field{pages}{216\bibrangedash 227}
       \range{pages}{12}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.media.2019.05.002
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S1361841519300386
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S1361841519300386
+      \verb 10.1016/j.media.2019.05.002
       \endverb
       \keyw{Atrous convolution,Deep neural networks,Macular edema segmentation}
     \endentry
@@ -2209,12 +2045,6 @@
       \verb{doi}
       \verb 10.1167/tvst.10.4.17
       \endverb
-      \verb{urlraw}
-      \verb https://doi.org/10.1167/tvst.10.4.17
-      \endverb
-      \verb{url}
-      \verb https://doi.org/10.1167/tvst.10.4.17
-      \endverb
     \endentry
     \entry{Ronneberger2015}{inproceedings}{}
       \name{author}{3}{}{%
@@ -2274,10 +2104,13 @@
       \field{labeltitlesource}{title}
       \field{booktitle}{Medical Image Computing and Computer-Assisted Intervention – MICCAI 2015}
       \field{isbn}{978-3-319-24574-4}
-      \field{title}{{{U-Net}: Convolutional Networks for Biomedical Image Segmentation}}
+      \field{title}{{U-Net: Convolutional Networks for Biomedical Image Segmentation}}
       \field{year}{2015}
       \field{pages}{234\bibrangedash 241}
       \range{pages}{8}
+      \verb{doi}
+      \verb 10.1007/978-3-319-24574-4_28
+      \endverb
     \endentry
     \entry{LChen2018}{article}{}
       \name{author}{5}{}{%
@@ -2313,6 +2146,7 @@
       \strng{authorbibnamehash}{c0db6e31d214cb90a9557639a905cee8}
       \strng{authornamehash}{5b195b34f54d3e071b82ddb71e157be1}
       \strng{authorfullhash}{c0db6e31d214cb90a9557639a905cee8}
+      \field{extraname}{1}
       \field{sortinit}{7}
       \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
       \field{labelnamesource}{author}
@@ -2578,13 +2412,7 @@
       \field{pages}{102037}
       \range{pages}{1}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.media.2021.102037
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S1361841521000839
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S1361841521000839
+      \verb 10.1016/j.media.2021.102037
       \endverb
       \keyw{Cardiac MRI,Conditional batch normalisation,Conditional generative adversarial net,Deep learning,Optical flow,Super-resolution}
     \endentry
@@ -2630,13 +2458,7 @@
       \field{pages}{105667}
       \range{pages}{1}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.compbiomed.2022.105667
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S0010482522004565
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S0010482522004565
+      \verb 10.1016/j.compbiomed.2022.105667
       \endverb
       \keyw{Deep learning,Frame interpolation,Medical image segmentation,Multi-task learning,Slice imputation}
     \endentry
@@ -2686,12 +2508,6 @@
       \range{pages}{-1}
       \verb{doi}
       \verb 10.1101/2024.05.08.24307089
-      \endverb
-      \verb{urlraw}
-      \verb http://medrxiv.org/content/early/2024/05/09/2024.05.08.24307089.abstract
-      \endverb
-      \verb{url}
-      \verb http://medrxiv.org/content/early/2024/05/09/2024.05.08.24307089.abstract
       \endverb
     \endentry
     \entry{Zhang2024}{article}{}
@@ -2746,13 +2562,7 @@
       \field{pages}{108426}
       \range{pages}{1}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.cmpb.2024.108426
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S016926072400419X
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S016926072400419X
+      \verb 10.1016/j.cmpb.2024.108426
       \endverb
       \keyw{Depth information,Generative Adversarial Networks,Magnetic resonance image,Rectal cancer,Super-resolution,Three-axis mutual supervision}
     \endentry
@@ -2801,10 +2611,13 @@
       \field{labeltitlesource}{title}
       \field{booktitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}
       \field{month}{6}
-      \field{title}{{Incremental Cross-View Mutual Distillation for Self-Supervised Medical {CT} Synthesis}}
+      \field{title}{{Incremental Cross-View Mutual Distillation for Self-Supervised Medical CT Synthesis}}
       \field{year}{2022}
       \field{pages}{20677\bibrangedash 20686}
       \range{pages}{10}
+      \verb{doi}
+      \verb 10.48550/arXiv.2112.10325
+      \endverb
     \endentry
     \entry{Nimitha2024}{article}{}
       \name{author}{2}{}{%
@@ -2837,13 +2650,7 @@
       \field{pages}{195\bibrangedash 209}
       \range{pages}{15}
       \verb{doi}
-      \verb https://doi.org/10.1016/j.mri.2024.04.021
-      \endverb
-      \verb{urlraw}
-      \verb https://www.sciencedirect.com/science/article/pii/S0730725X24001346
-      \endverb
-      \verb{url}
-      \verb https://www.sciencedirect.com/science/article/pii/S0730725X24001346
+      \verb 10.1016/j.mri.2024.04.021
       \endverb
       \keyw{Deep learning,Frame interpolation,Generative adversarial networks,In-plane and out-of-plane attention,Magnetic resonance imaging,Super-resolution}
     \endentry
@@ -2888,11 +2695,11 @@
     \endentry
     \entry{YChen2018}{inproceedings}{}
       \name{author}{6}{}{%
-        {{hash=45380a932509d4299ae37d4962b4d926}{%
-           family={Yuhua},
-           familyi={Y\bibinitperiod},
-           given={Chen},
-           giveni={C\bibinitperiod}}}%
+        {{hash=811ceb0cea7550f0abce68827e166ba5}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Yuhua},
+           giveni={Y\bibinitperiod}}}%
         {{hash=20f1235dbaae639ab190cc695022122d}{%
            family={Shi},
            familyi={S\bibinitperiod},
@@ -2949,25 +2756,29 @@
       \list{publisher}{1}{%
         {Springer International Publishing}%
       }
-      \strng{namehash}{4b4be12487573a1c61c36c38596ccbcf}
-      \strng{fullhash}{79d20248d4b115917f9cefd686130949}
-      \strng{bibnamehash}{79d20248d4b115917f9cefd686130949}
-      \strng{authorbibnamehash}{79d20248d4b115917f9cefd686130949}
-      \strng{authornamehash}{4b4be12487573a1c61c36c38596ccbcf}
-      \strng{authorfullhash}{79d20248d4b115917f9cefd686130949}
+      \strng{namehash}{e868aa328f14640ac6d039593384f0bd}
+      \strng{fullhash}{6da4287b81f883deb64c03738de7e71a}
+      \strng{bibnamehash}{6da4287b81f883deb64c03738de7e71a}
+      \strng{authorbibnamehash}{6da4287b81f883deb64c03738de7e71a}
+      \strng{authornamehash}{e868aa328f14640ac6d039593384f0bd}
+      \strng{authorfullhash}{6da4287b81f883deb64c03738de7e71a}
       \strng{editorbibnamehash}{4504e97799f514c5463e2d0ad8cc6641}
       \strng{editornamehash}{18b3f694259f08f7fd2048c63a39bab3}
       \strng{editorfullhash}{4504e97799f514c5463e2d0ad8cc6641}
+      \field{extraname}{2}
       \field{sortinit}{8}
       \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Medical Image Computing and Computer Assisted Intervention – MICCAI 2018}
       \field{isbn}{978-3-030-00928-1}
-      \field{title}{{Efficient and Accurate {MRI} Super-Resolution Using a Generative Adversarial Network and {3D} Multi-level Densely Connected Network}}
+      \field{title}{{Efficient and Accurate MRI Super-Resolution Using a Generative Adversarial Network and 3D Multi-level Densely Connected Network}}
       \field{year}{2018}
       \field{pages}{91\bibrangedash 99}
       \range{pages}{9}
+      \verb{doi}
+      \verb 10.1007/978-3-030-00928-1_11
+      \endverb
     \endentry
     \entry{Sanchez2018}{article}{}
       \name{author}{2}{}{%
@@ -3067,10 +2878,13 @@
       \field{labeltitlesource}{title}
       \field{booktitle}{Machine Learning for Medical Image Reconstruction}
       \field{isbn}{978-3-030-33843-5}
-      \field{title}{{Virtual Thin Slice: {3D} Conditional {GAN}-based Super-Resolution for {CT} Slice Interval}}
+      \field{title}{{Virtual Thin Slice: 3D Conditional GAN-based Super-Resolution for CT Slice Interval}}
       \field{year}{2019}
       \field{pages}{91\bibrangedash 100}
       \range{pages}{10}
+      \verb{doi}
+      \verb 10.1007/978-3-030-33843-5_9
+      \endverb
     \endentry
     \entry{Zhang2022}{article}{}
       \name{author}{7}{}{%
@@ -3132,11 +2946,180 @@
       \verb{doi}
       \verb 10.3390/tomography8020073
       \endverb
-      \verb{urlraw}
-      \verb https://www.mdpi.com/2379-139X/8/2/73
+    \endentry
+    \entry{Gambini2024}{article}{}
+      \name{author}{7}{}{%
+        {{hash=5ccc8414e9393202e69f8d80d8b1c90b}{%
+           family={Gambini},
+           familyi={G\bibinitperiod},
+           given={Laura},
+           giveni={L\bibinitperiod}}}%
+        {{hash=59ddb2dae411af868528c4373dd6c286}{%
+           family={Gabbett},
+           familyi={G\bibinitperiod},
+           given={Cian},
+           giveni={C\bibinitperiod}}}%
+        {{hash=9ac5c27eb6fecf0a0151e58a88396a67}{%
+           family={Doolan},
+           familyi={D\bibinitperiod},
+           given={Luke},
+           giveni={L\bibinitperiod}}}%
+        {{hash=198a3280f24f3f63f534409dae1a6ce7}{%
+           family={Jones},
+           familyi={J\bibinitperiod},
+           given={Lewys},
+           giveni={L\bibinitperiod}}}%
+        {{hash=1ca0afd2ee72e9943337b060fce802c7}{%
+           family={Coleman},
+           familyi={C\bibinitperiod},
+           given={Jonathan\bibnamedelima N},
+           giveni={J\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=599b9e8f613583c2f4da1572ba07ceea}{%
+           family={Gilligan},
+           familyi={G\bibinitperiod},
+           given={Paddy},
+           giveni={P\bibinitperiod}}}%
+        {{hash=62d2dda22c4424eaf12886b8b80e28c3}{%
+           family={Sanvito},
+           familyi={S\bibinitperiod},
+           given={Stefano},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{4e13bc099b44e8e58b3e35483e75c27e}
+      \strng{fullhash}{ba9ad64a1991615e4f23bafbd239cadf}
+      \strng{bibnamehash}{4e13bc099b44e8e58b3e35483e75c27e}
+      \strng{authorbibnamehash}{4e13bc099b44e8e58b3e35483e75c27e}
+      \strng{authornamehash}{4e13bc099b44e8e58b3e35483e75c27e}
+      \strng{authorfullhash}{ba9ad64a1991615e4f23bafbd239cadf}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2041-1723}
+      \field{issue}{1}
+      \field{journaltitle}{Nature Communications}
+      \field{title}{{Video frame interpolation neural network for 3D tomography across different length scales}}
+      \field{volume}{15}
+      \field{year}{2024}
+      \field{pages}{7962}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1038/s41467-024-52260-2
       \endverb
-      \verb{url}
-      \verb https://www.mdpi.com/2379-139X/8/2/73
+    \endentry
+    \entry{Huang2022}{inproceedings}{}
+      \name{author}{5}{}{%
+        {{hash=fbc9a230a139d88c80eacff92a40be70}{%
+           family={Huang},
+           familyi={H\bibinitperiod},
+           given={Zhewei},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=e47749a5122406608ff501f9c639bb42}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Tianyuan},
+           giveni={T\bibinitperiod}}}%
+        {{hash=d8d198d445e9adc343e3db89f7ba5da6}{%
+           family={Heng},
+           familyi={H\bibinitperiod},
+           given={Wen},
+           giveni={W\bibinitperiod}}}%
+        {{hash=226a0181db1b8f64cc64fda8f435aad9}{%
+           family={Shi},
+           familyi={S\bibinitperiod},
+           given={Boxin},
+           giveni={B\bibinitperiod}}}%
+        {{hash=9bc063c8ab4edfc0f7569e426c971cf9}{%
+           family={Zhou},
+           familyi={Z\bibinitperiod},
+           given={Shuchang},
+           giveni={S\bibinitperiod}}}%
+      }
+      \name{editor}{5}{}{%
+        {{hash=477bdcd3c66a7104c37842872905df4b}{%
+           family={Avidan},
+           familyi={A\bibinitperiod},
+           given={Shai},
+           giveni={S\bibinitperiod}}}%
+        {{hash=6bbed608dc85bef00b737d3ddfa91b7f}{%
+           family={Brostow},
+           familyi={B\bibinitperiod},
+           given={Gabriel},
+           giveni={G\bibinitperiod}}}%
+        {{hash=e8885d7049e4c4ef8796deec010e6a9c}{%
+           family={Cissé},
+           familyi={C\bibinitperiod},
+           given={Moustapha},
+           giveni={M\bibinitperiod}}}%
+        {{hash=a79bf15b29522f05fc8a35b7bab3bc47}{%
+           family={Farinella},
+           familyi={F\bibinitperiod},
+           given={Giovanni\bibnamedelima Maria},
+           giveni={G\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=46a03ab511e1b24870696b8a70022509}{%
+           family={Hassner},
+           familyi={H\bibinitperiod},
+           given={Tal},
+           giveni={T\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer Nature Switzerland}%
+      }
+      \strng{namehash}{8a85e515e62720106162c419b9729b81}
+      \strng{fullhash}{cb86cb7cc411c44887e03f2364b27ba6}
+      \strng{bibnamehash}{cb86cb7cc411c44887e03f2364b27ba6}
+      \strng{authorbibnamehash}{cb86cb7cc411c44887e03f2364b27ba6}
+      \strng{authornamehash}{8a85e515e62720106162c419b9729b81}
+      \strng{authorfullhash}{cb86cb7cc411c44887e03f2364b27ba6}
+      \strng{editorbibnamehash}{d0e84fd5be2339090fad3d111596a1da}
+      \strng{editornamehash}{77d7134a93bb0830026424b1ee217c4d}
+      \strng{editorfullhash}{d0e84fd5be2339090fad3d111596a1da}
+      \field{extraname}{2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Computer Vision – ECCV 2022}
+      \field{isbn}{978-3-031-19781-9}
+      \field{title}{{Real-Time Intermediate Flow Estimation for Video Frame Interpolation}}
+      \field{year}{2022}
+      \field{pages}{624\bibrangedash 642}
+      \range{pages}{19}
+      \verb{doi}
+      \verb 10.1007/978-3-031-19781-9_36
+      \endverb
+    \endentry
+    \entry{Tran2020}{article}{}
+      \name{author}{2}{}{%
+        {{hash=849a86e3a4f537b4c6521e0b177ff470}{%
+           family={Tran},
+           familyi={T\bibinitperiod},
+           given={Quang\bibnamedelima Nhat},
+           giveni={Q\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=551c9ac73d325cb6801b7775dc0f889d}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Shih-Hsuan},
+           giveni={S\bibinithyphendelim H\bibinitperiod}}}%
+      }
+      \strng{namehash}{be21650f499ef8ca1e2ec9906517eead}
+      \strng{fullhash}{be21650f499ef8ca1e2ec9906517eead}
+      \strng{bibnamehash}{be21650f499ef8ca1e2ec9906517eead}
+      \strng{authorbibnamehash}{be21650f499ef8ca1e2ec9906517eead}
+      \strng{authornamehash}{be21650f499ef8ca1e2ec9906517eead}
+      \strng{authorfullhash}{be21650f499ef8ca1e2ec9906517eead}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2076-3417}
+      \field{issue}{18}
+      \field{journaltitle}{Applied Sciences}
+      \field{title}{{Efficient Video Frame Interpolation Using Generative Adversarial Networks}}
+      \field{volume}{10}
+      \field{year}{2020}
+      \verb{doi}
+      \verb 10.3390/app10186245
       \endverb
     \endentry
     \entry{Bogunovic2019b}{article}{}
@@ -3382,12 +3365,6 @@
       \verb{doi}
       \verb 10.1364/BOE.6.001172
       \endverb
-      \verb{urlraw}
-      \verb https://opg.optica.org/boe/abstract.cfm?URI=boe-6-4-1172
-      \endverb
-      \verb{url}
-      \verb https://opg.optica.org/boe/abstract.cfm?URI=boe-6-4-1172
-      \endverb
       \keyw{Image processing; Ophthalmology; Optical coherence tomography; Image enhancement; Image metrics; Image quality; Optical coherence tomography; Segmentation; Spectral domain optical coherence tomography}
     \endentry
     \entry{Rashno2017}{article}{}
@@ -3452,12 +3429,6 @@
       \range{pages}{26}
       \verb{doi}
       \verb 10.1371/journal.pone.0186949
-      \endverb
-      \verb{urlraw}
-      \verb https://doi.org/10.1371/journal.pone.0186949
-      \endverb
-      \verb{url}
-      \verb https://doi.org/10.1371/journal.pone.0186949
       \endverb
     \endentry
     \entry{Rashno2018}{article}{}
@@ -3635,46 +3606,7 @@
       \field{title}{{Adam: A method for stochastic optimization}}
       \field{year}{2015}
       \verb{doi}
-      \verb https://doi.org/10.48550/arXiv.1412.6980
-      \endverb
-    \endentry
-    \entry{Tran2020}{article}{}
-      \name{author}{2}{}{%
-        {{hash=849a86e3a4f537b4c6521e0b177ff470}{%
-           family={Tran},
-           familyi={T\bibinitperiod},
-           given={Quang\bibnamedelima Nhat},
-           giveni={Q\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
-        {{hash=551c9ac73d325cb6801b7775dc0f889d}{%
-           family={Yang},
-           familyi={Y\bibinitperiod},
-           given={Shih-Hsuan},
-           giveni={S\bibinithyphendelim H\bibinitperiod}}}%
-      }
-      \strng{namehash}{be21650f499ef8ca1e2ec9906517eead}
-      \strng{fullhash}{be21650f499ef8ca1e2ec9906517eead}
-      \strng{bibnamehash}{be21650f499ef8ca1e2ec9906517eead}
-      \strng{authorbibnamehash}{be21650f499ef8ca1e2ec9906517eead}
-      \strng{authornamehash}{be21650f499ef8ca1e2ec9906517eead}
-      \strng{authorfullhash}{be21650f499ef8ca1e2ec9906517eead}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{issn}{2076-3417}
-      \field{issue}{18}
-      \field{journaltitle}{Applied Sciences}
-      \field{title}{{Efficient Video Frame Interpolation Using Generative Adversarial Networks}}
-      \field{volume}{10}
-      \field{year}{2020}
-      \verb{doi}
-      \verb 10.3390/app10186245
-      \endverb
-      \verb{urlraw}
-      \verb https://www.mdpi.com/2076-3417/10/18/6245
-      \endverb
-      \verb{url}
-      \verb https://www.mdpi.com/2076-3417/10/18/6245
+      \verb 10.48550/arXiv.1412.6980
       \endverb
     \endentry
     \entry{Sara2019}{article}{}
@@ -3715,6 +3647,9 @@
       \field{year}{2019}
       \field{pages}{8\bibrangedash 18}
       \range{pages}{11}
+      \verb{doi}
+      \verb 10.4236/jcc.2019.73002
+      \endverb
     \endentry
     \entry{Rajkumar2016}{article}{}
       \name{author}{2}{}{%
@@ -3746,6 +3681,9 @@
       \field{year}{2016}
       \field{pages}{1\bibrangedash 11}
       \range{pages}{11}
+      \verb{doi}
+      \verb 10.17485/ijst/2016/v9i34/96766
+      \endverb
     \endentry
     \entry{Goodfellow2014}{inproceedings}{}
       \name{author}{8}{}{%
@@ -3838,11 +3776,8 @@
       \field{title}{{Generative Adversarial Nets}}
       \field{volume}{27}
       \field{year}{2014}
-      \verb{urlraw}
-      \verb https://arxiv.org/abs/1406.2661
-      \endverb
-      \verb{url}
-      \verb https://arxiv.org/abs/1406.2661
+      \verb{doi}
+      \verb 10.48550/arXiv.1406.2661
       \endverb
     \endentry
     \entry{Goodfellow2020}{article}{}
@@ -3913,12 +3848,6 @@
       \range{pages}{6}
       \verb{doi}
       \verb 10.1145/3422622
-      \endverb
-      \verb{urlraw}
-      \verb https://doi.org/10.1145/3422622
-      \endverb
-      \verb{url}
-      \verb https://doi.org/10.1145/3422622
       \endverb
     \endentry
     \entry{Creswell2018}{article}{}
@@ -4048,6 +3977,9 @@
       \field{booktitle}{4th International Conference on Learning Representations, ICLR 2016}
       \field{title}{{Deep multi-scale video prediction beyond mean square error}}
       \field{year}{2016}
+      \verb{doi}
+      \verb 10.48550/arXiv.1511.05440
+      \endverb
     \endentry
   \enddatalist
 \endrefsection
