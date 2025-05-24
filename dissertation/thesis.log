@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  24 MAY 2025 20:20
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  25 MAY 2025 00:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1054,18 +1054,18 @@ Chapter 1.
 
 
 ]
-<figures/OCTVolume.png, id=276, 293.29575pt x 330.033pt>
+<figures/OCTVolume.png, id=280, 293.29575pt x 330.033pt>
 File: figures/OCTVolume.png Graphic file (type png)
 <use figures/OCTVolume.png>
 Package pdftex.def Info: figures/OCTVolume.png  used on input line 16.
 (pdftex.def)             Requested size: 213.39568pt x 240.13144pt.
-<figures/SegmentedFluidsOCT.png, id=283, 551.81157pt x 313.17pt>
+<figures/SegmentedFluidsOCT.png, id=287, 551.81157pt x 313.17pt>
 File: figures/SegmentedFluidsOCT.png Graphic file (type png)
 <use figures/SegmentedFluidsOCT.png>
 Package pdftex.def Info: figures/SegmentedFluidsOCT.png  used on input line 26.
 
 (pdftex.def)             Requested size: 320.0935pt x 181.67216pt.
-<figures/RetinalLayers.png, id=286, 712.91344pt x 282.30469pt>
+<figures/RetinalLayers.png, id=290, 712.91344pt x 282.30469pt>
 File: figures/RetinalLayers.png Graphic file (type png)
 <use figures/RetinalLayers.png>
 Package pdftex.def Info: figures/RetinalLayers.png  used on input line 32.
@@ -1082,12 +1082,12 @@ Chapter 2.
 
 
 ]
-<figures/ArticlesSelection.png, id=348, 571.13374pt x 342.27875pt>
+<figures/ArticlesSelection.png, id=352, 571.13374pt x 342.27875pt>
 File: figures/ArticlesSelection.png Graphic file (type png)
 <use figures/ArticlesSelection.png>
 Package pdftex.def Info: figures/ArticlesSelection.png  used on input line 18.
 (pdftex.def)             Requested size: 320.0935pt x 191.83147pt.
-<figures/BinarySegmentationExample.png, id=349, 685.05937pt x 331.99031pt>
+<figures/BinarySegmentationExample.png, id=353, 685.05937pt x 331.99031pt>
 File: figures/BinarySegmentationExample.png Graphic file (type png)
 <use figures/BinarySegmentationExample.png>
 Package pdftex.def Info: figures/BinarySegmentationExample.png  used on input l
@@ -1095,7 +1095,7 @@ ine 24.
 (pdftex.def)             Requested size: 426.79135pt x 206.83487pt.
  [6 <./figures/ArticlesSelection.png>] [7 <./figures/BinarySegmentationExample.
 png>]
-<figures/PreSegmentationAndFluidSegmentation.png, id=443, 759.58781pt x 315.428
+<figures/PreSegmentationAndFluidSegmentation.png, id=447, 759.58781pt x 315.428
 44pt>
 File: figures/PreSegmentationAndFluidSegmentation.png Graphic file (type png)
 <use figures/PreSegmentationAndFluidSegmentation.png>
@@ -1103,43 +1103,55 @@ Package pdftex.def Info: figures/PreSegmentationAndFluidSegmentation.png  used
 on input line 51.
 (pdftex.def)             Requested size: 426.79135pt x 177.23553pt.
  [8] [9 <./figures/PreSegmentationAndFluidSegmentation.png>]
-<figures/GANGenerationFramework.png, id=497, 505.89pt x 499.11469pt>
+<figures/GANGenerationFramework.png, id=500, 505.89pt x 499.11469pt>
 File: figures/GANGenerationFramework.png Graphic file (type png)
 <use figures/GANGenerationFramework.png>
 Package pdftex.def Info: figures/GANGenerationFramework.png  used on input line
  74.
 (pdftex.def)             Requested size: 320.0935pt x 315.81476pt.
  [10]
-<figures/FangArchitecture.png, id=519, 753.5653pt x 283.81032pt>
+<figures/XiaFramework.png, id=517, 427.00374pt x 203.06853pt>
+File: figures/XiaFramework.png Graphic file (type png)
+<use figures/XiaFramework.png>
+Package pdftex.def Info: figures/XiaFramework.png  used on input line 88.
+(pdftex.def)             Requested size: 469.47308pt x 223.26451pt.
+
+Overfull \hbox (42.68173pt too wide) in paragraph at lines 88--89
+ [][] 
+ []
+
+[11 <./figures/GANGenerationFramework.png>]
+<figures/FangArchitecture.png, id=531, 753.5653pt x 283.81032pt>
 File: figures/FangArchitecture.png Graphic file (type png)
 <use figures/FangArchitecture.png>
-Package pdftex.def Info: figures/FangArchitecture.png  used on input line 90.
+Package pdftex.def Info: figures/FangArchitecture.png  used on input line 101.
 (pdftex.def)             Requested size: 533.48918pt x 200.92209pt.
 
-Overfull \hbox (36.50835pt too wide) in paragraph at lines 89--91
+Overfull \hbox (36.50835pt too wide) in paragraph at lines 100--102
  []|  [] 
  []
 
-[11 <./figures/GANGenerationFramework.png>] [12 <./figures/FangArchitecture.png
->]
-<figures/RIFEPipeline.png, id=543, 364.9635pt x 158.39175pt>
+[12 <./figures/XiaFramework.png> <./figures/FangArchitecture.png>]
+<figures/RIFEPipeline.png, id=550, 364.9635pt x 158.39175pt>
 File: figures/RIFEPipeline.png Graphic file (type png)
 <use figures/RIFEPipeline.png>
-Package pdftex.def Info: figures/RIFEPipeline.png  used on input line 109.
+Package pdftex.def Info: figures/RIFEPipeline.png  used on input line 120.
 (pdftex.def)             Requested size: 362.77525pt x 157.45119pt.
-<figures/VideoGANFramework.png, id=551, 427.00374pt x 241.74825pt>
+ [13]
+<figures/VideoGANFramework.png, id=564, 427.00374pt x 241.74825pt>
 File: figures/VideoGANFramework.png Graphic file (type png)
 <use figures/VideoGANFramework.png>
-Package pdftex.def Info: figures/VideoGANFramework.png  used on input line 122.
+Package pdftex.def Info: figures/VideoGANFramework.png  used on input line 133.
 
 (pdftex.def)             Requested size: 426.79135pt x 241.6259pt.
-) [13 <./figures/RIFEPipeline.png>] [14 <./figures/VideoGANFramework.png>]
+)
+[14 <./figures/RIFEPipeline.png>] [15 <./figures/VideoGANFramework.png>]
 \openout2 = `methods.aux'.
 
 
 (methods.tex
 Chapter 3.
-[15
+[16
 
 
 
@@ -1151,26 +1163,26 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 37.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 37.
- [16] [17] [18]
-<figures/UNet.png, id=614, 426.09187pt x 287.57437pt>
+ [17] [18] [19]
+<figures/UNet.png, id=627, 426.09187pt x 287.57437pt>
 File: figures/UNet.png Graphic file (type png)
 <use figures/UNet.png>
 Package pdftex.def Info: figures/UNet.png  used on input line 122.
 (pdftex.def)             Requested size: 320.0935pt x 216.04884pt.
- [19 <./figures/UNet.png>] [20]
-<figures/FluidAndROI.png, id=652, 963.6pt x 312.951pt>
+ [20 <./figures/UNet.png>] [21]
+<figures/FluidAndROI.png, id=664, 963.6pt x 312.951pt>
 File: figures/FluidAndROI.png Graphic file (type png)
 <use figures/FluidAndROI.png>
 Package pdftex.def Info: figures/FluidAndROI.png  used on input line 170.
 (pdftex.def)             Requested size: 426.79135pt x 138.60616pt.
-<figures/BigPatchExtraction.png, id=654, 237.88875pt x 331.2375pt>
+<figures/BigPatchExtraction.png, id=666, 237.88875pt x 331.2375pt>
 File: figures/BigPatchExtraction.png Graphic file (type png)
 <use figures/BigPatchExtraction.png>
 Package pdftex.def Info: figures/BigPatchExtraction.png  used on input line 187
 .
 (pdftex.def)             Requested size: 170.71393pt x 237.71245pt.
- [21 <./figures/FluidAndROI.png>]
-<figures/CirrusSpectralisRetinalLayerComparison.png, id=663, 567.867pt x 545.96
+ [22 <./figures/FluidAndROI.png>]
+<figures/CirrusSpectralisRetinalLayerComparison.png, id=675, 567.867pt x 545.96
 7pt>
 File: figures/CirrusSpectralisRetinalLayerComparison.png Graphic file (type png
 )
@@ -1178,55 +1190,55 @@ File: figures/CirrusSpectralisRetinalLayerComparison.png Graphic file (type png
 Package pdftex.def Info: figures/CirrusSpectralisRetinalLayerComparison.png  us
 ed on input line 199.
 (pdftex.def)             Requested size: 170.71393pt x 164.12459pt.
- [22 <./figures/BigPatchExtraction.png> <./figures/CirrusSpectralisRetinalLayer
+ [23 <./figures/BigPatchExtraction.png> <./figures/CirrusSpectralisRetinalLayer
 Comparison.png>]
-<figures/CirrusFourPatchExtraction.png, id=674, 799.131pt x 503.7pt>
+<figures/CirrusFourPatchExtraction.png, id=686, 799.131pt x 503.7pt>
 File: figures/CirrusFourPatchExtraction.png Graphic file (type png)
 <use figures/CirrusFourPatchExtraction.png>
 Package pdftex.def Info: figures/CirrusFourPatchExtraction.png  used on input l
 ine 208.
 (pdftex.def)             Requested size: 277.41176pt x 174.85269pt.
-<figures/CirrusSevenPatchExtraction.png, id=675, 828.477pt x 509.394pt>
+<figures/CirrusSevenPatchExtraction.png, id=687, 828.477pt x 509.394pt>
 File: figures/CirrusSevenPatchExtraction.png Graphic file (type png)
 <use figures/CirrusSevenPatchExtraction.png>
 Package pdftex.def Info: figures/CirrusSevenPatchExtraction.png  used on input 
 line 215.
 (pdftex.def)             Requested size: 277.41176pt x 170.56448pt.
-<figures/CirrusThirteenPatchExtraction.png, id=676, 925.275pt x 508.299pt>
+<figures/CirrusThirteenPatchExtraction.png, id=688, 925.275pt x 508.299pt>
 File: figures/CirrusThirteenPatchExtraction.png Graphic file (type png)
 <use figures/CirrusThirteenPatchExtraction.png>
 Package pdftex.def Info: figures/CirrusThirteenPatchExtraction.png  used on inp
 ut line 223.
 (pdftex.def)             Requested size: 320.0935pt x 175.84421pt.
- [23 <./figures/CirrusFourPatchExtraction.png> <./figures/CirrusSevenPatchExtra
-ction.png>] [24 <./figures/CirrusThirteenPatchExtraction.png>]
-<figures/FrameInterpolationFramework.png, id=693, 511.9125pt x 281.25075pt>
+ [24 <./figures/CirrusFourPatchExtraction.png> <./figures/CirrusSevenPatchExtra
+ction.png>] [25 <./figures/CirrusThirteenPatchExtraction.png>]
+<figures/FrameInterpolationFramework.png, id=706, 511.9125pt x 281.25075pt>
 File: figures/FrameInterpolationFramework.png Graphic file (type png)
 <use figures/FrameInterpolationFramework.png>
 Package pdftex.def Info: figures/FrameInterpolationFramework.png  used on input
  line 256.
 (pdftex.def)             Requested size: 426.79135pt x 234.48518pt.
- [25] [26 <./figures/FrameInterpolationFramework.png>]
-<figures/GANFramework.png, id=746, 616.55344pt x 347.79938pt>
+ [26] [27 <./figures/FrameInterpolationFramework.png>]
+<figures/GANFramework.png, id=758, 616.55344pt x 347.79938pt>
 File: figures/GANFramework.png Graphic file (type png)
 <use figures/GANFramework.png>
 Package pdftex.def Info: figures/GANFramework.png  used on input line 296.
 (pdftex.def)             Requested size: 298.75264pt x 168.52858pt.
- [27 <./figures/GANFramework.png>]
-<figures/CirrusSixtyFourPatchExtraction.png, id=759, 880.161pt x 478.953pt>
+ [28 <./figures/GANFramework.png>]
+<figures/CirrusSixtyFourPatchExtraction.png, id=771, 880.161pt x 478.953pt>
 File: figures/CirrusSixtyFourPatchExtraction.png Graphic file (type png)
 <use figures/CirrusSixtyFourPatchExtraction.png>
 Package pdftex.def Info: figures/CirrusSixtyFourPatchExtraction.png  used on in
 put line 307.
 (pdftex.def)             Requested size: 298.75264pt x 162.56415pt.
-<figures/GeneratorArchitecture.png, id=761, 489.62926pt x 214.401pt>
+<figures/GeneratorArchitecture.png, id=773, 489.62926pt x 214.401pt>
 File: figures/GeneratorArchitecture.png Graphic file (type png)
 <use figures/GeneratorArchitecture.png>
 Package pdftex.def Info: figures/GeneratorArchitecture.png  used on input line 
 316.
 (pdftex.def)             Requested size: 426.79135pt x 186.88394pt.
- [28 <./figures/CirrusSixtyFourPatchExtraction.png>] [29 <./figures/GeneratorAr
-chitecture.png>] [30] [31] [32]) [33]
+ [29 <./figures/CirrusSixtyFourPatchExtraction.png>] [30 <./figures/GeneratorAr
+chitecture.png>] [31] [32] [33]) [34]
 \openout2 = `results_discussion.aux'.
 
  (results_discussion.tex)
@@ -1250,7 +1262,7 @@ Overfull \hbox (0.69101pt too wide) in paragraph at lines 64--64
 
  []
 
-[34
+[35
 
 
 
@@ -1267,41 +1279,41 @@ Overfull \hbox (0.44347pt too wide) in paragraph at lines 64--64
 ransformer for en-hanced mac-u-lar edema
  []
 
-[35] [36]
+[36] [37]
 Overfull \hbox (19.33269pt too wide) in paragraph at lines 64--64
 \T1/ptm/m/n/10.95 Sys-tem-atic Re-view of Re-cent De-vel-op-ments and Chal-leng
 es,^^Q \T1/ptm/m/it/10.95 arXiv e-prints\T1/ptm/m/n/10.95 , arXiv:2407.00116,
  []
 
-[37] [38]
+[38] [39]
 Overfull \hbox (10.93967pt too wide) in paragraph at lines 64--64
 \T1/ptm/m/n/10.95 ^^P  Gen-er-a-tive Ad-ver-sar-ial Net-works: An Overview,^^Q 
 \T1/ptm/m/it/10.95 IEEE Sig-nal Pro-cess-ing Mag-a-zine\T1/ptm/m/n/10.95 , vol.
  35,
  []
 
-[39]
+[40]
 \openout2 = `appendix1.aux'.
 
  (appendix1.tex
 Appendix A.
-) [40
+) [41
 
 
 ] (thesis.aux (abstract.aux) (un-sdg.aux) (acknowledgements.aux)
 (quote.aux) (abbrevs.aux) (introduction.aux) (literature_review.aux)
 (methods.aux) (results_discussion.aux) (conclusion.aux) (appendix1.aux))
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: 693DACF881FA5477CE32D7617F79A18F;3008.
+(rerunfilecheck)             Checksum: 012BA37945CAF4720D4B0DEF7D1B5E6A;3008.
 Package logreq Info: Writing requests to 'thesis.run.xml'.
 \openout1 = `thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 23158 strings out of 476339
- 422160 string characters out of 5788120
+ 23168 strings out of 476339
+ 422393 string characters out of 5788120
  1870340 words of memory out of 5000000
- 42935 multiletter control sequences out of 15000+600000
+ 42942 multiletter control sequences out of 15000+600000
  598581 words of font info for 141 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  78i,18n,82p,1393b,3230s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1320,9 +1332,9 @@ X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (52 pages, 31322022 bytes).
+Output written on thesis.pdf (53 pages, 31462490 bytes).
 PDF statistics:
- 1047 PDF objects out of 1200 (max. 8388607)
- 205 named destinations out of 1000 (max. 500000)
- 271 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1059 PDF objects out of 1200 (max. 8388607)
+ 207 named destinations out of 1000 (max. 500000)
+ 276 words of extra memory for PDF output out of 10000 (max. 10000000)
 
