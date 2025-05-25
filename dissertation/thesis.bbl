@@ -196,8 +196,8 @@
       \strng{authorbibnamehash}{67f1cf8bb5874b0ae09365c4fb217f4d}
       \strng{authornamehash}{6510d7a670e36b555d485d67045d73b1}
       \strng{authorfullhash}{67f1cf8bb5874b0ae09365c4fb217f4d}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0140-6736}
@@ -257,8 +257,8 @@
       \strng{authorbibnamehash}{bcfe315202b94b786380de8aa42047b4}
       \strng{authornamehash}{bcfe315202b94b786380de8aa42047b4}
       \strng{authorfullhash}{ebbc987f9e7cc75505fe9df5b8d1598f}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issue}{3}
@@ -1254,8 +1254,8 @@
       \strng{authorbibnamehash}{6061ce90a12fe54da87c4d7f3b0241d3}
       \strng{authornamehash}{fc2f5844c7f86aa07c72c1faaf763ba7}
       \strng{authorfullhash}{6061ce90a12fe54da87c4d7f3b0241d3}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{2169-3536}
@@ -1329,8 +1329,8 @@
       \strng{authornamehash}{139886769503600276bca11a46937697}
       \strng{authorfullhash}{d26cde9fd188f61632b9b3dc89fb44f3}
       \field{extraname}{2}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0010-4825}
@@ -1384,8 +1384,8 @@
       \strng{authorbibnamehash}{980d96b4774b2e4f4bd2b509dc29942d}
       \strng{authornamehash}{251be786cba2c6ec88c9fc6613a89ac0}
       \strng{authorfullhash}{980d96b4774b2e4f4bd2b509dc29942d}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0010-4825}
@@ -1459,8 +1459,8 @@
       \strng{authorbibnamehash}{9a3d5abdf0928fa6deb197a86527ed34}
       \strng{authornamehash}{9a3d5abdf0928fa6deb197a86527ed34}
       \strng{authorfullhash}{2858e5ec4bd23a8e31645a9ed1305cf0}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0169-2607}
@@ -1520,8 +1520,8 @@
       \strng{authornamehash}{60c04d6845edbb6e04ba0016cc1457fc}
       \strng{authorfullhash}{8b7c87d526c2f33bd44dfa9487bb90eb}
       \field{extraname}{1}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0010-4825}
@@ -1580,8 +1580,8 @@
       \strng{authorbibnamehash}{29a83bfb440dfa41229a64a8c4517720}
       \strng{authornamehash}{29a83bfb440dfa41229a64a8c4517720}
       \strng{authorfullhash}{2c3f6f697883c95d77a9fc0d3c4f1073}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{1361-8415}
@@ -1631,8 +1631,8 @@
       \strng{authornamehash}{60c04d6845edbb6e04ba0016cc1457fc}
       \strng{authorfullhash}{569aba54cdfacaed939a0219f3bee65a}
       \field{extraname}{2}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Transactions on Instrumentation and Measurement}
@@ -1684,8 +1684,8 @@
       \strng{authornamehash}{a47de0b0bd90609350ec9311881ce5f1}
       \strng{authorfullhash}{5d49d0129e06eb2c57bc92ed19d4b072}
       \field{extraname}{1}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issue}{7}
@@ -1745,8 +1745,8 @@
       \strng{authorbibnamehash}{6b76bb79fd982f87f785e6068081d7b4}
       \strng{authornamehash}{6b76bb79fd982f87f785e6068081d7b4}
       \strng{authorfullhash}{756e3afc92961f9591a9d7980dbbe86a}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{1618-727X}
@@ -1810,8 +1810,8 @@
       \strng{authorbibnamehash}{2c30098e0e76b508eb192a372db4f5f3}
       \strng{authornamehash}{2c30098e0e76b508eb192a372db4f5f3}
       \strng{authorfullhash}{37b1eab1d7ca7a67becb3f55c6e2aa8c}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issue}{6}
@@ -1873,8 +1873,8 @@
       \strng{authorbibnamehash}{fd036feb32ef1c8cb7f8f3b8ba6552d7}
       \strng{authornamehash}{fd036feb32ef1c8cb7f8f3b8ba6552d7}
       \strng{authorfullhash}{d307dc05193a196e2ceef1572158de70}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issue}{12}
@@ -1923,8 +1923,8 @@
       \strng{authorbibnamehash}{ea1526808c1bfa59f9412dc328b292a6}
       \strng{authornamehash}{87212b85fb998a3684c476c2e85b11bb}
       \strng{authorfullhash}{ea1526808c1bfa59f9412dc328b292a6}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{2164-2591}
@@ -1964,8 +1964,8 @@
       \strng{authorbibnamehash}{1134a9d77e5cd47111a2a4e396c8206b}
       \strng{authornamehash}{3d0edfa69384cda960207446c099f56a}
       \strng{authorfullhash}{1134a9d77e5cd47111a2a4e396c8206b}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{1361-8415}
@@ -2029,8 +2029,8 @@
       \strng{authorbibnamehash}{76b19ae8a5872106da616f147de42a41}
       \strng{authornamehash}{76b19ae8a5872106da616f147de42a41}
       \strng{authorfullhash}{2cf307f6f9251fa2c95c9fd94e630865}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{2164-2591}
@@ -2276,8 +2276,8 @@
       \strng{authorbibnamehash}{bc0c4afe6967f60a7d5258dd3ec2d605}
       \strng{authornamehash}{bc0c4afe6967f60a7d5258dd3ec2d605}
       \strng{authorfullhash}{3b94954177b0ca836a48382aa6e1b667}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issue}{1}
@@ -2945,6 +2945,52 @@
       \range{pages}{15}
       \verb{doi}
       \verb 10.3390/tomography8020073
+      \endverb
+    \endentry
+    \entry{Peng2020}{inproceedings}{}
+      \name{author}{5}{}{%
+        {{hash=b233f2ea71c72b76b5c808ee1f9beb3a}{%
+           family={Peng},
+           familyi={P\bibinitperiod},
+           given={Cheng},
+           giveni={C\bibinitperiod}}}%
+        {{hash=7c90333da9314268d3c484494d73fc74}{%
+           family={Lin},
+           familyi={L\bibinitperiod},
+           given={Wei-An},
+           giveni={W\bibinithyphendelim A\bibinitperiod}}}%
+        {{hash=a56b0774f39418765e3278cbe1a328d5}{%
+           family={Liao},
+           familyi={L\bibinitperiod},
+           given={Haofu},
+           giveni={H\bibinitperiod}}}%
+        {{hash=58e34e482e0dd6e755329ae57da3b293}{%
+           family={Chellappa},
+           familyi={C\bibinitperiod},
+           given={Rama},
+           giveni={R\bibinitperiod}}}%
+        {{hash=9c1e53c3d15103f0b0e185c215512074}{%
+           family={Zhou},
+           familyi={Z\bibinitperiod},
+           given={S\bibnamedelima Kevin},
+           giveni={S\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+      }
+      \strng{namehash}{39755683bfb284035b2e83f58c4775e2}
+      \strng{fullhash}{2b2496656dfcf7cd860192cadbedbd2f}
+      \strng{bibnamehash}{2b2496656dfcf7cd860192cadbedbd2f}
+      \strng{authorbibnamehash}{2b2496656dfcf7cd860192cadbedbd2f}
+      \strng{authornamehash}{39755683bfb284035b2e83f58c4775e2}
+      \strng{authorfullhash}{2b2496656dfcf7cd860192cadbedbd2f}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}
+      \field{month}{6}
+      \field{title}{{SAINT: Spatially Aware Interpolation NeTwork for Medical Slice Synthesis}}
+      \field{year}{2020}
+      \verb{doi}
+      \verb 10.48550/arXiv.2001.00704
       \endverb
     \endentry
     \entry{Gambini2024}{article}{}
