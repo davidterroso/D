@@ -148,8 +148,8 @@
       \strng{authorbibnamehash}{0fe4383a6376b0b1655e75c492708d90}
       \strng{authornamehash}{9a70cff12dfd2acaab147b5205c50965}
       \strng{authorfullhash}{0fe4383a6376b0b1655e75c492708d90}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0140-6736}
@@ -629,8 +629,8 @@
       \strng{authorbibnamehash}{b6b6367047e04335fc437edb21c6b44b}
       \strng{authornamehash}{b6b6367047e04335fc437edb21c6b44b}
       \strng{authorfullhash}{20876a48581233259919385033812b82}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{1552-5783}
@@ -854,8 +854,8 @@
       \strng{authorbibnamehash}{69b66f134ffe225034e2cc0ab2e097b8}
       \strng{authornamehash}{69b66f134ffe225034e2cc0ab2e097b8}
       \strng{authorfullhash}{bf385a75bef83726153a88abb239ea02}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{1878-5085}
@@ -924,8 +924,8 @@
       \strng{authorbibnamehash}{f763f9988d7b8975a8442cc818de882c}
       \strng{authornamehash}{f763f9988d7b8975a8442cc818de882c}
       \strng{authorfullhash}{61ff82973156b312e9da3d2b8b0bbdbe}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{1741-0444}
@@ -975,8 +975,8 @@
       \strng{authornamehash}{72522accb479a3a6581a5bc243321903}
       \strng{authorfullhash}{20a193f6d89c6ad7f55568ed6214cebb}
       \field{extraname}{1}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0925-2312}
@@ -1030,8 +1030,8 @@
       \strng{authorbibnamehash}{ac8e603a94cea8a4e2c3054db5df61a3}
       \strng{authornamehash}{7b0841fcc96fb897a41bdc283b977b3d}
       \strng{authorfullhash}{ac8e603a94cea8a4e2c3054db5df61a3}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{2164-2591}
@@ -1102,8 +1102,8 @@
       \strng{authornamehash}{893b7c8f61a999c92475b0fff7896136}
       \strng{authorfullhash}{898cbe7eac1ecbeb73f0a93fde154279}
       \field{extraname}{1}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{2045-2322}
@@ -1198,8 +1198,8 @@
       \strng{authornamehash}{77aa4285bb0660bf6222f13bc03c3431}
       \strng{authorfullhash}{3a64ef671deb535ca6cca0db523642bb}
       \field{extraname}{1}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0161-6420}
@@ -2182,8 +2182,8 @@
       \strng{authorbibnamehash}{25d2f3c4577a6632d37f0126cc781232}
       \strng{authornamehash}{25d2f3c4577a6632d37f0126cc781232}
       \strng{authorfullhash}{25d2f3c4577a6632d37f0126cc781232}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{arXiv e-prints}
@@ -2991,6 +2991,141 @@
       \field{year}{2020}
       \verb{doi}
       \verb 10.48550/arXiv.2001.00704
+      \endverb
+    \endentry
+    \entry{Niu2020}{inproceedings}{}
+      \name{author}{9}{}{%
+        {{hash=1c95a81f9307f5b7f9ecdaa37cac3137}{%
+           family={Niu},
+           familyi={N\bibinitperiod},
+           given={Ben},
+           giveni={B\bibinitperiod}}}%
+        {{hash=0de7d480f817763e29f769a7c75808ca}{%
+           family={Wen},
+           familyi={W\bibinitperiod},
+           given={Weilei},
+           giveni={W\bibinitperiod}}}%
+        {{hash=8f43314aa651116fa2b07c50e52f8df2}{%
+           family={Ren},
+           familyi={R\bibinitperiod},
+           given={Wenqi},
+           giveni={W\bibinitperiod}}}%
+        {{hash=00fc1741b23de67a77d219ecd686cc77}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Xiangde},
+           giveni={X\bibinitperiod}}}%
+        {{hash=5a9e18e7a496bc681c1ede063b37e93f}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Lianping},
+           giveni={L\bibinitperiod}}}%
+        {{hash=6b3f64ab6ac876cdee74c45b1c535347}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Shuzhen},
+           giveni={S\bibinitperiod}}}%
+        {{hash=f221552ce57ffafb0ff46a46c90a3bbd}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Kaihao},
+           giveni={K\bibinitperiod}}}%
+        {{hash=80b4b73a59bf06845ed4c13852177c41}{%
+           family={Cao},
+           familyi={C\bibinitperiod},
+           given={Xiaochun},
+           giveni={X\bibinitperiod}}}%
+        {{hash=b0e5e93f58f7043bcc7eeed2f63390d8}{%
+           family={Shen},
+           familyi={S\bibinitperiod},
+           given={Haifeng},
+           giveni={H\bibinitperiod}}}%
+      }
+      \name{editor}{4}{}{%
+        {{hash=d8716f14eb40a0764407ff1ca2eea315}{%
+           family={Horst},
+           familyi={H\bibinitperiod}}}%
+        {{hash=55b3eb06ebd17d74798cde60e347585b}{%
+           family={Thomas},
+           familyi={T\bibinitperiod},
+           given={Brox},
+           giveni={B\bibinitperiod}}}%
+        {{hash=bb0ac66f60faef9f398aa776aa248d6a}{%
+           family={Andrea},
+           familyi={A\bibinitperiod},
+           given={Frahm\bibnamedelimb Jan-Michael\bibnamedelima Vedaldi},
+           giveni={F\bibinitperiod\bibinitdelim J\bibinithyphendelim M\bibinitperiod\bibinitdelim V\bibinitperiod}}}%
+        {{hash=80a6ca0f9e49b50ef761c02b3da3b8fc}{%
+           family={Bischof},
+           familyi={B\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer International Publishing}%
+      }
+      \strng{namehash}{10cd436d449396bbad851f5a390a4263}
+      \strng{fullhash}{eab8b8d19f1418e0a7fbce6eef58329d}
+      \strng{bibnamehash}{10cd436d449396bbad851f5a390a4263}
+      \strng{authorbibnamehash}{10cd436d449396bbad851f5a390a4263}
+      \strng{authornamehash}{10cd436d449396bbad851f5a390a4263}
+      \strng{authorfullhash}{eab8b8d19f1418e0a7fbce6eef58329d}
+      \strng{editorbibnamehash}{3e4caf142aa76c5612bcdd4d2cbc8505}
+      \strng{editornamehash}{a6d7cd6299aa9d708a6179589445ed38}
+      \strng{editorfullhash}{3e4caf142aa76c5612bcdd4d2cbc8505}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Computer Vision – ECCV 2020}
+      \field{isbn}{978-3-030-58610-2}
+      \field{title}{{Single Image Super-Resolution via a Holistic Attention Network}}
+      \field{year}{2020}
+      \field{pages}{191\bibrangedash 207}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1007/978-3-030-58610-2_12
+      \endverb
+    \endentry
+    \entry{Ding2021}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=487fee1cee008e48ef0bde3fd894681c}{%
+           family={Ding},
+           familyi={D\bibinitperiod},
+           given={Tianyu},
+           giveni={T\bibinitperiod}}}%
+        {{hash=1b768fd0376d493aced79ada8c7840c0}{%
+           family={Liang},
+           familyi={L\bibinitperiod},
+           given={Luming},
+           giveni={L\bibinitperiod}}}%
+        {{hash=72b5de50739f732bfb1f537a783bde16}{%
+           family={Zhu},
+           familyi={Z\bibinitperiod},
+           given={Zhihui},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=01cdd624254c4a7a26dcc9bc07539aab}{%
+           family={Zharkov},
+           familyi={Z\bibinitperiod},
+           given={Ilya},
+           giveni={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{53a4076722bb1611a5a2ecbb9cdfaf45}
+      \strng{fullhash}{7149cba6fad5a7346d72c3f4ef382694}
+      \strng{bibnamehash}{7149cba6fad5a7346d72c3f4ef382694}
+      \strng{authorbibnamehash}{7149cba6fad5a7346d72c3f4ef382694}
+      \strng{authornamehash}{53a4076722bb1611a5a2ecbb9cdfaf45}
+      \strng{authorfullhash}{7149cba6fad5a7346d72c3f4ef382694}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}
+      \field{month}{6}
+      \field{title}{{CDFI: Compression-Driven Network Design for Frame Interpolation}}
+      \field{year}{2021}
+      \field{pages}{8001\bibrangedash 8011}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.48550/arXiv.2103.10559
       \endverb
     \endentry
     \entry{Gambini2024}{article}{}

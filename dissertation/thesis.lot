@@ -2,8 +2,8 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces Volumes, B-scans per volume, the total number of B-scans, and macular diseases in each dataset.\relax }}{18}{table.caption.21}%
-\contentsline {table}{\numberline {3.2}{\ignorespaces Number of OCT volumes per vendor in each fold, considering 5-fold validation.\relax }}{19}{table.caption.22}%
-\contentsline {table}{\numberline {3.3}{\ignorespaces Number of OCT volumes per device in each fold, in the four remaining folds.\relax }}{20}{table.caption.23}%
-\contentsline {table}{\numberline {3.4}{\ignorespaces Layers that compose the generator and the discriminator. Each convolution is represented by Conv2d(K, OC, S), where K is the kernel size, OC is the number of output channels, and S is the stride. The same notation is used in deconvolutions, represented by TransposedConv2d. The output size is shown following C $\times $ H $\times $ W notation, where C is the number of channels, H is the height, and W is the width. The inputs have shape $1 \times 64 \times 64$. Adapted from \blx@tocontentsinit {0}\textcite {Tran2020}.\relax }}{32}{table.caption.38}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces Volumes, B-scans per volume, the total number of B-scans, and macular diseases in each dataset.\relax }}{19}{table.caption.21}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Number of OCT volumes per vendor in each fold, considering 5-fold validation.\relax }}{20}{table.caption.22}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Number of OCT volumes per device in each fold, in the four remaining folds.\relax }}{21}{table.caption.23}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Layers that compose the generator and the discriminator. Each convolution is represented by Conv2d(K, OC, S), where K is the kernel size, OC is the number of output channels, and S is the stride. The same notation is used in deconvolutions, represented by TransposedConv2d. The output size is shown following C $\times $ H $\times $ W notation, where C is the number of channels, H is the height, and W is the width. The inputs have shape $1 \times 64 \times 64$. Adapted from \blx@tocontentsinit {0}\textcite {Tran2020}.\relax }}{33}{table.caption.38}%
 \addvspace {10\p@ }
