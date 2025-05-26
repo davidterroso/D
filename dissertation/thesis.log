@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  25 MAY 2025 23:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  26 MAY 2025 13:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1103,14 +1103,14 @@ Package pdftex.def Info: figures/PreSegmentationAndFluidSegmentation.png  used
 on input line 51.
 (pdftex.def)             Requested size: 426.79135pt x 177.23553pt.
  [8] [9 <./figures/PreSegmentationAndFluidSegmentation.png>]
-<figures/GANGenerationFramework.png, id=504, 505.89pt x 499.11469pt>
+<figures/GANGenerationFramework.png, id=505, 505.89pt x 499.11469pt>
 File: figures/GANGenerationFramework.png Graphic file (type png)
 <use figures/GANGenerationFramework.png>
 Package pdftex.def Info: figures/GANGenerationFramework.png  used on input line
  74.
-(pdftex.def)             Requested size: 320.0935pt x 315.81476pt.
- [10]
-<figures/XiaFramework.png, id=520, 1043.097pt x 492.03825pt>
+(pdftex.def)             Requested size: 298.75264pt x 294.75688pt.
+ [10 <./figures/GANGenerationFramework.png>]
+<figures/XiaFramework.png, id=523, 1043.097pt x 492.03825pt>
 File: figures/XiaFramework.png Graphic file (type png)
 <use figures/XiaFramework.png>
 Package pdftex.def Info: figures/XiaFramework.png  used on input line 89.
@@ -1120,8 +1120,8 @@ Overfull \hbox (19.4673pt too wide) in paragraph at lines 88--90
  []|  [] 
  []
 
-[11 <./figures/GANGenerationFramework.png>] [12 <./figures/XiaFramework.png>]
-<figures/ZhangFramework.png, id=543, 946.737pt x 383.63326pt>
+[11] [12 <./figures/XiaFramework.png>]
+<figures/ZhangFramework.png, id=545, 946.737pt x 383.63326pt>
 File: figures/ZhangFramework.png Graphic file (type png)
 <use figures/ZhangFramework.png>
 Package pdftex.def Info: figures/ZhangFramework.png  used on input line 115.
@@ -1131,7 +1131,7 @@ Overfull \hbox (19.4673pt too wide) in paragraph at lines 114--116
  []|  [] 
  []
 
-<figures/FangArchitecture.png, id=550, 753.5653pt x 283.81032pt>
+<figures/FangArchitecture.png, id=552, 753.5653pt x 283.81032pt>
 File: figures/FangArchitecture.png Graphic file (type png)
 <use figures/FangArchitecture.png>
 Package pdftex.def Info: figures/FangArchitecture.png  used on input line 128.
@@ -1143,12 +1143,12 @@ Overfull \hbox (36.50835pt too wide) in paragraph at lines 127--129
 
 [13 <./figures/ZhangFramework.png>] [14 <./figures/FangArchitecture.png>]
 [15]
-<figures/RIFEPipeline.png, id=585, 364.9635pt x 158.39175pt>
+<figures/RIFEPipeline.png, id=589, 364.9635pt x 158.39175pt>
 File: figures/RIFEPipeline.png Graphic file (type png)
 <use figures/RIFEPipeline.png>
 Package pdftex.def Info: figures/RIFEPipeline.png  used on input line 159.
 (pdftex.def)             Requested size: 362.77525pt x 157.45119pt.
-<figures/VideoGANFramework.png, id=593, 427.00374pt x 241.74825pt>
+<figures/VideoGANFramework.png, id=597, 427.00374pt x 241.74825pt>
 File: figures/VideoGANFramework.png Graphic file (type png)
 <use figures/VideoGANFramework.png>
 Package pdftex.def Info: figures/VideoGANFramework.png  used on input line 172.
@@ -1173,25 +1173,25 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 37.
  [19] [20] [21]
-<figures/UNet.png, id=656, 426.09187pt x 287.57437pt>
+<figures/UNet.png, id=660, 426.09187pt x 287.57437pt>
 File: figures/UNet.png Graphic file (type png)
 <use figures/UNet.png>
 Package pdftex.def Info: figures/UNet.png  used on input line 122.
 (pdftex.def)             Requested size: 320.0935pt x 216.04884pt.
  [22 <./figures/UNet.png>] [23]
-<figures/FluidAndROI.png, id=693, 963.6pt x 312.951pt>
+<figures/FluidAndROI.png, id=697, 963.6pt x 312.951pt>
 File: figures/FluidAndROI.png Graphic file (type png)
 <use figures/FluidAndROI.png>
 Package pdftex.def Info: figures/FluidAndROI.png  used on input line 170.
 (pdftex.def)             Requested size: 426.79135pt x 138.60616pt.
-<figures/BigPatchExtraction.png, id=695, 237.88875pt x 331.2375pt>
+<figures/BigPatchExtraction.png, id=699, 237.88875pt x 331.2375pt>
 File: figures/BigPatchExtraction.png Graphic file (type png)
 <use figures/BigPatchExtraction.png>
 Package pdftex.def Info: figures/BigPatchExtraction.png  used on input line 187
 .
 (pdftex.def)             Requested size: 170.71393pt x 237.71245pt.
  [24 <./figures/FluidAndROI.png>]
-<figures/CirrusSpectralisRetinalLayerComparison.png, id=704, 567.867pt x 545.96
+<figures/CirrusSpectralisRetinalLayerComparison.png, id=708, 567.867pt x 545.96
 7pt>
 File: figures/CirrusSpectralisRetinalLayerComparison.png Graphic file (type png
 )
@@ -1201,19 +1201,19 @@ ed on input line 199.
 (pdftex.def)             Requested size: 170.71393pt x 164.12459pt.
  [25 <./figures/BigPatchExtraction.png> <./figures/CirrusSpectralisRetinalLayer
 Comparison.png>]
-<figures/CirrusFourPatchExtraction.png, id=716, 799.131pt x 503.7pt>
+<figures/CirrusFourPatchExtraction.png, id=720, 799.131pt x 503.7pt>
 File: figures/CirrusFourPatchExtraction.png Graphic file (type png)
 <use figures/CirrusFourPatchExtraction.png>
 Package pdftex.def Info: figures/CirrusFourPatchExtraction.png  used on input l
 ine 208.
 (pdftex.def)             Requested size: 277.41176pt x 174.85269pt.
-<figures/CirrusSevenPatchExtraction.png, id=717, 828.477pt x 509.394pt>
+<figures/CirrusSevenPatchExtraction.png, id=721, 828.477pt x 509.394pt>
 File: figures/CirrusSevenPatchExtraction.png Graphic file (type png)
 <use figures/CirrusSevenPatchExtraction.png>
 Package pdftex.def Info: figures/CirrusSevenPatchExtraction.png  used on input 
 line 215.
 (pdftex.def)             Requested size: 277.41176pt x 170.56448pt.
-<figures/CirrusThirteenPatchExtraction.png, id=718, 925.275pt x 508.299pt>
+<figures/CirrusThirteenPatchExtraction.png, id=722, 925.275pt x 508.299pt>
 File: figures/CirrusThirteenPatchExtraction.png Graphic file (type png)
 <use figures/CirrusThirteenPatchExtraction.png>
 Package pdftex.def Info: figures/CirrusThirteenPatchExtraction.png  used on inp
@@ -1221,26 +1221,26 @@ ut line 223.
 (pdftex.def)             Requested size: 320.0935pt x 175.84421pt.
  [26 <./figures/CirrusFourPatchExtraction.png> <./figures/CirrusSevenPatchExtra
 ction.png>] [27 <./figures/CirrusThirteenPatchExtraction.png>]
-<figures/FrameInterpolationFramework.png, id=735, 511.9125pt x 281.25075pt>
+<figures/FrameInterpolationFramework.png, id=739, 511.9125pt x 281.25075pt>
 File: figures/FrameInterpolationFramework.png Graphic file (type png)
 <use figures/FrameInterpolationFramework.png>
 Package pdftex.def Info: figures/FrameInterpolationFramework.png  used on input
  line 256.
 (pdftex.def)             Requested size: 426.79135pt x 234.48518pt.
  [28] [29 <./figures/FrameInterpolationFramework.png>]
-<figures/GANFramework.png, id=787, 616.55344pt x 347.79938pt>
+<figures/GANFramework.png, id=791, 616.55344pt x 347.79938pt>
 File: figures/GANFramework.png Graphic file (type png)
 <use figures/GANFramework.png>
 Package pdftex.def Info: figures/GANFramework.png  used on input line 296.
 (pdftex.def)             Requested size: 298.75264pt x 168.52858pt.
  [30 <./figures/GANFramework.png>]
-<figures/CirrusSixtyFourPatchExtraction.png, id=800, 880.161pt x 478.953pt>
+<figures/CirrusSixtyFourPatchExtraction.png, id=804, 880.161pt x 478.953pt>
 File: figures/CirrusSixtyFourPatchExtraction.png Graphic file (type png)
 <use figures/CirrusSixtyFourPatchExtraction.png>
 Package pdftex.def Info: figures/CirrusSixtyFourPatchExtraction.png  used on in
 put line 307.
 (pdftex.def)             Requested size: 298.75264pt x 162.56415pt.
-<figures/GeneratorArchitecture.png, id=802, 489.62926pt x 214.401pt>
+<figures/GeneratorArchitecture.png, id=806, 489.62926pt x 214.401pt>
 File: figures/GeneratorArchitecture.png Graphic file (type png)
 <use figures/GeneratorArchitecture.png>
 Package pdftex.def Info: figures/GeneratorArchitecture.png  used on input line 
@@ -1319,13 +1319,13 @@ Package logreq Info: Writing requests to 'thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 23191 strings out of 476339
- 423056 string characters out of 5788120
- 1870340 words of memory out of 5000000
- 42958 multiletter control sequences out of 15000+600000
+ 23195 strings out of 476339
+ 423189 string characters out of 5788120
+ 1871340 words of memory out of 5000000
+ 42961 multiletter control sequences out of 15000+600000
  598581 words of font info for 141 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 78i,18n,82p,1393b,3230s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 78i,18n,82p,1382b,3230s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}<C:
 /Users/david/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex1
 0.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
@@ -1341,9 +1341,9 @@ X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (55 pages, 32592457 bytes).
+Output written on thesis.pdf (55 pages, 32593942 bytes).
 PDF statistics:
- 1096 PDF objects out of 1200 (max. 8388607)
- 213 named destinations out of 1000 (max. 500000)
+ 1102 PDF objects out of 1200 (max. 8388607)
+ 214 named destinations out of 1000 (max. 500000)
  281 words of extra memory for PDF output out of 10000 (max. 10000000)
 
