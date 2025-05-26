@@ -7,7 +7,7 @@
 \contentsline {figure}{\numberline {2.1}{\ignorespaces Grouping of the articles included in the literature review.\relax }}{6}{figure.caption.12}%
 \contentsline {figure}{\numberline {2.2}{\ignorespaces Example of a CNN architecture used in fluid binary segmentation. Image A depicts the neural network architecture. B shows the used multi-scale block, while C and D exhibit the residual convolutional blocks \blx@tocontentsinit {0}\parencite {Guo2020}.\relax }}{7}{figure.caption.13}%
 \contentsline {figure}{\numberline {2.3}{\ignorespaces Example of a framework that includes delimitation of the retinal layer and a relative distance map (left side). The generated map is included in the segmentation network (denominated ICAF-Net, by the authors) \blx@tocontentsinit {0}\parencite {Tang2022}.\relax }}{9}{figure.caption.14}%
-\contentsline {figure}{\numberline {2.4}{\ignorespaces \blx@tocontentsinit {0}\textcite {Lopez2023} training process.\relax }}{11}{figure.caption.15}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces \blx@tocontentsinit {0}\textcite {Lopez2023} training process.\relax }}{10}{figure.caption.15}%
 \contentsline {figure}{\numberline {2.5}{\ignorespaces Framework developed by \blx@tocontentsinit {0}\textcite {Xia2021}.\relax }}{12}{figure.caption.16}%
 \contentsline {figure}{\numberline {2.6}{\ignorespaces Architecture of the method developed by \blx@tocontentsinit {0}\textcite {Zhang2024}.\relax }}{13}{figure.caption.17}%
 \contentsline {figure}{\numberline {2.7}{\ignorespaces Pipeline of the methodology utilized by \blx@tocontentsinit {0}\textcite {Fang2022}.\relax }}{14}{figure.caption.18}%
