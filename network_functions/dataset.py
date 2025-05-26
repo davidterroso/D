@@ -242,7 +242,7 @@ def generation_images_from_volumes(volumes_list: list, model_name: str):
         volume_set = volume_name[:-3].lower()
         volume_number = int(volume_name[-3:])
         volume = f"{volume_number}_{volume_set}"
-        if volume in volumes_list:
+        if (volume in volumes_list) and parts[0] == "Spectralis":
             images_list.append((images_folder, patch_name))
 
     # Creates a dictionary that will match the id of a volume to a path

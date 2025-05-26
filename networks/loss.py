@@ -752,7 +752,7 @@ def generator_loss(device: str, discriminator: Module,
     gd_loss = gd_loss(generated_imgs, expected_imgs)
     # Initiates the BCE loss and allocates it 
     # to the used device
-    adv_loss = BCELoss().to(device)
+    adv_loss = BCEWithLogitsLoss().to(device)
     # Calculates the BCE loss for the classification predicted by the 
     # discriminator and compares it to the true label. This might 
     # sound counter-intuitive since the loss is being calculated for 
