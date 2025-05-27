@@ -22,5 +22,15 @@
 \contentsline {subsection}{\numberline {3.2.4}Fluid Volume Estimation}{35}{subsection.3.2.4}%
 \contentsline {subsubsection}{\numberline {3.2.4.1}Experiment 5}{36}{subsubsection.3.2.4.1}%
 \contentsline {subsubsection}{\numberline {3.2.4.2}Experiment 6}{36}{subsubsection.3.2.4.2}%
-\contentsline {chapter}{References}{37}{section*.39}%
-\contentsline {chapter}{\numberline {A}Lorem Ipsum}{43}{appendix.A}%
+\contentsline {chapter}{\numberline {4}Results and Discussion}{37}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Fluid Segmentation}{37}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Experiment 1}{37}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Experiment 2}{39}{subsection.4.1.2}%
+\contentsline {section}{\numberline {4.2}Intermediate Slice Synthesis}{39}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Experiment 3}{39}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Experiment 4}{39}{subsection.4.2.2}%
+\contentsline {section}{\numberline {4.3}Fluid Volume Estimation}{39}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Experiment 5}{39}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Experiment 6}{39}{subsection.4.3.2}%
+\contentsline {chapter}{References}{40}{section*.46}%
+\contentsline {chapter}{\numberline {A}Lorem Ipsum}{46}{appendix.A}%

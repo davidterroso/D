@@ -26,3 +26,4 @@
 \contentsline {figure}{\numberline {3.10}{\ignorespaces Patches with shape 64 $\times $ 64 extracted from a Cirrus B-scan which was resized to 496 $\times $ 512.\relax }}{31}{figure.caption.36}%
 \contentsline {figure}{\numberline {3.11}{\ignorespaces Architecture of the generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \blx@tocontentsinit {0}\parencite {Tran2020}.\relax }}{32}{figure.caption.37}%
 \addvspace {10\p@ }
+\addvspace {10\p@ }
