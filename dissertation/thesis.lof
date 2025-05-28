@@ -26,4 +26,8 @@
 \contentsline {figure}{\numberline {3.10}{\ignorespaces Patches with shape 64 $\times $ 64 extracted from a Cirrus B-scan which was resized to 496 $\times $ 512.\relax }}{31}{figure.caption.36}%
 \contentsline {figure}{\numberline {3.11}{\ignorespaces Architecture of the generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \blx@tocontentsinit {0}\parencite {Tran2020}.\relax }}{32}{figure.caption.37}%
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Example of a patch extracted from a Cirrus OCT volume used in Experiment 1.1. In this patch, while the background is noticeable due to its darker shade, the choroid is harder to be identified by an observer (or a model) due to the lack of context.\relax }}{39}{figure.caption.40}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Example of a poor segmentation made by the model trained in Run 1 (right). In the left, the GT mask for the same image is shown.\relax }}{40}{figure.caption.41}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Example of the segmentation done by the model trained in Run 9 (right) and its respective GT mask (left). The B-scan segmented is the same as in Figure \ref {fig:Experiment11Segmentation}.\relax }}{41}{figure.caption.43}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Example of the segmentation done by the model trained in Run 12 (right) and its respective GT mask (left). It is noticeable that the model confuses the choroid with the retina, as segmentation of IRF and PED is performed in the choroid.\relax }}{41}{figure.caption.44}%
 \addvspace {10\p@ }
