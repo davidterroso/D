@@ -182,10 +182,10 @@ In Figure \ref{fig:BigPatchesSegmentationTopcon}, it is seen that the model conf
 \end{figure}
 
 \subsubsection{Experiment 1.3}
-Experiment 1.3 contains all the runs that were performed using vertical patches as input of the multi-class segmentation U-Net. In the first two sets, shown in Table \ref{tab:Experiment1.3FourPatches}, the models were trained using four vertical patches, obtained as explained in the \ref{Methods} Methods chapter.
+Experiment 1.3 contains all the runs that were performed using vertical patches as input of the multi-class segmentation U-Net. In the first two sets, shown in Table \ref{tab:Experiment1.3FourPatches}, the models were trained using four vertical patches, obtained as explained in the \ref{Methods} Methods chapter. In this table, the ``Set 4'' is composed of runs that were trained on 100 epochs, while the runs in ``Set 5'' were trained on 200 epochs.
 
 \begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid for the runs done in Experiment 1.3 using four vertical patches extracted from each B-scan. In ``Set 4'', the models were trained in 100 epochs, while in ``Set 5'' the models were trained in 200 epochs.}
+	\caption{Dice scores for every vendor and fluid for the runs done using four vertical patches extracted from each B-scan. In ``Set 4'', the models were trained in 100 epochs, while in ``Set 5'' the models were trained in 200 epochs. The transformations applied in these sets were the same: horizontal flipping and a maximum rotation of $10^{\circ}$.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
@@ -245,8 +245,10 @@ Experiment 1.3 contains all the runs that were performed using vertical patches 
 	\label{tab:Experiment1.3FourPatches}
 \end{table*}
 
+The results of the sets shown in Table \ref{tab:Experiment1.3FourPatches} can be compared within each other and to the results obtained in the sets of previous experiments. 
+
 \begin{table*}[!ht]
-	\caption{}
+	\caption{Dice scores for every vendor and fluid for the runs done using seven (Runs 21 and 22) and thirteen (Runs 23 and 24) vertical patches extracted from each B-scan. Only two folds were used in order to understand the viability of using these numbers of patches.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
@@ -291,7 +293,7 @@ Experiment 1.3 contains all the runs that were performed using vertical patches 
 \end{table*}
 
 \begin{table*}[!ht]
-	\caption{}
+	\caption{Dice scores for every vendor and fluid using seven vertical patches. The only transformation performed in these runs was horizontal flipping, without rotation.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 			\hline
@@ -341,7 +343,7 @@ Experiment 1.3 contains all the runs that were performed using vertical patches 
 \end{table*}
 
 \begin{table*}[!ht]
-	\caption{}
+	\caption{Dice scores for every vendor and fluid using seven vertical patches. In these runs, horizontal flipping and $5^{\circ}$ rotation were used, instead of the usual $10^{\circ}$.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
@@ -387,7 +389,7 @@ Experiment 1.3 contains all the runs that were performed using vertical patches 
 \end{table*}
 
 \begin{table*}[!ht]
-	\caption{}
+	\caption{Dice scores for every vendor and fluid using four vertical patches. The rotation applied in these runs was of $5^{\circ}$, instead of the previously used $10^{\circ}$.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
@@ -429,11 +431,11 @@ Experiment 1.3 contains all the runs that were performed using vertical patches 
 		\hline
 			
 	\end{tabular}}
-	\label{tab:tab:Experiment1.3FourPatches5DegreeRotation}
+	\label{tab:Experiment1.3FourPatches5DegreeRotation}
 \end{table*}
 
 \begin{table*}[!ht]
-	\caption{}
+	\caption{Dice scores for every vendor and fluid in the reserved fold (validation fold 1). The OCT volumes contained in this folds do had not been used previously nor in training nor in validation. The inference was done using the model trained on Run 32, which was the best performing model in the runs seen in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation} and in Table \ref{tab:Experiment1.3FourPatches5DegreeRotation}.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
@@ -465,7 +467,7 @@ Experiment 1.3 contains all the runs that were performed using vertical patches 
 		\hline
 			
 	\end{tabular}}
-	\label{tab:Experiment1FinalResults}
+	\label{tab:Experiment1.3FinalResults}
 \end{table*}
 
 \subsection{Experiment 2}
