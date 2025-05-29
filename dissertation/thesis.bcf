@@ -2615,6 +2615,8 @@
     <bcf:citekey order="171" intorder="1">Nishimoto2024</bcf:citekey>
     <bcf:citekey order="172" intorder="1">Nishimoto2024</bcf:citekey>
     <bcf:citekey order="173" intorder="1">Nishimoto2024</bcf:citekey>
+    <bcf:citekey order="174" intorder="1">Akesson2024</bcf:citekey>
+    <bcf:citekey order="174" intorder="2">Altarabichi2024</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

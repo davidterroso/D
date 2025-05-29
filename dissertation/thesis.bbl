@@ -4254,6 +4254,95 @@
       \verb 10.48550/arXiv.1511.05440
       \endverb
     \endentry
+    \entry{Akesson2024}{article}{}
+      \name{author}{3}{}{%
+        {{hash=81dfa5e5e2ce5d490d9d58ab0d8b68ad}{%
+           family={{Å}kesson},
+           familyi={Å\bibinitperiod},
+           given={Julius},
+           giveni={J\bibinitperiod}}}%
+        {{hash=a9e796b5102850171512fee97ffce7cf}{%
+           family={T{ö}ger},
+           familyi={T\bibinitperiod},
+           given={Johannes},
+           giveni={J\bibinitperiod}}}%
+        {{hash=c5b4e9566edfc6352d82bdae0fcf12d0}{%
+           family={Heiberg},
+           familyi={H\bibinitperiod},
+           given={Einar},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{9560ad8e42f6c75db3309b999bb2548a}
+      \strng{fullhash}{cd80fb2688c9ec5372201580744c55a1}
+      \strng{bibnamehash}{cd80fb2688c9ec5372201580744c55a1}
+      \strng{authorbibnamehash}{cd80fb2688c9ec5372201580744c55a1}
+      \strng{authornamehash}{9560ad8e42f6c75db3309b999bb2548a}
+      \strng{authorfullhash}{cd80fb2688c9ec5372201580744c55a1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0010-4825}
+      \field{journaltitle}{Computers in Biology and Medicine}
+      \field{title}{{Random effects during training: Implications for deep learning-based medical image segmentation}}
+      \field{volume}{180}
+      \field{year}{2024}
+      \field{pages}{108944}
+      \range{pages}{1}
+      \verb{doi}
+      \verb doi.org/10.1016/j.compbiomed.2024.108944
+      \endverb
+      \keyw{Deep learning,Medical image segmentation,Performance comparisons,Random seeds,Randomness}
+    \endentry
+    \entry{Altarabichi2024}{article}{}
+      \name{author}{5}{}{%
+        {{hash=74f427d2245c819c94e691127ebb6812}{%
+           family={Altarabichi},
+           familyi={A\bibinitperiod},
+           given={Mohammed\bibnamedelima Ghaith},
+           giveni={M\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=c6ee95dab723ca972b2952bedcc0edba}{%
+           family={Nowaczyk},
+           familyi={N\bibinitperiod},
+           given={Sławomir},
+           giveni={S\bibinitperiod}}}%
+        {{hash=6eae1a06e5c77e8f21196329338a4cc7}{%
+           family={Pashami},
+           familyi={P\bibinitperiod},
+           given={Sepideh},
+           giveni={S\bibinitperiod}}}%
+        {{hash=df91691bedc628204a0cae6d0a276948}{%
+           family={Mashhadi},
+           familyi={M\bibinitperiod},
+           given={Peyman\bibnamedelima Sheikholharam},
+           giveni={P\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=c4498ddf8d43642c6c2c891af97f47b0}{%
+           family={Handl},
+           familyi={H\bibinitperiod},
+           given={Julia},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{36b07a2dd9125f83f1090451edaa3fc7}
+      \strng{fullhash}{ab45fb369725629f41639a5b586fffd0}
+      \strng{bibnamehash}{ab45fb369725629f41639a5b586fffd0}
+      \strng{authorbibnamehash}{ab45fb369725629f41639a5b586fffd0}
+      \strng{authornamehash}{36b07a2dd9125f83f1090451edaa3fc7}
+      \strng{authorfullhash}{ab45fb369725629f41639a5b586fffd0}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0020-0255}
+      \field{journaltitle}{Information Sciences}
+      \field{title}{{Rolling the dice for better deep learning performance: A study of randomness techniques in deep neural networks}}
+      \field{volume}{667}
+      \field{year}{2024}
+      \field{pages}{120500}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1016/j.ins.2024.120500
+      \endverb
+    \endentry
   \enddatalist
 \endrefsection
 \endinput
