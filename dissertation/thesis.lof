@@ -7,7 +7,7 @@
 \contentsline {figure}{\numberline {2.1}{\ignorespaces Grouping of the articles included in the literature review.\relax }}{6}{figure.caption.12}%
 \contentsline {figure}{\numberline {2.2}{\ignorespaces Example of a CNN architecture used in fluid binary segmentation. Image A depicts the neural network architecture. B shows the used multi-scale block, while C and D exhibit the residual convolutional blocks \blx@tocontentsinit {0}\parencite {Guo2020}.\relax }}{7}{figure.caption.13}%
 \contentsline {figure}{\numberline {2.3}{\ignorespaces Example of a framework that includes delimitation of the retinal layer and a relative distance map (left side). The generated map is included in the segmentation network (denominated ICAF-Net, by the authors) \blx@tocontentsinit {0}\parencite {Tang2022}.\relax }}{9}{figure.caption.14}%
-\contentsline {figure}{\numberline {2.4}{\ignorespaces \blx@tocontentsinit {0}\textcite {Lopez2023} training process.\relax }}{11}{figure.caption.15}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces \blx@tocontentsinit {0}\textcite {Lopez2023} training process.\relax }}{10}{figure.caption.15}%
 \contentsline {figure}{\numberline {2.5}{\ignorespaces Framework developed by \blx@tocontentsinit {0}\textcite {Xia2021}.\relax }}{12}{figure.caption.16}%
 \contentsline {figure}{\numberline {2.6}{\ignorespaces Architecture of the method developed by \blx@tocontentsinit {0}\textcite {Zhang2024}.\relax }}{13}{figure.caption.17}%
 \contentsline {figure}{\numberline {2.7}{\ignorespaces Pipeline of the methodology utilized by \blx@tocontentsinit {0}\textcite {Fang2022}.\relax }}{14}{figure.caption.18}%
@@ -25,4 +25,10 @@
 \contentsline {figure}{\numberline {3.9}{\ignorespaces Example of a GAN framework, where $\mathcal {D}$ is the discriminator and $\mathcal {G}$ is the generator \blx@tocontentsinit {0}\cite {Creswell2018}.\relax }}{30}{figure.caption.35}%
 \contentsline {figure}{\numberline {3.10}{\ignorespaces Patches with shape 64 $\times $ 64 extracted from a Cirrus B-scan which was resized to 496 $\times $ 512.\relax }}{31}{figure.caption.36}%
 \contentsline {figure}{\numberline {3.11}{\ignorespaces Architecture of the generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \blx@tocontentsinit {0}\parencite {Tran2020}.\relax }}{32}{figure.caption.37}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Example of a patch extracted from a Cirrus OCT volume used in Experiment 1.1. In this patch, while the background is noticeable due to its darker shade, the choroid is harder to be identified by an observer (or a model) due to the lack of context.\relax }}{39}{figure.caption.40}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Example of a poor segmentation made by the model trained in Run 1 (right). In the left, the GT mask for the same image is shown.\relax }}{40}{figure.caption.41}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Example of the segmentation done by the model trained in Run 9 (right) and its respective GT mask (left). The B-scan segmented is the same as in Figure \ref {fig:Experiment11Segmentation}.\relax }}{41}{figure.caption.43}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Example of the segmentation done by the model trained in Run 12 (right) and its respective GT mask (left). It is noticeable that the model confuses the choroid with the retina, as segmentation of IRF and PED is performed in the choroid.\relax }}{41}{figure.caption.44}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Training and validation losses in Run 13 (left) and Run 17 (right). Despite reaching the validation loss minimum in a similar number of epochs and having comparable training and validation loss curves, the performance is really different in Table \ref {tab:Experiment1.3FourPatches}.\relax }}{43}{figure.caption.46}%
 \addvspace {10\p@ }
