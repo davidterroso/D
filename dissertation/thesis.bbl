@@ -2566,6 +2566,52 @@
       \endverb
       \keyw{Depth information,Generative Adversarial Networks,Magnetic resonance image,Rectal cancer,Super-resolution,Three-axis mutual supervision}
     \endentry
+    \entry{Peng2020}{inproceedings}{}
+      \name{author}{5}{}{%
+        {{hash=b233f2ea71c72b76b5c808ee1f9beb3a}{%
+           family={Peng},
+           familyi={P\bibinitperiod},
+           given={Cheng},
+           giveni={C\bibinitperiod}}}%
+        {{hash=7c90333da9314268d3c484494d73fc74}{%
+           family={Lin},
+           familyi={L\bibinitperiod},
+           given={Wei-An},
+           giveni={W\bibinithyphendelim A\bibinitperiod}}}%
+        {{hash=a56b0774f39418765e3278cbe1a328d5}{%
+           family={Liao},
+           familyi={L\bibinitperiod},
+           given={Haofu},
+           giveni={H\bibinitperiod}}}%
+        {{hash=58e34e482e0dd6e755329ae57da3b293}{%
+           family={Chellappa},
+           familyi={C\bibinitperiod},
+           given={Rama},
+           giveni={R\bibinitperiod}}}%
+        {{hash=9c1e53c3d15103f0b0e185c215512074}{%
+           family={Zhou},
+           familyi={Z\bibinitperiod},
+           given={S\bibnamedelima Kevin},
+           giveni={S\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+      }
+      \strng{namehash}{39755683bfb284035b2e83f58c4775e2}
+      \strng{fullhash}{2b2496656dfcf7cd860192cadbedbd2f}
+      \strng{bibnamehash}{2b2496656dfcf7cd860192cadbedbd2f}
+      \strng{authorbibnamehash}{2b2496656dfcf7cd860192cadbedbd2f}
+      \strng{authornamehash}{39755683bfb284035b2e83f58c4775e2}
+      \strng{authorfullhash}{2b2496656dfcf7cd860192cadbedbd2f}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}
+      \field{month}{6}
+      \field{title}{{SAINT: Spatially Aware Interpolation NeTwork for Medical Slice Synthesis}}
+      \field{year}{2020}
+      \verb{doi}
+      \verb 10.48550/arXiv.2001.00704
+      \endverb
+    \endentry
     \entry{Fang2022}{inproceedings}{}
       \name{author}{6}{}{%
         {{hash=dbe8e460e999037ebd21cc052394be5e}{%
@@ -2947,52 +2993,6 @@
       \verb 10.3390/tomography8020073
       \endverb
     \endentry
-    \entry{Peng2020}{inproceedings}{}
-      \name{author}{5}{}{%
-        {{hash=b233f2ea71c72b76b5c808ee1f9beb3a}{%
-           family={Peng},
-           familyi={P\bibinitperiod},
-           given={Cheng},
-           giveni={C\bibinitperiod}}}%
-        {{hash=7c90333da9314268d3c484494d73fc74}{%
-           family={Lin},
-           familyi={L\bibinitperiod},
-           given={Wei-An},
-           giveni={W\bibinithyphendelim A\bibinitperiod}}}%
-        {{hash=a56b0774f39418765e3278cbe1a328d5}{%
-           family={Liao},
-           familyi={L\bibinitperiod},
-           given={Haofu},
-           giveni={H\bibinitperiod}}}%
-        {{hash=58e34e482e0dd6e755329ae57da3b293}{%
-           family={Chellappa},
-           familyi={C\bibinitperiod},
-           given={Rama},
-           giveni={R\bibinitperiod}}}%
-        {{hash=9c1e53c3d15103f0b0e185c215512074}{%
-           family={Zhou},
-           familyi={Z\bibinitperiod},
-           given={S\bibnamedelima Kevin},
-           giveni={S\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
-      }
-      \strng{namehash}{39755683bfb284035b2e83f58c4775e2}
-      \strng{fullhash}{2b2496656dfcf7cd860192cadbedbd2f}
-      \strng{bibnamehash}{2b2496656dfcf7cd860192cadbedbd2f}
-      \strng{authorbibnamehash}{2b2496656dfcf7cd860192cadbedbd2f}
-      \strng{authornamehash}{39755683bfb284035b2e83f58c4775e2}
-      \strng{authorfullhash}{2b2496656dfcf7cd860192cadbedbd2f}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{booktitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}
-      \field{month}{6}
-      \field{title}{{SAINT: Spatially Aware Interpolation NeTwork for Medical Slice Synthesis}}
-      \field{year}{2020}
-      \verb{doi}
-      \verb 10.48550/arXiv.2001.00704
-      \endverb
-    \endentry
     \entry{Niu2020}{inproceedings}{}
       \name{author}{9}{}{%
         {{hash=1c95a81f9307f5b7f9ecdaa37cac3137}{%
@@ -3126,6 +3126,57 @@
       \range{pages}{11}
       \verb{doi}
       \verb 10.48550/arXiv.2103.10559
+      \endverb
+    \endentry
+    \entry{Lee2020}{inproceedings}{}
+      \name{author}{6}{}{%
+        {{hash=58e3b3d2531338be4a99a9d91db390eb}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Hyeongmin},
+           giveni={H\bibinitperiod}}}%
+        {{hash=d2e9aaf0b7f840c482e428b65b9359d9}{%
+           family={Kim},
+           familyi={K\bibinitperiod},
+           given={Taeoh},
+           giveni={T\bibinitperiod}}}%
+        {{hash=cf034152861b7b1c346c413e04907232}{%
+           family={Chung},
+           familyi={C\bibinitperiod},
+           given={Tae-young},
+           giveni={T\bibinithyphendelim y\bibinitperiod}}}%
+        {{hash=d503b69f4fab449216c9851f2135c782}{%
+           family={Pak},
+           familyi={P\bibinitperiod},
+           given={Daehyun},
+           giveni={D\bibinitperiod}}}%
+        {{hash=a95ae5c4f81dcc5bb67c5ad8e486011a}{%
+           family={Ban},
+           familyi={B\bibinitperiod},
+           given={Yuseok},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=89055515d26366f5087168b601b5640f}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Sangyoun},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{2dfde9001878e3911444f93085d3ef9c}
+      \strng{fullhash}{0119b66cf44f6d86a5f5faddf3d5fa94}
+      \strng{bibnamehash}{0119b66cf44f6d86a5f5faddf3d5fa94}
+      \strng{authorbibnamehash}{0119b66cf44f6d86a5f5faddf3d5fa94}
+      \strng{authornamehash}{2dfde9001878e3911444f93085d3ef9c}
+      \strng{authorfullhash}{0119b66cf44f6d86a5f5faddf3d5fa94}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}
+      \field{month}{6}
+      \field{title}{{AdaCoF: Adaptive Collaboration of Flows for Video Frame Interpolation}}
+      \field{year}{2020}
+      \verb{doi}
+      \verb 10.48550/arXiv.1907.10244
       \endverb
     \endentry
     \entry{Gambini2024}{article}{}
@@ -4201,6 +4252,95 @@
       \field{year}{2016}
       \verb{doi}
       \verb 10.48550/arXiv.1511.05440
+      \endverb
+    \endentry
+    \entry{Akesson2024}{article}{}
+      \name{author}{3}{}{%
+        {{hash=81dfa5e5e2ce5d490d9d58ab0d8b68ad}{%
+           family={{Å}kesson},
+           familyi={Å\bibinitperiod},
+           given={Julius},
+           giveni={J\bibinitperiod}}}%
+        {{hash=a9e796b5102850171512fee97ffce7cf}{%
+           family={T{ö}ger},
+           familyi={T\bibinitperiod},
+           given={Johannes},
+           giveni={J\bibinitperiod}}}%
+        {{hash=c5b4e9566edfc6352d82bdae0fcf12d0}{%
+           family={Heiberg},
+           familyi={H\bibinitperiod},
+           given={Einar},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{9560ad8e42f6c75db3309b999bb2548a}
+      \strng{fullhash}{cd80fb2688c9ec5372201580744c55a1}
+      \strng{bibnamehash}{cd80fb2688c9ec5372201580744c55a1}
+      \strng{authorbibnamehash}{cd80fb2688c9ec5372201580744c55a1}
+      \strng{authornamehash}{9560ad8e42f6c75db3309b999bb2548a}
+      \strng{authorfullhash}{cd80fb2688c9ec5372201580744c55a1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0010-4825}
+      \field{journaltitle}{Computers in Biology and Medicine}
+      \field{title}{{Random effects during training: Implications for deep learning-based medical image segmentation}}
+      \field{volume}{180}
+      \field{year}{2024}
+      \field{pages}{108944}
+      \range{pages}{1}
+      \verb{doi}
+      \verb doi.org/10.1016/j.compbiomed.2024.108944
+      \endverb
+      \keyw{Deep learning,Medical image segmentation,Performance comparisons,Random seeds,Randomness}
+    \endentry
+    \entry{Altarabichi2024}{article}{}
+      \name{author}{5}{}{%
+        {{hash=74f427d2245c819c94e691127ebb6812}{%
+           family={Altarabichi},
+           familyi={A\bibinitperiod},
+           given={Mohammed\bibnamedelima Ghaith},
+           giveni={M\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=c6ee95dab723ca972b2952bedcc0edba}{%
+           family={Nowaczyk},
+           familyi={N\bibinitperiod},
+           given={Sławomir},
+           giveni={S\bibinitperiod}}}%
+        {{hash=6eae1a06e5c77e8f21196329338a4cc7}{%
+           family={Pashami},
+           familyi={P\bibinitperiod},
+           given={Sepideh},
+           giveni={S\bibinitperiod}}}%
+        {{hash=df91691bedc628204a0cae6d0a276948}{%
+           family={Mashhadi},
+           familyi={M\bibinitperiod},
+           given={Peyman\bibnamedelima Sheikholharam},
+           giveni={P\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=c4498ddf8d43642c6c2c891af97f47b0}{%
+           family={Handl},
+           familyi={H\bibinitperiod},
+           given={Julia},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{36b07a2dd9125f83f1090451edaa3fc7}
+      \strng{fullhash}{ab45fb369725629f41639a5b586fffd0}
+      \strng{bibnamehash}{ab45fb369725629f41639a5b586fffd0}
+      \strng{authorbibnamehash}{ab45fb369725629f41639a5b586fffd0}
+      \strng{authornamehash}{36b07a2dd9125f83f1090451edaa3fc7}
+      \strng{authorfullhash}{ab45fb369725629f41639a5b586fffd0}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0020-0255}
+      \field{journaltitle}{Information Sciences}
+      \field{title}{{Rolling the dice for better deep learning performance: A study of randomness techniques in deep neural networks}}
+      \field{volume}{667}
+      \field{year}{2024}
+      \field{pages}{120500}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1016/j.ins.2024.120500
       \endverb
     \endentry
   \enddatalist
