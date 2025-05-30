@@ -149,7 +149,9 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
     real_loss = []
     fake_loss = []
     dis_loss = []
-    real_loss = []
+    ms_ssim_loss = []
+    gd_loss = []
+    mae_loss = []
     val_loss = []
     val_ssim = []
     val_gd = []
@@ -172,11 +174,14 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
                 real_loss.append(float(row[3]))
                 fake_loss.append(float(row[4]))
                 dis_loss.append(float(row[5]))
-                val_loss.append(float(row[6]))
-                val_ssim.append(float(row[7]))
-                val_gd.append(float(row[8]))
-                val_mae.append(float(row[9]))
-                val_adv.append(float(row[10]))
+                ms_ssim_loss.append(float(row[6]))
+                gd_loss.append(float(row[7]))
+                mae_loss.append(float(row[8]))
+                val_loss.append(float(row[9]))
+                val_ssim.append(float(row[10]))
+                val_gd.append(float(row[11]))
+                val_mae.append(float(row[12]))
+                val_adv.append(float(row[13]))
             elif model_name == "UNet":
                 adv_loss.append(float(row[1]))
             else:
@@ -395,6 +400,60 @@ def plot_logs_gan(imgs_folder: str, run_name: str,
         # Shows the image
         plt.show()
 
+         # Divides an image in four subplots, two aligned horizontally in each row
+        fig, ((ax1, ax2),(ax3, ax4)) = plt.subplots(2, 2, figsize=(16,8))
+        fig.suptitle(f"{run_name} Training Losses")
+
+        # Declares the information that is going 
+        # to be plotted, the labels on the axes 
+        # and the title of the subplot
+        # Also informs the color, the style of 
+        # the line that connects the data points
+        # and the marker of a data point
+        # Sets the ticks to show only every 5 
+        # or 10 values
+        len_epoch = len(x_epoch) - 1
+        ticks_epoch = linspace(0, len_epoch, 10)
+
+        ax1.plot(x_epoch, adv_loss, 
+                color='g', linestyle='dashed', 
+                marker='o')
+        ax1.set_title("Adversarial Loss/Epoch")
+        ax1.set(xlabel="Epochs", ylabel="Adversarial Loss")
+        ax1.set_xticks(ticks_epoch)
+
+        ax2.plot(x_epoch, gd_loss, 
+                color='r', linestyle='dashed', 
+                marker='o')
+        ax2.set_title("GD Loss/Epoch")
+        ax2.set(xlabel="Epochs", ylabel="GD Loss")
+        ax2.set_xticks(ticks_epoch) 
+
+        ax3.plot(x_epoch, mae_loss, 
+                color='b', linestyle='dashed', 
+                marker='o')
+        ax3.set_title("MAE/Epoch")
+        ax3.set(xlabel="Epochs", ylabel="MAE")
+        ax3.set_xticks(ticks_epoch)
+
+        ax4.plot(x_epoch, ms_ssim_loss, 
+                color='y', linestyle='dashed', 
+                marker='o')
+        ax4.set_title("MS-SSIM/Epoch")
+        ax4.set(xlabel="Epochs", ylabel="MS-SSIM")
+        ax4.set_xticks(ticks_epoch)
+
+        # Adjusts the layout 
+        # to prevent overlays
+        plt.tight_layout()
+
+        # Declares the path to save
+        img_path = f"{imgs_folder}\{run_name}_all_training_epoch_error.png"
+        # Saves the image to the designated path
+        plt.savefig(img_path)
+
+        # Shows the image
+        plt.show()
 
     elif model_name == "UNet":
         # Initiates the list with the number of epochs, 

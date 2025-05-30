@@ -210,7 +210,8 @@ def patches_from_volumes(volumes_list: list, model: str,
             patches_list.append(patch_name)
     return patches_list
 
-def generation_images_from_volumes(volumes_list: list, model_name: str):
+def generation_images_from_volumes(volumes_list: list, model_name: str, 
+                                   oct_device: str='all'):
     """
     Used to return the list of all the patches that are available to 
     train the GAN, knowing which volumes will be used
@@ -220,6 +221,10 @@ def generation_images_from_volumes(volumes_list: list, model_name: str):
             that will be used in training
         model_name (str): name of the model that is being trained. Can 
             only be "UNet" or "GAN"
+        oct_device (str): name of the OCT device from which the scans 
+            while be used to train and validate the model. Can be 'all', 
+            'Cirrus', 'Spectralis', 'T-1000', or 'T-2000'. The default 
+            option is 'all'
 
     Return:
         patches_list (List[str]): list of the name of the patches that 
@@ -242,7 +247,8 @@ def generation_images_from_volumes(volumes_list: list, model_name: str):
         volume_set = volume_name[:-3].lower()
         volume_number = int(volume_name[-3:])
         volume = f"{volume_number}_{volume_set}"
-        if (volume in volumes_list) and parts[0] == "Spectralis":
+
+        if (volume in volumes_list) and (oct_device == parts[0] or oct_device == 'all'):
             images_list.append((images_folder, patch_name))
 
     # Creates a dictionary that will match the id of a volume to a path
@@ -1215,7 +1221,8 @@ class TrainDatasetGAN(Dataset):
     TrainDatasetGAN with the available image's paths, 
     thus simplifying the training process
     """
-    def __init__(self, train_volumes: list, model_name: str):
+    def __init__(self, train_volumes: list, model_name: str,
+                 oct_device: str='all'):
         """
         Initiates the Dataset object and gets the possible 
         names of the images that will be used in training
@@ -1227,6 +1234,11 @@ class TrainDatasetGAN(Dataset):
                 volumes that will be used to validate the model
             model_name (str): name of the model that will be 
                 trained to generate the images
+            oct_device (str): name of the OCT device from which 
+                the scans while be used to train and validate 
+                the model. Can be 'all', 'Cirrus', 'Spectralis', 
+                'T-1000', or 'T-2000'. The default option is 
+                'all'
                 
         Return:
             None
@@ -1235,7 +1247,9 @@ class TrainDatasetGAN(Dataset):
         super().__init__()
         # Gets a list of paths to all the images that will be used to 
         # train the model and the name of the model
-        self.images_names = generation_images_from_volumes(train_volumes, model_name)
+        self.images_names = generation_images_from_volumes(train_volumes, 
+                                                           model_name, 
+                                                           oct_device)
         self.model_name = model_name
 
     def __len__(self):
@@ -1278,7 +1292,7 @@ class TrainDatasetGAN(Dataset):
 
         # Reads the middle image as a NumPy array and normalizes 
         # it to 0-1 range
-        img = torch.from_numpy(imread(image_path) / 255.).float()
+        img = torch.from_numpy(((imread(image_path) / 255.) - 0.5) * 2.).float()
         if self.model_name == "UNet":
             # Gets the number of the slice
             img_number = int(image_path.split(".")[0][-3:])
@@ -1286,7 +1300,6 @@ class TrainDatasetGAN(Dataset):
             prev_img_path = image_path.split(".")[0][:-3] + str(img_number - 1).zfill(3) + ".tiff"
             next_img_path = image_path.split(".")[0][:-3] + str(img_number + 1).zfill(3) + ".tiff"
         elif self.model_name == "GAN":
-            print(self.images_names[index].split("_"))
             # Gets the information of the slice that is being read
             vendor, volume_id, img_number, patch_number = self.images_names[index].split("_")
             # Sets the name of the previous and following images
@@ -1300,8 +1313,8 @@ class TrainDatasetGAN(Dataset):
 
         # Loads the previous and the following images while normalizing 
         # to 0-1 range
-        prev_img = torch.from_numpy(imread(prev_img_path) / 255.).float()
-        next_img = torch.from_numpy(imread(next_img_path) / 255.).float()
+        prev_img = torch.from_numpy(((imread(prev_img_path) / 255.) - 0.5) * 2.).float()
+        next_img = torch.from_numpy(((imread(next_img_path) / 255.) - 0.5) * 2.).float()
 
         # Organizes the data in a dictionary that contains the images 
         # stacked along the first axis under the key "stack"
@@ -1315,7 +1328,8 @@ class ValidationDatasetGAN(Dataset):
     ValidationDatasetGAN with the available image's paths, 
     thus simplifying the validation process
     """
-    def __init__(self, val_volumes: list, model_name: str):
+    def __init__(self, val_volumes: list, model_name: str,
+                 oct_device: str='all'):
         """
         Initiates the Dataset object and gets the possible 
         names of the images that will be used in validation
@@ -1327,7 +1341,12 @@ class ValidationDatasetGAN(Dataset):
                 volumes that will be used to validate the model
             model_name (str): name of the model that will be 
                 validated to generate the images
-                
+            oct_device (str): name of the OCT device from which 
+                the scans while be used to train and validate 
+                the model. Can be 'all', 'Cirrus', 'Spectralis', 
+                'T-1000', or 'T-2000'. The default option is 
+                'all'
+
         Return:
             None
         """
@@ -1335,7 +1354,9 @@ class ValidationDatasetGAN(Dataset):
         super().__init__()
         # Gets a list of paths to all the images that will be used to 
         # validate the model and the name of the model
-        self.images_names = generation_images_from_volumes(val_volumes, model_name)
+        self.images_names = generation_images_from_volumes(val_volumes, 
+                                                           model_name,
+                                                           oct_device)
         self.model_name = model_name
 
     def __len__(self):
@@ -1378,7 +1399,7 @@ class ValidationDatasetGAN(Dataset):
 
         # Reads the middle image as a NumPy array and normalizes 
         # it to 0-1 range
-        img = torch.from_numpy(imread(image_path) / 255.).float()
+        img = torch.from_numpy(((imread(image_path) / 255.) - 0.5) * 2.).float()
         if self.model_name == "UNet":
             # Gets the number of the slice
             img_number = int(image_path.split(".")[0][-3:])
@@ -1399,8 +1420,8 @@ class ValidationDatasetGAN(Dataset):
 
         # Loads the previous and the following images while normalizing 
         # to 0-1 range
-        prev_img = torch.from_numpy(imread(prev_img_path) / 255).float()
-        next_img = torch.from_numpy(imread(next_img_path) / 255).float()
+        prev_img = torch.from_numpy(((imread(image_path) / 255.) - 0.5) * 2.).float()
+        next_img = torch.from_numpy(((imread(image_path) / 255.) - 0.5) * 2.).float()
 
         # Organizes the data in a dictionary that contains the images 
         # stacked along the first axis under the key "stack"
@@ -1414,7 +1435,7 @@ class TestDatasetGAN(Dataset):
     TestDatasetGAN with the available image's paths, thus 
     simplifying the testing process
     """
-    def __init__(self, test_volumes: list):
+    def __init__(self, test_volumes: list, oct_device: str='all'):
         """
         Initiates the Dataset object and gets the possible 
         names of the images that will be used in testing
@@ -1424,7 +1445,12 @@ class TestDatasetGAN(Dataset):
                 itself
             test_volumes(List[float]): list of the test 
                 volumes that will be used to test the model
-
+            oct_device (str): name of the OCT device from which 
+                the scans while be used to train and validate 
+                the model. Can be 'all', 'Cirrus', 'Spectralis', 
+                'T-1000', or 'T-2000'. The default option is 
+                'all'
+                
         Return:
             None
         """
@@ -1432,7 +1458,9 @@ class TestDatasetGAN(Dataset):
         super().__init__()
         # Gets a list of paths to all the images that will be used to 
         # test the model
-        self.images_names = generation_images_from_volumes(test_volumes, model_name="UNet")
+        self.images_names = generation_images_from_volumes(test_volumes,
+                                                           model_name="UNet", 
+                                                           oct_device=oct_device)
 
     def __len__(self):
         """
@@ -1470,7 +1498,7 @@ class TestDatasetGAN(Dataset):
         image_path = images_folder + self.images_names[index]
 
         # Reads the middle image as a NumPy array
-        img = torch.from_numpy(imread(image_path) / 255.).float()
+        img = torch.from_numpy(((imread(image_path) / 255.) - 0.5) * 2.).float()
         # Gets the number of the slice
         img_number = int(image_path.split(".")[0][-3:])
         # Sets the name of the previous and following images
@@ -1479,8 +1507,8 @@ class TestDatasetGAN(Dataset):
 
         # Loads the previous and the 
         # following images 
-        prev_img = torch.from_numpy(imread(prev_img_path) / 255.).float()
-        next_img = torch.from_numpy(imread(next_img_path) / 255.).float()
+        prev_img = torch.from_numpy(((imread(image_path) / 255.) - 0.5) * 2.).float()
+        next_img = torch.from_numpy(((imread(image_path) / 255.) - 0.5) * 2.).float()
 
         # Organizes the data in a dictionary that contains the images stacked along the first axis under the key 
         # "stack" and the path of the middle image associated with the key "image_name"

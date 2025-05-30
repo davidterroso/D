@@ -52,10 +52,13 @@ def train_gan(
         epochs=400,
         fold_test: int=1,
         gradient_clipping: float=1.0,
-        learning_rate: float=2e-5,
+        learning_rate: float=2e-4,
+        learning_rate_discriminator: float=2e-5,
+        learning_rate_generator: float=2e-4,
         model_name: str="GAN",
         number_of_channels: int=2,
         number_of_classes: int=1,
+        oct_device: str="all",
         patience: int=400,
         patience_after_n: int=0,
         split: str="generation_5_fold_split.csv",
@@ -87,8 +90,12 @@ def train_gan(
         gradient_clipping (float): threshold after which it
             scales the gradient down, to prevent gradient 
             exploding  
-        learning_rate (float): learning rate of the 
-            optimization function
+        learning_rate (float): learning rate of the optimization 
+            function for the generative U-Net
+        learning_rate_discriminator (float): learning rate of the
+            discriminator's optimization function for the GAN
+        learning_rate_generator (float): learning rate of the
+            generator's optimization function for the GAN
         model_name (str): name of the model that will be trained 
             to generate images. Can only be "GAN" or "UNet". The 
             default is "GAN"
@@ -96,6 +103,10 @@ def train_gan(
             input will present
         number_of_classes (int): number of classes the 
             model is supposed to output
+        oct_device (str): name of the OCT device from which the 
+            scans while be used to train and validate the model.
+            Can be 'all', 'Cirrus', 'Spectralis', 'T-1000', or 
+            'T-2000'. The default option is 'all'
         patience (int): number of epochs where the validation 
             errors calculated are worse than the best validation 
             error before terminating training
@@ -149,13 +160,13 @@ def train_gan(
 
         # Declares the optimizer of the Generator
         optimizer_G = torch.optim.Adam(generator.parameters(), 
-                                    lr=learning_rate, 
+                                    lr=learning_rate_generator, 
                                     betas=(beta_1, beta_2), 
                                     foreach=True)
         
         # Declares the optimizer of the Discriminator
         optimizer_D = torch.optim.Adam(discriminator.parameters(), 
-                                    lr=learning_rate, 
+                                    lr=learning_rate_discriminator, 
                                     betas=(beta_1, beta_2), 
                                     foreach=True)
 
@@ -165,12 +176,13 @@ def train_gan(
             # associated with each epoch
             writer.writerow(["Epoch", "Adversarial Loss", 
                                 "Generator Loss", "Real Loss", 
-                                "Fake Loss", "Discriminator Loss", 
-                                "Epoch Validation Generator Loss",
-                                "Epoch Validation MS-SSIM",
-                                "Epoch Validation GD Loss",
-                                "Epoch Validation MAE",
-                                "Epoch Validation Adversarial Loss"])
+                                "Fake Loss", "Discriminator Loss",
+                                "MS-SSIM Loss", "GD Loss", "MAE Loss",
+                                "Validation Generator Loss",
+                                "Validation MS-SSIM",
+                                "Validation GD Loss",
+                                "Validation MAE",
+                                "Validation Adversarial Loss"])
             
         with open(csv_batch_filename, mode="w", newline="") as file:
             # Declares which information will be saved in the logging file
@@ -228,20 +240,29 @@ def train_gan(
     # Informs the beginning of the training and registers the number 
     # of epochs, the batch size, the learning rate that will be used
     # and whether it is being trained on 'cuda' or 'cpu'
-    logging.info(f"""Starting training:
-        Epochs:          {epochs}
-        Batch size:      {batch_size}
-        Learning rate:   {learning_rate}
-        Device:          {device.type}
-        Mixed Precision: {amp}
-    """
-    )
+    if model_name == "UNet":
+        logging.info(f"""Starting training:
+            Epochs:          {epochs}
+            Batch size:      {batch_size}
+            Learning rate:   {learning_rate}
+            Device:          {device.type}
+            Mixed Precision: {amp}
+        """)
+    elif model_name == "GAN":
+        logging.info(f"""Starting training:
+            Epochs:                      {epochs}
+            Batch size:                  {batch_size}
+            Discriminator learning rate: {learning_rate_discriminator}
+            Generator learning rate:     {learning_rate_generator}
+            Device:                      {device.type}
+            Mixed Precision:             {amp}
+        """)
 
     # Creates the training and validation set as a PyTorch 
     # Dataset, using the list of OCT volumes that will be 
     # used to train and validate the network
-    train_set = TrainDatasetGAN(train_volumes=train_volumes, model_name=model_name)
-    val_set = ValidationDatasetGAN(val_volumes=val_volumes, model_name=model_name)
+    train_set = TrainDatasetGAN(train_volumes=train_volumes, model_name=model_name, oct_device=oct_device)
+    val_set = ValidationDatasetGAN(val_volumes=val_volumes, model_name=model_name, oct_device=oct_device)
     # With the previously created datasets, creates a DataLoader that splits this information in multiple batches
     # The number of workers selected corresponds to the number of cores available in the CPU and the persistent workers means they are not closed/killed 
     # every time training or validation ceases
@@ -252,7 +273,7 @@ def train_gan(
     # Initiates the best generator 
     # loss and the best MAE as 
     # infinite 
-    best_gen_loss = float('inf')
+    best_val_gen_loss = float('inf')
     best_val_mae = float('inf')
 
     # Initiates the patience counter
@@ -274,6 +295,9 @@ def train_gan(
             epoch_real_loss = 0
             epoch_fake_loss = 0
             epoch_d_loss = 0
+            epoch_ms_ssim_loss = 0
+            epoch_gd_loss = 0
+            epoch_mae_loss = 0
         elif model_name == "UNet":
             # Sets the UNet to training mode
             unet.train()
@@ -382,7 +406,11 @@ def train_gan(
 
                         # Updates the loss of the current epoch
                         epoch_adv_loss += adv_loss.item()
+                        epoch_mae_loss += l1_loss.item()
+                        epoch_gd_loss += gd_loss.item()
+                        epoch_ms_ssim_loss += ms_ssim_loss.item()
                         epoch_g_loss += g_loss.item()
+
                         epoch_real_loss += real_loss.item()
                         epoch_fake_loss += fake_loss.item()
                         epoch_d_loss += d_loss.item()
@@ -459,7 +487,6 @@ def train_gan(
                                     dataloader=val_loader, device=device, amp=amp, 
                                     n_val=len(val_set))
 
-
         # Writes the mean of the results of the different batches in 
         # the epoch to the CSV file 
         if model_name == "GAN":
@@ -470,28 +497,33 @@ def train_gan(
                                 epoch_real_loss / len(train_loader), 
                                 epoch_fake_loss / len(train_loader), 
                                 epoch_d_loss / len(train_loader),
+                                epoch_ms_ssim_loss / len(train_loader),
+                                epoch_gd_loss / len(train_loader),
+                                epoch_mae_loss / len(train_loader),
                                 val_loss, val_ssim, val_gd, val_l1, 
                                 val_adv])
+                
         elif model_name == "UNet":
             with open(csv_epoch_filename, mode="a", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerow([epoch, epoch_loss / len(train_loader), val_mae])
 
         if model_name == "GAN":
-            # Only saves the model after 50 epochs, since 
+            # Only saves the model after 20 epochs, since 
             # the loss is over-confident due to the 
             # inexperience of the discriminator
-            if epoch > 50:
+            if epoch > 20:
                 # In case the validation generator loss 
                 # is better than the previous, the model 
                 # is saved as the best model
-                if  (epoch_g_loss / len(train_loader)) < best_gen_loss:
+                if val_loss < best_val_gen_loss:
                     # Creates the folder models in case 
                     # it does not exist yet
                     makedirs("models", exist_ok=True)
                     # Updates the best value 
-                    # of the generator loss
-                    best_gen_loss = (epoch_g_loss / len(train_loader))
+                    # of the validation 
+                    # generator loss
+                    best_val_gen_loss = val_loss
                     patience_counter = 0
                     # Both the generator and the discriminator are saved with a name 
                     # that depends on the argument input and the name of the model
