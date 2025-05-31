@@ -1,3 +1,73 @@
-%% an example of appendix
-\chapter{Lorem Ipsum} \label{ap1:Lorem}
+\chapter{Variability of the Segmentation U-Net} \label{ap1:SegmentationUNetVariability}
 
+\begin{table*}[!ht]
+	\caption{Dice scores for every vendor and fluid for multiple runs performed in the same conditions. ``Set 1'' resumes Run 1 to Run 5, all of which validated using fold 2. Meanwhile, ``Set 2'' resumes the Runs from 6 to 14, validated in fold 3. All the runs in each set were trained on the same conditions, for 100 epochs. The random transformations applied were horizontal flipping and maximum rotation of $10^{\circ}$ applied to it. This provides an insight of how the randomness of the U-Net affects the segmentation performance.}
+	\centering
+	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
+			\hline
+			% Headers
+			\multirow{2}{*}{\textbf{Runs}} & 
+			\multirow{2}{*}{\textbf{VF}} & 
+			\multicolumn{3}{c|}{\textbf{Cirrus}} & 
+			\multicolumn{3}{c|}{\textbf{Spectralis}} & 
+			\multicolumn{3}{c|}{\textbf{Topcon}} & 
+			\multicolumn{1}{c|}{\multirow{2}{*}{\textbf{IRF}}} & 
+			\multirow{2}{*}{\textbf{SRF}} & 
+			\multirow{2}{*}{\textbf{PED}} & 
+			\multirow{2}{*}{\textbf{Fluid}} \\ \cline{3-11} & &
+			\multicolumn{1}{c}{\textbf{IRF}} & 
+			\multicolumn{1}{c}{\textbf{SRF}} & 
+			\textbf{\textbf{PED}} & 
+			\multicolumn{1}{c}{\textbf{IRF}} & 
+			\multicolumn{1}{c}{\textbf{SRF}} & 
+			\textbf{PED} & 
+			\textbf{IRF} & 
+			\textbf{SRF} & 
+			\textbf{PED} & 
+			\multicolumn{1}{c|}{} & & & \\ 
+			
+			\hline
+			\textbf{Run 1} & 2 & \multicolumn{1}{c|}{0.555} & \multicolumn{1}{c|}{0.773} & 0.634 & \multicolumn{1}{c|}{0.849} & \multicolumn{1}{c|}{0.857} & 0.839 & \multicolumn{1}{c|}{0.783} & \multicolumn{1}{c|}{0.869} & 0.765 & 0.686 & 0.821 & 0.716 & 0.663 \\
+			
+			\textbf{Run 2} & 2 & \multicolumn{1}{c|}{0.490} & \multicolumn{1}{c|}{0.813} & 0.698 & \multicolumn{1}{c|}{0.786} & \multicolumn{1}{c|}{0.848} & 0.856 & \multicolumn{1}{c|}{0.772} & \multicolumn{1}{c|}{0.903} & 0.834 & 0.639 & 0.850 & 0.773 & 0.692 \\
+			
+			\textbf{Run 3} & 2 & \multicolumn{1}{c|}{0.349} & \multicolumn{1}{c|}{0.774} & 0.600 & \multicolumn{1}{c|}{0.544} & \multicolumn{1}{c|}{0.799} & 0.759 & \multicolumn{1}{c|}{0.674} & \multicolumn{1}{c|}{0.894} & 0.772 & 0.494 & 0.819 & 0.687 & 0.561 \\
+			
+			\textbf{Run 4} & 2 & \multicolumn{1}{c|}{0.542} & \multicolumn{1}{c|}{0.776} & 0.677 & \multicolumn{1}{c|}{0.831} & \multicolumn{1}{c|}{0.826} & 0.822 & \multicolumn{1}{c|}{0.852} & \multicolumn{1}{c|}{0.873} & 0.856 & 0.699 & 0.818 & 0.764 & 0.685 \\
+			
+			\textbf{Run 5} & 2 & \multicolumn{1}{c|}{0.611} & \multicolumn{1}{c|}{0.817} & 0.626 & \multicolumn{1}{c|}{0.832} & \multicolumn{1}{c|}{0.836} & 0.834 & \multicolumn{1}{c|}{0.850} & \multicolumn{1}{c|}{0.913} & 0.822 & 0.732 & 0.853 & 0.730 & 0.685 \\
+			
+			\hline
+			
+			\textbf{Set 1} & 2 & \multicolumn{1}{c|}{0.51} & \multicolumn{1}{c|}{0.79} & 0.65 & \multicolumn{1}{c|}{0.77} & \multicolumn{1}{c|}{0.83} & 0.82 & \multicolumn{1}{c|}{0.79} & \multicolumn{1}{c|}{0.89} & 0.81 & 0.65 & 0.83 & 0.73 & 0.66 \\
+			
+			\hline
+			\hline
+			
+			\textbf{Run 6} & 3 & \multicolumn{1}{c|}{0.661} & \multicolumn{1}{c|}{0.746} & 0.495 & \multicolumn{1}{c|}{0.632} & \multicolumn{1}{c|}{0.842} & 0.736 & \multicolumn{1}{c|}{0.702} & \multicolumn{1}{c|}{0.875} & 0.728 & 0.671 & 0.810 & 0.622 & 0.617 \\
+			
+			\textbf{Run 7} & 3 & \multicolumn{1}{c|}{0.688} & \multicolumn{1}{c|}{0.622} & 0.596 & \multicolumn{1}{c|}{0.665} & \multicolumn{1}{c|}{0.707} & 0.728 & \multicolumn{1}{c|}{0.846} & \multicolumn{1}{c|}{0.851} & 0.747 & 0.742 & 0.721 & 0.675 & 0.634 \\
+			
+			\textbf{Run 8} & 3 & \multicolumn{1}{c|}{0.794} & \multicolumn{1}{c|}{0.862} & 0.632 & \multicolumn{1}{c|}{0.663} & \multicolumn{1}{c|}{0.887} & 0.778 & \multicolumn{1}{c|}{0.874} & \multicolumn{1}{c|}{0.833} & 0.780 & 0.801 & 0.856 & 0.712 & 0.719 \\
+			
+			\textbf{Run 9} & 3 & \multicolumn{1}{c|}{0.622} & \multicolumn{1}{c|}{0.822} & 0.682 & \multicolumn{1}{c|}{0.677} & \multicolumn{1}{c|}{0.846} & 0.758 & \multicolumn{1}{c|}{0.736} & \multicolumn{1}{c|}{0.853} & 0.741 & 0.673 & 0.838 & 0.717 & 0.685 \\
+			
+			\textbf{Run 10} & 3 & \multicolumn{1}{c|}{0.649} & \multicolumn{1}{c|}{0.718} & 0.671 & \multicolumn{1}{c|}{0.653} & \multicolumn{1}{c|}{0.872} & 0.760 & \multicolumn{1}{c|}{0.828} & \multicolumn{1}{c|}{0.824} & 0.792 & 0.715 & 0.784 & 0.731 & 0.700 \\
+			
+			\textbf{Run 11} & 3 & \multicolumn{1}{c|}{0.607} & \multicolumn{1}{c|}{0.802} & 0.614 & \multicolumn{1}{c|}{0.669} & \multicolumn{1}{c|}{0.841} & 0.760 & \multicolumn{1}{c|}{0.837} & \multicolumn{1}{c|}{0.864} & 0.787 & 0.702 & 0.831 & 0.703 & 0.697 \\
+			
+			\textbf{Run 12} & 3 & \multicolumn{1}{c|}{0.565} & \multicolumn{1}{c|}{0.788} & 0.671 & \multicolumn{1}{c|}{0.550} & \multicolumn{1}{c|}{0.868} & 0.755 & \multicolumn{1}{c|}{0.784} & \multicolumn{1}{c|}{0.831} & 0.773 & 0.643 & 0.818 & 0.723 & 0.648 \\
+			
+			\textbf{Run 13} & 3 & \multicolumn{1}{c|}{0.618} & \multicolumn{1}{c|}{0.699} & 0.406 & \multicolumn{1}{c|}{0.471} & \multicolumn{1}{c|}{0.724} & 0.630 & \multicolumn{1}{c|}{0.752} & \multicolumn{1}{c|}{0.878} & 0.645 & 0.641 & 0.769 & 0.533 & 0.531 \\
+			
+			\textbf{Run 14} & 3 & \multicolumn{1}{c|}{0.757} & \multicolumn{1}{c|}{0.815} & 0.701 & \multicolumn{1}{c|}{0.646} & \multicolumn{1}{c|}{0.894} & 0.773 & \multicolumn{1}{c|}{0.881} & \multicolumn{1}{c|}{0.848} & 0.836 & 0.783 & 0.841 & 0.763 & 0.738 \\
+			
+			\hline
+			
+			\textbf{Set 2} & 3 & \multicolumn{1}{c|}{0.66} & \multicolumn{1}{c|}{0.76} & 0.61 & \multicolumn{1}{c|}{0.63} & \multicolumn{1}{c|}{0.83} & 0.74 & \multicolumn{1}{c|}{0.80} & \multicolumn{1}{c|}{0.85} & 0.76 & 0.71 & 0.81 & 0.69 & 0.66 \\
+			
+			\hline
+			
+	\end{tabular}}
+	\label{tab:SegmentationUNetVariability}
+\end{table*}
