@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  31 MAY 2025 15:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  31 MAY 2025 19:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1295,16 +1295,16 @@ File: figures/VerticalPatchesSegmentationTopcon.png Graphic file (type png)
 Package pdftex.def Info: figures/VerticalPatchesSegmentationTopcon.png  used on
  input line 273.
 (pdftex.def)             Requested size: 426.79135pt x 134.93184pt.
-<figures/ValidationLossesFourSevenThirteenPatches.png, id=1040, 636.57825pt x 3
+<figures/ValidationLossesFourSevenThirteenPatches.png, id=1041, 636.57825pt x 3
 29.43076pt>
 File: figures/ValidationLossesFourSevenThirteenPatches.png Graphic file (type p
 ng)
 <use figures/ValidationLossesFourSevenThirteenPatches.png>
 Package pdftex.def Info: figures/ValidationLossesFourSevenThirteenPatches.png  
-used on input line 329.
+used on input line 336.
 (pdftex.def)             Requested size: 426.79135pt x 220.86826pt.
-) [44 <./figures/VerticalPatchesSegmentationTopcon.png>] [45 <./figures/Validat
-ionLossesFourSevenThirteenPatches.png>] [46]
+[44 <./figures/VerticalPatchesSegmentationTopcon.png>]) [45 <./figures/Validati
+onLossesFourSevenThirteenPatches.png>] [46] [47]
 \openout2 = `conclusion.aux'.
 
  (conclusion.tex)
@@ -1324,7 +1324,7 @@ Overfull \hbox (0.69101pt too wide) in paragraph at lines 64--64
 
  []
 
-[47
+[48
 
 
 
@@ -1338,13 +1338,13 @@ Overfull \hbox (0.44347pt too wide) in paragraph at lines 64--64
 ransformer for en-hanced mac-u-lar edema
  []
 
-[48] [49]
+[49] [50]
 Overfull \hbox (19.33269pt too wide) in paragraph at lines 64--64
 \T1/ptm/m/n/10.95 Sys-tem-atic Re-view of Re-cent De-vel-op-ments and Chal-leng
 es,^^Q \T1/ptm/m/it/10.95 arXiv e-prints\T1/ptm/m/n/10.95 , arXiv:2407.00116,
  []
 
-[50] [51]
+[51] [52]
 Overfull \hbox (10.93967pt too wide) in paragraph at lines 64--64
 \T1/ptm/m/n/10.95 ^^P  Gen-er-a-tive Ad-ver-sar-ial Net-works: An Overview,^^Q 
 \T1/ptm/m/it/10.95 IEEE Sig-nal Pro-cess-ing Mag-a-zine\T1/ptm/m/n/10.95 , vol.
@@ -1358,12 +1358,12 @@ n/10.95 : 0010-4825. \T1/ptm/m/sc/10.95 doi\T1/ptm/m/n/10.95 : [][]$\T1/pcrs/m/
 n/10.95 doi . org / 10 . 1016 / j . compbiomed .
  []
 
-[52] [53]
+[53] [54]
 \openout2 = `appendix1.aux'.
 
  (appendix1.tex
 Appendix A.
-) [54
+) [55
 
 
 ] (thesis.aux (abstract.aux) (un-sdg.aux) (acknowledgements.aux)
@@ -1376,9 +1376,9 @@ Package logreq Info: Writing requests to 'thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 23325 strings out of 476339
- 427025 string characters out of 5788120
- 1907340 words of memory out of 5000000
+ 23326 strings out of 476339
+ 427032 string characters out of 5788120
+ 1912340 words of memory out of 5000000
  43041 multiletter control sequences out of 15000+600000
  598581 words of font info for 141 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1398,9 +1398,9 @@ X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (67 pages, 38390579 bytes).
+Output written on thesis.pdf (68 pages, 38392961 bytes).
 PDF statistics:
- 1312 PDF objects out of 1440 (max. 8388607)
- 257 named destinations out of 1000 (max. 500000)
+ 1318 PDF objects out of 1440 (max. 8388607)
+ 258 named destinations out of 1000 (max. 500000)
  396 words of extra memory for PDF output out of 10000 (max. 10000000)
 
