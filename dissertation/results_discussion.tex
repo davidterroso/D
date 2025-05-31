@@ -278,20 +278,21 @@ It was seen in Figure \ref{fig:BigPatchesSegmentationTopcon} that the model pred
 Afterwards, the use of seven and thirteen patches extracted from each B-scan was tested and the results are shown in Table \ref{tab:Experiment1.3SevenVsThirteenPatches}. Two models were trained for each number of patches extracted, one validated on fold 2 and another validated on fold 3. The models were trained on 200 maximum epochs, with a 25 epoch patience applied after the first 100 epochs.
 
 \begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid for the runs done using seven (Runs 21 and 22) and thirteen (Runs 23 and 24) vertical patches extracted from each B-scan. Only two folds were used in order to understand the viability of using these numbers of patches.}
+	\caption{Dice scores for every vendor and fluid for the runs done using seven (Runs 21 and 22) and thirteen (Runs 23 and 24) vertical patches extracted from each B-scan. Only two folds were used in order to understand the viability of using these numbers of patches, which is represented in the column ``P''. Runs 17 and 18 are shown here to make the comparison between the number of patches easier. The values shown in bold represent the best value for the models trained with the same number of patches.}
 	\centering
-	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
+	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
 		% Headers
 		\multirow{2}{*}{\textbf{Runs}} & 
 		\multirow{2}{*}{\textbf{VF}} & 
+		\multirow{2}{*}{\textbf{P}} &
 		\multicolumn{3}{c|}{\textbf{Cirrus}} & 
 		\multicolumn{3}{c|}{\textbf{Spectralis}} & 
 		\multicolumn{3}{c|}{\textbf{Topcon}} & 
 		\multicolumn{1}{c|}{\multirow{2}{*}{\textbf{IRF}}} & 
 		\multirow{2}{*}{\textbf{SRF}} & 
 		\multirow{2}{*}{\textbf{PED}} & 
-		\multirow{2}{*}{\textbf{Fluid}} \\ \cline{3-11} & &
+		\multirow{2}{*}{\textbf{Fluid}} \\ \cline{4-12} & & &
 		\multicolumn{1}{c}{\textbf{IRF}} & 
 		\multicolumn{1}{c}{\textbf{SRF}} & 
 		\textbf{\textbf{PED}} & 
@@ -302,19 +303,23 @@ Afterwards, the use of seven and thirteen patches extracted from each B-scan was
 		\textbf{SRF} & 
 		\textbf{PED} & 
 		\multicolumn{1}{c|}{} & & & \\ 
+		
+		\hline
 			
+		\textbf{Run 17} & 2 & 4 & \multicolumn{1}{c|}{0.522} & \multicolumn{1}{c|}{0.784} & \textbf{0.703} & \multicolumn{1}{c|}{\textbf{0.805}} & \multicolumn{1}{c|}{0.765} & \textbf{0.865} & \multicolumn{1}{c|}{0.828} & \multicolumn{1}{c|}{0.879} & 0.835 & 0.677 & 0.813 & \textbf{0.777} & 0.684 \\
+		
+		\textbf{Run 21} & 2 & 7 & \multicolumn{1}{c|}{\textbf{0.556}} & \multicolumn{1}{c|}{\textbf{0.837}} & 0.672 & \multicolumn{1}{c|}{0.761} & \multicolumn{1}{c|}{\textbf{0.853}} & 0.848 & \multicolumn{1}{c|}{\textbf{0.829}} & \multicolumn{1}{c|}{0.908} & \textbf{0.858} & \textbf{0.685} & \textbf{0.864} & 0.767 & \textbf{0.681} \\
+		
+		\textbf{Run 23} & 2 & 13 & \multicolumn{1}{c|}{0.500} & \multicolumn{1}{c|}{0.762} & 0.635 & \multicolumn{1}{c|}{0.672} & \multicolumn{1}{c|}{0.790} & 0.773 & \multicolumn{1}{c|}{0.819} & \multicolumn{1}{c|}{\textbf{0.936}} & 0.805 & 0.639 & 0.826 & 0.718 & 0.637 \\
+		
+		\hline
 		\hline
 		
-		\textbf{Run 21} & 2 & \multicolumn{1}{c|}{0.556} & \multicolumn{1}{c|}{0.837} & 0.672 & \multicolumn{1}{c|}{\textbf{0.761}} & \multicolumn{1}{c|}{\textbf{0.853}} & \textbf{0.848} & \multicolumn{1}{c|}{\textbf{0.829}} & \multicolumn{1}{c|}{0.908} & \textbf{0.858} & 0.685 & \textbf{0.864} & 0.767 & \textbf{0.681} \\
+		\textbf{Run 18} & 3 & 4 & \multicolumn{1}{c|}{0.509} & \multicolumn{1}{c|}{0.654} & 0.598 & \multicolumn{1}{c|}{0.590} & \multicolumn{1}{c|}{0.806} & \textbf{0.755} & \multicolumn{1}{c|}{\textbf{0.777}} & \multicolumn{1}{c|}{\textbf{0.787}} & \textbf{0.792} & 0.621 & 0.729 & 0.697 & 0.622 \\
 		
-		\textbf{Run 22} & 3 & \multicolumn{1}{c|}{\textbf{0.734}} & \multicolumn{1}{c|}{\textbf{0.855}} & 0.836 & \multicolumn{1}{c|}{0.636} & \multicolumn{1}{c|}{0.846} & 0.689 & \multicolumn{1}{c|}{0.686} & \multicolumn{1}{c|}{0.781} & 0.731 & \textbf{0.700} & 0.822 & \textbf{0.771} & 0.672 \\
+		\textbf{Run 22} & 3 & 7 & \multicolumn{1}{c|}{\textbf{0.734}} & \multicolumn{1}{c|}{\textbf{0.855}} & 0.836 & \multicolumn{1}{c|}{\textbf{0.636}} & \multicolumn{1}{c|}{\textbf{0.846}} & 0.689 & \multicolumn{1}{c|}{0.686} & \multicolumn{1}{c|}{0.781} & 0.731 & \textbf{0.700} & \textbf{0.822} & \textbf{0.771} & \textbf{0.672} \\
 		
-		\hline
-		\hline
-		
-		\textbf{Run 23} & 2 & \multicolumn{1}{c|}{0.500} & \multicolumn{1}{c|}{0.762} & 0.635 & \multicolumn{1}{c|}{0.672} & \multicolumn{1}{c|}{0.790} & 0.773 & \multicolumn{1}{c|}{0.819} & \multicolumn{1}{c|}{\textbf{0.936}} & 0.805 & 0.639 & 0.826 & 0.718 & 0.637 \\
-		
-		\textbf{Run 24} & 3 & \multicolumn{1}{c|}{0.612} & \multicolumn{1}{c|}{0.648} & \textbf{0.882} & \multicolumn{1}{c|}{0.455} & \multicolumn{1}{c|}{0.636} & 0.548 & \multicolumn{1}{c|}{0.499} & \multicolumn{1}{c|}{0.593} & 0.668 & 0.542 & 0.622 & 0.745 & 0.536 \\
+		\textbf{Run 24} & 3 & 13 & \multicolumn{1}{c|}{0.612} & \multicolumn{1}{c|}{0.648} & \textbf{0.882} & \multicolumn{1}{c|}{0.455} & \multicolumn{1}{c|}{0.636} & 0.548 & \multicolumn{1}{c|}{0.499} & \multicolumn{1}{c|}{0.593} & 0.668 & 0.542 & 0.622 & 0.745 & 0.536 \\
 		
 		\hline
 			
@@ -322,14 +327,20 @@ Afterwards, the use of seven and thirteen patches extracted from each B-scan was
 	\label{tab:Experiment1.3SevenVsThirteenPatches}
 \end{table*}
 
-Training the models on more patches per B-scan, significantly increases the quantity of data that is seen by the model during an epoch. Therefore, each epoch takes much longer to complete, requiring more computation power, leading to often bottlenecks. However, since the model sees many more patches per epoch, the model reaches the validation loss minimum much earlier than in the models trained with four patches. In Figure , it is possible to see a comparison between the training and validation losses of the models validated on fold 2, using four, seven, and thirteen vertical patches per B-scan.
+Training the models on more patches per B-scan, significantly increases the quantity of data that is seen by the model during an epoch. Therefore, each epoch takes much longer to complete, requiring more computation power, leading to often bottlenecks. However, since the model sees many more patches per epoch, the model reaches the validation loss minimum much earlier than in the models trained with four patches. 
+\par
+In Figure \ref{fig:ValidationLossesFourSevenThirteenPatches}, it is possible to see a comparison between the training and validation losses of the models validated on fold 2, using four, seven, and thirteen vertical patches per B-scan. Despite following the same trends, the model learns significantly faster as the number of patches increases, resulting in a faster progression of the validation loss. As a result the models starts to overfit much earlier and aggressively with larger number of patches, which is signaled by the increase in validation loss after reaching low values.
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1.0\linewidth]{figures/ValidationLossesFourSevenThirteenPatches.png}
-	\caption{Training and validation losses for models validated on fold 2. The curves on the left are from the model trained on Run 13 with four patches, while the middle curves are from the model trained on Run 21, with seven patches. The curves on the right are from the model trained on Run 23, with thirteen patches.}
+	\caption{Training and validation losses for models validated on fold 2. The curves on the left are from the model trained on Run 17 with four patches, while the middle curves are from the model trained on Run 21, with seven patches. The curves on the right are from the model trained on Run 23, with thirteen patches.}
 	\label{fig:ValidationLossesFourSevenThirteenPatches}
 \end{figure}
+
+When comparing the models' performances, by looking at Table \ref{tab:Experiment1.3FourPatches}, the models trained on thirteen patches are outperformed by those trained in fewer patches. These results suggest that the faster progression in validation loss for the model trained with thirteen patches inhibits its ability to converge to a solution as optimal as those achieved by models trained more slowly with fewer patches.
+\par
+The performance differences between the models trained with four and seven patches are less pronounced than those when either is compared to the model trained with thirteen patches. However, the model trained with seven patches consistently outperforms the one trained with four in most metrics. In the few cases the model trained with four patches performs better, the other model still achieves comparable results. The reverse is not true: when the model trained with seven patches outperforms the model trained with four patches, the performance gap is significantly larger. For these reasons, the model trained with seven patches was considered superior.
 
 \begin{table*}[!ht]
 	\caption{Dice scores for every vendor and fluid using seven vertical patches. The only transformation performed in these runs was horizontal flipping, without rotation.}
