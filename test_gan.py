@@ -1,6 +1,6 @@
 import torch
 from IPython import get_ipython
-from numpy import array, ndarray
+from numpy import array, ndarray, uint8
 from os import makedirs
 from os.path import exists
 from pandas import concat, DataFrame, read_csv
@@ -265,6 +265,7 @@ def test_gan(
         final_test: bool=False, 
         gen_model_name: str=None,
         number_of_classes: int=1,
+        oct_device: str='all',
         save_images: bool=True,
         split: str="generation_4_fold_split.csv",
         trained_generator_name: str=None
@@ -290,6 +291,10 @@ def test_gan(
             'UNet'
         number_of_classes (int): number of classes the 
             output will present
+        oct_device (str): name of the OCT device from which the 
+            scans while be used to train and validate the model.
+            Can be 'all', 'Cirrus', 'Spectralis', 'T-1000', or 
+            'T-2000'. The default option is 'all'
         save_images (bool): flag that indicates whether the 
             predicted images will be saved or not
         split (str): name of the k-fold split file that will be 
@@ -357,7 +362,7 @@ def test_gan(
 
     # Creates the TestDatasetGAN object with the 
     # list of volumes that will be used in training
-    test_dataset = TestDatasetGAN(test_volumes=test_volumes)
+    test_dataset = TestDatasetGAN(test_volumes=test_volumes, oct_device=oct_device)
     # Creates the DataLoader object using the dataset, declaring both the size of the 
     # batch and the number of workers
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=12)
@@ -427,6 +432,10 @@ def test_gan(
                 elif model_name == "Pix2Pix":
                     gen_imgs = pix2pix_generator(gen_imgs_wgenerator).to(device=device)
 
+                # Converts the image from range [-1,1] to [0,1]
+                mid_imgs = (mid_imgs + 1) / 2
+                gen_imgs = (gen_imgs + 1) / 2
+
                 # Calculates the PSNR value
                 img_psnr = round(psnr(mid_imgs.to(device=device), gen_imgs.to(device=device)), 3)
                 # Removes batch dimension from the generated image
@@ -449,10 +458,12 @@ def test_gan(
 
                 # Saves the images
                 if save_images:
+                    # Converts from [0, 1] float to [0, 255] uint8
+                    gen_imgs = (gen_imgs * 255).cpu().numpy().astype(uint8)
                     # The image is passed from the GPU to the CPU in case it 
                     # has previously been assigned to it, then it is converted from 
                     # a PyTorch tensor to a NumPy array and saved using Pillow
-                    Image.fromarray(array(gen_imgs.cpu().numpy())).save(
+                    Image.fromarray(gen_imgs).save(
                         str(folder_to_save + mid_image_name[:-5] + "_generated" + ".tiff"))
 
                 # Updates the progress bar

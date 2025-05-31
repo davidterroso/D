@@ -1,5 +1,5 @@
 from torch import cat
-from torch.nn import BatchNorm2d, Conv2d, ConvTranspose2d, Dropout2d, Module, LeakyReLU, ReLU, Sequential, Sigmoid
+from torch.nn import BatchNorm2d, Conv2d, ConvTranspose2d, Dropout2d, Module, LeakyReLU, ReLU, Sequential, Sigmoid, Tanh
 
 class Generator(Module):
     """
@@ -78,7 +78,7 @@ class Generator(Module):
             LeakyReLU(0.02, inplace=True), # Same shape
             ConvTranspose2d(feature_map_size, number_of_channels, kernel_size=3, stride=1, padding=1, bias=False),
             # Shape: B x N x H x W
-            Sigmoid() # Same shape
+            Tanh() # Same shape
             # Final Shape: B x N x H x W
         )
 
