@@ -32,25 +32,33 @@
 \newlabel{tab:Experiment1.3SevenVsThirteenPatches}{{4.4}{44}{Dice scores for every vendor and fluid for the runs done using seven (Runs 21 and 22) and thirteen (Runs 23 and 24) vertical patches extracted from each B-scan. Only two folds were used in order to understand the viability of using these numbers of patches, which is represented in the column ``P''. Runs 17 and 18 are shown here to make the comparison between the number of patches easier. The values shown in bold represent the best value for the models trained with the same number of patches.\relax }{table.caption.48}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces Training and validation losses for models validated on fold 2. The curves on the left are from the model trained on Run 17 with four patches, while the middle curves are from the model trained on Run 21, with seven patches. The curves on the right are from the model trained on Run 23, with thirteen patches.\relax }}{45}{figure.caption.49}\protected@file@percent }
 \newlabel{fig:ValidationLossesFourSevenThirteenPatches}{{4.7}{45}{Training and validation losses for models validated on fold 2. The curves on the left are from the model trained on Run 17 with four patches, while the middle curves are from the model trained on Run 21, with seven patches. The curves on the right are from the model trained on Run 23, with thirteen patches.\relax }{figure.caption.49}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4.5}{\ignorespaces Dice scores for every vendor and fluid using seven vertical patches. The only transformation performed in these runs was horizontal flipping, without rotation.\relax }}{46}{table.caption.50}\protected@file@percent }
-\newlabel{tab:Experiment1.3SevenPatchesNoRotation}{{4.5}{46}{Dice scores for every vendor and fluid using seven vertical patches. The only transformation performed in these runs was horizontal flipping, without rotation.\relax }{table.caption.50}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4.6}{\ignorespaces Dice scores for every vendor and fluid using seven vertical patches. In these runs, horizontal flipping and $5^{\circ }$ rotation were used, instead of the usual $10^{\circ }$.\relax }}{46}{table.caption.51}\protected@file@percent }
-\newlabel{tab:Experiment1.3SevenPatches5DegreeRotation}{{4.6}{46}{Dice scores for every vendor and fluid using seven vertical patches. In these runs, horizontal flipping and $5^{\circ }$ rotation were used, instead of the usual $10^{\circ }$.\relax }{table.caption.51}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4.7}{\ignorespaces Dice scores for every vendor and fluid using four vertical patches. The rotation applied in these runs was of $5^{\circ }$, instead of the previously used $10^{\circ }$.\relax }}{46}{table.caption.52}\protected@file@percent }
-\newlabel{tab:Experiment1.3FourPatches5DegreeRotation}{{4.7}{46}{Dice scores for every vendor and fluid using four vertical patches. The rotation applied in these runs was of $5^{\circ }$, instead of the previously used $10^{\circ }$.\relax }{table.caption.52}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4.8}{\ignorespaces Dice scores for every vendor and fluid in the reserved fold (validation fold 1). The OCT volumes contained in this folds do had not been used previously nor in training nor in validation. The inference was done using the model trained on Run 32, which was the best performing model in the runs seen in Table \ref {tab:Experiment1.3SevenPatches5DegreeRotation} and in Table \ref {tab:Experiment1.3FourPatches5DegreeRotation}.\relax }}{46}{table.caption.53}\protected@file@percent }
-\newlabel{tab:Experiment1.3FinalResults}{{4.8}{46}{Dice scores for every vendor and fluid in the reserved fold (validation fold 1). The OCT volumes contained in this folds do had not been used previously nor in training nor in validation. The inference was done using the model trained on Run 32, which was the best performing model in the runs seen in Table \ref {tab:Experiment1.3SevenPatches5DegreeRotation} and in Table \ref {tab:Experiment1.3FourPatches5DegreeRotation}.\relax }{table.caption.53}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}Experiment 2}{47}{subsection.4.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Intermediate Slice Synthesis}{47}{section.4.2}\protected@file@percent }
-\newlabel{IntermediateSliceSynthesis}{{4.2}{47}{Intermediate Slice Synthesis}{section.4.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Experiment 3}{47}{subsection.4.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Experiment 4}{47}{subsection.4.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Fluid Volume Estimation}{47}{section.4.3}\protected@file@percent }
-\newlabel{FluidVolumeEstimation}{{4.3}{47}{Fluid Volume Estimation}{section.4.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Experiment 5}{47}{subsection.4.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Experiment 6}{47}{subsection.4.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces Segmentation errors in Cirrus B-scans. The GT fluid masks, seen on the left, show a large region of PED fluid. Meanwhile, the predictions made by the models trained in Run 21 and 23, which respectively correspond to the B-scans in the middle and right, classify the center of this region as IRF.\relax }}{46}{figure.caption.50}\protected@file@percent }
+\newlabel{fig:CirrusSegmentationErrors}{{4.8}{46}{Segmentation errors in Cirrus B-scans. The GT fluid masks, seen on the left, show a large region of PED fluid. Meanwhile, the predictions made by the models trained in Run 21 and 23, which respectively correspond to the B-scans in the middle and right, classify the center of this region as IRF.\relax }{figure.caption.50}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces Transformations applied to a vertical patch of a Cirrus B-scan. The original vertical patch (left) can be rotated a maximum of $10^{\circ }$, a transformation that is shown in the middle image. The image on the right represents the combination of a $10^{\circ }$ rotation and an horizontal flip. It is seen that the rotation transform pads a significant portion of the image, reducing the information in the input.\relax }}{46}{figure.caption.51}\protected@file@percent }
+\newlabel{fig:TransformationsInVerticalPatches}{{4.9}{46}{Transformations applied to a vertical patch of a Cirrus B-scan. The original vertical patch (left) can be rotated a maximum of $10^{\circ }$, a transformation that is shown in the middle image. The image on the right represents the combination of a $10^{\circ }$ rotation and an horizontal flip. It is seen that the rotation transform pads a significant portion of the image, reducing the information in the input.\relax }{figure.caption.51}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4.5}{\ignorespaces Dice scores for every vendor and fluid using seven vertical patches. The only transformation performed in these runs was horizontal flipping, without rotation. Runs 21 and 22 are also shown, promoting an easier comparison.\relax }}{47}{table.caption.52}\protected@file@percent }
+\newlabel{tab:Experiment1.3SevenPatchesNoRotation}{{4.5}{47}{Dice scores for every vendor and fluid using seven vertical patches. The only transformation performed in these runs was horizontal flipping, without rotation. Runs 21 and 22 are also shown, promoting an easier comparison.\relax }{table.caption.52}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.10}{\ignorespaces Example of two B-scans in which the retina is oriented differently. The retina present in the right image is significantly more inclined. Both B-scans were obtained using a Cirrus device and do not present fluid.\relax }}{48}{figure.caption.53}\protected@file@percent }
+\newlabel{fig:DifferentRetinaOrientation}{{4.10}{48}{Example of two B-scans in which the retina is oriented differently. The retina present in the right image is significantly more inclined. Both B-scans were obtained using a Cirrus device and do not present fluid.\relax }{figure.caption.53}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.11}{\ignorespaces Segmentation errors in Cirrus B-scans when trained without random rotations, in the same B-scan as in Figure \ref {fig:CirrusSegmentationErrors}. In the left, the GT masks are shown, while in the right the predicted masks are exhibited.\relax }}{48}{figure.caption.54}\protected@file@percent }
+\newlabel{fig:SegmentationErrorsNoRotation}{{4.11}{48}{Segmentation errors in Cirrus B-scans when trained without random rotations, in the same B-scan as in Figure \ref {fig:CirrusSegmentationErrors}. In the left, the GT masks are shown, while in the right the predicted masks are exhibited.\relax }{figure.caption.54}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4.6}{\ignorespaces Dice scores for every vendor and fluid using seven vertical patches. In these runs, horizontal flipping and $5^{\circ }$ rotation were used, instead of the usual $10^{\circ }$. The results obtained in Runs 21 and 22 are also shown, enabling a smoother comparison.\relax }}{48}{table.caption.55}\protected@file@percent }
+\newlabel{tab:Experiment1.3SevenPatches5DegreeRotation}{{4.6}{48}{Dice scores for every vendor and fluid using seven vertical patches. In these runs, horizontal flipping and $5^{\circ }$ rotation were used, instead of the usual $10^{\circ }$. The results obtained in Runs 21 and 22 are also shown, enabling a smoother comparison.\relax }{table.caption.55}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4.7}{\ignorespaces Dice scores for every vendor and fluid using four vertical patches. The rotation applied in these runs was of $5^{\circ }$, instead of the previously used $10^{\circ }$. ``Set 7'' is also shown, promoting an easier comparison between using four and seven patches.\relax }}{49}{table.caption.56}\protected@file@percent }
+\newlabel{tab:Experiment1.3FourPatches5DegreeRotation}{{4.7}{49}{Dice scores for every vendor and fluid using four vertical patches. The rotation applied in these runs was of $5^{\circ }$, instead of the previously used $10^{\circ }$. ``Set 7'' is also shown, promoting an easier comparison between using four and seven patches.\relax }{table.caption.56}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4.8}{\ignorespaces Dice scores for every vendor and fluid in the reserved fold (validation fold 1). The OCT volumes contained in this folds do had not been used previously nor in training nor in validation. The inference was done using the model trained on Run 32, which was the best performing model in the runs seen in Table \ref {tab:Experiment1.3SevenPatches5DegreeRotation} and in Table \ref {tab:Experiment1.3FourPatches5DegreeRotation}.\relax }}{49}{table.caption.57}\protected@file@percent }
+\newlabel{tab:Experiment1.3FinalResults}{{4.8}{49}{Dice scores for every vendor and fluid in the reserved fold (validation fold 1). The OCT volumes contained in this folds do had not been used previously nor in training nor in validation. The inference was done using the model trained on Run 32, which was the best performing model in the runs seen in Table \ref {tab:Experiment1.3SevenPatches5DegreeRotation} and in Table \ref {tab:Experiment1.3FourPatches5DegreeRotation}.\relax }{table.caption.57}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}Experiment 2}{49}{subsection.4.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Intermediate Slice Synthesis}{49}{section.4.2}\protected@file@percent }
+\newlabel{IntermediateSliceSynthesis}{{4.2}{49}{Intermediate Slice Synthesis}{section.4.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Experiment 3}{49}{subsection.4.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Experiment 4}{49}{subsection.4.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Fluid Volume Estimation}{49}{section.4.3}\protected@file@percent }
+\newlabel{FluidVolumeEstimation}{{4.3}{49}{Fluid Volume Estimation}{section.4.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Experiment 5}{49}{subsection.4.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Experiment 6}{49}{subsection.4.3.2}\protected@file@percent }
 \@setckpt{results_discussion}{
-\setcounter{page}{48}
+\setcounter{page}{50}
 \setcounter{equation}{0}
 \setcounter{enumi}{4}
 \setcounter{enumii}{0}
@@ -65,14 +73,14 @@
 \setcounter{subsubsection}{0}
 \setcounter{paragraph}{0}
 \setcounter{subparagraph}{0}
-\setcounter{figure}{7}
+\setcounter{figure}{11}
 \setcounter{table}{8}
 \setcounter{parentequation}{0}
 \setcounter{caption@flags}{2}
 \setcounter{continuedfloat}{0}
 \setcounter{float@type}{4}
 \setcounter{linenumber}{0}
-\setcounter{LN@truepage}{60}
+\setcounter{LN@truepage}{62}
 \setcounter{tabx@nest}{0}
 \setcounter{listtotal}{0}
 \setcounter{listcount}{0}
