@@ -485,17 +485,99 @@ In order to find an equilibrium between the robustness that training a model wit
 		\hline
 		
 		\textbf{Run 21} & 2 & \multicolumn{1}{c|}{0.556} & \multicolumn{1}{c|}{0.837} & 0.672 & \multicolumn{1}{c|}{0.761} & \multicolumn{1}{c|}{0.853} & 0.848 & \multicolumn{1}{c|}{0.829} & \multicolumn{1}{c|}{0.908} & 0.858 & 0.685 & 0.864 & 0.767 & 0.681 \\
-		
+
 		\textbf{Run 22} & 3 & \multicolumn{1}{c|}{0.734} & \multicolumn{1}{c|}{0.855} & 0.836 & \multicolumn{1}{c|}{0.636} & \multicolumn{1}{c|}{0.846} & 0.689 & \multicolumn{1}{c|}{0.686} & \multicolumn{1}{c|}{0.781} & 0.731 & 0.700 & 0.822 & 0.771 & 0.672 \\
-		
+
 		\hline
 			
 	\end{tabular}}
 	\label{tab:Experiment1.3SevenPatches5DegreeRotation}
 \end{table*}
 
+When looking at the results in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation}, the runs trained using a maximum $10^{\circ}$ rotation attain a better Dice coefficient than those that are trained using $5^{\circ}$. However, it is important to also compare the performances only in the slices that have fluid, which are shown in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotationFluid}.
+
 \begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid using four vertical patches. The rotation applied in these runs was of $5^{\circ}$, instead of the previously used $10^{\circ}$. ``Set 7'' is also shown, promoting an easier comparison between using four and seven patches.}
+	\caption{Dice scores for every vendor and fluid using seven vertical patches. The mean scores are calculated only for the B-scans that contain that fluid. For example, Cirrus IRF is the mean of the IRF Dice coefficient across all the Cirrus slices in the validation fold that contain IRF. The transformations utilized were the same as in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation}.}
+	\centering
+	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
+			\hline
+			% Headers
+			\multirow{2}{*}{\textbf{Runs}} & 
+			\multirow{2}{*}{\textbf{VF}} & 
+			\multicolumn{3}{c|}{\textbf{Cirrus}} & 
+			\multicolumn{3}{c|}{\textbf{Spectralis}} & 
+			\multicolumn{3}{c|}{\textbf{Topcon}} & 
+			\multicolumn{1}{c|}{\multirow{2}{*}{\textbf{IRF}}} & 
+			\multirow{2}{*}{\textbf{SRF}} & 
+			\multirow{2}{*}{\textbf{PED}} & 
+			\multirow{2}{*}{\textbf{Fluid}} \\ \cline{3-11} & &
+			\multicolumn{1}{c}{\textbf{IRF}} & 
+			\multicolumn{1}{c}{\textbf{SRF}} & 
+			\textbf{\textbf{PED}} & 
+			\multicolumn{1}{c}{\textbf{IRF}} & 
+			\multicolumn{1}{c}{\textbf{SRF}} & 
+			\textbf{PED} & 
+			\textbf{IRF} & 
+			\textbf{SRF} & 
+			\textbf{PED} & 
+			\multicolumn{1}{c|}{} & & & \\ 
+			
+			\hline
+			
+			\textbf{Run 29} & 2 & \multicolumn{1}{c|}{0.499} & \multicolumn{1}{c|}{0.730} & \textbf{0.603} & \multicolumn{1}{c|}{0.596} & \multicolumn{1}{c|}{0.854} & 0.583 & \multicolumn{1}{c|}{\textbf{0.696}} & \multicolumn{1}{c|}{0.629} & 0.577 & 0.575 & 0.731 & 0.588 & 0.645 \\
+
+			
+			\textbf{Run 30} & 3 & \multicolumn{1}{c|}{0.535} & \multicolumn{1}{c|}{0.675} & 0.584 & \multicolumn{1}{c|}{0.519} & \multicolumn{1}{c|}{0.837} & 0.592 & \multicolumn{1}{c|}{0.646} & \multicolumn{1}{c|}{\textbf{0.735}} & 0.605 & 0.561 & 0.721 & 0.595 & 0.623 \\
+			
+
+			\textbf{Run 31} & 4 & \multicolumn{1}{c|}{\textbf{0.691}} & \multicolumn{1}{c|}{0.637} & 0.602 & \multicolumn{1}{c|}{0.619} & \multicolumn{1}{c|}{\textbf{0.899}} & 0.623 & \multicolumn{1}{c|}{0.506} & \multicolumn{1}{c|}{0.651} & \textbf{0.656} & 0.603 & 0.709 & \textbf{0.635} & \textbf{0.646} \\
+			
+			
+			\textbf{Run 32} & 0 & \multicolumn{1}{c|}{0.627} & \multicolumn{1}{c|}{\textbf{0.815}} & 0.590 & \multicolumn{1}{c|}{\textbf{0.705}} & \multicolumn{1}{c|}{0.808} & \textbf{0.646} & \multicolumn{1}{c|}{0.563} & \multicolumn{1}{c|}{0.489} & 0.521 & \textbf{0.627} & \textbf{0.761} & 0.585 & 0.645 \\
+
+			
+			\hline
+			
+			\textbf{Set 7} & - & \multicolumn{1}{c|}{0.61} & \multicolumn{1}{c|}{0.74} & 0.59 & \multicolumn{1}{c|}{0.65} & \multicolumn{1}{c|}{0.85} & 0.65 & \multicolumn{1}{c|}{0.58} & \multicolumn{1}{c|}{0.62} & 0.55 & 0.60 & 0.75 & 0.59 & 0.64 \\
+
+			\hline
+			\hline
+			
+			\textbf{Run 21} & 2 & \multicolumn{1}{c|}{0.626} & \multicolumn{1}{c|}{0.795} & 0.449 & \multicolumn{1}{c|}{0.681} & \multicolumn{1}{c|}{0.842} & 0.771 & \multicolumn{1}{c|}{0.613} & \multicolumn{1}{c|}{0.697} & 0.524 & 0.636 & 0.791 & 0.518 & 0.636 \\
+			
+			
+			\textbf{Run 22} & 3 & \multicolumn{1}{c|}{0.720} & \multicolumn{1}{c|}{0.687} & 0.554 & \multicolumn{1}{c|}{0.653} & \multicolumn{1}{c|}{0.914} & 0.543 & \multicolumn{1}{c|}{0.569} & \multicolumn{1}{c|}{0.679} & 0.615 & 0.647 & 0.738 & 0.583 & 0.651 \\
+			
+			
+			\hline
+			
+	\end{tabular}}
+	\label{tab:Experiment1.3SevenPatches5DegreeRotationFluid}
+\end{table*}
+
+The results shown in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotationFluid} depict comparable results between the models trained with rotations of $5^{\circ}$ and $10^{\circ}$ degrees. While the results still slightly favor those trained with $10^{\circ}$ rotation, the difference between models is much smaller than it was in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation}. The differences observed indicate that the Dice coefficient measured in the models trained with $10^{\circ}$ rotation leverage on the high capability of detecting fluid. 
+\par
+This model is particularly good at detecting which slices have and do not have fluid. When the model does not detect fluid in a slice that does not have fluid, the Dice coefficient for that slice is 1. Meanwhile, in case the slices do not have fluid but the model still detects fluid in them, the B-scan's Dice coefficient for that fluid is 0.
+\par
+Due to the large quantity of slices that do not have fluid, which is larger than the slices that have fluid, a segmentation model can considerably improve its Dice performance by enhancing its capability of detecting fluid. Despite the model trained with $5^{\circ}$ performing worse at detecting fluid, most of these wrongful predictions are just a small quantity of sparse pixels (less than 100 pixels in each $496 \times 512$ image).
+\par
+It is also of interest to look into the predictions made by each model. While the Dice coefficient is a good metric to represent the models performance, some relevant segmentation characteristics can not be expressed by this measurement.
+\par
+When looking at the predictions made by both models, the model trained with $5^{\circ}$ rotations attains performances that are closer to the GT. An example of this can be seen in Figure \ref{fig:SegmentationsComparisonBetweenDifferentRotations}, where a comparison between the predictions made by different models are shown. In this image, it is seen that the masks predicted (middle image) by the model trained with $10^{\circ}$ rotation segments all the PED region, but also segments much more PED overall. Meanwhile, the model trained with $5^{\circ}$ rotation also identifies the PED region correctly, but segments less PED in the image (right image). The segmentation of IRF and SRF are really similar between both models.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1.0\linewidth]{figures/SegmentationsComparisonBetweenDifferentRotations.png}
+	\caption{Predictions by the models trained using $5^{\circ}$ (middle image) and $10^{\circ}$ (right image) rotations, compared with the respective GT (left image).}
+	\label{fig:SegmentationsComparisonBetweenDifferentRotations}
+\end{figure}
+
+This is an example of how the model trained with $5^{\circ}$ rotations tends to be more conservative in the fluid segmentation, despite not being as good at identifying fluid in the B-scans. For this reason, it was expected that this model would perform better on unseen data than the model trained with $10^{\circ}$ which tends to oversegment. Therefore, the maximum rotation selected for further experiments was $5^{\circ}$.
+\par
+Following the experiments that applied a $5^{\circ}$ rotation to the seven vertical patches extracted from each B-scan, additional runs made using the same rotation but with only four patches extracted from each B-scan instead. The objective of these runs was to verify if model still performs better on seven patches than on four patches when the applied rotation is changed from $10^{\circ}$ to $5^{\circ}$. The results are shown in Table \ref{tab:Experiment1.3FourPatches5DegreeRotation}.
+
+\begin{table*}[!ht]
+	\caption{Dice scores for every vendor and fluid using four vertical patches. The rotation applied in these runs was of $5^{\circ}$, instead of the previously used $10^{\circ}$. ``Set 7'' and the best performing run in this set (Run 32) are also shown, promoting an easier comparison between using four and seven patches. The underlined values correspond to the best performances between the models trained in Run 32 and Run 33.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
@@ -522,7 +604,7 @@ In order to find an equilibrium between the robustness that training a model wit
 			
 		\hline
 		
-		\textbf{Run 33} & 2 & \multicolumn{1}{c|}{0.598} & \multicolumn{1}{c|}{\textbf{0.824}} & 0.719 & \multicolumn{1}{c|}{\textbf{0.805}} & \multicolumn{1}{c|}{0.873} & \textbf{0.887} & \multicolumn{1}{c|}{\textbf{0.848}} & \multicolumn{1}{c|}{\textbf{0.947}} & \textbf{0.863} & \textbf{0.720} & \textbf{0.874} & \textbf{0.798} & \textbf{0.733} \\
+		\textbf{Run 33} & 2 & \multicolumn{1}{c|}{0.598} & \multicolumn{1}{c|}{\textbf{0.824}} & 0.719 & \multicolumn{1}{c|}{\textbf{0.805}} & \multicolumn{1}{c|}{0.873} & \underline{\textbf{0.887}} & \multicolumn{1}{c|}{\underline{\textbf{0.848}}} & \multicolumn{1}{c|}{\underline{\textbf{0.947}}} & \underline{\textbf{0.863}} & \textbf{0.720} & \underline{\textbf{0.874}} & \textbf{0.798} & \underline{\textbf{0.733}} \\
 		
 		\textbf{Run 34} & 3 & \multicolumn{1}{c|}{0.298} & \multicolumn{1}{c|}{0.701} & 0.436 & \multicolumn{1}{c|}{0.442} & \multicolumn{1}{c|}{0.785} & 0.720 & \multicolumn{1}{c|}{0.717} & \multicolumn{1}{c|}{0.814} & 0.746 & 0.477 & 0.757 & 0.599 & 0.530 \\
 		
@@ -537,6 +619,10 @@ In order to find an equilibrium between the robustness that training a model wit
 		\hline
 		\hline
 		
+		\textbf{Run 32} & 0 & \multicolumn{1}{c|}{\underline{0.794}} & \multicolumn{1}{c|}{\underline{0.878}} & \underline{0.770} & \multicolumn{1}{c|}{\underline{0.807}} & \multicolumn{1}{c|}{\underline{0.902}} & 0.862 & \multicolumn{1}{c|}{0.796} & \multicolumn{1}{c|}{0.842} & 0.830 & \underline{0.797} & 0.869 & \underline{0.808} & 0.698 \\
+		
+		\hline
+		
 		\textbf{Set 7} & - & \multicolumn{1}{c|}{\textbf{0.60}} & \multicolumn{1}{c|}{\textbf{0.78}} & 0.68 & \multicolumn{1}{c|}{\textbf{0.71}} & \multicolumn{1}{c|}{\textbf{0.85}} & 0.77 & \multicolumn{1}{c|}{\textbf{0.74}} & \multicolumn{1}{c|}{0.80} & 0.75 & \textbf{0.67} & 0.80 & 0.72 & \textbf{0.63} \\
 		
 		\hline
@@ -545,13 +631,20 @@ In order to find an equilibrium between the robustness that training a model wit
 	\label{tab:Experiment1.3FourPatches5DegreeRotation}
 \end{table*}
 
+Contrasting with the results shown in Table \ref{tab:Experiment1.3FourPatches} and Table \ref{tab:Experiment1.3SevenVsThirteenPatches}, which show a significant improvement when using seven vertical patches over four, the results exhibited in Table \ref{tab:Experiment1.3FourPatches5DegreeRotation} present a similar performance between the models trained on four and seven vertical patches. The main performance differences are in the IRF segmentation, where the difference is more significant depending on the number of patches used, favoring the models trained with seven patches.
+\par
+However, it is necessary to select a single segmentation model to perform inference in the fold that was reserved. The best performing model from those trained with seven vertical patches obtained from each B-scan and a maximum rotation of $5^{\circ}$ is the model trained in Run 32. Meanwhile, the best performing model from ``Set 8'' is Run 33. In Table \ref{tab:Experiment1.3FourPatches5DegreeRotation}, the underlined values correspond to the best performance attained between Run 32 and 33.
+\par
+In most metrics, the model trained on Run 32 performs better than the model trained on Run 33. Nevertheless, both performances are really similar in most metrics, with the only significant difference being the IRF segmentation, which is superior in Run 32. It is important to note that the models were nor trained nor validated on the same data and an assumption that this would directly translate to the performance in unseen data was made. However, it is possible that the data in which one model was trained prepares it better for the data on the reserved fold. Therefore, the U-Net model selected to represent the multi-class segmentation approach was the one trained in Run 32. This model subsequently performed the inference in the unseen fold (fold 1) and its results are shown in Table \ref{tab:Experiment1.3FinalResults}. In this table, the rows correspond to the model performances on different sets of slices. In the first row the performance across all slices is considered. In the second row only the slices with the fluid indicated in the column are quantified, while in the third row only those that do not present that fluid are considered.
+
 \begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid in the reserved fold (validation fold 1). The OCT volumes contained in this folds do had not been used previously nor in training nor in validation. The inference was done using the model trained on Run 32, which was the best performing model in the runs seen in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation} and in Table \ref{tab:Experiment1.3FourPatches5DegreeRotation}.}
+	\caption{Dice scores for every vendor and fluid in the reserved fold (fold 1). The first row reports the mean Dice across all slices. The second row shows the mean for slices containing the fluid specified in the column, while the third shows the mean for the slices without that fluid.}
 	\centering
-	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
+	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
 		% Headers
-		\multirow{2}{*}{\textbf{Runs}} & 
+		\multirow{2}{*}{\textbf{Runs}} &
+		\multirow{2}{*}{\textbf{Slices}} &  
 		\multirow{2}{*}{\textbf{VF}} & 
 		\multicolumn{3}{c|}{\textbf{Cirrus}} & 
 		\multicolumn{3}{c|}{\textbf{Spectralis}} & 
@@ -559,7 +652,7 @@ In order to find an equilibrium between the robustness that training a model wit
 		\multicolumn{1}{c|}{\multirow{2}{*}{\textbf{IRF}}} & 
 		\multirow{2}{*}{\textbf{SRF}} & 
 		\multirow{2}{*}{\textbf{PED}} & 
-		\multirow{2}{*}{\textbf{Fluid}} \\ \cline{3-11} & &
+		\multirow{2}{*}{\textbf{Fluid}} \\ \cline{4-12} & & &
 		\multicolumn{1}{c}{\textbf{IRF}} & 
 		\multicolumn{1}{c}{\textbf{SRF}} & 
 		\textbf{\textbf{PED}} & 
@@ -573,13 +666,50 @@ In order to find an equilibrium between the robustness that training a model wit
 			
 		\hline
 			
-		\textbf{Run 32} & 1 & \multicolumn{1}{c|}{0.852} & \multicolumn{1}{c|}{0.918} & 0.934 & \multicolumn{1}{c|}{0.645} & \multicolumn{1}{c|}{0.821} & 0.852 & \multicolumn{1}{c|}{0.818} & \multicolumn{1}{c|}{0.929} & 0.755 & 0.799 & 0.905 & 0.841 & 0.742 \\
+		\multirow{3}{*}{\textbf{Run 32}} & All & 1 & \multicolumn{1}{c|}{0.852} & \multicolumn{1}{c|}{0.918} & 0.934 & \multicolumn{1}{c|}{0.645} & \multicolumn{1}{c|}{0.821} & 0.852 & \multicolumn{1}{c|}{0.818} & \multicolumn{1}{c|}{0.929} & 0.755 & 0.799 & 0.905 & 0.841 & 0.742 \\
+		
+		& Fluid & 1 & \multicolumn{1}{c|}{0.654} & \multicolumn{1}{c|}{0.799} & 0.767 & \multicolumn{1}{c|}{0.645} & \multicolumn{1}{c|}{0.687} & 0.703 & \multicolumn{1}{c|}{0.624} & \multicolumn{1}{c|}{0.744} & 0.588 & 0.641 & 0.756 & 0.716 & 0.702 \\
+		
+		& No Fluid & 1 & \multicolumn{1}{c|}{0.941} & \multicolumn{1}{c|}{0.972} & 0.978 & \multicolumn{1}{c|}{0.646} & \multicolumn{1}{c|}{0.889} & 0.885 & \multicolumn{1}{c|}{0.884} & \multicolumn{1}{c|}{0.960} & 0.766 & 0.873 & 0.952 & 0.862 & 0.786 \\
 		
 		\hline
 			
 	\end{tabular}}
 	\label{tab:Experiment1.3FinalResults}
 \end{table*}
+
+The results shown in the table indicate that the model generalized well. The performance obtained in the reserved fold, whose data had not been used in training or validation, reveals the model's robustness across different fluids and vendors. Since the model performs equally well across the three vendors, a good cross-device generalization has been achieved. Therefore, the model is not dependent on the image quality of the B-scans to produce accurate predictions.
+\par
+The model behaved differently depending on the fluid expected to segment. The Dice coefficient was considerably larger in SRF and PED than in IRF. This is associated with the larger variety of IRF shape and position in the retina. IRF regions are usually irregular in shape, smaller, and less well-defined than the other fluids, often appearing as small structures. This fluid is also located between the retinal layers, making it harder for the model to distinguish from the surrounding tissue and often leading to labeling ambiguity. Still, the model attained a better performance in fluid segmentation than those seen in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotationFluid}, where only fluid is considered.
+\par
+When considering all the slices, the Dice coefficient improves significantly, when compared to its performance where only slices with fluid are considered. At the same time, the Dice coefficient obtained in the slices without fluid is also better than the fluid segmentation. This reflects the greater difficulty of accurately segmenting the fluids, when compared to the task of detecting their presence. Since most slices in the dataset do not present fluid, an accurate detection of it can significantly increase the Dice mean across all slices, as explained previously.
+\par
+Overall, the performance obtained when validating in this unseen fold is significantly better than any other validation performance in previously seen in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation}. This indicates that the model did not overfit on training data, benefiting from the diversity introduced in training both through varying images and the transformations applied to them. This performance also benefits from selecting the best performing model in cross-validation, which allows the choice of a robust model. 
+\par
+In Figures \ref{fig:Experiment1FinalModelPredictionsCirrus}, \ref{fig:Experiment1FinalModelPredictionsSpectralis}, and \ref{fig:Experiment1FinalModelPredictionsTopcon}, some examples of predictions performed by the model in the unseen data are shown. In the IRF segmentations, it is seen that the model can not correctly identify the retinal tissue that separates the fluid regions and connects nearby fluid regions. The PED segmentation is marked by accurate delimitation of the large PED regions, with some predictions made in B-scans without PED. Lastly, SRF is the fluid in which the prediction segmentation more resembles the GT.
+\par
+The performance seen by this model in the reserved fold was subsequently compared with the best performing models from the following experiment.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{figures/Experiment1FinalModelPredictionsCirrus.png}
+	\caption{Predictions by the model trained on Run 32 in unseen Cirrus volumes of fold 1.}
+	\label{fig:Experiment1FinalModelPredictionsCirrus}
+\end{figure}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{figures/Experiment1FinalModelPredictionsSpectralis.png}
+	\caption{Predictions by the model trained on Run 32 in unseen Spectralis volumes of fold 1.}
+	\label{fig:Experiment1FinalModelPredictionsSpectralis}
+\end{figure}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{figures/Experiment1FinalModelPredictionsTopcon.png}
+	\caption{Predictions by the model trained on Run 32 in unseen Topcon volumes of fold 1.}
+	\label{fig:Experiment1FinalModelPredictionsTopcon}
+\end{figure}
 
 \subsection{Experiment 2}
 
