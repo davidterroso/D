@@ -901,7 +901,7 @@ In this experiment, for each fluid, eight models were trained. One model was tra
 \end{table*}
 
 \begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid in the reserved fold (fold 1), using the models from Runs 42, for IRF, 52, for SRF, and 59, for PED. The first block corresponds to the results when using the priority rule merging strategy, while the second block is associated with the results when using highest probability as the merging strategy. In each block, the first row reports the mean Dice across all slices. The second row shows the mean for slices containing the fluid specified in the column, while the third shows the mean for the slices without that fluid.}
+	\caption{Dice scores for every vendor and fluid in the reserved fold (fold 1), using the models from Runs 42, for IRF, 52, for SRF, and 59, for PED. The first block corresponds to the results when using the priority rule merging strategy, while the second block is associated with the results when using highest probability as the merging strategy. In each block, the first row reports the mean Dice across all slices. The second row shows the mean for slices containing the fluid specified in the column, while the third shows the mean for the slices without that fluid. The values marked in bold are the best values when corresponding rows are compared, so that, for example, the row ``All'' in the first block is compared to the row of same name in the second.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|ccc|ccc|ccc|c|c|c|c|}
 			\hline
@@ -929,20 +929,20 @@ In this experiment, for each fluid, eight models were trained. One model was tra
 			
 			\hline
 			
-			\multirow{3}{*}{\parbox{2cm}{\textbf{Runs 42, 52, and 59}}} & All & 1 & \multicolumn{1}{c|}{0.693} & \multicolumn{1}{c|}{0.776} & 0.425 & \multicolumn{1}{c|}{0.587} & \multicolumn{1}{c|}{0.623} & 0.177 & \multicolumn{1}{c|}{0.808} & \multicolumn{1}{c|}{0.858} & 0.531 & 0.723 & 0.783 & 0.425 & 0.544 \\
+			\multirow{3}{*}{\parbox{2cm}{\textbf{Runs 42, 52, and 59}}} & All & 1 & \multicolumn{1}{c|}{0.693} & \multicolumn{1}{c|}{0.776} & 0.425 & \multicolumn{1}{c|}{0.587} & \multicolumn{1}{c|}{0.623} & 0.177 & \multicolumn{1}{c|}{0.808} & \multicolumn{1}{c|}{0.858} & \textbf{0.531} & 0.723 & 0.783 & 0.425 & \textbf{0.544} \\
 			
-			& Fluid & 1 & \multicolumn{1}{c|}{0.687} & \multicolumn{1}{c|}{0.670} & 0.573 & \multicolumn{1}{c|}{0.660} & \multicolumn{1}{c|}{0.659} & 0.632 & \multicolumn{1}{c|}{0.634} & \multicolumn{1}{c|}{0.560} & 0.484 & 0.661 & 0.640 & 0.570 & 0.639 \\
+			& Fluid & 1 & \multicolumn{1}{c|}{0.687} & \multicolumn{1}{c|}{\textbf{0.670}} & 0.573 & \multicolumn{1}{c|}{\textbf{0.660}} & \multicolumn{1}{c|}{\textbf{0.659}} & 0.632 & \multicolumn{1}{c|}{\textbf{0.634}} & \multicolumn{1}{c|}{\textbf{0.560}} & \textbf{0.484} & \textbf{0.661} & \textbf{0.640} & 0.570 & \textbf{0.639} \\
 			
-			& No Fluid & 1 & \multicolumn{1}{c|}{0.695} & \multicolumn{1}{c|}{0.824} & 0.387 & \multicolumn{1}{c|}{0.520} & \multicolumn{1}{c|}{0.605} & 0.075 & \multicolumn{1}{c|}{0.867} & \multicolumn{1}{c|}{0.907} & 0.534 & 0.752 & 0.830 & 0.402 & 0.440 \\
+			& No Fluid & 1 & \multicolumn{1}{c|}{0.695} & \multicolumn{1}{c|}{0.824} & \textbf{0.387} & \multicolumn{1}{c|}{\textbf{0.520}} & \multicolumn{1}{c|}{0.605} & \textbf{0.075} & \multicolumn{1}{c|}{0.867} & \multicolumn{1}{c|}{0.907} & \textbf{0.534} & 0.752 & 0.830 & \textbf{0.402} & \textbf{0.440} \\
 			
 			\hline
 			\hline
 			
-			\multirow{3}{*}{\parbox{2cm}{\textbf{Runs 42, 52, and 59}}} & All & 1 & \multicolumn{1}{c|}{0.697} & \multicolumn{1}{c|}{0.787} & 0.428 & \multicolumn{1}{c|}{0.628} & \multicolumn{1}{c|}{0.631} & 0.178 & \multicolumn{1}{c|}{0.810} & \multicolumn{1}{c|}{0.864} & 0.531 & 0.733 & 0.792 & 0.427 & 0.544 \\
+			\multirow{3}{*}{\parbox{2cm}{\textbf{Runs 42, 52, and 59}}} & All & 1 & \multicolumn{1}{c|}{\textbf{0.697}} & \multicolumn{1}{c|}{\textbf{0.787}} & \textbf{0.428} & \multicolumn{1}{c|}{\textbf{0.628}} & \multicolumn{1}{c|}{\textbf{0.631}} & \textbf{0.178} & \multicolumn{1}{c|}{\textbf{0.810}} & \multicolumn{1}{c|}{\textbf{0.864}} & \textbf{0.531} & \textbf{0.733} & \textbf{0.792} & \textbf{0.427} & \textbf{0.544} \\
 			
-			& Fluid & 1 & \multicolumn{1}{c|}{0.688} & \multicolumn{1}{c|}{0.663} & 0.586 & \multicolumn{1}{c|}{0.660} & \multicolumn{1}{c|}{0.646} & 0.636 & \multicolumn{1}{c|}{0.632} & \multicolumn{1}{c|}{0.537} & 0.484 & 0.661 & 0.627 & 0.578 & 0.639 \\
+			& Fluid & 1 & \multicolumn{1}{c|}{\textbf{0.688}} & \multicolumn{1}{c|}{0.663} & \textbf{0.586} & \multicolumn{1}{c|}{\textbf{0.660}} & \multicolumn{1}{c|}{0.646} & \textbf{0.636} & \multicolumn{1}{c|}{0.632} & \multicolumn{1}{c|}{0.537} & \textbf{0.484} & \textbf{0.661} & 0.627 & \textbf{0.578} & \textbf{0.639} \\
 			
-			& No Fluid & 1 & \multicolumn{1}{c|}{0.701} & \multicolumn{1}{c|}{0.844} & 0.387 & \multicolumn{1}{c|}{0.520} & \multicolumn{1}{c|}{0.623} & 0.075 & \multicolumn{1}{c|}{0.870} & \multicolumn{1}{c|}{0.917} & 0.534 & 0.766 & 0.844 & 0.402 & 0.440 \\
+			& No Fluid & 1 & \multicolumn{1}{c|}{\textbf{0.701}} & \multicolumn{1}{c|}{\textbf{0.844}} & \textbf{0.387} & \multicolumn{1}{c|}{\textbf{0.520}} & \multicolumn{1}{c|}{\textbf{0.623}} & \textbf{0.075} & \multicolumn{1}{c|}{\textbf{0.870}} & \multicolumn{1}{c|}{\textbf{0.917}} & \textbf{0.534} & \textbf{0.766} & \textbf{0.844} & \textbf{0.402} & \textbf{0.440} \\
 			
 			\hline
 			
@@ -953,7 +953,7 @@ In this experiment, for each fluid, eight models were trained. One model was tra
 \subsubsection{Experiment 2.2}
 
 \begin{table*}[!ht]
-	\caption{IRF Dice scores for every vendor, using the binary segmentation U-Net for IRF. The loss function used in Runs 61 and 62 is the weighted cross-entropy. This model was trained on two different validation folds: validation fold 0 from the multi-class 5-fold split, and validation fold 4 from the IRF fluid-specific 5-fold split. These results can be compared, respectively, to those obtained in Runs 40 and 43.}
+	\caption{IRF Dice scores for every vendor, using the binary segmentation U-Net for IRF. The loss function used in Runs 61 and 62 is the weighted cross-entropy. This model was trained on two different validation folds: validation fold 0 from the multi-class 5-fold split, and validation fold 4 from the IRF fluid-specific 5-fold split. These results can be compared, respectively, to those obtained in Runs 40 and 43. The metrics are compared between rows with the same name, so that the values in bold are the best across the four experiments.}
 	\centering
 	\begin{tabular}{|c|c|c|c|c|c|c|}
 			\hline
@@ -985,22 +985,21 @@ In this experiment, for each fluid, eight models were trained. One model was tra
 			\hline
 			\hline
 			
-			\multirow{3}{*}{\textbf{Run 40}} & All & 0 & 0.576 & 0.695 & 0.661 & 0.628 \\
+			\multirow{3}{*}{\textbf{Run 40}} & All & 0 & 0.576 & \textbf{0.695} & \textbf{0.661} & \textbf{0.628} \\
 			
-			& Fluid & 0 & 0.619 & 0.682 & 0.599 & 0.628 \\
+			& Fluid & 0 & \textbf{0.619} & \textbf{0.682} & \textbf{0.599} & \textbf{0.628} \\
 			
-			& No Fluid & 0 & 0.555 & 0.705 & 0.686 & 0.628 \\
+			& No Fluid & 0 & 0.555 & 0.705 & \textbf{0.686} & \textbf{0.628} \\
 			
 			\hline
 			
-			\multirow{3}{*}{\textbf{Run 43}} & All & 4 & 0.583 & 0.689 & 0.310 & 0.502 \\
+			\multirow{3}{*}{\textbf{Run 43}} & All & 4 & \textbf{0.583} & 0.689 & 0.310 & 0.502 \\
 			
 			& Fluid & 4 & 0.516 & 0.660 & 0.451 & 0.546 \\
 			
-			& No Fluid & 4 & 0.601 & 0.719 & 0.272 & 0.486 \\
+			& No Fluid & 4 & \textbf{0.601} & \textbf{0.719} & 0.272 & 0.486 \\
 			
 			\hline
-			
 			
 	\end{tabular}
 	\label{tab:Experiment2.2Results}
