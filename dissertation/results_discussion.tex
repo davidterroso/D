@@ -1077,6 +1077,67 @@ The cross-entropy is much more useful when regularizing the wrong labeling, espe
 
 \subsubsection{Experiment 1 and Experiment 2 Comparison}
 
+In order to compare Experiment 1 with Experiment 2, both their performances were presented in Table \ref{tab:Experiment1VsExperiment2}. These experiments are compared by evaluating each experiment's performance on the reserved fold. In the table, the first block corresponds to the performance obtained with the selected multi-class segmentation model, while the second block shows the performance of the combination of models from Experiment 2, with their masks combined in a probability-based approach.
+
+\begin{table*}[!ht]
+	\caption{Dice scores for every vendor and fluid in the reserved fold (fold 1), using the best models from Experiment 1 and Experiment 2. In Experiment 1, the model trained on Run 32 was selected, while in Experiment 2 the chosen models were those from Runs 42, for IRF, 52, for SRF, and 59, for PED. The rows with the same name must be compared with each other.}
+	\centering
+	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|ccc|ccc|ccc|c|c|c|c|}
+			\hline
+			% Headers
+			\multirow{2}{*}{\textbf{Runs}} &
+			\multirow{2}{*}{\textbf{Slices}} &  
+			\multirow{2}{*}{\textbf{VF}} & 
+			\multicolumn{3}{c|}{\textbf{Cirrus}} & 
+			\multicolumn{3}{c|}{\textbf{Spectralis}} & 
+			\multicolumn{3}{c|}{\textbf{Topcon}} & 
+			\multicolumn{1}{c|}{\multirow{2}{*}{\textbf{IRF}}} & 
+			\multirow{2}{*}{\textbf{SRF}} & 
+			\multirow{2}{*}{\textbf{PED}} & 
+			\multirow{2}{*}{\textbf{Fluid}} \\ \cline{4-12} & & &
+			\multicolumn{1}{c}{\textbf{IRF}} & 
+			\multicolumn{1}{c}{\textbf{SRF}} & 
+			\textbf{\textbf{PED}} & 
+			\multicolumn{1}{c}{\textbf{IRF}} & 
+			\multicolumn{1}{c}{\textbf{SRF}} & 
+			\textbf{PED} & 
+			\textbf{IRF} & 
+			\textbf{SRF} & 
+			\textbf{PED} & 
+			\multicolumn{1}{c|}{} & & & \\ 
+			
+			\hline
+
+			\multirow{3}{*}{\textbf{Run 32}} & All & 1 & \multicolumn{1}{c|}{\textbf{0.852}} & \multicolumn{1}{c|}{\textbf{0.918}} & \textbf{0.934} & \multicolumn{1}{c|}{\textbf{0.645}} & \multicolumn{1}{c|}{\textbf{0.821}} & \textbf{0.852} & \multicolumn{1}{c|}{\textbf{0.818}} & \multicolumn{1}{c|}{\textbf{0.929}} & \textbf{0.755} & \textbf{0.799} & \textbf{0.905} & \textbf{0.841} & \textbf{0.742} \\
+			
+			& Fluid & 1 & \multicolumn{1}{c|}{0.654} & \multicolumn{1}{c|}{\textbf{0.799}} & \textbf{0.767} & \multicolumn{1}{c|}{0.645} & \multicolumn{1}{c|}{\textbf{0.687}} & \textbf{0.703} & \multicolumn{1}{c|}{0.624} & \multicolumn{1}{c|}{\textbf{0.744}} & \textbf{0.588} & 0.641 & \textbf{0.756} & \textbf{0.716} & \textbf{0.702} \\
+			
+			& No Fluid & 1 & \multicolumn{1}{c|}{\textbf{0.941}} & \multicolumn{1}{c|}{\textbf{0.972}} & \textbf{0.978} & \multicolumn{1}{c|}{\textbf{0.646}} & \multicolumn{1}{c|}{\textbf{0.889}} & \textbf{0.885} & \multicolumn{1}{c|}{\textbf{0.884}} & \multicolumn{1}{c|}{\textbf{0.960}} & \textbf{0.766} & \textbf{0.873} & \textbf{0.952} & \textbf{0.862} & \textbf{0.786} \\
+			
+			\hline
+			\hline
+			
+			\multirow{3}{*}{\parbox{2cm}{\textbf{Runs 42, 52, and 59}}} & All & 1 & \multicolumn{1}{c|}{0.697} & \multicolumn{1}{c|}{0.787} & 0.428 & \multicolumn{1}{c|}{0.628} & \multicolumn{1}{c|}{0.631} & 0.178 & \multicolumn{1}{c|}{0.810} & \multicolumn{1}{c|}{0.864} & 0.531 & 0.733 & 0.792 & 0.427 & 0.544 \\
+			
+			& Fluid & 1 & \multicolumn{1}{c|}{\textbf{0.688}} & \multicolumn{1}{c|}{0.663} & 0.586 & \multicolumn{1}{c|}{\textbf{0.660}} & \multicolumn{1}{c|}{0.646} & 0.636 & \multicolumn{1}{c|}{\textbf{0.632}} & \multicolumn{1}{c|}{0.537} & 0.484 & \textbf{0.661} & 0.627 & 0.578 & 0.639 \\
+			
+			& No Fluid & 1 & \multicolumn{1}{c|}{0.701} & \multicolumn{1}{c|}{0.844} & 0.387 & \multicolumn{1}{c|}{0.520} & \multicolumn{1}{c|}{0.623} & 0.075 & \multicolumn{1}{c|}{0.870} & \multicolumn{1}{c|}{0.917} & 0.534 & 0.766 & 0.844 & 0.402 & 0.440 \\
+			
+			\hline
+			
+	\end{tabular}}
+	\label{tab:Experiment1VsExperiment2}
+\end{table*}
+
+By looking at this table, the best segmentation performance becomes evident. The multi-class model consistently outperforms the binary models in across all fluids, vendors and slice groups.
+\par
+Regarding the performances in fluids, the multi-class segmentation performs better than the binary models in all fluids when all the slices are considered and when only the slices which do not contain a certain fluid are considered. The only metrics in which the binary models outperform the multi-class is the segmentation of IRF in slices which contain this fluid. In these metrics, the binary models attain small improvements over the multi-class model. This fluid was also the one with the best performance in the set of slices with IRF, in Experiment 2.1. However, the segmentation of IRF in the slices which contain this fluid is not enough to 
+\par
+The performances reached by the binary model in SRF are worse than those obtained with the multi-class, but still 
+
+\par
+It was seen in Experiment 2 
+
 \section{Intermediate Slice Synthesis}\label{IntermediateSliceSynthesis}
 
 \subsection{Experiment 3}
