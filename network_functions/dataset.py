@@ -290,7 +290,8 @@ def generation_images_from_volumes(volumes_list: list, model_name: str,
     # Return only the filenames with their respective folder
     return [f"{path}" for folder, path in filtered_paths]
 
-def images_from_volumes(volumes_list: list):
+def images_from_volumes(volumes_list: list, dataset: str="RETOUCH", 
+                        resized_imgs: bool=True):
     """
     Used to return the list of all the images that are available to 
     test the network, knowing which volumes will be used
@@ -298,24 +299,39 @@ def images_from_volumes(volumes_list: list):
     Args:
         volumes_list (List[float]): list of the OCT volume's identifier 
             that will be used in testing
+        dataset (str): name of the dataset which will be evaluated. 
+            The default name is RETOUCH
+        resized_imgs (bool): boolean variable which indicates whether 
+            the images being used are resized or not. The default 
+            value is True 
 
     Return:
         images_list (List[str]): list of the name of the image that 
             will be used to test the model
     """
     # Declares the path to the images
-    images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\slices\\uint8\\"
-        
+    if dataset == "RETOUCH":
+        images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\slices\\uint8\\"
+    elif dataset == "chusj":
+        images_folder = IMAGES_PATH + "\\OCT_images\\chusj\\"
+        if resized_imgs:
+            images_folder = images_folder + "slices_resized\\"
+        else:
+            images_folder = images_folder + "slices\\"
+
     # Iterates through the available images
     # and registers the name of those that are 
     # from the volumes that will be used in 
     # testing, returning that list
     images_list = []
     for image_name in listdir(images_folder):
-        volume = image_name.split("_")[1][-3:]
-        volume = int(volume)
-        if volume in volumes_list:
-            images_list.append(image_name)
+        if dataset == "RETOUCH":
+            volume = image_name.split("_")[1][-3:]
+            volume = int(volume)
+            if volume in volumes_list:
+                images_list.append(image_name)
+        elif dataset == "chusj":
+            images_list.append(image_name) 
     return images_list
 
 class CustomTransform:
@@ -736,7 +752,8 @@ class TestDataset(Dataset):
     def __init__(self, test_volumes: list, model: str, 
                  patch_type: str, resize_images: bool,
                  resize_shape: tuple, fluid: int=None,
-                 number_of_channels: int=1):
+                 number_of_channels: int=1, 
+                 dataset: str="RETOUCH"):
         """
         Initiates the Dataset object and gets the possible 
         names of the images that will be used in testing
@@ -765,6 +782,8 @@ class TestDataset(Dataset):
                 in the network. The default value is 1 but can 
                 also be 2 in case there is relative distance 
                 maps, for example
+            dataset (str): name of the dataset which will be evaluated. 
+                The default name is RETOUCH
                 
         Return:
             None
@@ -781,6 +800,7 @@ class TestDataset(Dataset):
         self.fluid = fluid
         self.resize = resize_images 
         self.resize_shape = resize_shape
+        self.dataset = dataset
 
     def __len__(self):
         """
@@ -816,30 +836,41 @@ class TestDataset(Dataset):
         if torch.is_tensor(index):
             index = index.tolist()
 
-        # Declares the path to the images
-        images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\slices\\uint8\\"        
-        # Declares the path to the masks
-        masks_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\masks\\int8\\"
-        # Declares the path to the ROI masks
-        rois_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\roi\\int8\\"
-        # Declares the path to the relative distance maps
-        rdms_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\rdms"
-
+        if self.dataset == "RETOUCH":
+            # Declares the path to the images
+            images_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\slices\\uint8\\"        
+            # Declares the path to the masks
+            masks_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\masks\\int8\\"
+            # Declares the path to the ROI masks
+            rois_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\roi\\int8\\"
+            # Declares the path to the relative distance maps
+            rdms_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\rdms"
+            roi_name = rois_folder + self.images_names[index]
+            rdm_name = rdms_folder + self.images_names[index]
+            if self.model == "2.5D":
+                roi = imread(roi_name)
+            if self.number_of_channels == 2 and self.model != "UNet":
+                rdm = imread(rdm_name)
+        elif self.dataset == "chusj":
+            # Declares the path to the images
+            images_folder = IMAGES_PATH + "\\OCT_images\\chusj\\"        
+            # Declares the path to the masks
+            masks_folder = IMAGES_PATH + "\\OCT_images\\chusj\\"
+            if self.resize:
+                images_folder = images_folder + "slices_resized\\"
+                masks_folder = masks_folder + "masks_resized\\"
+            else:
+                images_folder = images_folder + "slices\\"
+                masks_folder = masks_folder + "masks\\"
         # Indicates the path to the image depending on the index given,
         # which is associated with the image name
         slice_name = images_folder + self.images_names[index]
         mask_name = masks_folder + self.images_names[index]
-        roi_name = rois_folder + self.images_names[index]
-        rdm_name = rdms_folder + self.images_names[index]
 
         # Reads the image and the
         # fluid mask
         scan = imread(slice_name)
         mask = imread(mask_name)
-        if self.model == "2.5D":
-            roi = imread(roi_name)
-        if self.number_of_channels == 2 and self.model != "UNet":
-            rdm = imread(rdm_name)
 
         # In case the selected model is the 2.5D, also loads the previous
         # and following slice
@@ -881,7 +912,7 @@ class TestDataset(Dataset):
             scan, mask = handle_test_images(scan, mask, roi, patch_shape=(256, 512))
 
         # If the images are desirerd to be resized
-        if self.resize:
+        if self.resize and self.dataset == "RETOUCH":
             # Resizes the images to the shape of the Spectralis scan
             scan = resize(scan, self.resize_shape, preserve_range=True, 
                                         anti_aliasing=True)

@@ -389,6 +389,7 @@ def test_model (
         model_name: str,
         weights_name: str,
         batch_size: int=1,
+        dataset: str="RETOUCH",
         device_name: str="GPU",
         final_test: bool=False,
         fluid: str=None,
@@ -550,7 +551,7 @@ def test_model (
 
     # Creates the TestDataset and DataLoader object with the test volumes
     # Number of workers was set to the most optimal
-    test_dataset = TestDataset(test_volumes, model_name, patch_type, resize_images, resize_shape, fluids_to_label.get(fluid), number_of_channels)
+    test_dataset = TestDataset(test_volumes, model_name, patch_type, resize_images, resize_shape, fluids_to_label.get(fluid), number_of_channels, dataset=dataset)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=12, collate_fn=collate_fn)
     
     # Initiates the list that will 
