@@ -1,4 +1,5 @@
 import lmdb
+from pandas import read_csv
 import torch
 from collections import defaultdict
 from io import BytesIO
@@ -236,6 +237,11 @@ def generation_images_from_volumes(volumes_list: list, model_name: str,
     elif model_name == "GAN":
         images_folder = "C:\slices_resized_64_patches\\"
 
+    # Reads the CSV files that contain the information of 
+    # each OCT volume
+    training_volumes_df = read_csv("splits\\volumes_info.csv")
+    testing_volumes_df = read_csv("splits\\volumes_info.csv")
+
     # Iterates through the available images
     # and registers the name of those that are 
     # from the volumes that will be used in 
@@ -243,12 +249,26 @@ def generation_images_from_volumes(volumes_list: list, model_name: str,
     images_list = []
     for patch_name in listdir(images_folder):
         parts = patch_name.split("_")
+        vendor = parts[0]
         volume_name = parts[1]
         volume_set = volume_name[:-3].lower()
         volume_number = int(volume_name[-3:])
         volume = f"{volume_number}_{volume_set}"
 
-        if (volume in volumes_list) and (oct_device == parts[0] or oct_device == 'all'):
+        # Defines df depending on the set to which the volume belongs
+        if volume_set == 'train':
+            df = training_volumes_df
+        elif volume_set == 'test':
+            df = testing_volumes_df
+
+        # Get the device for this volume from the DataFrame
+        device_row = df[(df["VolumeNumber"] == volume_number) & (df["Vendor"] == vendor)]
+        if device_row.empty:
+            continue  # skip if not found
+        device = device_row["Device"].values[0]
+
+        # Only add if both volume and device match
+        if ((volume in volumes_list) and (oct_device == device or oct_device == 'all')):
             images_list.append((images_folder, patch_name))
 
     # Creates a dictionary that will match the id of a volume to a path
@@ -1420,8 +1440,8 @@ class ValidationDatasetGAN(Dataset):
 
         # Loads the previous and the following images while normalizing 
         # to 0-1 range
-        prev_img = torch.from_numpy(((imread(image_path) / 255.) - 0.5) * 2.).float()
-        next_img = torch.from_numpy(((imread(image_path) / 255.) - 0.5) * 2.).float()
+        prev_img = torch.from_numpy(((imread(prev_img_path) / 255.) - 0.5) * 2.).float()
+        next_img = torch.from_numpy(((imread(next_img_path) / 255.) - 0.5) * 2.).float()
 
         # Organizes the data in a dictionary that contains the images 
         # stacked along the first axis under the key "stack"
@@ -1507,8 +1527,8 @@ class TestDatasetGAN(Dataset):
 
         # Loads the previous and the 
         # following images 
-        prev_img = torch.from_numpy(((imread(image_path) / 255.) - 0.5) * 2.).float()
-        next_img = torch.from_numpy(((imread(image_path) / 255.) - 0.5) * 2.).float()
+        prev_img = torch.from_numpy(((imread(prev_img_path) / 255.) - 0.5) * 2.).float()
+        next_img = torch.from_numpy(((imread(next_img_path) / 255.) - 0.5) * 2.).float()
 
         # Organizes the data in a dictionary that contains the images stacked along the first axis under the key 
         # "stack" and the path of the middle image associated with the key "image_name"

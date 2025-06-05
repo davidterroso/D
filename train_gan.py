@@ -508,35 +508,49 @@ def train_gan(
                 writer = csv.writer(file)
                 writer.writerow([epoch, epoch_loss / len(train_loader), val_mae])
 
+        # if model_name == "GAN":
+        #     # Only saves the model after 10 epochs, since 
+        #     # the loss is over-confident due to the 
+        #     # inexperience of the discriminator
+        #     if epoch > 10:
+        #         # In case the validation generator loss 
+        #         # is better than the previous, the model 
+        #         # is saved as the best model
+        #         if val_loss < best_val_gen_loss:
+        #             # Creates the folder models in case 
+        #             # it does not exist yet
+        #             makedirs("models", exist_ok=True)
+        #             # Updates the best value 
+        #             # of the validation 
+        #             # generator loss
+        #             best_val_gen_loss = val_loss
+        #             patience_counter = 0
+        #             # Both the generator and the discriminator are saved with a name 
+        #             # that depends on the argument input and the name of the model
+        #             torch.save(generator.state_dict(), 
+        #                         f"models/{run_name}_generator_best_model_epoch{epoch}.pth")
+        #             torch.save(discriminator.state_dict(),
+        #                         f"models/{run_name}_discriminator_best_model_epoch{epoch}.pth")
+        #             print("Models saved.")
+        #         # In case the model has not 
+        #         # obtained a better performance, 
+        #         # the patience counter increases
+        #         else:
+        #             patience_counter += 1
+
         if model_name == "GAN":
-            # Only saves the model after 20 epochs, since 
-            # the loss is over-confident due to the 
-            # inexperience of the discriminator
-            if epoch > 20:
-                # In case the validation generator loss 
-                # is better than the previous, the model 
-                # is saved as the best model
-                if val_loss < best_val_gen_loss:
-                    # Creates the folder models in case 
-                    # it does not exist yet
-                    makedirs("models", exist_ok=True)
-                    # Updates the best value 
-                    # of the validation 
-                    # generator loss
-                    best_val_gen_loss = val_loss
-                    patience_counter = 0
-                    # Both the generator and the discriminator are saved with a name 
-                    # that depends on the argument input and the name of the model
-                    torch.save(generator.state_dict(), 
-                                f"models/{run_name}_generator_best_model.pth")
-                    torch.save(discriminator.state_dict(),
-                                f"models/{run_name}_discriminator_best_model.pth")
-                    print("Models saved.")
-                # In case the model has not 
-                # obtained a better performance, 
-                # the patience counter increases
-                else:
-                    patience_counter += 1
+            # Save every 10 epochs, starting at epoch 10
+            if epoch % 10 == 0 and epoch >= 10:
+                # Ensure the folder exists
+                makedirs("models", exist_ok=True)
+
+                # Save generator and discriminator with run name and current epoch
+                torch.save(generator.state_dict(), 
+                        f"models/{run_name}_generator_epoch{epoch}.pth")
+                torch.save(discriminator.state_dict(), 
+                        f"models/{run_name}_discriminator_epoch{epoch}.pth")
+                print(f"Models saved at epoch {epoch}.")
+
         elif model_name == "UNet":
             # In case the validation MAE is better 
             # than the previous, the model is saved 
