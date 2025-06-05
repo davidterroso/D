@@ -484,6 +484,9 @@ class MS_SSIM(Module):
             (PyTorch tensor): 1 - MS-SSIM value 
                 for all images
         """
+        # Converts the images from range [-1,1] to [0,1]
+        gen_frames = (gen_frames + 1) / 2
+        gt_frames = (gt_frames + 1) / 2
         return 1 - self.ms_ssim(gen_frames, gt_frames)
         
     def ms_ssim(self, gen_tensors, gt_tensors):
