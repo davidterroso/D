@@ -196,7 +196,9 @@ def runs_resume(prefix: str, starting_run: int,
             # This will be saved under the name of Run001_resumed.csv, as an example
             Series(results).to_frame().T.to_csv(f".\\results\\{prefix + run_number}_resumed.csv")
 
-def runs_resume_final(folder: str, run_number: int):
+def runs_resume_final(folder: str, run_number: int, 
+                      dataset: str="RETOUCH", 
+                      resized_imgs: bool=False):
     """
     Function used to resume all the results from 
     the final runs in a single CSV file making it 
@@ -207,37 +209,33 @@ def runs_resume_final(folder: str, run_number: int):
             the results are located
         runs_to_check (int): highest number of run
             index that will be checked
+        dataset (str): name of the dataset in which 
+            the last run was performed. The default 
+            name is RETOUCH
+        resized_imgs (bool): flag which indicates 
+            whether the images were resized or not 
     
     Return:
         None
     """
     # Declares the name of the files that will be handled,
     # depending on which the images have been resized or not
-    files_names = ["vendor_dice_final", 
-                "vendor_dice_wfluid_final", 
-                "vendor_dice_wofluid_final", 
-                "class_dice_final", 
-                "class_dice_wfluid_final", 
-                "class_dice_wofluid_final", 
-                "fluid_dice_final"]
-    files_names_resized = ["vendor_dice_resized_final", 
-                        "vendor_dice_resized_wfluid_final", 
-                        "vendor_dice_resized_wofluid_final", 
-                        "class_dice_resized_final", 
-                        "class_dice_resized_wfluid_final", 
-                        "class_dice_resized_wofluid_final", 
-                        "fluid_dice_resized_final"]
-
-    # Sets the name of the files 
-    # according to the number of 
-    # the run. The files with a 
-    # run number higher than 62 
-    # are binary tasks
-    if int(run_number) < 23:
-        files_to_load = files_names
+    if resized_imgs:
+        files_to_load = [f"vendor_dice_resized_final_{dataset.lower()}", 
+                        f"vendor_dice_resized_wfluid_final_{dataset.lower()}", 
+                        f"vendor_dice_resized_wofluid_final_{dataset.lower()}", 
+                        f"class_dice_resized_final_{dataset.lower()}", 
+                        f"class_dice_resized_wfluid_final_{dataset.lower()}", 
+                        f"class_dice_resized_wofluid_final_{dataset.lower()}", 
+                        f"fluid_dice_resized_final_{dataset.lower()}"]
     else:
-        files_to_load = files_names_resized  
-
+        files_to_load = [f"vendor_dice_final_{dataset.lower()}", 
+                        f"vendor_dice_wfluid_final_{dataset.lower()}", 
+                        f"vendor_dice_wofluid_final_{dataset.lower()}", 
+                        f"class_dice_final_{dataset.lower()}", 
+                        f"class_dice_wfluid_final_{dataset.lower()}", 
+                        f"class_dice_wofluid_final_{dataset.lower()}", 
+                        f"fluid_dice_final_{dataset.lower()}"]
 
     # Changes the number to match the one 
     # used in the files (e.g. 1 -> 001)
@@ -257,7 +255,7 @@ def runs_resume_final(folder: str, run_number: int):
         # the flag is changed to 
         # false and does not read
         # procede for that run number
-        if not exists(fp) or not fp.endswith("_final.csv"):
+        if not exists(fp) or not fp.endswith(f"_final_{dataset.lower()}.csv"):
             files_exist = False
     # In case all 
     # files exist, 
@@ -280,7 +278,6 @@ def runs_resume_final(folder: str, run_number: int):
         # Loads the CSV files that contain the Dice 
         # coefficient for each class
         class_dice = read_csv(files_paths[3])
-
         class_dice_wfluid = read_csv(files_paths[4])
         class_dice_wofluid = read_csv(files_paths[5])
 
@@ -288,10 +285,8 @@ def runs_resume_final(folder: str, run_number: int):
         # appends them to the results list
         for fluid in class_dice.columns:
             results.append(class_dice.at[0, fluid])
-  
             results.append(class_dice_wfluid.at[0, fluid])
             results.append(class_dice_wofluid.at[0, fluid])
-
 
         # Reads the file that contains the Dice 
         # resulting from the binarization of 
@@ -340,8 +335,11 @@ def runs_resume_final(folder: str, run_number: int):
         # "SRF", "SRF_wfluid", "SRF_wofluid", 
         # "PED", "PED_wfluid", "PED_wofluid", 
         # "Fluid", "Fluid_wfluid", "Fluid_wofluid"
-        # This will be saved under the name of Run001_resumed.csv, as an example
-        Series(results).to_frame().T.to_csv(f".\\results\\{'Run' + run_number}_final_resumed.csv")
+        if resized_imgs:
+            resumed_save_name = f".\\results\\{'Run' + run_number}_resized_final_{dataset.lower()}_resumed.csv"
+        else:
+            resumed_save_name = f".\\results\\{'Run' + run_number}_final_{dataset.lower()}_resumed.csv"
+        Series(results).to_frame().T.to_csv(resumed_save_name)
 
 def gan_runs_resume(folder: str=".\\results"):
     """
@@ -471,6 +469,6 @@ def combine_csvs_to_excel(folder_path, output_excel_path):
 
 runs_resume(starting_run=1, ending_run=120, folder=".\\results\\", prefix="Run")
 runs_resume(starting_run=1, ending_run=32, folder=".\\results\\", prefix="Iteration")
-runs_resume_final(folder=".\\results\\", run_number="076111114")
+runs_resume_final(folder=".\\results\\", run_number="076111114", dataset="CHUSJ", resized_imgs=True)
 gan_runs_resume(folder=".\\results\\")
 combine_csvs_to_excel(folder_path=".\\results\\", output_excel_path=".\\results\\combined_output.xlsx")
