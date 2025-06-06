@@ -1,0 +1,1 @@
+Epoch,Adversarial Loss,Generator Loss,Real Loss,Fake Loss,Discriminator Loss,MS-SSIM Loss,GD Loss,MAE Loss,Validation Generator Loss,Validation MS-SSIM,Validation GD Loss,Validation MAE,Validation Adversarial Loss

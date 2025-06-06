@@ -816,7 +816,7 @@ class TestDataset(Dataset):
         self.number_of_channels = number_of_channels
         self.patch_type = patch_type
         self.model = model
-        self.images_names = images_from_volumes(test_volumes)
+        self.images_names = images_from_volumes(test_volumes, dataset=dataset, resized_imgs=resize_images)
         self.fluid = fluid
         self.resize = resize_images 
         self.resize_shape = resize_shape

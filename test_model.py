@@ -566,7 +566,7 @@ def test_model (
     if save_images:
         if not resize_images:
             if final_test: 
-                folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final\\"
+                folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final_{dataset.lower()}\\"
             # In case the folder to save exists, it is deleted and created again
             else:
                 folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}\\"
@@ -577,7 +577,7 @@ def test_model (
                 makedirs(folder_to_save)
         else:
             if final_test:
-                folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_final\\"
+                folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_final_{dataset.lower()}\\"
             else:
                 folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized\\"
             # In case the folder to save exists, it is deleted and created again
@@ -706,7 +706,7 @@ def test_model (
 
                         for ax, mask, title in zip(axs.flat, masks, titles):
                             ax.imshow(oct_image, cmap=plt.cm.gray)
-                            ax.imshow(mask, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm, vmin=1, vmax=3)
+                            ax.imshow(mask, alpha=0.8, cmap=fluid_cmap, norm=fluid_norm)
                             ax.set_title(title)
                             ax.axis("off")
 
@@ -723,7 +723,7 @@ def test_model (
 
                         plt.figure(figsize=(8,8), dpi=200)
                         plt.imshow(oct_image, cmap=plt.cm.gray)
-                        plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm, vmin=1, vmax=3)
+                        plt.imshow(true_masks, alpha=0.8, cmap=fluid_cmap, norm=fluid_norm)
                         plt.axis("off")
                         plt.title(f"Ground Truth Mask for {image_name}")
                         plt.savefig(gt_mask_name, bbox_inches="tight", pad_inches=0, dpi=300)
@@ -767,14 +767,14 @@ def test_model (
                         # Saves the OCT scan with an overlay of the predicted masks
                         plt.figure(figsize=(oct_image.shape[1] / 100, oct_image.shape[0] / 100))
                         plt.imshow(oct_image, cmap=plt.cm.gray)
-                        plt.imshow(preds, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+                        plt.imshow(preds, alpha=0.8, cmap=fluid_cmap, norm=fluid_norm)
                         plt.axis("off")
                         plt.savefig(predicted_mask_name, bbox_inches='tight', pad_inches=0)
 
                         # Saves the OCT scan with an overlay of the ground-truth masks
                         plt.figure(figsize=(oct_image.shape[1] / 100, oct_image.shape[0] / 100))
                         plt.imshow(oct_image, cmap=plt.cm.gray)
-                        plt.imshow(true_masks, alpha=0.3, cmap=fluid_cmap, norm=fluid_norm)
+                        plt.imshow(true_masks, alpha=0.8, cmap=fluid_cmap, norm=fluid_norm)
                         plt.axis("off")
                         plt.savefig(gt_mask_name, bbox_inches="tight", pad_inches=0)
 
@@ -843,17 +843,22 @@ def test_model (
 
         # Saves the DataFrame that contains the values for each volume, class, and vendor
         if not resize_images:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
-            resulting_class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
+            if not final_test:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
+                resulting_class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
+            else:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_final_{dataset.lower()}.csv", index=True)
+                resulting_class_df.to_csv(f"results/{run_name}_class_dice_final_{dataset.lower()}.csv", index=False)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_final_{dataset.lower()}.csv", index=True)
         elif not final_test:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
             resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized.csv", index=False)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)            
         else:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_final.csv", index=True)
-            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_final.csv", index=False)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_final.csv", index=True)
+            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_final_{dataset.lower()}.csv", index=True)
+            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_final_{dataset.lower()}.csv", index=False)
+            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_final_{dataset.lower()}.csv", index=True)
 
         # Handles the information only on the slices that have the fluid
         slice_df_wf = slice_df.copy()
@@ -885,17 +890,22 @@ def test_model (
 
         # Saves the DataFrame that contains the values for each volume, class, and vendor
         if not resize_images:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid.csv", index=True)
-            resulting_class_df.to_csv(f"results/{run_name}_class_dice_wfluid.csv", index=False)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid.csv", index=True)
+            if not final_test:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid.csv", index=True)
+                resulting_class_df.to_csv(f"results/{run_name}_class_dice_wfluid.csv", index=False)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid.csv", index=True)
+            else:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid_final_{dataset.lower()}.csv", index=True)
+                resulting_class_df.to_csv(f"results/{run_name}_class_dice_wfluid_final_{dataset.lower()}.csv", index=False)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid_final_{dataset.lower()}.csv", index=True)
         elif not final_test:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid.csv", index=True)
             resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wfluid.csv", index=False)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid.csv", index=True)
         else:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid_final.csv", index=True)
-            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wfluid_final.csv", index=False)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid_final.csv", index=True)
+            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid_final_{dataset.lower()}.csv", index=True)
+            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wfluid_final_{dataset.lower()}.csv", index=False)
+            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid_final_{dataset.lower()}.csv", index=True)
         
         # Handles the information only on the slices that do not have fluid
         slice_df_wof = slice_df.copy()
@@ -927,20 +937,26 @@ def test_model (
 
         # Saves the DataFrame that contains the values for each volume, class, and vendor
         if not resize_images:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid.csv", index=True)
-            resulting_class_df.to_csv(f"results/{run_name}_class_dice_wofluid.csv", index=False)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid.csv", index=True)
-            binary_dices_name = "fluid_dice"
+            if not final_test:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid.csv", index=True)
+                resulting_class_df.to_csv(f"results/{run_name}_class_dice_wofluid.csv", index=False)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid.csv", index=True)
+                binary_dices_name = "fluid_dice"
+            else:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid_final_{dataset.lower()}.csv", index=True)
+                resulting_class_df.to_csv(f"results/{run_name}_class_dice_wofluid_final_{dataset.lower()}.csv", index=False)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid_final_{dataset.lower()}.csv", index=True)
+                binary_dices_name = f"fluid_dice_final_{dataset.lower()}"
         elif not final_test:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid.csv", index=True)
             resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wofluid.csv", index=False)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid.csv", index=True)
             binary_dices_name = "fluid_dice_resized"
         else:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid_final.csv", index=True)
-            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wofluid_final.csv", index=False)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid_final.csv", index=True)
-            binary_dices_name = "fluid_dice_resized_final"
+            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid_final_{dataset.lower()}.csv", index=True)
+            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wofluid_final_{dataset.lower()}.csv", index=False)
+            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid_final_{dataset.lower()}.csv", index=True)
+            binary_dices_name = f"fluid_dice_resized_final_{dataset.lower()}"
 
         # Initializes a list that will hold the results for the binary case
         binary_dices = []
@@ -995,11 +1011,15 @@ def test_model (
 
         # Saves the DataFrame that contains the values for each volume, class, and vendor
         if not resize_images:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
+            if not final_test:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
+            else:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_final_{dataset.lower()}.csv", index=True)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_final_{dataset.lower()}.csv", index=True)
         elif final_test:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_final.csv", index=True)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_final.csv", index=True)
+            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_final_{dataset.lower()}.csv", index=True)
+            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_final_{dataset.lower()}.csv", index=True)
         else:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)
@@ -1032,11 +1052,15 @@ def test_model (
 
         # Saves the DataFrame that contains the values for each volume, class, and vendor
         if not resize_images:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid.csv", index=True)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid.csv", index=True)
+            if not final_test:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid.csv", index=True)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid.csv", index=True)
+            else:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid_final_{dataset.lower()}.csv", index=True)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid_final_{dataset.lower()}.csv", index=True)
         elif final_test:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid_final.csv", index=True)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid_final.csv", index=True)
+            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid_final_{dataset.lower()}.csv", index=True)
+            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid_final_{dataset.lower()}.csv", index=True)
         else:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid.csv", index=True)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid.csv", index=True)
@@ -1075,13 +1099,18 @@ def test_model (
 
         # Saves the DataFrame that contains the values for each volume, class, and vendor
         if not resize_images:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid.csv", index=True)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid.csv", index=True)
-            classes_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
+            if not final_test:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid.csv", index=True)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid.csv", index=True)
+                classes_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
+            else:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid_final_{dataset.lower()}.csv", index=True)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid_final_{dataset.lower()}.csv", index=True)
+                classes_df.to_csv(f"results/{run_name}_class_dice_final_{dataset.lower()}.csv", index=False)
         elif final_test:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid_final.csv", index=True)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid_final.csv", index=True)
-            classes_df.to_csv(f"results/{run_name}_class_dice_resized_final.csv", index=False)
+            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid_final_{dataset.lower()}.csv", index=True)
+            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid_final_{dataset.lower()}.csv", index=True)
+            classes_df.to_csv(f"results/{run_name}_class_dice_resized_final_{dataset.lower()}.csv", index=False)
         else:
             resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid.csv", index=True)
             resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid.csv", index=True)
