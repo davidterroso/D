@@ -31,12 +31,13 @@
 \contentsline {subsection}{\numberline {4.1.2}Experiment 2}{53}{subsection.4.1.2}%
 \contentsline {subsubsection}{\numberline {4.1.2.1}Experiment 2.1}{53}{subsubsection.4.1.2.1}%
 \contentsline {subsubsection}{\numberline {4.1.2.2}Experiment 2.2}{59}{subsubsection.4.1.2.2}%
-\contentsline {subsubsection}{\numberline {4.1.2.3}Experiment 1 and Experiment 2 Comparison}{60}{subsubsection.4.1.2.3}%
-\contentsline {section}{\numberline {4.2}Intermediate Slice Synthesis}{61}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Experiment 3}{61}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Experiment 4}{61}{subsection.4.2.2}%
-\contentsline {section}{\numberline {4.3}Fluid Volume Estimation}{61}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Experiment 5}{61}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Experiment 6}{61}{subsection.4.3.2}%
-\contentsline {chapter}{References}{62}{section*.69}%
-\contentsline {chapter}{\numberline {A}Variability of the Segmentation U-Net}{69}{appendix.A}%
+\contentsline {subsubsection}{\numberline {4.1.2.3}Experiment 1 and Experiment 2 Comparison in RETOUCH Dataset}{60}{subsubsection.4.1.2.3}%
+\contentsline {subsubsection}{\numberline {4.1.2.4}Experiment 1 and Experiment 2 Comparison in CHUSJ Dataset}{63}{subsubsection.4.1.2.4}%
+\contentsline {section}{\numberline {4.2}Intermediate Slice Synthesis}{63}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Experiment 3}{63}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Experiment 4}{63}{subsection.4.2.2}%
+\contentsline {section}{\numberline {4.3}Fluid Volume Estimation}{63}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Experiment 5}{63}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Experiment 6}{63}{subsection.4.3.2}%
+\contentsline {chapter}{References}{64}{section*.70}%
+\contentsline {chapter}{\numberline {A}Variability of the Segmentation U-Net}{71}{appendix.A}%

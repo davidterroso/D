@@ -4290,7 +4290,7 @@
       \field{pages}{108944}
       \range{pages}{1}
       \verb{doi}
-      \verb doi.org/10.1016/j.compbiomed.2024.108944
+      \verb 10.1016/j.compbiomed.2024.108944
       \endverb
       \keyw{Deep learning,Medical image segmentation,Performance comparisons,Random seeds,Randomness}
     \endentry
@@ -4342,6 +4342,56 @@
       \verb{doi}
       \verb 10.1016/j.ins.2024.120500
       \endverb
+    \endentry
+    \entry{Alsaih2020}{article}{}
+      \name{author}{5}{}{%
+        {{hash=c99edfb03f08de048cffa41596104541}{%
+           family={Alsaih},
+           familyi={A\bibinitperiod},
+           given={K},
+           giveni={K\bibinitperiod}}}%
+        {{hash=5a59e15b3c11abd01adf6ffb34ce9e9e}{%
+           family={Yusoff},
+           familyi={Y\bibinitperiod},
+           given={M\bibnamedelima Z},
+           giveni={M\bibinitperiod\bibinitdelim Z\bibinitperiod}}}%
+        {{hash=2067e7395da30afdc43f57e4c828efe7}{%
+           family={Tang},
+           familyi={T\bibinitperiod},
+           given={T\bibnamedelima B},
+           giveni={T\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+        {{hash=bbc47276409a5482bb5a8634c6456197}{%
+           family={Faye},
+           familyi={F\bibinitperiod},
+           given={I},
+           giveni={I\bibinitperiod}}}%
+        {{hash=48cd93468d7d1d994405934fe1ff7d04}{%
+           family={Mériaudeau},
+           familyi={M\bibinitperiod},
+           given={F},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{efd61c41a34653e4a294d59f5b7e52b0}
+      \strng{fullhash}{6aa910e48352774b6b754117efc25a97}
+      \strng{bibnamehash}{6aa910e48352774b6b754117efc25a97}
+      \strng{authorbibnamehash}{6aa910e48352774b6b754117efc25a97}
+      \strng{authornamehash}{efd61c41a34653e4a294d59f5b7e52b0}
+      \strng{authorfullhash}{6aa910e48352774b6b754117efc25a97}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0169-2607}
+      \field{journaltitle}{Computer Methods and Programs in Biomedicine}
+      \field{title}{{Deep learning architectures analysis for age-related macular degeneration segmentation on optical coherence tomography scans}}
+      \field{volume}{195}
+      \field{year}{2020}
+      \field{pages}{105566}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1016/j.cmpb.2020.105566
+      \endverb
+      \keyw{Patches,Retinal fluids,SD-OCT volumes,Segmentation,deep learning}
     \endentry
   \enddatalist
 \endrefsection
