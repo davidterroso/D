@@ -790,8 +790,15 @@ When comparing the results across all slices between these binary models with th
 \par
 The increased number of background pixels is further impacted with the lack of inter-class competition. This inter-class competition is particularly helpful in the segmentation of other ambiguous regions such as other fluids, which, in binary segmentation, is not contested by other classes. This does not incentive the model to learn the anatomical characteristics of the retina that are key to identifying the region corresponding to each fluid, often leading to over-segmentation. 
 \par
-This translates to a decrease in the IRF segmentation model's performance, particularly in the slices that do not present this fluid. The same performance decrease is also seen in SRF and PED, as shown further, due to the same reasons.
-\par
+This translates to a decrease in the IRF segmentation model's performance, particularly in the slices that do not present this fluid, with two examples shown in Figure \ref{fig:Experiment2IRFSegmentation}. The same performance decrease is also seen in SRF and PED, as shown further, due to the same reasons.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/Experiment2IRFSegmentation.png}
+	\caption{Predictions (right) performed by the binary IRF segmentation model and their respective GT (left). The prediction represented in the top show an example of an accurate IRF segmentation, while the bottom prediction reveals an oversegmentation in a slice that does not contain fluid.}
+	\label{fig:Experiment2IRFSegmentation}
+\end{figure}
+
 Table \ref{tab:Experiment2SRF} shows the performance of the models trained on the same conditions as those trained to segment IRF, but now with the goal of segmenting SRF. Similarly, on the second block of this table, the models were trained using a 5-fold split specifically made to evenly distribute the OCT volumes according to the quantity of SRF in them.
 
 \begin{table*}[!ht]
@@ -932,7 +939,15 @@ In the context of PED, it is important to understand the distribution of the flu
 \par
 This uneven distribution contributes to a poor performance when using all slices. It was already exposed that the models attained better fluid detection when dealing with smaller quantities of fluid, which resulted in a better detection performance in Topcon, where IRF and SRF appear in smaller areas. Now, when dealing with PED, the same trend is seen. However, in the other vendors, where PED appears in a larger quantity, the regions with this fluid generally occupy either larger areas or do not appear at all. This confuses the models, often leading to a segmentation of PED in slices where it is not present. This issue did not affect multi-class segmentation as the model capability of understanding the retina anatomy was more developed, as it was required to attribute the correct label to each pixel, which motivated the association between PED regions and the deformations seen in the retina.
 \par
-This translates to a good performance in the slices with fluid, but poor performance when all slices are considered. When the data partition is made specifically for PED, the quantity of fluid is fair in training and validation and the performances tend to what is expected: a significant decrease when all slices are considered, when compared to the segmentation in the slices with fluid, where the performance is decent. When using the multi-class segmentation split, fluid is not as evenly distributed, resulting in folds with more slices with PED and other folds with more slices without this fluid. In this case, and particularly in Topcon, models trained in folds that contain less fluid perform better at detecting fluid. For example, in Run 54, the models are trained on Topcon volumes with lower quantities of PED while fold 4 contains larger amounts, leading to correct detection of fluid in B-scans without any pixels labeled with this fluid. Inversely, in Run 55, the validation fold is composed of Topcon volumes with small amounts of PED, but trained on volumes with larger quantities. This results in oversegmentation in validation, thus attaining small Dice values when considering all the slices, but a decent score in the slices that have PED.
+This translates to a good performance in the slices with fluid, but poor performance when all slices are considered. When the data partition is made specifically for PED, the quantity of fluid is fair in training and validation and the performances tend to what is expected: a significant decrease when all slices are considered, when compared to the segmentation in the slices with fluid, where the performance is decent. When using the multi-class segmentation split, fluid is not as evenly distributed, resulting in folds with more slices with PED and other folds with more slices without this fluid. In this case, and particularly in Topcon, models trained in folds that contain less fluid perform better at detecting fluid. For example, in Run 54, the models are trained on Topcon volumes with lower quantities of PED while fold 4 contains larger amounts, leading to correct detection of fluid in B-scans without any pixels labeled with this fluid. Inversely, in Run 55, the validation fold is composed of Topcon volumes with small amounts of PED, but trained on volumes with larger quantities. This results in oversegmentation in validation, thus attaining small Dice values when considering all the slices, but a decent score in the slices that have PED. Two examples of the segmentation performed by the binary PED model are shown in Figure \ref{fig:Experiment2PEDSegmentation}.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/Experiment2PEDSegmentation.png}
+	\caption{Predictions (right) performed by the binary PED segmentation model and their respective GT (left). In top right, the model predicted PED fluid in a region where it does not exist. The bottom images show the undersegmentation of the model trained in Run 59. While this model is capable of detecting the fluid location, it fails to segment its entirety.}
+	\label{fig:Experiment2PEDSegmentation}
+\end{figure}
+
 \par
 In order to compare the results from this Experiment to the ones obtained in Experiment 1, three models had to be selected: one for IRF, one for SRF, and one for PED. Since the results obtained in Experiment 2.2 were much worse than the results reached in this experiment, the models selected for the inference in the unseen fold were selected from the runs performed in Experiment 2.1.
 \par
@@ -1007,6 +1022,29 @@ The overall segmentation performance was comparable to the values obtained in th
 In the segmentation of SRF, the model did not perform as good in this fold. The fluid detection was better, seen by the significant increase in Dice coefficient when considering all the slices instead of just those with fluid, which opposes the results obtained in the validation in Run 52, where the performance decreases in this situation. However, the segmentation worsened significantly in the slices with SRF, as the Dice coefficient dropped from 0.819 in its original validation fold to 0.627. Nevertheless, when considering all the slices, the Dice coefficients are still similar, largely due to the improved Dice in the slices without SRF.
 \par
 When segmenting IRF and SRF, the models benefited from a good generalization in fluid detection task, which surpassed the performances originally obtained in validation. However, in PED, where the models were the most sensitive in this matter, the performance in this task was worse. It is the only fluid in which the Dice is worse when considering all the slices than when considering just the slices with the fluid. This performance is tied to the model selected for PED segmentation. As seen in Table \ref{tab:Experiment2PED}, the model trained in Run 59 already presents a subpar performance in fluid detection, seen by the decrease in Dice coefficient when considering all the slices instead of those that contain PED. Therefore, the poor detection in unseen images is not unexpected. Note that the model selected detects fluid worse in the Spectralis volumes, similar to what was seen in the model validation. Similarly, the vendor in which the best performance is attained is the Topcon, where the model also performed best during validation. Moreover, all the PED models were expected to generalize worse in the unseen fold in the fluid detection task, due to the reasons previously presented that justify the lack of robustness in these models, such as the heterogeneous distribution of PED in OCT volumes.
+\par
+In Figures \ref{fig:Experiment2FinalModelPredictionsCirrus}, \ref{fig:Experiment2FinalModelPredictionsSpectralis}, and \ref{fig:Experiment2FinalModelPredictionsTopcon}, it is possible to see the predictions made by the multi-class segmentation performed by binary models specific for each fluid, in Cirrus, Spectralis, and Topcon, respectively. The B-scans presented in these figures are the same as those shown in Experiment 1. In the first row, the GT of each B-scans segmentation is shown, while in the second row the segmentations were performed by the best multi-class model selected in Experiment 1. In the last row, the predictions made by the best models from Experiment 2 are shown.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/Experiment2FinalModelPredictionsCirrus.png}
+	\caption{Predictions by the models trained on Run 42, 52, and 59 in unseen Cirrus volumes of fold 1 (last row), contrasting with predictions made by the multi-class model from Experiment 1.}
+	\label{fig:Experiment2FinalModelPredictionsCirrus}
+\end{figure}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/Experiment2FinalModelPredictionsSpectralis.png}
+	\caption{Predictions by the models trained on Run 42, 52, and 59 in unseen Spectralis volumes of fold 1 (last row), contrasting with predictions made by the multi-class model from Experiment 1.}
+	\label{fig:Experiment2FinalModelPredictionsSpectralis}
+\end{figure}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.7\linewidth]{figures/Experiment2FinalModelPredictionsTopcon.png}
+	\caption{Predictions by the models trained on Run 42, 52, and 59 in unseen Topcon volumes of fold 1 (last row), contrasting with predictions made by the multi-class model from Experiment 1.}
+	\label{fig:Experiment2FinalModelPredictionsTopcon}
+\end{figure}
 
 \subsubsection{Experiment 2.2}
 
@@ -1071,9 +1109,23 @@ However, what really worsens the overall performance is fluid detection. All the
 \par
 The reason these values were so low is related with the loss function used. By keeping the Dice loss as a component of the training loss, the model is highly penalized when predicting fluid in an image which does not have fluid. Whenever any fluid is predicted in such image, the Dice coefficient is 0. This motivates the model to carefully predict pixels in regions of the image where it highly believes there is fluid.
 \par
-When removing the Dice component from the loss, the wrongful predictions are only penalized by the cross-entropy component. This component does not penalize as much the predictions of fluid in empty images. The cross-entropy of each B-scan is calculated adjusted to the number of pixels belonging to a class in the image, as shown in \ref{Methods} Methods. Whenever a background pixel is wrongfully classified as fluid, the resulting penalty is really small, due to the large quantity of background pixels in the mask. Therefore, the incentive to not segment fluid in images which are solely composed of background is much smaller than it is when the Dice is considered. 
+When removing the Dice component from the loss, the wrongful predictions are only penalized by the cross-entropy component. This component does not penalize as much the predictions of fluid in empty images. The cross-entropy of each B-scan is calculated adjusted to the number of pixels belonging to a class in the image, as shown in \ref{Methods} Methods. Whenever a background pixel is wrongfully classified as fluid, the resulting penalty is really small, due to the large quantity of background pixels in the mask. Therefore, the incentive to not segment fluid in images which are solely composed of background is much smaller than it is when the Dice is considered. This results in segmentations such as the one seen in Figure \ref{fig:BCESegmentationError}.
 \par
-The cross-entropy is much more useful when regularizing the wrong labeling, especially in fluid. Since this loss component is adjusted to the representation of each class in the image, wrongfully labeling a fluid region as another fluid or background brings a large penalty to the model. This is why it is combined with the Dice loss in the original loss: while the Dice ensures that the correct areas of fluid are segmented, the cross-entropy makes sure that the correct labels are assigned to each pixel. For this reason, most of the segmentation errors that are seen in the predictions made by the models trained in Run 61 and 62 are oversegmentations, and not as many incorrect labelings.
+The cross-entropy is much more useful when regularizing the wrong labeling, especially in fluid. Since this loss component is adjusted to the representation of each class in the image, wrongfully labeling a fluid region as another fluid or background brings a large penalty to the model. This is why it is combined with the Dice loss in the original loss: while the Dice ensures that the correct areas of fluid are segmented, the cross-entropy makes sure that the correct labels are assigned to each pixel. For this reason, most of the segmentation errors that are seen in the predictions made by the models trained in Run 61 and 62 are oversegmentations, and not as many incorrect labelings. An example of how this translates to the model's segmentation is seen in Figure \ref{fig:BCESegmentationDecent}.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.8\linewidth]{figures/BCESegmentationError.png}
+	\caption{Small oversegmentation performed in a Spectralis B-scan. This type of predictions appear commonly across multiple B-scans.}
+	\label{fig:BCESegmentationError}
+\end{figure}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.8\linewidth]{figures/BCESegmentationDecent.png}
+	\caption{Cirrus IRF segmentation performed by a model trained using BCE shown on the right, compared to its GT on the left. While this example has a decent segmentation, significant oversegmentation is seen on the top left of the image.}
+	\label{fig:BCESegmentationDecent}
+\end{figure}
 
 \subsubsection{Experiment 1 and Experiment 2 Comparison in RETOUCH Dataset}
 
@@ -1129,13 +1181,13 @@ In order to compare Experiment 1 with Experiment 2, both their performances were
 	\label{tab:Experiment1VsExperiment2}
 \end{table*}
 
-By looking at this table, the best segmentation performance becomes evident. The multi-class model consistently outperforms the binary models in across all fluids, vendors and slice groups.
+By looking at this table, the best segmentation performance becomes evident. The multi-class model consistently outperforms the binary models in across all fluids, vendors, and slice groups.
 \par
-Regarding the performances in fluids, the multi-class segmentation performs better than the binary models in all fluids when all the slices are considered and when only the slices which do not contain a certain fluid are considered. The only metrics in which the binary models outperform the multi-class is the segmentation of IRF in slices which contain this fluid. In these metrics, the binary models attain small improvements over the multi-class model. This fluid was also the one with the best performance in the set of slices with IRF, in Experiment 2.1. However, the segmentation of IRF in the slices which contain this fluid is not enough to compensate for the worse performance in fluid detection, when considering the slices without IRF. This was seen the major flaw of the binary segmentation models, which is tied to the models' weaker capability of understanding anatomical structures. This leads to an overall performance in IRF even when the segmentation is better.
+Regarding the performances in fluids, the multi-class segmentation performs better than the binary models in all fluids when all the slices are considered and when only the slices which do not contain a certain fluid are considered. The only metrics in which the binary models outperform the multi-class is the segmentation of IRF in slices which contain this fluid. In these metrics, the binary models attain small improvements over the multi-class model. This fluid was also the one with the best performance in the set of slices with IRF, in Experiment 2.1. However, the segmentation of IRF in the slices which contain this fluid is not enough to compensate for the worse performance in fluid detection, when considering the slices without IRF. This was seen the major flaw of the binary segmentation models, which is tied to the models' weaker capability of understanding anatomical structures. This leads to an overall performance in IRF even when the segmentation is better. An example of similar performances between these models is seen in the IRF segmentations of Figures \ref{fig:Experiment2FinalModelPredictionsCirrus}, \ref{fig:Experiment2FinalModelPredictionsSpectralis}, and \ref{fig:Experiment2FinalModelPredictionsTopcon}.
 \par
-The performances reached by the binary model in SRF are worse than those obtained with the multi-class. While the predictions made with the binary model are still satisfactory, they are not as good as those made by the multi-class. This model shows a great detection of fluid, with a Dice coefficient greater than 0.85 in all classes, and the best fluid segmentation of all classes.
+The performances reached by the binary model in SRF are worse than those obtained with the multi-class. While the predictions made with the binary model are still satisfactory, they are not as good as those made by the multi-class, as seen in the first case of the Figures \ref{fig:Experiment2FinalModelPredictionsCirrus} and \ref{fig:Experiment2FinalModelPredictionsTopcon}. This model shows a great detection of fluid, with a Dice coefficient greater than 0.85 in all classes, and the best fluid segmentation of all classes.
 \par
-The biggest performance difference between models are those observed in the PED class. The segmentation of PED in slices which contain this fluid is worse in the binary model than in multi-class. Despite the segmentation being worse across all vendors, the performance in the binary model is still acceptable. However, in the detection of fluid, the binary model performs poorly, especially when compared to the multi-class. These results are tied to the models' capabilities in identifying the region in which PED is located, which was seen to be much superior in multi-class.
+The biggest performance difference between models are those observed in the PED class. The segmentation of PED in slices which contain this fluid is worse in the binary model than in multi-class. Despite the segmentation being worse across all vendors, the performance in the binary model is still acceptable. However, in the detection of fluid, the binary model performs poorly, especially when compared to the multi-class. These results are tied to the models' capabilities in identifying the region in which PED is located, which was seen to be much superior in multi-class. Two examples which prove this are the scenario seen in the left side of Figure \ref{fig:Experiment2FinalModelPredictionsCirrus} and the segmentation in the bottom of Figure \ref{fig:Experiment2PEDSegmentation}, where the region segmented by PED does not occupy the entirety of the fluid, but only the section closest to its upper boundary.
 \par
 It is important to compare these results with those obtained in the literature to better understand the impact and effect of the chosen methodology. \textcite{Alsaih2020} present an insightful study on the performance of multiple networks, including the U-Net, in the RETOUCH dataset. This paper was selected as a benchmark for comparison due to the chosen dataset and the similarity in the methods performed. 
 \par
@@ -1145,8 +1197,7 @@ For each model, \textcite{Alsaih2020} trained three networks with different opti
 \par
 These differences bring advantages to the implementations by \textcite{Alsaih2020}, as they enhance the robustness and overall segmentation performance. While these changes provide a performance edge, it is challenging to find other studies with a comparable setup in terms of network architecture, dataset, and evaluation protocol. For these reasons, this paper was considered the most similar and, overall, suitable for comparison with the experiments presented here.
 \par
-
-In Table \ref{tab:Experiment1VsExperiment2VsLiterature}, the mean of the results in three validation folds of the models trained in \textcite{Alsaih2020} are shown, as well as the results from Set 7 and Sets 10, 12, and 14 together, representing the multiple binary models used in Experiment 2.
+In Table \ref{tab:Experiment1VsExperiment2VsLiterature}, the mean of the results in three validation folds of the models trained in \textcite{Alsaih2020} are shown, as well as the results from ``Set 7'' and ``Sets 10, 12, and 14'' together, representing the multiple binary models used in Experiment 2.
 
 \begin{table*}[!ht]
 	\caption{Dice scores for every vendor and fluid in Set 7, Set 10, 12, and 14, compared with the results obtained in the two networks by \textcite{Alsaih2020}.}
@@ -1189,7 +1240,7 @@ The use of vertical patches in Experiment 1 and 2 provides the anatomical contex
 \par
 For PED, the difference between experiments is also significant, though smaller than in SRF. However, the trend seen in this fluid is reversed to the one in SRF, as the models trained on smaller patches tend to perform better for PED. While models trained with vertical patches are more effective at determining the boundaries of PED fluid, they often lack the attention to the finer details. This is particularly relevant in cases with large PED regions, where the significant deformation of the retina causes parts of the fluid being positioned further away from key anatomical landmarks like the retinal layers. In such scenarios, models trained on smaller patches, which are attentive to details such as pixel intensity and less dependent on anatomical context, perform better. This contributes to the overall improved performance of models trained with smaller patches in segmenting PED.
 \par
-Overall, the models trained in Experiments 1 and 2 perform comparably or better than the U-Nets implemented by \textcite{Alsaih2020}, despite relying on a single network per task (one for multi-class segmentation in Set 7 and one for binary segmentation in Sets 10, 12, and 14) and excluding any post-processing steps. This highlights the effectiveness of the patch shape explored in these experiments, where it is both capable of capturing details fine enough to segment IRF, but also large enough to detect SRF. The absence of ensemble networks used for the same task or refinement techniques further emphasizes the robustness of the proposed approach, making it competitive and more efficient alternative for multi-class fluid segmentation in retinal OCT images.
+Overall, the models trained in Experiments 1 and 2 perform comparably or better than the U-Nets implemented by \textcite{Alsaih2020}, despite relying on a single network per task (one for multi-class segmentation in ``Set 7'' and one for binary segmentation in ``Sets 10, 12, and 14'') and excluding any post-processing steps. This highlights the effectiveness of the patch shape explored in these experiments, where it is both capable of capturing details fine enough to segment IRF, but also large enough to detect SRF. The absence of ensemble networks used for the same task or refinement techniques further emphasizes the robustness of the proposed approach, making it competitive and more efficient alternative for multi-class fluid segmentation in retinal OCT images.
 
 \subsubsection{Experiment 1 and Experiment 2 Comparison in CHUSJ Dataset}
 
