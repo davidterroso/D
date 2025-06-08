@@ -1271,7 +1271,7 @@ The results obtained in the CHUSJ private dataset were not as good as those obta
 			
 			\multirow{3}{*}{\textbf{Run 32}} & \multirow{3}{*}{No} & All & 0.167 & 0.441 & \textbf{0.141} & \textbf{0.209} \\
 			
-			& & Fluid & \textbf{0.510} & 0.541 & 0.011 & \textbf{0.317} \\
+			& & Fluid & \textbf{0.510} & \textbf{0.541} & 0.011 & \textbf{0.317} \\
 			
 			& & No Fluid & 0.142 & 0.380 & \textbf{0.143} & \textbf{0.125} \\
 			
@@ -1303,7 +1303,7 @@ The results obtained in the CHUSJ private dataset were not as good as those obta
 			All & 0.038 & \textbf{0.563} & 0.001 & 0.078 \\
 			
 			& & 
-			Fluid & 0.412 & \textbf{0.468} & 0.040 & 0.178 \\
+			Fluid & 0.412 & 0.468 & 0.040 & 0.178 \\
 			
 			& & 
 			No Fluid & 0.009 & \textbf{0.620} & 0.000 & 0.000\\
@@ -1313,6 +1313,53 @@ The results obtained in the CHUSJ private dataset were not as good as those obta
 	\end{tabular}
 	\label{tab:CHUSJSegmentationResults}
 \end{table*}
+
+The worst performing fluid segmented in this dataset is the PED. In the binary models, this fluid was wrongfully detected in every slice. The oversegmentation and prediction of PED was already a problem seen in previous experiment, especially in the Spectralis volumes during Experiment 2. The segmentation in slices with PED also resulted in small Dice coefficients. While this is largely due to the oversegmentations across multiple slices, it is also impacted by the small quantity of PED present across the entire dataset. However, it is important to note that many of the oversegmentations are in regions where the presence of PED could vary according to the applied segmentation criteria. In Figure \ref{fig:CHUSJPEDSegmentation}, two slices and their respective GT are shown, highlighting the segmentation of PED in a region which could be segmented with this fluid and a satisfying segmentation of SRF.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{figures/CHUSJPEDSegmentation.png}
+	\caption{SRF and PED segmentation in two B-scans from CHUSJ. The regions segmented by the model as PED could also be considered fluid, depending on the criteria applied.}
+	\label{fig:CHUSJPEDSegmentation}
+\end{figure}
+
+The segmentation of SRF was the most consistent in this dataset. While the Dice coefficients are smaller than those obtained in the RETOUCH dataset, a worse performance was expected in the CHUSJ, highlighted by its diversity of images and different criteria than those applied in RETOUCH. In Figure \ref{fig:CHUSJSRFSegmentation}, the segmentation of a B-scan with SRF is shown. While the segmentation by the model correctly identifies the SRF region, a slight oversegmentation is performed. This is seen across multiple B-scans, influenced by the data in which it was trained, that results in a worse Dice score in the slices with fluid.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{figures/CHUSJSRFSegmentation.png}
+	\caption{SRF and PED segmentation (right) in a B-scan from CHUSJ, compared to its GT (left). This shows the tendency to oversegmentation by the model.}
+	\label{fig:CHUSJSRFSegmentation}
+\end{figure}
+
+Similar to SRF, the IRF segmentation is also decent in the slices which contain this fluid. Similarly, the model tends to slightly oversegment the fluid regions, as seen in Figure \ref{fig:CHUSJIRFSegmentation}. 
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.9\linewidth]{figures/CHUSJSRFSegmentation.png}
+	\caption{Segmentation of IRF regions (right) compared to its respective GT (left). The prediction of fluid regions in the choroid is also noticeable.}
+	\label{fig:CHUSJIRFSegmentation}
+\end{figure}
+
+However, the main reason behind the poor Dice coefficients when considering all the slices is the fluid detection. In slices in which the fluids are not present, particularly IRF and PED, these fluids are still predicted in outside the retina, usually in the choroid. While this is already visible in Figure \ref{fig:CHUSJIRFSegmentation}, where all the fluids are segmented in the choroid, more examples are shown in Figure \ref{fig:CHUSJChoroidSegmentation}.
+
+\begin{figure}[!ht]
+	\centering	\includegraphics[width=0.75\linewidth]{figures/CHUSJChoroidSegmentation.png}
+	\caption{Segmentation of multiple fluids in the choroid region of the B-scans. This is performed often, significantly reducing the Dice coefficients seen in Table \ref{tab:CHUSJSegmentationResults}.}
+	\label{fig:CHUSJChoroidSegmentation}
+\end{figure}
+
+The incorrect segmentations in the choroid are caused by the different quality of the image in this dataset. When training the segmentation models with the RETOUCH dataset, the Spectralis scans are focused on the retinal layers, blurring the structures outside of it, including the choroid. In the B-scans which compose the CHUSJ dataset, this region is not blurred. This confuses the segmentation model which also interpret the choroid as retina, thus predicting the existence of fluid regions there. The fluid which is the most affected by this segmentation is the IRF, due to the resemblance in the structures and intensities present in this region. Therefore, in case the region outside the retina was not considered in the final masks, the Dice coefficients would improve significantly. These segmentation errors are more prominent in the predictions performed by the binary models' segmentation as they present weaker capabilities of understanding anatomic references, basing their predictions more on the pixels intensities, thus being more easily fooled by the choroid.
+\par
+The use of resize images or their original shape did not translate to a significant difference in segmentation, as the performances remained almost unchanged when varying the slices shape. Since these transformations are applied along the horizontal axis, the different resolutions are harder to perceive, as they do not significantly change the perception of the structures in the B-scan.
+\par
+Lastly, the influence of the noise and different perceptions present in this dataset, as in the examples shown in Figure \ref{fig:CHUSJProblematicImages}, is more significant outside the retina. In Figure , the segmentation of these noisy B-scans is shown, where a decent segmentation of SRF is seen, with a prediction of PED coherent with the training data. However, it is outside the retina, in the choroid, where the wrong IRF segmentations are seen.
+
+\begin{figure}[!ht]
+	\centering	\includegraphics[width=0.9\linewidth]{figures/CHUSJSegmentationOnNoisyScans.png}
+	\caption{Fluid segmentations performed by the multi-class model in noisy B-scans from the CHUSJ dataset.}
+	\label{fig:CHUSJSegmentationOnNoisyScans}
+\end{figure}
 
 \section{Intermediate Slice Synthesis}\label{IntermediateSliceSynthesis}
 
