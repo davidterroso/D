@@ -43,6 +43,47 @@ When compared with other renown OCT datasets annotated with retinal fluid, such 
 \par
 For these reasons, the RETOUCH dataset is regarded as a diverse and large dataset, widely used in the literature that aims to perform fluid segmentation using deep learning, as done in \parencite{Rahil2023, Zhang2023, Xing2022, Tang2022, Liu2024, Li2023, Hassan2021b, Lu2019}. These aspects motivated the selection of the RETOUCH as the dataset that was used for implementing the models for fluid segmentation in OCT volumes in this dissertation.
 \par
+The best performing segmentation models were also evaluated on a private dataset provided by Centro Hospitalar Universitário de São João (CHUSJ). This dataset comprises six Spectralis OCT volumes, containing 19 slices. The volumes vary in resolution, dimensions, noise levels, and contrasts, offering diverse testing scenarios. All volumes include at least one type of fluid, though the overall fluid presence is limited.
+\par
+Despite the scans in this dataset also being obtained with the Spectralis device, the resulting images had different shapes. In RETOUCH, all the Spectralis scans were of shape 496 $\times$ 512, while in CHUSJ dataset the images differ in width, depending on the OCT volume, with each B-scan's shape varying between 496 $\times$ 1024, 496 $\times$ 768, and 496 $\times$ 512. Since the images in this dataset did not contain the metadata informing the resolution of each slice, the slices had to be observed individually in order to determine whether the pixels in each B-scan corresponded to the same dimensions. In Figure \ref{fig:CHUSJDifferentResolutions}, slices with three different shapes are shown, where the differing resolutions from each image are visible.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1.0\linewidth]{figures/CHUSJDifferentResolutions.png}
+	\caption{Three different B-scans with different dimensions (496 $\times$ 1024, 496 $\times$ 768, and 496 $\times$ 512, respectively) from the CHUSJ dataset. As shown in the scale at the bottom left of each B-scan, the resolutions are also differ depending on the slice.}
+	\label{fig:CHUSJDifferentResolutions}
+\end{figure}
+
+In the same Figure, it also possible to see different image's characteristics. For example, in the left image, the choroid is very defined, while in the middle image it looks more blurry. The noise levels also differ depending on the image. The background in the left image shows almost no noise and the retinal layers are easily identifiable. In the middle image, some noise appears in the background and the retinal layers become harder to differentiate. Lastly, the image on the right contains noticeable background noise, while the retinal layers appear much brighter than in the other images. 
+\par
+In the RETOUCH dataset, the volumes were extracted with consistent dimensions and noise levels across the same vendor. This results in visually similar images, whose differences can be attributed to the patient's characteristics. Therefore, while the differences seen in the CHUSJ dataset are a good test to understand the models' robustness, those trained in RETOUCH may not generalize well in this new dataset, as the visually similar images seen in training do not prepare the model for images with different visual appearances. In Figure \ref{fig:CHUSJProblematicImages}, three B-scans with really different characteristics are shown. The left B-scan is well oriented, but the choroid region is very defined, as opposed to the RETOUCH images where this region is blurry. The middle and right B-scan present an odd orientation and are much noisier than the examples seen in training.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1.0\linewidth]{figures/CHUSJProblematicImages.png}
+	\caption{Three B-scans with characteristics different from those in RETOUCH. The left scan shows definition on the choroid, while the middle and right scan present an odd orientation and significant noise.}
+	\label{fig:CHUSJProblematicImages}
+\end{figure}
+
+The last problem when considering segmentation masks from different sources is the criteria used in the segmentation. In medical images, the segmentation performed by different professionals may result in different outcomes, as shown in Figure \ref{fig:RETOUCHSegmentationDifferences}. Therefore, the criteria followed to segment fluid by the evaluator on CHUSJ dataset may be different from the criteria followed in the RETOUCH dataset. Furthermore, considering that in RETOUCH the approach to merge predictions by different evaluators is to consider both correct, the models trained in this data are prone to oversegment in unseen data.
+\par
+An example of different segmentation criteria between the RETOUCH and CHUSJ datasets is seen in Figure \ref{fig:RETOUCHvsCHUSJSegmentationCriteria}, where visually and anatomically similar regions are segmented only in one dataset. While in manual segmentation the context from the surrounding slices is relevant, the visual similarity between regions is the most important characteristic in the segmentation using CNNs. Therefore, when visually similar regions are not segmented equally or following the same criteria, this might lead to under or oversegmentation in the testing images when the model is trained using segmentations that follow different criteria from those in testing.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1.0\linewidth]{figures/RETOUCHSegmentationDifferences.png}
+	\caption{Significantly different segmentations (middle images) of the same B-scan (left image) by different evaluators. The mask seen in cyan in the last image represents the final fluid regions when considering both evaluations \parencite{Bogunovic2019b}.}
+	\label{fig:RETOUCHSegmentationDifferences}
+\end{figure}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1.0\linewidth]{figures/RETOUCHvsCHUSJSegmentationCriteria.png}
+	\caption{Visually similar PED regions are segmented in one dataset but not on the other. This ambiguous segmentation can translate to worse performances in the model.}
+	\label{fig:RETOUCHvsCHUSJSegmentationCriteria}
+\end{figure}
+
+\par
 In intermediate slice synthesis, the 112 OCT volumes that constitute the RETOUCH dataset were used for the training and evaluation of the models. The volumes that do not have segmentation masks can also be included since these masks are not necessary in the intermediate slice generation task.
 \par
 The consistent number of slices per volume and large quantity of OCT volumes make the RETOUCH dataset suitable for the training and evaluation of the models developed to generate intermediate slices.
