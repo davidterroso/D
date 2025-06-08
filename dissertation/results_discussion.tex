@@ -957,8 +957,15 @@ The model selected to infer the SRF masks in the unseen fold was the model train
 \par
 In PED, the selected model was the one trained on Run 59. This model was the best model in PED segmentation in slices that contain this fluid, with a significant difference from the other models. When considering all the slices, the model was the second best, but with a weak performance. Regarding the slices with fluid, this model outperformed the average from ``Set 7'' in all vendors. However, similar to all the other models trained for the binary segmentation of PED, it achieved a significantly worse performance when compared to the ones obtained in multi-class.
 \par
-When merging the masks from three independent binary segmentation models with the goal of outputting a multi-class segmentation, overlaps may occur, where multiple models assign different fluid labels to the same pixel. To resolve this conflict, two alternatives were explored in this fold: a priority-based approach, where the SRF takes precedence over IRF, which in turn takes precedence over PED; and a probability-based approach, where the predicted probabilities for the pixel are compared, attributing the label with highest predicted probability to it. 
-\par
+When merging the masks from three independent binary segmentation models with the goal of outputting a multi-class segmentation, overlaps may occur, where multiple models assign different fluid labels to the same pixel. To resolve this conflict, two alternatives were explored in this fold: a priority-based approach, where the SRF takes precedence over IRF, which in turn takes precedence over PED; and a probability-based approach, where the predicted probabilities for the pixel are compared, attributing the label with highest predicted probability to it. An example of merging using probability-based approach compared to the priority based approach is seen in Figure .
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1.0\linewidth]{figures/ProbabilityVsPrioritySegmentation.png}
+	\caption{Comparison between the priority (left) and probability (right) merging approach.}
+	\label{fig:ProbabilityVsPrioritySegmentation}
+\end{figure}
+
 The results obtained using the three selected models are shown in Table \ref{tab:Experiment2FinalResults}, where the first block corresponds to the results when using the priority-based merging approach and the second block presents the results when using the probability-based approach.
 
 \begin{table*}[!ht]
@@ -1243,6 +1250,69 @@ For PED, the difference between experiments is also significant, though smaller 
 Overall, the models trained in Experiments 1 and 2 perform comparably or better than the U-Nets implemented by \textcite{Alsaih2020}, despite relying on a single network per task (one for multi-class segmentation in ``Set 7'' and one for binary segmentation in ``Sets 10, 12, and 14'') and excluding any post-processing steps. This highlights the effectiveness of the patch shape explored in these experiments, where it is both capable of capturing details fine enough to segment IRF, but also large enough to detect SRF. The absence of ensemble networks used for the same task or refinement techniques further emphasizes the robustness of the proposed approach, making it competitive and more efficient alternative for multi-class fluid segmentation in retinal OCT images.
 
 \subsubsection{Experiment 1 and Experiment 2 Comparison in CHUSJ Dataset}
+
+The results obtained in the CHUSJ private dataset were not as good as those obtained in the RETOUCH, in which the model was trained. The main cause for this poor segmentation is difference between the RETOUCH and CHUSJ dataset regarding image quality and segmentation criteria. In Table \ref{tab:CHUSJSegmentationResults}, the Dice coefficients across multiple vendors and fluids are shown. The results are shown both for the images in their original shape and resized to $496 \times 512$. Since the segmentation U-Net is a fully convolutional network and does not contain any layer dependent on the input shape, the trained models can be applied to dataset B-scans in their original shape or resized.
+
+\begin{table*}[!ht]
+	\caption{Dice scores for every vendor and fluid in the CHUSJ dataset, using the best models from Experiment 1 and Experiment 2.}
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|c|}
+			\hline
+			% Headers
+			\textbf{Runs} &
+			\textbf{Resized} &
+			\textbf{Slices} &  
+			\textbf{IRF} & 
+			\textbf{SRF} & 
+			\textbf{PED} & 
+			\textbf{Fluid} \\
+			
+			\hline
+			
+			\multirow{3}{*}{\textbf{Run 32}} & \multirow{3}{*}{No} & All & 0.167 & 0.441 & \textbf{0.141} & \textbf{0.209} \\
+			
+			& & Fluid & \textbf{0.510} & 0.541 & 0.011 & \textbf{0.317} \\
+			
+			& & No Fluid & 0.142 & 0.380 & \textbf{0.143} & \textbf{0.125} \\
+			
+			\hline
+			
+			\multirow{3}{*}{\textbf{Run 32}} & \multirow{3}{*}{Yes} & 
+			All & \textbf{0.191} & 0.455 & 0.132 & 0.176 \\
+			
+			& & 
+			Fluid & 0.475 & 0.533 & 0.023 & 0.300 \\
+			
+			& & 
+			No Fluid & \textbf{0.170} & 0.408 & 0.134 & 0.078 \\
+			
+			\hline
+			\hline
+			
+			\multirow{3}{*}{\parbox{2cm}{\textbf{Runs 42, 52, and 59}}} & \multirow{3}{*}{No} & All & 0.046 & 0.498 & 0.001 & 0.079 \\
+			
+			& & 
+			Fluid & 0.403 & 0.460 & \textbf{0.054} & 0.180 \\
+			
+			& & 
+			No Fluid & 0.019 & 0.521 & 0.000 & 0.000\\
+			
+			\hline
+			
+			\multirow{3}{*}{\parbox{2cm}{\textbf{Runs 42, 52, and 59}}} & \multirow{3}{*}{Yes} & 
+			All & 0.038 & \textbf{0.563} & 0.001 & 0.078 \\
+			
+			& & 
+			Fluid & 0.412 & \textbf{0.468} & 0.040 & 0.178 \\
+			
+			& & 
+			No Fluid & 0.009 & \textbf{0.620} & 0.000 & 0.000\\
+			
+			\hline
+			
+	\end{tabular}
+	\label{tab:CHUSJSegmentationResults}
+\end{table*}
 
 \section{Intermediate Slice Synthesis}\label{IntermediateSliceSynthesis}
 
