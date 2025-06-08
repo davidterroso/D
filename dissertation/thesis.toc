@@ -33,11 +33,11 @@
 \contentsline {subsubsection}{\numberline {4.1.2.2}Experiment 2.2}{63}{subsubsection.4.1.2.2}%
 \contentsline {subsubsection}{\numberline {4.1.2.3}Experiment 1 and Experiment 2 Comparison in RETOUCH Dataset}{66}{subsubsection.4.1.2.3}%
 \contentsline {subsubsection}{\numberline {4.1.2.4}Experiment 1 and Experiment 2 Comparison in CHUSJ Dataset}{69}{subsubsection.4.1.2.4}%
-\contentsline {section}{\numberline {4.2}Intermediate Slice Synthesis}{70}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Experiment 3}{70}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Experiment 4}{70}{subsection.4.2.2}%
-\contentsline {section}{\numberline {4.3}Fluid Volume Estimation}{70}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Experiment 5}{70}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Experiment 6}{70}{subsection.4.3.2}%
-\contentsline {chapter}{References}{71}{section*.83}%
-\contentsline {chapter}{\numberline {A}Variability of the Segmentation U-Net}{78}{appendix.A}%
+\contentsline {section}{\numberline {4.2}Intermediate Slice Synthesis}{73}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Experiment 3}{73}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Experiment 4}{73}{subsection.4.2.2}%
+\contentsline {section}{\numberline {4.3}Fluid Volume Estimation}{73}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Experiment 5}{73}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Experiment 6}{73}{subsection.4.3.2}%
+\contentsline {chapter}{References}{75}{section*.88}%
+\contentsline {chapter}{\numberline {A}Variability of the Segmentation U-Net}{82}{appendix.A}%
