@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  9 JUN 2025 23:32
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  10 JUN 2025 16:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1521,7 +1521,7 @@ Chapter 5.
 
 
 
-] [77]) [78]
+] [77] [78]) [79]
 LaTeX Font Info:    Trying to load font information for T1+pcrs on input line 6
 4.
 
@@ -1538,7 +1538,7 @@ Overfull \hbox (0.69101pt too wide) in paragraph at lines 64--64
 
  []
 
-[79
+[80
 
 
 
@@ -1549,25 +1549,25 @@ Overfull \hbox (0.44347pt too wide) in paragraph at lines 64--64
 ransformer for en-hanced mac-u-lar edema
  []
 
-[80] [81]
+[81] [82]
 Overfull \hbox (19.33269pt too wide) in paragraph at lines 64--64
 \T1/ptm/m/n/10.95 Sys-tem-atic Re-view of Re-cent De-vel-op-ments and Chal-leng
 es,^^Q \T1/ptm/m/it/10.95 arXiv e-prints\T1/ptm/m/n/10.95 , arXiv:2407.00116,
  []
 
-[82] [83]
+[83] [84]
 Overfull \hbox (10.93967pt too wide) in paragraph at lines 64--64
 \T1/ptm/m/n/10.95 ^^P  Gen-er-a-tive Ad-ver-sar-ial Net-works: An Overview,^^Q 
 \T1/ptm/m/it/10.95 IEEE Sig-nal Pro-cess-ing Mag-a-zine\T1/ptm/m/n/10.95 , vol.
  35,
  []
 
-[84] [85]
+[85] [86]
 \openout2 = `appendix1.aux'.
 
  (appendix1.tex
 Appendix A.
-) [86
+) [87
 
 
 ] (thesis.aux (abstract.aux) (un-sdg.aux) (acknowledgements.aux)
@@ -1580,8 +1580,8 @@ Package logreq Info: Writing requests to 'thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 23616 strings out of 476339
- 437098 string characters out of 5788120
+ 23617 strings out of 476339
+ 437105 string characters out of 5788120
  1908340 words of memory out of 5000000
  43231 multiletter control sequences out of 15000+600000
  598581 words of font info for 141 fonts, out of 8000000 for 9000
@@ -1602,9 +1602,9 @@ X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (102 pages, 114363396 bytes).
+Output written on thesis.pdf (103 pages, 114366375 bytes).
 PDF statistics:
- 1697 PDF objects out of 1728 (max. 8388607)
- 334 named destinations out of 1000 (max. 500000)
+ 1702 PDF objects out of 1728 (max. 8388607)
+ 335 named destinations out of 1000 (max. 500000)
  532 words of extra memory for PDF output out of 10000 (max. 10000000)
 
