@@ -41,5 +41,5 @@
 \contentsline {subsection}{\numberline {4.3.2}Experiment 6}{74}{subsection.4.3.2}%
 \contentsline {chapter}{\numberline {5}Conclusion}{76}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Future Research}{78}{section.5.1}%
-\contentsline {chapter}{References}{79}{section*.89}%
-\contentsline {chapter}{\numberline {A}Variability of the Segmentation U-Net}{86}{appendix.A}%
+\contentsline {chapter}{References}{80}{section*.89}%
+\contentsline {chapter}{\numberline {A}Variability of the Segmentation U-Net}{87}{appendix.A}%
