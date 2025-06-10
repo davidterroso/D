@@ -1248,6 +1248,50 @@ The use of vertical patches in Experiment 1 and 2 provides the anatomical contex
 For PED, the difference between experiments is also significant, though smaller than in SRF. However, the trend seen in this fluid is reversed to the one in SRF, as the models trained on smaller patches tend to perform better for PED. While models trained with vertical patches are more effective at determining the boundaries of PED fluid, they often lack the attention to the finer details. This is particularly relevant in cases with large PED regions, where the significant deformation of the retina causes parts of the fluid being positioned further away from key anatomical landmarks like the retinal layers. In such scenarios, models trained on smaller patches, which are attentive to details such as pixel intensity and less dependent on anatomical context, perform better. This contributes to the overall improved performance of models trained with smaller patches in segmenting PED.
 \par
 Overall, the models trained in Experiments 1 and 2 perform comparably or better than the U-Nets implemented by \textcite{Alsaih2020}, despite relying on a single network per task (one for multi-class segmentation in ``Set 7'' and one for binary segmentation in ``Sets 10, 12, and 14'') and excluding any post-processing steps. This highlights the effectiveness of the patch shape explored in these experiments, where it is both capable of capturing details fine enough to segment IRF, but also large enough to detect SRF. The absence of ensemble networks used for the same task or refinement techniques further emphasizes the robustness of the proposed approach, making it competitive and more efficient alternative for multi-class fluid segmentation in retinal OCT images.
+\par
+In a previous work, the authors also implemented the network developed by \textcite{Tennakoon2018}, using the same dataset. This network is a 2.5D segmentation network which receives three consecutive B-scans and segments the intermediate one. This model was trained in patches of shape 256 $\times$ 128, as done in Experiment 1.1. The results from this model are shown in Table \ref{tab:Experiment1VsExperiment2VsTennakoon}. The implementation exhibited in this table corresponds to a single model performance, which was trained for 100 epochs using a 80\% training and 20\% testing split. A fair vendor representation was ensured in the split, but the quantities of fluid were not considered.
+
+\begin{table*}[!ht]
+	\caption{Dice scores for every vendor and fluid in Set 7, Set 10, 12, and 14, compared with the results obtained in the authors' previous implementation of the work by \textcite{Tennakoon2018}.}
+	\centering
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		% Headers
+		\textbf{Runs} & \textbf{IRF} & 
+		\textbf{SRF} & 
+		\textbf{PED} &
+		\textbf{Fluid} \\
+		
+		\hline
+		
+		\textbf{Set 7} & 0.67 & 0.80 & \textbf{0.72} & \textbf{0.63} \\
+		
+		\hline
+		
+		\textbf{Sets 10, 12, and 14} & 0.60 & 0.75 & 0.44 & - \\
+		
+		\hline
+		\hline
+		
+		\textbf{\textcite{Tennakoon2018} Implementation} & \textbf{0.71} & \textbf{0.85} & 0.71 & 0.62 \\
+		
+		\hline
+		
+	\end{tabular}
+	\label{tab:Experiment1VsExperiment2VsTennakoon}
+\end{table*}
+
+In this table, it is seen that the 2.5D implementation performs better than the models in ``Set 7'' and ``Sets 10, 12, and 14'' in IRF and SRF, but worse in PED and in overall fluid.
+\par
+The main advantage when using this model is the use of the surrounding slices as a way to capture the context around the fluid regions. The small transitions, which are noticeable when seeing three consecutive slices, allow the model to learn the limiting regions of the fluids. This understanding of surrounding areas, combined with the attention to small changes motivated by the training in small patches, makes this model capable of both fine and coarse segmentation, as it is able to know the limits of fluid regions independently of their size. 
+\par
+This explains the improved segmentation of SRF, as the model better captures the small transitions in the SRF regions while still understanding the changes in the space around it which allow for the identification of this fluid.
+\par
+Similarly, the small patches also promote a better segmentation of IRF, where the understanding of small transitions is required for a correct segmentation.
+\par
+In PED, the performance is worse, but mainly due to the conditions in which this model was trained. Since the data was split randomly, the training volumes contained large quantities of PED, which led to the prediction of significant quantities of this fluid in multiple B-scans. For this reason, the Dice coefficient when considering all the fluid as binary was deeply penalized, as seen in the table. 
+\par
+However, it is important to note that the results shown do not come from a cross-validation, and instead of a single split. This means that not only the 2.5D segmentation model was trained on more data than the those in Experiment 1 and 2 (approximately 60\% of the RETOUCH dataset), it could also have a split which benefits or harms the models performance.
 
 \subsubsection{Experiment 1 and Experiment 2 Comparison in CHUSJ Dataset}
 
