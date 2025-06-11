@@ -119,4 +119,4 @@ def estimate_volume(folder_path: str):
     volumes_df.to_csv(f".\\fluid_volumes\\{folder_name}_volumes.csv", index=False)
     vendors_df.to_csv(f".\\fluid_volumes\\{folder_name}_vendors.csv", index=False)
 
-estimate_volume(folder_path=r"D:\DavidTerroso\Images\OCT_images\segmentation\predictions\Run058_resized_final_retouch_gts\\")
+estimate_volume(folder_path=r"D:\DavidTerroso\Images\OCT_images\segmentation\predictions\Run076111114_resized_final_retouch_probability_masks\\")
