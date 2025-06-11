@@ -7,6 +7,7 @@ from IPython import get_ipython
 from os import makedirs
 from os.path import exists
 from pandas import DataFrame, read_csv, Series
+from PIL import Image
 from torch.nn.functional import pad
 from torch.utils.data import DataLoader
 from shutil import rmtree
@@ -567,25 +568,39 @@ def test_model (
         if not resize_images:
             if final_test: 
                 folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final_{dataset.lower()}\\"
-            # In case the folder to save exists, it is deleted and created again
+                folder_to_save_masks = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final_{dataset.lower()}_masks\\"
+                folder_to_save_gts = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final_{dataset.lower()}_gts\\"
             else:
                 folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}\\"
-            if exists(folder_to_save):
-                rmtree(folder_to_save)
-                makedirs(folder_to_save)
-            else:
-                makedirs(folder_to_save)
+                folder_to_save_masks = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_masks\\"
+                folder_to_save_gts = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final_gts\\"
+
         else:
             if final_test:
                 folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_final_{dataset.lower()}\\"
+                folder_to_save_masks = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_final_{dataset.lower()}_masks\\"
+                folder_to_save_gts = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_final_{dataset.lower()}_gts\\"
             else:
                 folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized\\"
-            # In case the folder to save exists, it is deleted and created again
-            if exists(folder_to_save):
-                rmtree(folder_to_save)
-                makedirs(folder_to_save)
-            else:
-                makedirs(folder_to_save)
+                folder_to_save_masks = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_masks\\"
+                folder_to_save_gts = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_{dataset.lower()}_gts\\"
+        
+        # In case the folder to save exists, it is deleted and created again
+        if exists(folder_to_save):
+            rmtree(folder_to_save)
+            makedirs(folder_to_save)
+        else:
+            makedirs(folder_to_save)
+        if exists(folder_to_save_masks):
+            rmtree(folder_to_save_masks)
+            makedirs(folder_to_save_masks)
+        else:
+            makedirs(folder_to_save_masks)
+        if exists(folder_to_save_gts):
+            rmtree(folder_to_save_gts)
+            makedirs(folder_to_save_gts)
+        else:
+            makedirs(folder_to_save_gts)
     
     # Informs that no backward propagation will be calculated 
     # because it is an inference, thus reducing memory consumption
@@ -682,8 +697,10 @@ def test_model (
                         preds_srf_np = preds_srf[0].cpu().numpy()
                         preds_ped_np = preds_ped[0].cpu().numpy()
 
-                        # Final combined mask already resolved via previous logic (preds)
-                        combined_mask = preds[0].cpu().numpy()
+                        # Saves the segmentation masks
+                        combined_mask = np.array(preds.cpu().numpy(), dtype=np.float32)[0]
+                        preds_img = Image.fromarray(combined_mask.astype(np.uint8))
+                        preds_img.save(str(folder_to_save_masks + image_name[:-5] + "_predicted" + ".tiff"))
 
                         # Prepare separate masks with NaN background
                         irf_mask = np.where(preds_irf_np == 1, 1, np.nan)
@@ -737,13 +754,22 @@ def test_model (
                         # Gets the original OCT B-scan
                         oct_image = images[0].cpu().numpy()[0]
 
+                        # Saves the segmentation masks
+                        preds = np.array(preds.cpu().numpy(), dtype=np.float32)[0]
+                        preds_img = Image.fromarray(preds.astype(np.uint8))
+                        preds_img.save(str(folder_to_save_masks + image_name[:-5] + "_predicted" + ".tiff"))                        
+                    
+
                         # Converts each voxel classified as background to 
                         # NaN so that it will not appear in the overlaying
                         # mask
-                        preds = np.array(preds.cpu().numpy(), dtype=np.float32)[0]
                         preds[preds == 0] = np.nan
 
+                        # Saves the segmentation masks
                         true_masks = np.array(true_masks.cpu().numpy(), dtype=np.float32)[0]
+                        gt_img = Image.fromarray(true_masks.astype(np.uint8))
+                        gt_img.save(str(folder_to_save_gts + image_name[:-5] + "_predicted" + ".tiff"))     
+
                         true_masks[true_masks == 0] = np.nan
 
                         # Converts the mask from 

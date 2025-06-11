@@ -16,6 +16,8 @@ from networks.pix2pix import Pix2PixGenerator
 from networks.unet import UNet
 from paths import IMAGES_PATH
 
+import matplotlib.pyplot as plt
+
 # Imports tqdm depending on whether 
 # it is being called from the 
 # Notebook or from this file
@@ -426,7 +428,6 @@ def test_gan(
                 # discriminator network
                 if model_name == "GAN":
                     gen_imgs = generator(prev_imgs.unsqueeze(1).detach(), next_imgs.unsqueeze(1).detach())
-
                 elif model_name == "UNet":
                     gen_imgs = generator(torch.stack([prev_imgs, next_imgs], dim=1).detach().to(device=device))
                 elif model_name == "Pix2Pix":
@@ -435,6 +436,31 @@ def test_gan(
                 # Converts the image from range [-1,1] to [0,1]
                 mid_imgs = (mid_imgs + 1) / 2
                 gen_imgs = (gen_imgs + 1) / 2
+
+                ########### USED ONLY FOR DEBUGGING #############
+
+                # fig, axes = plt.subplots(2, 2, figsize=(12, 4))
+
+                # axes[0][0].imshow(prev_imgs.cpu()[0], cmap='gray')
+                # axes[0][0].set_title('Previous Image')
+                # axes[0][0].axis('off')
+
+                # axes[0][1].imshow(mid_imgs.cpu()[0], cmap='gray')
+                # axes[0][1].set_title('Middle Image')
+                # axes[0][1].axis('off')
+
+                # axes[1][0].imshow(next_imgs.cpu()[0], cmap='gray')
+                # axes[1][0].set_title('Next Image')
+                # axes[1][0].axis('off')
+
+                # axes[1][1].imshow(gen_imgs.cpu()[0][0], cmap='gray')
+                # axes[1][1].set_title('Generated Image')
+                # axes[1][1].axis('off')
+
+                # plt.tight_layout()
+                # plt.show()
+
+                # return
 
                 # Calculates the PSNR value
                 img_psnr = round(psnr(mid_imgs.to(device=device), gen_imgs.to(device=device)), 3)
