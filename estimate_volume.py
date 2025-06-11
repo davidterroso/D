@@ -44,7 +44,7 @@ def estimate_volume(folder_path: str):
         # Iterates through the images in the folder
         for file in listdir(directory):
             # Reads the number of the slice
-            slice_num = fsdecode(file).split("_")[-2]
+            slice_num = fsdecode(file).split("_")[2]
             # Reads the predicted mask
             img = imread(str(folder_path + fsdecode(file)))
             # Gets the vendor and the volume
@@ -84,7 +84,7 @@ def estimate_volume(folder_path: str):
             # the area of each voxel by the distance between slices
             # in the non-edge slices and half the distance between 
             # slices in the edge slices (first and last slice)
-            if int(slice_num) == 0 or int(slice_num) == vol.shape[0]:
+            if int(slice_num) == 0 or int(slice_num) + 1 == vol.shape[0]:
                 voxel_volume = voxel_area * 0.5 * spacing[2]
             else:
                 voxel_volume = voxel_area * spacing[2]
@@ -119,4 +119,4 @@ def estimate_volume(folder_path: str):
     volumes_df.to_csv(f".\\fluid_volumes\\{folder_name}_volumes.csv", index=False)
     vendors_df.to_csv(f".\\fluid_volumes\\{folder_name}_vendors.csv", index=False)
 
-estimate_volume(folder_path=r"D:\DavidTerroso\Images\OCT_images\segmentation\predictions\Run076111114_resized_final_retouch_probability_masks\\")
+estimate_volume(folder_path=r"D:\DavidTerroso\Images\OCT_images\segmentation\predictions\Run058_resized_final_retouch_masks\\")
