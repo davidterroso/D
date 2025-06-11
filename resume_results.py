@@ -469,6 +469,6 @@ def combine_csvs_to_excel(folder_path, output_excel_path):
 
 runs_resume(starting_run=1, ending_run=120, folder=".\\results\\", prefix="Run")
 runs_resume(starting_run=1, ending_run=32, folder=".\\results\\", prefix="Iteration")
-runs_resume_final(folder=".\\results\\", run_number="076111114", dataset="CHUSJ", resized_imgs=True)
+runs_resume_final(folder=".\\results\\", run_number="058", dataset="generated", resized_imgs=True)
 gan_runs_resume(folder=".\\results\\")
 combine_csvs_to_excel(folder_path=".\\results\\", output_excel_path=".\\results\\combined_output.xlsx")

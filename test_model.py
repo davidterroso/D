@@ -397,6 +397,7 @@ def test_model (
         number_of_channels: int=1,
         number_of_classes: int=4,
         patch_type: str="vertical",
+        path_images: str=None,
         resize_images: bool=False,
         save_images: bool=True,
         split: str="competitive_fold_selection.csv",
@@ -432,6 +433,8 @@ def test_model (
             shape 496x512 are extracted from each image, and 
             patches of shape 496x128 are extracted from the 
             slices
+        path_images (str): path to the generated images in 
+            which the model will infer
         resize_images (bool): flag that indicates whether the 
             images will be resized or not in testing 
         save_images (bool): flag that indicates whether the 
@@ -552,7 +555,8 @@ def test_model (
 
     # Creates the TestDataset and DataLoader object with the test volumes
     # Number of workers was set to the most optimal
-    test_dataset = TestDataset(test_volumes, model_name, patch_type, resize_images, resize_shape, fluids_to_label.get(fluid), number_of_channels, dataset=dataset)
+    test_dataset = TestDataset(test_volumes, model_name, patch_type, resize_images, resize_shape, 
+                               fluids_to_label.get(fluid), number_of_channels, dataset=dataset, path_images=path_images)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=12, collate_fn=collate_fn)
     
     # Initiates the list that will 
@@ -836,14 +840,14 @@ def test_model (
     # Declares the name under which the DataFrame will be saved 
     if not final_test:
         if not resize_images:
-            slice_df.to_csv(f"results/{run_name}_slice_dice.csv", index=False)
+            slice_df.to_csv(f"results/{run_name}_slice_dice_{dataset.lower()}.csv", index=False)
         else:
-            slice_df.to_csv(f"results/{run_name}_slice_dice_resized.csv", index=False)        
+            slice_df.to_csv(f"results/{run_name}_slice_dice_resized_{dataset.lower()}.csv", index=False)        
     else:
         if not resize_images:
-            slice_df.to_csv(f"results/{run_name}_slice_dice_final.csv", index=False)
+            slice_df.to_csv(f"results/{run_name}_slice_dice_final_{dataset.lower()}.csv", index=False)
         else:
-            slice_df.to_csv(f"results/{run_name}_slice_dice_resized_final.csv", index=False)
+            slice_df.to_csv(f"results/{run_name}_slice_dice_resized_final_{dataset.lower()}.csv", index=False)
 
     if model_name != "UNet3":
         # Adds the vendor, volume, and number of the slice information to the DataFrame

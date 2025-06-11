@@ -311,7 +311,7 @@ def generation_images_from_volumes(volumes_list: list, model_name: str,
     return [f"{path}" for folder, path in filtered_paths]
 
 def images_from_volumes(volumes_list: list, dataset: str="RETOUCH", 
-                        resized_imgs: bool=True):
+                        resized_imgs: bool=True, path_images: str=None):
     """
     Used to return the list of all the images that are available to 
     test the network, knowing which volumes will be used
@@ -324,6 +324,8 @@ def images_from_volumes(volumes_list: list, dataset: str="RETOUCH",
         resized_imgs (bool): boolean variable which indicates whether 
             the images being used are resized or not. The default 
             value is True 
+        path_images (str): path to the generated images in which 
+            the model will infer 
 
     Return:
         images_list (List[str]): list of the name of the image that 
@@ -338,6 +340,8 @@ def images_from_volumes(volumes_list: list, dataset: str="RETOUCH",
             images_folder = images_folder + "slices_resized\\"
         else:
             images_folder = images_folder + "slices\\"
+    else:
+        images_folder = path_images
 
     # Iterates through the available images
     # and registers the name of those that are 
@@ -350,7 +354,7 @@ def images_from_volumes(volumes_list: list, dataset: str="RETOUCH",
             volume = int(volume)
             if volume in volumes_list:
                 images_list.append(image_name)
-        elif dataset == "chusj":
+        else:
             images_list.append(image_name) 
     return images_list
 
@@ -773,7 +777,8 @@ class TestDataset(Dataset):
                  patch_type: str, resize_images: bool,
                  resize_shape: tuple, fluid: int=None,
                  number_of_channels: int=1, 
-                 dataset: str="RETOUCH"):
+                 dataset: str="RETOUCH", 
+                 path_images: str=None):
         """
         Initiates the Dataset object and gets the possible 
         names of the images that will be used in testing
@@ -802,8 +807,10 @@ class TestDataset(Dataset):
                 in the network. The default value is 1 but can 
                 also be 2 in case there is relative distance 
                 maps, for example
-            dataset (str): name of the dataset which will be evaluated. 
-                The default name is RETOUCH
+            dataset (str): name of the dataset which will be 
+                evaluated. The default name is RETOUCH
+            path_images (str): path to the generated images in 
+                which the model will infer
                 
         Return:
             None
@@ -816,11 +823,12 @@ class TestDataset(Dataset):
         self.number_of_channels = number_of_channels
         self.patch_type = patch_type
         self.model = model
-        self.images_names = images_from_volumes(test_volumes, dataset=dataset, resized_imgs=resize_images)
+        self.images_names = images_from_volumes(test_volumes, dataset=dataset, resized_imgs=resize_images, path_images=path_images)
         self.fluid = fluid
         self.resize = resize_images 
         self.resize_shape = resize_shape
         self.dataset = dataset
+        self.path_images = path_images
 
     def __len__(self):
         """
@@ -882,10 +890,13 @@ class TestDataset(Dataset):
             else:
                 images_folder = images_folder + "slices\\"
                 masks_folder = masks_folder + "masks\\"
+        else:
+            images_folder = self.path_images + "\\"
+            masks_folder = IMAGES_PATH + "\\OCT_images\\segmentation\\masks\\int8\\"
         # Indicates the path to the image depending on the index given,
         # which is associated with the image name
         slice_name = images_folder + self.images_names[index]
-        mask_name = masks_folder + self.images_names[index]
+        mask_name = masks_folder + self.images_names[index].replace("_generated", "")
 
         # Reads the image and the
         # fluid mask
@@ -932,7 +943,7 @@ class TestDataset(Dataset):
             scan, mask = handle_test_images(scan, mask, roi, patch_shape=(256, 512))
 
         # If the images are desirerd to be resized
-        if self.resize and self.dataset == "RETOUCH":
+        if self.resize and self.dataset != "chusj":
             # Resizes the images to the shape of the Spectralis scan
             scan = resize(scan, self.resize_shape, preserve_range=True, 
                                         anti_aliasing=True)
