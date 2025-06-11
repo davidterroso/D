@@ -33,8 +33,8 @@
       \strng{authorbibnamehash}{37b3ba87704cb7f18740f94efaa2eb3e}
       \strng{authornamehash}{37b3ba87704cb7f18740f94efaa2eb3e}
       \strng{authorfullhash}{37b3ba87704cb7f18740f94efaa2eb3e}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{1664-1078}
@@ -99,8 +99,8 @@
       \strng{editornamehash}{0983d41caf62207d198789ef5a578f0c}
       \strng{editorfullhash}{add29e72a0edaf061ef0f4bf71e1c859}
       \field{extraname}{1}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{isbn}{978-0-08-102816-2}
@@ -489,8 +489,8 @@
       \strng{authornamehash}{036f94b10b252abfb923d921e17bf714}
       \strng{authorfullhash}{dbe69d80f27c68d8553363a2ddea9eca}
       \field{extraname}{1}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issue}{5035}
@@ -524,8 +524,8 @@
       \strng{authorbibnamehash}{dde625615056809ed5f2a58ea4776985}
       \strng{authornamehash}{dde625615056809ed5f2a58ea4776985}
       \strng{authorfullhash}{dde625615056809ed5f2a58ea4776985}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{1350-9462}
@@ -569,8 +569,8 @@
       \strng{authorbibnamehash}{2ef5cd8fa4f868bc1746adbc46f922ee}
       \strng{authornamehash}{d50b03055556ced1679958a822868cb7}
       \strng{authorfullhash}{2ef5cd8fa4f868bc1746adbc46f922ee}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0925-2312}
@@ -724,8 +724,8 @@
       \strng{authorbibnamehash}{67386e27ed3b1c9a051e4812e7e85c25}
       \strng{authornamehash}{806250ffe3c9bea5961f1e859c9562c0}
       \strng{authorfullhash}{67386e27ed3b1c9a051e4812e7e85c25}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0010-4825}
@@ -764,8 +764,8 @@
       \strng{authorbibnamehash}{d23421d4e498089b1a87b1c753b30b2a}
       \strng{authornamehash}{3734d4e5d01158695fbccd2cca93df7a}
       \strng{authorfullhash}{d23421d4e498089b1a87b1c753b30b2a}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{2297-8747}
@@ -2147,8 +2147,8 @@
       \strng{authornamehash}{5b195b34f54d3e071b82ddb71e157be1}
       \strng{authorfullhash}{c0db6e31d214cb90a9557639a905cee8}
       \field{extraname}{1}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issue}{4}
@@ -2400,8 +2400,8 @@
       \strng{authorbibnamehash}{1d02ca420e71ba714ee485c2b7f78014}
       \strng{authornamehash}{483e8dbebfdecf3ad8c3be14109e3bcd}
       \strng{authorfullhash}{1d02ca420e71ba714ee485c2b7f78014}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{1361-8415}
@@ -2446,8 +2446,8 @@
       \strng{authornamehash}{44c670fdadfa8181725811e4c0fc65ee}
       \strng{authorfullhash}{a7814fbbadb1957821e3cf1e07086dba}
       \field{extraname}{2}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0010-4825}
@@ -2496,8 +2496,8 @@
       \strng{authorbibnamehash}{e392121a6a49e24d413f4d874aa71a73}
       \strng{authornamehash}{7f28b21f49deb42efd379b831efac8f6}
       \strng{authorfullhash}{e392121a6a49e24d413f4d874aa71a73}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{medRxiv}
@@ -2550,8 +2550,8 @@
       \strng{authornamehash}{40e19b9ee1f46e0c7eb74c6680cf0059}
       \strng{authorfullhash}{54691633689522b97576ad65339b9b8c}
       \field{extraname}{2}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0169-2607}
@@ -2600,8 +2600,8 @@
       \strng{authorbibnamehash}{2b2496656dfcf7cd860192cadbedbd2f}
       \strng{authornamehash}{39755683bfb284035b2e83f58c4775e2}
       \strng{authorfullhash}{2b2496656dfcf7cd860192cadbedbd2f}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}
@@ -2651,8 +2651,8 @@
       \strng{authorbibnamehash}{b6e4d85c7cd8dbc9f3688b203e62d353}
       \strng{authornamehash}{d0e943b2731b86a41312a4cd2c60f808}
       \strng{authorfullhash}{b6e4d85c7cd8dbc9f3688b203e62d353}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}
@@ -2684,8 +2684,8 @@
       \strng{authorbibnamehash}{85eca6d79ece4125776b25eedd909e1d}
       \strng{authornamehash}{85eca6d79ece4125776b25eedd909e1d}
       \strng{authorfullhash}{85eca6d79ece4125776b25eedd909e1d}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{0730-725X}
@@ -2724,8 +2724,8 @@
       \strng{authorbibnamehash}{b5ad7d875b27a67ce7d45ddb7c447222}
       \strng{authornamehash}{cfea5fe02c77ca991244a6b05de026f0}
       \strng{authorfullhash}{b5ad7d875b27a67ce7d45ddb7c447222}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{IEEE Access}
@@ -2812,8 +2812,8 @@
       \strng{editornamehash}{18b3f694259f08f7fd2048c63a39bab3}
       \strng{editorfullhash}{4504e97799f514c5463e2d0ad8cc6641}
       \field{extraname}{2}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Medical Image Computing and Computer Assisted Intervention – MICCAI 2018}
@@ -2845,8 +2845,8 @@
       \strng{authorbibnamehash}{f8d17b65155a0bcfde5e55b1fcaf7f9c}
       \strng{authornamehash}{f8d17b65155a0bcfde5e55b1fcaf7f9c}
       \strng{authorfullhash}{f8d17b65155a0bcfde5e55b1fcaf7f9c}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{arXiv e-prints}
@@ -2918,8 +2918,8 @@
       \strng{editorbibnamehash}{f05dbe3ffb62935de70b0dffe8ba65af}
       \strng{editornamehash}{21e38e116df3a210187687f0575acf41}
       \strng{editorfullhash}{f05dbe3ffb62935de70b0dffe8ba65af}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Machine Learning for Medical Image Reconstruction}
@@ -2977,8 +2977,8 @@
       \strng{authornamehash}{fd39ad20ece493dadbbf99861688abdb}
       \strng{authorfullhash}{45d7da65be6b0273f74b1e93a65232cb}
       \field{extraname}{3}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{issn}{2379-139X}

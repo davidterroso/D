@@ -1139,7 +1139,7 @@ The cross-entropy is much more useful when regularizing the wrong labeling, espe
 	\label{fig:BCESegmentationDecent}
 \end{figure}
 
-\subsubsection{Experiment 1 and Experiment 2 Comparison in RETOUCH Dataset}
+\subsection{Experiment 1 and Experiment 2 Comparison in RETOUCH Dataset}
 
 In order to compare Experiment 1 with Experiment 2, both their performances were presented in Table \ref{tab:Experiment1VsExperiment2}. These experiments are compared by evaluating each experiment's performance on the reserved fold. In the table, the first block corresponds to the performance obtained with the selected multi-class segmentation model, while the second block shows the performance of the combination of models from Experiment 2, with their masks combined in a probability-based approach.
 
@@ -1296,7 +1296,7 @@ In PED, the performance is worse, but mainly due to the conditions in which this
 \par
 However, it is important to note that the results shown do not come from a cross-validation, and instead of a single split. This means that not only the 2.5D segmentation model was trained on more data than the those in Experiment 1 and 2 (approximately 60\% of the RETOUCH dataset), it could also have a split which benefits or harms the models performance.
 
-\subsubsection{Experiment 1 and Experiment 2 Comparison in CHUSJ Dataset}
+\subsection{Experiment 1 and Experiment 2 Comparison in CHUSJ Dataset}
 
 The results obtained in the CHUSJ private dataset were not as good as those obtained in the \hbox{RETOUCH}, in which the model was trained. The main cause for this poor segmentation is difference between the RETOUCH and CHUSJ dataset regarding image quality and segmentation criteria. In Table \ref{tab:CHUSJSegmentationResults}, the Dice coefficients across multiple vendors and fluids are shown, both for the images in their original shape and resized to $496 \times 512$. Since the segmentation U-Net is a fully convolutional network and does not contain any shape-dependent layer, the trained models can be applied to dataset B-scans in their original shape or resized.
 
