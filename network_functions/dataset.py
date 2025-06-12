@@ -212,6 +212,105 @@ def patches_from_volumes(volumes_list: list, model: str,
     return patches_list
 
 def generation_images_from_volumes(volumes_list: list, model_name: str, 
+                                   oct_device: str='all'):
+    """
+    Used to return the list of all the patches that are available to 
+    train the GAN, knowing which volumes will be used
+
+    Args:
+        volumes_list (List[float]): list of the OCT volume's identifier 
+            that will be used in training
+        model_name (str): name of the model that is being trained. Can 
+            only be "UNet" or "GAN"
+        oct_device (str): name of the OCT device from which the scans 
+            while be used to train and validate the model. Can be 'all', 
+            'Cirrus', 'Spectralis', 'T-1000', or 'T-2000'. The default 
+            option is 'all'
+
+    Return:
+        patches_list (List[str]): list of the name of the patches that 
+            will be used to train the model
+    """
+    # Sets the path to the images based on the model_name
+    if model_name == "UNet":
+        images_folder = IMAGES_PATH + "\\OCT_images\\generation\\slices_resized\\"
+    elif model_name == "GAN":
+        images_folder = "C:\slices_resized_64_patches\\"
+
+    # Reads the CSV files that contain the information of 
+    # each OCT volume
+    training_volumes_df = read_csv("splits\\volumes_info.csv")
+    testing_volumes_df = read_csv("splits\\volumes_info.csv")
+
+    # Iterates through the available images
+    # and registers the name of those that are 
+    # from the volumes that will be used in 
+    # training, returning that list
+    images_list = []
+    for patch_name in listdir(images_folder):
+        parts = patch_name.split("_")
+        vendor = parts[0]
+        volume_name = parts[1]
+        volume_set = volume_name[:-3].lower()
+        volume_number = int(volume_name[-3:])
+        volume = f"{volume_number}_{volume_set}"
+
+        # Defines df depending on the set to which the volume belongs
+        if volume_set == 'train':
+            df = training_volumes_df
+        elif volume_set == 'test':
+            df = testing_volumes_df
+
+        # Get the device for this volume from the DataFrame
+        device_row = df[(df["VolumeNumber"] == volume_number) & (df["Vendor"] == vendor)]
+        if device_row.empty:
+            continue  # skip if not found
+        device = device_row["Device"].values[0]
+
+        # Only add if both volume and device match
+        if ((volume in volumes_list) and (oct_device == device or oct_device == 'all')):
+            images_list.append((images_folder, patch_name))
+
+    # Creates a dictionary that will match the id of a volume to a path
+    volume_dict = defaultdict(lambda: defaultdict(list))
+    # Iterates through the 
+    # full list of images
+    for folder, path in images_list:
+        # Extracts the volume identifier which is 
+        # all the information prior to the slice
+        # number
+        parts = path.split("_")
+        # Gets the information differently depending 
+        # on the folder that is handling, identifiable 
+        # by the number of components in the name 
+        # separated by '_'
+        if len(parts) == 4:
+            volume_id = "_".join(parts[:-2])
+            slice_number = int(parts[-2])
+        else:
+            volume_id = "_".join(parts[:-1])
+            slice_number = int(parts[-1].split(".")[0])
+        volume_dict[volume_id][slice_number].append((folder, path))
+
+    # Remove the first and last slice for each volume
+    # Initiates a list that 
+    # will have the filtered paths
+    filtered_paths = []
+    # Iterates through all the volumes in the dataset
+    for volume_id, slices_dict in volume_dict.items():
+        # Sorts paths for the volume to ensure correct order
+        slice_numbers = sorted(slices_dict.keys())
+        # Excludes the first and last slices,
+        # while ensuring that there are enough 
+        # slices to analyze 
+        if len(slice_numbers) > 2:
+            for sn in slice_numbers[1:-1]:
+                filtered_paths.extend(slices_dict[sn])
+    
+    # Return only the filenames with their respective folder
+    return [f"{path}" for folder, path in filtered_paths]
+
+def generation_images_from_volumes_test(volumes_list: list, model_name: str, 
                                    folder_to_save: str=None, oct_device: str='all', 
                                    mode: str="test"):
     """
@@ -1559,7 +1658,7 @@ class TestDatasetGAN(Dataset):
         super().__init__()
         # Gets a list of paths to all the images that will be used to 
         # test the model
-        self.images_names = generation_images_from_volumes(test_volumes,
+        self.images_names = generation_images_from_volumes_test(test_volumes,
                                                            model_name="UNet", 
                                                            oct_device=oct_device,
                                                            mode=mode,
