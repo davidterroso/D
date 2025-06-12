@@ -34,6 +34,14 @@ In the CHUSJ, the performance was worse than in the RETOUCH dataset. While the s
 \par
 Overall, the fluid segmentation experiments were pivotal to the understanding of how the input shape and the patch extraction influence the segmentation of fluid in OCT, particularly through the observation of the models' learning process. 
 
+In Experiment 5, where the volumes of each fluid in the OCT scans that compose the reserved fold were calculated, conclusions were drawn that supported the previous statements. 
+\par
+While the calculated volumes in the predicted masks were similar to those in the GT without presenting any extreme outlier, the model exhibits consistent oversegmentation. In most OCT volumes and particularly in IRF, the model segmented more fluid than there was in the GT. This oversegmentation is highly related with the RETOUCH dataset, in which it was trained, which promotes oversegmentation, as seen in the fluid segmentation experiments. 
+\par
+However, the oversegmentation in IRF is not only rooted to the dataset, but also to the model capabilities. While the shape and intensity of the SRF and PED in the training data is similar to those seen in the reserved fold as these characteristics are more consistent in these fluids, IRF presents diverse shapes and surroundings across the OCT B-scans, making it harder to generalize.
+\par
+For the same reason, the fluid estimation is also more accurate in Topcon. In the scans obtained with devices from this vendor, the patients present less deformation associated with the presence of fluid. Therefore, the model generalizes better, as these fluids seen in these scans tend to be more similar with the majority of those seen in training.
+
 \section{Future Research}
 
 Despite the satisfying results obtained in the fluid segmentation experiments, improvements can still be made in order to reach better results, building on top of the experiments performed in this dissertation. These experiments used state-of-the-art methods combined with innovation in the model's inputs, producing good outputs in the rough delimitation and classification of fluid. However, three main issues were detected: oversegmentation outside the retina, poor attention to detail in smaller fluids, and weak generalization in different datasets. Therefore, these weaknesses leave space to further work.
@@ -44,4 +52,6 @@ However, this does not improve the details in the segmentation of small structur
 \par
 To tackle this problem, a single U-Net is not enough, especially knowing that some fluids are better segmented with networks of different depth, based on their different sizes. Therefore, other simple and state-of-the-art networks could be explored, such as the U-Net++ or the DeepLabV3+. These networks combine both shallow and deep features together, ensuring the rough segmentation of fluid and the attention to small details. Instead of changing the model completely, other attention mechanisms modules could also be added to the U-Net, such as self-attention.
 \par
-Lastly, generalization to external datasets remains a challange. In the CHUSJ dataset, the model would frequently predict fluid outside the retina, which could be mitigated using retinal layer delimitation. However, the variations of the speckle noise, which vary depending on the scan acquisition protocols, impacted the segmentation quality. To improve robustness under these conditions, future work could explore data augmentation with Gaussian noise or by training the models with data from different sources to increase variability in the training data.
+Lastly, generalization to external datasets remains a challenge. In the CHUSJ dataset, the model would frequently predict fluid outside the retina, which could be mitigated using retinal layer delimitation. However, the variations of the speckle noise, which vary depending on the scan acquisition protocols, impacted the segmentation quality. To improve robustness under these conditions, future work could explore data augmentation with Gaussian noise or by training the models with data from different sources to increase variability in the training data.
+\par
+Nevertheless, an improvement in segmentation models would transfer to a more accurate fluid estimation. The suggested changes, which also enhance the segmentation of IRF, would be particularly useful in the estimation of this fluid, which does not generalize as well as SRF and PED, due to its characteristic diversity.

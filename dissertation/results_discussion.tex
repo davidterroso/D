@@ -953,7 +953,6 @@ This translates to a good performance in the slices with fluid, but poor perform
 	\label{fig:Experiment2PEDSegmentation}
 \end{figure}
 
-\par
 In order to compare the results from this Experiment to the ones obtained in Experiment 1, three models had to be selected: one for IRF, one for SRF, and one for PED. Since the results obtained in Experiment 2.2 were much worse than the results reached in this experiment, the models selected for the inference in the unseen fold were selected from the runs performed in Experiment 2.1.
 \par
 From the models trained for IRF segmentation, ranging from Run 37 to Run 44, the model which obtained the best performance was the one trained on Run 42, as seen in Table \ref{tab:Experiment2IRF}. This model reached the best average performance in the segmentation of IRF both in all slices and when only slices with IRF were considered. In the other metrics, this model's performance were consistently similar to the best performing model in each metric. When compared to the average model from ``Set 7'', this model reached better performances in most metrics.
@@ -1417,5 +1416,55 @@ Lastly, the influence of the noise and different perceptions present in this dat
 \section{Fluid Volume Estimation}\label{FluidVolumeEstimation}
 
 \subsection{Experiment 5}
+In Experiment 5, the fluid volume was calculated for each type of fluid in the OCT volumes from the reserved fold, using the previously described in \ref{Methods} Methods. The volume of each fluid, for each OCT volume in the reserved fold, is shown in Table \ref{tab:FluidVolumesExperiment1}, in mm$^{3}$. In Figure \ref{fig:FluidVolumeScatterExperiment5}, the comparison between the values calculated using the GT masks and the masks predicted by the segmentation model is shown, using the values present in this table.
+
+\begin{table*}[!ht]
+	\centering
+	\caption{Volume of each fluid calculated for the masks segmented in the RETOUCH (GT) and the masks segmented by the best segmentation model from Experiment 1 and 2 (P). The volumes correspond to the total fluid volume in the B-scan, in mm$^{3}$.}
+	\begin{tabular}{|c|c|cc|cc|cc|}
+		\hline
+		\multirow{2}{*}{\textbf{Vendor}} & \multirow{2}{*}{\textbf{Volume}} & \multicolumn{2}{c|}{\textbf{IRF}} & \multicolumn{2}{c|}{\textbf{SRF}} & \multicolumn{2}{c|}{\textbf{PED}} \\ \cline{3-8} 
+		& & \textbf{GT} & \textbf{P} & \textbf{GT} & \textbf{P} & \textbf{GT} & \textbf{P} \\ \hline
+		 Cirrus & TRAIN002 & 0.228 & 0.373 & 0.008 & 0.013 & 0.000 & 0.000 \\
+		 Cirrus & TRAIN012 & 0.000 & 0.001 & 0.704 & 0.673 & 0.888 & 0.946 \\
+		 Cirrus & TRAIN014 & 0.000 & 0.000 & 0.517 & 0.575 & 0.332 & 0.252 \\
+		 Cirrus & TRAIN016 & 0.771 & 1.129 & 0.000 & 0.000 & 0.000 & 0.000 \\
+		 Spectralis & TRAIN027 & 0.937 & 1.071 & 0.096 & 0.132 & 0.000 & 0.001 \\
+		 Spectralis & TRAIN033 & 0.254 & 0.380 & 0.314 & 0.307 & 0.367 & 0.471 \\
+		 Spectralis & TRAIN039 & 0.622 & 0.839 & 0.000 & 0.000 & 0.000 & 0.000 \\
+		 Spectralis & TRAIN042 & 0.002 & 0.009 & 1.900 & 1.875 & 0.603 & 0.771 \\
+		 Spectralis & TRAIN048 & 0.328 & 0.446 & 0.000 & 0.008 & 0.000 & 0.000 \\
+		 Topcon & TRAIN062 & 0.047 & 0.058 & 0.000 & 0.000 & 0.000 & 0.000 \\
+		 Topcon & TRAIN063 & 0.000 & 0.011 & 0.747 & 0.568 & 0.034 & 0.110 \\
+		 Topcon & TRAIN064 & 0.058 & 0.060 & 0.000 & 0.003 & 0.000 & 0.075 \\
+		 Topcon & TRAIN067 & 0.188 & 0.170 & 0.000 & 0.000 & 0.000 & 0.000 \\
+		 Topcon & TRAIN068 & 0.406 & 0.550 & 0.004 & 0.006 & 0.000 & 0.008 \\ \hline
+		 \multicolumn{2}{|c|}{\textbf{MAE}} & \multicolumn{2}{c|}{0.09} & \multicolumn{2}{c|}{0.03} & \multicolumn{2}{c|}{0.04} \\ \hline
+		 
+	\end{tabular}
+	\label{tab:FluidVolumesExperiment1}
+\end{table*}
+
+\begin{figure}[!ht]
+	\centering	\includegraphics[width=0.75\linewidth]{figures/FluidVolumeScatterExperiment5.png}
+	\caption{Volume estimated for each fluid in OCT volume using the masks predicted by the segmentation model compared with the volumes calculated using the GT masks. The OCT scans considered are the same as in \ref{tab:FluidVolumesExperiment1} and the gray marks the points in which the fluid volume in the GT is equal to the predicted.}
+	\label{fig:FluidVolumeScatterExperiment5}
+\end{figure}
+
+The values shown in this table reveal the similarity between the fluid volumes estimated with the RETOUCH GT masks and the masks predicted by the selected segmentation model. However, there are some outliers and evident trends seen.
+\par
+For example, in IRF, there are multiple examples where the predicted quantity of fluid is significantly larger than the real quantity, such as in TRAIN002, TRAIN016, TRAIN039, and TRAIN048. These outliers appear mostly on Cirrus and Spectralis. In these vendors, the IRF presents more diverse shapes and deformity of the retina, which makes segmentation significantly harder than in Topcon, where the IRF appears much smaller and without deformation.
+\par
+In SRF and PED, the differences between the true and predicted quantity are not so significant, with the largest discrepancies being the SRF and PED in TRAIN063. The shape of these fluids in the OCT volumes present in this fold are more consistent with those seen in training, hence resulting in a more accurate segmentation.
+\par
+Overall, the volumes predicted in scans with considerable quantities of fluid tend to differ more with its GT. This happens due to the deformation in the retina that is associated with large quantities of fluid, making it harder to predict the segmentation masks.
+\par
+Nonetheless, the fluid prediction in slices with little to no fluid tends to be accurate, highlighting the good specificity and segmentation of small fluids previously seen in the segmentation model.
+\par
+Regarding the performances per vendor, there is no significant differences to note, as most of the differences in noticeable in these results are related to the different characteristics of the patients in each OCT.
+\par
+It is interesting to note that in discrepancies between the real volume and the predicted volume, the segmentation model tends to overpredict fluid, which is associated with the oversegmentation trend seen in the predictions performed by this model. This is an important aspect to note, as it is rooted to the segmentation criteria used in the training data, the RETOUCH dataset. This trend further justifies the oversegmentations seen by the model in the CHUSJ dataset.
+\par
+In the following subsection, the results shown in Table \ref{tab:FluidVolumesExperiment1} will be compared with the estimated fluid volumes obtained using only generated slices and in an enhanced volume, where between every known slice another slice is generated.
 
 \subsection{Experiment 6}

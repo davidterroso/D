@@ -362,7 +362,7 @@ The generator of the GAN is composed of contracting and expanding path. In the c
 
 To match the needs of our application, some changes had to be made in the generator regarding the input shape. As shown in Figure \ref{fig:GeneratorArchitecture}, the input has six channels, one red, one green, and one blue (RGB) for each input patch. Similarly, the output has three channels, for the generated middle patch. In our application, each patch in the input only had one channel, since the OCT B-scans are images in gray scale, instead of RGB, as in the original implementation. Therefore, the output only had one channel. 
 \par
-The final activation function, the hyperbolic tangent, outputs values between -1 and 1. Since the output images were compared to images in range 0 to 1, the final activation function was changed to the sigmoid. This function converts the values output from the last convolution to the range of 0 to 1, where it can be compared to the GT images.
+The final activation function, the hyperbolic tangent, outputs values between -1 and 1. Two activation functions were compared: hyperbolic tangent and sigmoid. The hyperbolic tangent worked best since it used the whole data range in the output, while sigmoid concentrated the outputs in a narrower range. After applying the hyperbolic tangent, the results had to be converted to range 0 to 1, where it can be compared to the GT images.
 \par
 The GAN's discriminator receives as input a patch of shape 64 $\times$ 64, and outputs a probability of the input patch being real. The discriminator is composed of five consecutive convolutions. The first convolution is followed by a leaky ReLU activation function. The second, third, and fourth convolutions are followed by a batch normalization and a leaky ReLU activation function. After the last convolution, the sigmoid is applied and converts the final output to a value between 0 and 1 that represents the probability of the image being real. In Table \ref{tab:GeneratorDiscriminatorArchitecture}, the layers that compose the discriminator and the generator are explained, including the shape of the outputs.
 
@@ -385,7 +385,7 @@ The GAN's discriminator receives as input a patch of shape 64 $\times$ 64, and o
 		\textbf{5} & TransposedConv2d(4, 256, 2), BatchNorm2d, LeakyReLU & 256 $\times$ 16 $\times$ 16 \\
 		\textbf{6} & TransposedConv2d(4, 128, 2), BatchNorm2d, LeakyReLU & 128 $\times$ 32 $\times$ 32 \\
 		\textbf{7} & TransposedConv2d(4, 64, 2), BatchNorm2d, LeakyReLU & 64 $\times$ 64 $\times$ 64 \\
-		\textbf{8} & TransposedConv2d(1, 1, 1), Sigmoid & 1 $\times$ 64 $\times$ 64 \\
+		\textbf{8} & TransposedConv2d(1, 1, 1), Tanh & 1 $\times$ 64 $\times$ 64 \\
 		\hline
 		\hline
 		\multicolumn{3}{c}{\textbf{Discriminator}} \\
