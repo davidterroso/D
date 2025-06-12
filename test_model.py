@@ -5,7 +5,7 @@ import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 from IPython import get_ipython
 from os import makedirs
-from os.path import exists
+from os.path import exists, splitext
 from pandas import DataFrame, read_csv, Series
 from PIL import Image
 from torch.nn.functional import pad
@@ -17,6 +17,7 @@ from networks.unet25D import TennakoonUNet
 from networks.unet import UNet
 from network_functions.dataset import TestDataset
 from paths import IMAGES_PATH, RETOUCH_PATH
+import os
 
 # Imports tqdm depending on whether 
 # it is being called from the 
@@ -568,43 +569,42 @@ def test_model (
     run_name = weights_name.split("_")[0]
 
     # Declares the name of the folder in which the images will be saved
-    if save_images:
-        if not resize_images:
-            if final_test: 
-                folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final_{dataset.lower()}\\"
-                folder_to_save_masks = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final_{dataset.lower()}_masks\\"
-                folder_to_save_gts = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final_{dataset.lower()}_gts\\"
-            else:
-                folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}\\"
-                folder_to_save_masks = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_masks\\"
-                folder_to_save_gts = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final_gts\\"
+    if not resize_images:
+        if final_test: 
+            folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final_{dataset.lower()}\\"
+            folder_to_save_masks = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final_{dataset.lower()}_masks\\"
+            folder_to_save_gts = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final_{dataset.lower()}_gts\\"
+        else:
+            folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}\\"
+            folder_to_save_masks = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_masks\\"
+            folder_to_save_gts = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final_gts\\"
 
+    else:
+        if final_test:
+            folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_final_{dataset.lower()}\\"
+            folder_to_save_masks = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_final_{dataset.lower()}_masks\\"
+            folder_to_save_gts = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_final_{dataset.lower()}_gts\\"
         else:
-            if final_test:
-                folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_final_{dataset.lower()}\\"
-                folder_to_save_masks = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_final_{dataset.lower()}_masks\\"
-                folder_to_save_gts = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_final_{dataset.lower()}_gts\\"
-            else:
-                folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized\\"
-                folder_to_save_masks = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_masks\\"
-                folder_to_save_gts = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_{dataset.lower()}_gts\\"
-        
-        # In case the folder to save exists, it is deleted and created again
-        if exists(folder_to_save):
-            rmtree(folder_to_save)
-            makedirs(folder_to_save)
-        else:
-            makedirs(folder_to_save)
-        if exists(folder_to_save_masks):
-            rmtree(folder_to_save_masks)
-            makedirs(folder_to_save_masks)
-        else:
-            makedirs(folder_to_save_masks)
-        if exists(folder_to_save_gts):
-            rmtree(folder_to_save_gts)
-            makedirs(folder_to_save_gts)
-        else:
-            makedirs(folder_to_save_gts)
+            folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized\\"
+            folder_to_save_masks = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_masks\\"
+            folder_to_save_gts = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_resized_{dataset.lower()}_gts\\"
+    
+    # In case the folder to save exists, it is deleted and created again
+    if exists(folder_to_save):
+        rmtree(folder_to_save)
+        makedirs(folder_to_save)
+    else:
+        makedirs(folder_to_save)
+    if exists(folder_to_save_masks):
+        rmtree(folder_to_save_masks)
+        makedirs(folder_to_save_masks)
+    else:
+        makedirs(folder_to_save_masks)
+    if exists(folder_to_save_gts):
+        rmtree(folder_to_save_gts)
+        makedirs(folder_to_save_gts)
+    else:
+        makedirs(folder_to_save_gts)
     
     # Informs that no backward propagation will be calculated 
     # because it is an inference, thus reducing memory consumption
@@ -679,19 +679,20 @@ def test_model (
                     # that has a higher logit
                     preds = torch.argmax(outputs, dim=1)
 
-                # Calculates the Dice coefficient of the predicted mask, and gets the result of the union and intersection between the GT and 
-                # the predicted mask 
-                dice_scores, voxel_counts, union_counts, intersection_counts, binary_dice = dice_coefficient(model_name, preds, true_masks, number_of_classes)
+                if dataset != "InterGen":
+                    # Calculates the Dice coefficient of the predicted mask, and gets the result of the union and intersection between the GT and 
+                    # the predicted mask 
+                    dice_scores, voxel_counts, union_counts, intersection_counts, binary_dice = dice_coefficient(model_name, preds, true_masks, number_of_classes)
 
-                # Appends the results per slice, per volume, and per vendor
-                slice_results.append([image_name, *dice_scores, *voxel_counts, *union_counts, *intersection_counts, binary_dice])
+                    # Appends the results per slice, per volume, and per vendor
+                    slice_results.append([image_name, *dice_scores, *voxel_counts, *union_counts, *intersection_counts, binary_dice])
 
                 # Saves the predicted masks and the GT, in case it is desired
                 if save_images:
                     if model_name == "UNet" and final_test and selected_models is not None:
                         # Declares the name under which the masks will be saved and writes the path to the original B-scan
-                        predicted_mask_name = folder_to_save + image_name[:-5] + "_predicted" + ".tiff"
-                        gt_mask_name = folder_to_save + image_name[:-5] + "_gt" + ".tiff"
+                        predicted_mask_name = folder_to_save + splitext(image_name)[0] + "_predicted.tiff"
+                        gt_mask_name = folder_to_save + splitext(image_name)[0] + "_gt.tiff"
 
                         # Gets the original OCT B-scan
                         oct_image = images[0].cpu().numpy()[0]
@@ -704,7 +705,7 @@ def test_model (
                         # Saves the segmentation masks
                         combined_mask = np.array(preds.cpu().numpy(), dtype=np.float32)[0]
                         preds_img = Image.fromarray(combined_mask.astype(np.uint8))
-                        preds_img.save(str(folder_to_save_masks + image_name[:-5] + "_predicted" + ".tiff"))
+                        preds_img.save(str(folder_to_save_masks + splitext(image_name)[0] + "_predicted.tiff"))
 
                         # Prepare separate masks with NaN background
                         irf_mask = np.where(preds_irf_np == 1, 1, np.nan)
@@ -752,8 +753,8 @@ def test_model (
                         plt.close("all")
                     else:
                         # Declares the name under which the masks will be saved and writes the path to the original B-scan
-                        predicted_mask_name = folder_to_save + image_name[:-5] + "_predicted" + ".tiff"
-                        gt_mask_name = folder_to_save + image_name[:-5] + "_gt" + ".tiff"
+                        predicted_mask_name = folder_to_save + splitext(image_name)[0] + "_predicted.tiff"
+                        gt_mask_name = folder_to_save + splitext(image_name)[0] + "_gt.tiff"
 
                         # Gets the original OCT B-scan
                         oct_image = images[0].cpu().numpy()[0]
@@ -761,26 +762,26 @@ def test_model (
                         # Saves the segmentation masks
                         preds = np.array(preds.cpu().numpy(), dtype=np.float32)[0]
                         preds_img = Image.fromarray(preds.astype(np.uint8))
-                        preds_img.save(str(folder_to_save_masks + image_name[:-5] + "_predicted" + ".tiff"))                        
-                    
+                        preds_img.save(str(folder_to_save_masks + splitext(image_name)[0] + "_predicted.tiff"))                        
 
                         # Converts each voxel classified as background to 
                         # NaN so that it will not appear in the overlaying
                         # mask
                         preds[preds == 0] = np.nan
 
-                        # Saves the segmentation masks
-                        true_masks = np.array(true_masks.cpu().numpy(), dtype=np.float32)[0]
-                        gt_img = Image.fromarray(true_masks.astype(np.uint8))
-                        gt_img.save(str(folder_to_save_gts + image_name[:-5] + "_predicted" + ".tiff"))     
+                        if dataset != "InterGen":
+                            # Saves the segmentation masks
+                            true_masks = np.array(true_masks.cpu().numpy(), dtype=np.float32)[0]
+                            gt_img = Image.fromarray(true_masks.astype(np.uint8))
+                            gt_img.save(str(folder_to_save_gts + splitext(image_name)[0] + "_predicted.tiff"))     
 
-                        true_masks[true_masks == 0] = np.nan
+                            true_masks[true_masks == 0] = np.nan
 
-                        # Converts the mask from 
-                        # binary to the correct class 
-                        if fluid is not None:
-                            preds = preds * int(fluids_to_label.get(fluid))
-                            true_masks = true_masks * int(fluids_to_label.get(fluid))
+                            # Converts the mask from 
+                            # binary to the correct class 
+                            if fluid is not None:
+                                preds = preds * int(fluids_to_label.get(fluid))
+                                true_masks = true_masks * int(fluids_to_label.get(fluid))
 
                         # The voxels classified in "IRF", "SRF", and "PED" 
                         # will be converted to color as Red for IRF, green 
@@ -801,12 +802,13 @@ def test_model (
                         plt.axis("off")
                         plt.savefig(predicted_mask_name, bbox_inches='tight', pad_inches=0)
 
-                        # Saves the OCT scan with an overlay of the ground-truth masks
-                        plt.figure(figsize=(oct_image.shape[1] / 100, oct_image.shape[0] / 100))
-                        plt.imshow(oct_image, cmap=plt.cm.gray)
-                        plt.imshow(true_masks, alpha=0.8, cmap=fluid_cmap, norm=fluid_norm)
-                        plt.axis("off")
-                        plt.savefig(gt_mask_name, bbox_inches="tight", pad_inches=0)
+                        if dataset != "InterGen":
+                            # Saves the OCT scan with an overlay of the ground-truth masks
+                            plt.figure(figsize=(oct_image.shape[1] / 100, oct_image.shape[0] / 100))
+                            plt.imshow(oct_image, cmap=plt.cm.gray)
+                            plt.imshow(true_masks, alpha=0.8, cmap=fluid_cmap, norm=fluid_norm)
+                            plt.axis("off")
+                            plt.savefig(gt_mask_name, bbox_inches="tight", pad_inches=0)
 
                         # Closes the figure
                         plt.clf()
@@ -815,336 +817,338 @@ def test_model (
                 # Update the progress bar
                 progress_bar.update(1)
 
-    # Creates the folder results in case 
-    # it does not exist yet
-    makedirs("results", exist_ok=True)
+    if dataset != "InterGen":
 
-    # Saves the Dice score per slice
-    if model_name != "UNet3":
-        slice_df = DataFrame(slice_results, 
-                            columns=["slice", 
-                                    *[f"dice_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
-                                    *[f"voxels_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
-                                    *[f"union_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
-                                    *[f"intersection_{label_to_fluids.get(i)}" for i in range(number_of_classes)],
-                                    "binary_dice"])
-    else:
-        slice_df = DataFrame(slice_results, 
-                    columns=["slice", 
-                            *[f"dice_{label_to_fluids.get(i)}" for i in [0, fluids_to_label.get(fluid)]], 
-                            *[f"voxels_{label_to_fluids.get(i)}" for i in [0, fluids_to_label.get(fluid)]], 
-                            *[f"union_{label_to_fluids.get(i)}" for i in [0, fluids_to_label.get(fluid)]], 
-                            *[f"intersection_{label_to_fluids.get(i)}" for i in [0, fluids_to_label.get(fluid)]],
-                            "binary_dice"])
-    
-    # Declares the name under which the DataFrame will be saved 
-    if not final_test:
-        if not resize_images:
-            slice_df.to_csv(f"results/{run_name}_slice_dice_{dataset.lower()}.csv", index=False)
+        # Creates the folder results in case 
+        # it does not exist yet
+        makedirs("results", exist_ok=True)
+
+        # Saves the Dice score per slice
+        if model_name != "UNet3":
+            slice_df = DataFrame(slice_results, 
+                                columns=["slice", 
+                                        *[f"dice_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
+                                        *[f"voxels_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
+                                        *[f"union_{label_to_fluids.get(i)}" for i in range(number_of_classes)], 
+                                        *[f"intersection_{label_to_fluids.get(i)}" for i in range(number_of_classes)],
+                                        "binary_dice"])
         else:
-            slice_df.to_csv(f"results/{run_name}_slice_dice_resized_{dataset.lower()}.csv", index=False)        
-    else:
-        if not resize_images:
-            slice_df.to_csv(f"results/{run_name}_slice_dice_final_{dataset.lower()}.csv", index=False)
-        else:
-            slice_df.to_csv(f"results/{run_name}_slice_dice_resized_final_{dataset.lower()}.csv", index=False)
-
-    if model_name != "UNet3":
-        # Adds the vendor, volume, and number of the slice information to the DataFrame
-        slice_df[['vendor', 'volume', 'slice_number']] = slice_df['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
-        # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
-        volume_df_mean = slice_df[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").mean()
-        volume_df_mean.index.name = "Volume"
-        volume_df_std = slice_df[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").std()
-        volume_df_std.index.name = "Volume"
-        resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
-
-        # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
-        vendor_df_mean = slice_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
-        vendor_df_mean.index.name = "Vendor"
-        vendor_df_std = slice_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").std()
-        vendor_df_std.index.name = "Vendor"
-        resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
-
-        # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
-        class_df_mean = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
-        class_df_std = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
-        resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
-
-        # Saves the DataFrame that contains the values for each volume, class, and vendor
-        if not resize_images:
-            if not final_test:
-                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
-                resulting_class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
-                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
+            slice_df = DataFrame(slice_results, 
+                        columns=["slice", 
+                                *[f"dice_{label_to_fluids.get(i)}" for i in [0, fluids_to_label.get(fluid)]], 
+                                *[f"voxels_{label_to_fluids.get(i)}" for i in [0, fluids_to_label.get(fluid)]], 
+                                *[f"union_{label_to_fluids.get(i)}" for i in [0, fluids_to_label.get(fluid)]], 
+                                *[f"intersection_{label_to_fluids.get(i)}" for i in [0, fluids_to_label.get(fluid)]],
+                                "binary_dice"])
+        
+        # Declares the name under which the DataFrame will be saved 
+        if not final_test:
+            if not resize_images:
+                slice_df.to_csv(f"results/{run_name}_slice_dice_{dataset.lower()}.csv", index=False)
             else:
-                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_final_{dataset.lower()}.csv", index=True)
-                resulting_class_df.to_csv(f"results/{run_name}_class_dice_final_{dataset.lower()}.csv", index=False)
-                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_final_{dataset.lower()}.csv", index=True)
-        elif not final_test:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
-            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized.csv", index=False)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)            
+                slice_df.to_csv(f"results/{run_name}_slice_dice_resized_{dataset.lower()}.csv", index=False)        
         else:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_final_{dataset.lower()}.csv", index=True)
-            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_final_{dataset.lower()}.csv", index=False)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_final_{dataset.lower()}.csv", index=True)
+            if not resize_images:
+                slice_df.to_csv(f"results/{run_name}_slice_dice_final_{dataset.lower()}.csv", index=False)
+            else:
+                slice_df.to_csv(f"results/{run_name}_slice_dice_resized_final_{dataset.lower()}.csv", index=False)
 
-        # Handles the information only on the slices that have the fluid
-        slice_df_wf = slice_df.copy()
-        # Iterates through all the classes available
-        for i in range(number_of_classes):
+        if model_name != "UNet3":
+            # Adds the vendor, volume, and number of the slice information to the DataFrame
+            slice_df[['vendor', 'volume', 'slice_number']] = slice_df['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
+            # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
+            volume_df_mean = slice_df[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").mean()
+            volume_df_mean.index.name = "Volume"
+            volume_df_std = slice_df[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").std()
+            volume_df_std.index.name = "Volume"
+            resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
+
+            # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
+            vendor_df_mean = slice_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
+            vendor_df_mean.index.name = "Vendor"
+            vendor_df_std = slice_df[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").std()
+            vendor_df_std.index.name = "Vendor"
+            resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
+
+            # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
+            class_df_mean = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
+            class_df_std = slice_df[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
+            resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
+
+            # Saves the DataFrame that contains the values for each volume, class, and vendor
+            if not resize_images:
+                if not final_test:
+                    resulting_volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
+                    resulting_class_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
+                    resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
+                else:
+                    resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_final_{dataset.lower()}.csv", index=True)
+                    resulting_class_df.to_csv(f"results/{run_name}_class_dice_final_{dataset.lower()}.csv", index=False)
+                    resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_final_{dataset.lower()}.csv", index=True)
+            elif not final_test:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
+                resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized.csv", index=False)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)            
+            else:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_final_{dataset.lower()}.csv", index=True)
+                resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_final_{dataset.lower()}.csv", index=False)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_final_{dataset.lower()}.csv", index=True)
+
+            # Handles the information only on the slices that have the fluid
+            slice_df_wf = slice_df.copy()
+            # Iterates through all the classes available
+            for i in range(number_of_classes):
+                # Sets the Dice values to NaN whenever there is no fluid of that type
+                slice_df_wf.loc[slice_df_wf[f"voxels_{label_to_fluids.get(i)}"] == 0, f"dice_{label_to_fluids.get(i)}"] = np.nan
+
+            # Adds the vendor, volume, and number of the slice information to the DataFrame
+            slice_df_wf[['vendor', 'volume', 'slice_number']] = slice_df_wf['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
+            # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
+            volume_df_mean = slice_df_wf[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").mean()
+            volume_df_mean.index.name = "Volume"
+            volume_df_std = slice_df_wf[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").std()
+            volume_df_std.index.name = "Volume"
+            resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
+
+            # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
+            vendor_df_mean = slice_df_wf[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
+            vendor_df_mean.index.name = "Vendor"
+            vendor_df_std = slice_df_wf[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").std()
+            vendor_df_std.index.name = "Vendor"
+            resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
+
+            # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
+            class_df_mean = slice_df_wf[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
+            class_df_std = slice_df_wf[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
+            resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
+
+            # Saves the DataFrame that contains the values for each volume, class, and vendor
+            if not resize_images:
+                if not final_test:
+                    resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid.csv", index=True)
+                    resulting_class_df.to_csv(f"results/{run_name}_class_dice_wfluid.csv", index=False)
+                    resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid.csv", index=True)
+                else:
+                    resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid_final_{dataset.lower()}.csv", index=True)
+                    resulting_class_df.to_csv(f"results/{run_name}_class_dice_wfluid_final_{dataset.lower()}.csv", index=False)
+                    resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid_final_{dataset.lower()}.csv", index=True)
+            elif not final_test:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid.csv", index=True)
+                resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wfluid.csv", index=False)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid.csv", index=True)
+            else:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid_final_{dataset.lower()}.csv", index=True)
+                resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wfluid_final_{dataset.lower()}.csv", index=False)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid_final_{dataset.lower()}.csv", index=True)
+            
+            # Handles the information only on the slices that do not have fluid
+            slice_df_wof = slice_df.copy()
+            # Iterates through all the classes available
+            for i in range(number_of_classes):
+                # Gets the DataFrame that contains a non-negative number of voxels for each column
+                slice_df_wof.loc[slice_df_wof[f"voxels_{label_to_fluids.get(i)}"] > 0, f"dice_{label_to_fluids.get(i)}"] = np.nan
+
+            # Adds the vendor, volume, and number of the slice information to the DataFrame
+            slice_df_wof[['vendor', 'volume', 'slice_number']] = slice_df_wof['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
+            # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
+            volume_df_mean = slice_df_wof[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").mean()
+            volume_df_mean.index.name = "Volume"
+            volume_df_std = slice_df_wof[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").std()
+            volume_df_std.index.name = "Volume"
+            resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
+
+            # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
+            vendor_df_mean = slice_df_wof[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
+            vendor_df_mean.index.name = "Vendor"
+            vendor_df_std = slice_df_wof[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").std()
+            vendor_df_std.index.name = "Vendor"
+            resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
+
+            # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
+            class_df_mean = slice_df_wof[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
+            class_df_std = slice_df_wof[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
+            resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
+
+            # Saves the DataFrame that contains the values for each volume, class, and vendor
+            if not resize_images:
+                if not final_test:
+                    resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid.csv", index=True)
+                    resulting_class_df.to_csv(f"results/{run_name}_class_dice_wofluid.csv", index=False)
+                    resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid.csv", index=True)
+                    binary_dices_name = "fluid_dice"
+                else:
+                    resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid_final_{dataset.lower()}.csv", index=True)
+                    resulting_class_df.to_csv(f"results/{run_name}_class_dice_wofluid_final_{dataset.lower()}.csv", index=False)
+                    resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid_final_{dataset.lower()}.csv", index=True)
+                    binary_dices_name = f"fluid_dice_final_{dataset.lower()}"
+            elif not final_test:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid.csv", index=True)
+                resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wofluid.csv", index=False)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid.csv", index=True)
+                binary_dices_name = "fluid_dice_resized"
+            else:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid_final_{dataset.lower()}.csv", index=True)
+                resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wofluid_final_{dataset.lower()}.csv", index=False)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid_final_{dataset.lower()}.csv", index=True)
+                binary_dices_name = f"fluid_dice_resized_final_{dataset.lower()}"
+
+            # Initializes a list that will hold the results for the binary case
+            binary_dices = []
+            # Appends the binary Dice coefficient to a list that holds these values
+            binary_dices.append(f"{slice_df['binary_dice'].mean()} ({slice_df['binary_dice'].std()})")
+
+            # Get the fluid voxel column names (i = 1, 2, 3)
+            fluid_voxel_cols = [f"voxels_{label_to_fluids[i]}" for i in [1, 2, 3]]
+
+            # Copies the original DataFrame 
+            # on which changes will be applied
+            slice_df_wf = slice_df.copy()
+            slice_df_wof = slice_df.copy()
+
+            # For the 'with fluid' DataFrame, the slices with no fluid will be set to NaN in the 
+            # column that contains the binary Dice        
+            slice_df_wf.loc[slice_df_wf[fluid_voxel_cols].sum(axis=1) == 0, 'binary_dice'] = np.nan
+
+            # For the 'without fluid' DataFrame, the slices with any fluid will be set to NaN in the 
+            # column that contains the binary Dice
+            slice_df_wof.loc[slice_df_wof[fluid_voxel_cols].sum(axis=1) > 0, 'binary_dice'] = np.nan
+
+            # The mean and std of each column is added to a list that contains the results in binary conditions
+            binary_dices.append(f"{slice_df_wf['binary_dice'].mean()} ({slice_df_wf['binary_dice'].std()})")
+            binary_dices.append(f"{slice_df_wof['binary_dice'].mean()} ({slice_df_wof['binary_dice'].std()})")
+
+            # Saves the results as a DataFrame
+            df = Series(binary_dices).to_frame().T
+            df.columns = ["AllSlices", "SlicesWithFluid", "SlicesWithoutFluid"]
+            df.to_csv(f"results/{run_name}_{binary_dices_name}.csv", index=False)
+        else:
+            # Adds the vendor, volume, and number of the slice information to the DataFrame
+            slice_df[['vendor', 'volume', 'slice_number']] = slice_df['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
+            # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
+            volume_df_mean = slice_df[["volume", f"dice_{fluid}"]].groupby("volume").mean()
+            volume_df_mean.index.name = "Volume"
+            volume_df_std = slice_df[["volume", f"dice_{fluid}"]].groupby("volume").std()
+            volume_df_std.index.name = "Volume"
+            resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
+
+            # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
+            vendor_df_mean = slice_df[["vendor", f"dice_{fluid}"]].groupby("vendor").mean()
+            vendor_df_mean.index.name = "Vendor"
+            vendor_df_std = slice_df[["vendor", f"dice_{fluid}"]].groupby("vendor").std()
+            vendor_df_std.index.name = "Vendor"
+            resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
+
+            # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
+            class_df_mean = slice_df[f"dice_{fluid}"].mean()
+            class_df_std = slice_df[f"dice_{fluid}"].std()
+            resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
+
+            # Saves the DataFrame that contains the values for each volume, class, and vendor
+            if not resize_images:
+                if not final_test:
+                    resulting_volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
+                    resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
+                else:
+                    resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_final_{dataset.lower()}.csv", index=True)
+                    resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_final_{dataset.lower()}.csv", index=True)
+            elif final_test:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_final_{dataset.lower()}.csv", index=True)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_final_{dataset.lower()}.csv", index=True)
+            else:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)
+
+            # Handles the information only on the slices that have the fluid
+            slice_df_wf = slice_df.copy()
             # Sets the Dice values to NaN whenever there is no fluid of that type
-            slice_df_wf.loc[slice_df_wf[f"voxels_{label_to_fluids.get(i)}"] == 0, f"dice_{label_to_fluids.get(i)}"] = np.nan
+            slice_df_wf.loc[slice_df_wf[f"voxels_{fluid}"] == 0, f"dice_{fluid}"] = np.nan
 
-        # Adds the vendor, volume, and number of the slice information to the DataFrame
-        slice_df_wf[['vendor', 'volume', 'slice_number']] = slice_df_wf['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
-        # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
-        volume_df_mean = slice_df_wf[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").mean()
-        volume_df_mean.index.name = "Volume"
-        volume_df_std = slice_df_wf[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").std()
-        volume_df_std.index.name = "Volume"
-        resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
+            # Adds the vendor, volume, and number of the slice information to the DataFrame
+            slice_df_wf[['vendor', 'volume', 'slice_number']] = slice_df_wf['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
+            # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
+            volume_df_mean = slice_df_wf[["volume", f"dice_{fluid}"]].groupby("volume").mean()
+            volume_df_mean.index.name = "Volume"
+            volume_df_std = slice_df_wf[["volume", f"dice_{fluid}"]].groupby("volume").std()
+            volume_df_std.index.name = "Volume"
+            resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
 
-        # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
-        vendor_df_mean = slice_df_wf[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
-        vendor_df_mean.index.name = "Vendor"
-        vendor_df_std = slice_df_wf[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").std()
-        vendor_df_std.index.name = "Vendor"
-        resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
+            # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
+            vendor_df_mean = slice_df_wf[["vendor", f"dice_{fluid}"]].groupby("vendor").mean()
+            vendor_df_mean.index.name = "Vendor"
+            vendor_df_std = slice_df_wf[["vendor", f"dice_{fluid}"]].groupby("vendor").std()
+            vendor_df_std.index.name = "Vendor"
+            resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
 
-        # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
-        class_df_mean = slice_df_wf[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
-        class_df_std = slice_df_wf[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
-        resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
+            # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
+            class_df_mean = slice_df_wf[f"dice_{fluid}"].mean()
+            class_df_std = slice_df_wf[f"dice_{fluid}"].std()
+            resulting_class_df_wf = str(class_df_mean) + " (" + str(class_df_std) + ")"
 
-        # Saves the DataFrame that contains the values for each volume, class, and vendor
-        if not resize_images:
-            if not final_test:
-                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid.csv", index=True)
-                resulting_class_df.to_csv(f"results/{run_name}_class_dice_wfluid.csv", index=False)
-                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid.csv", index=True)
+            # Saves the DataFrame that contains the values for each volume, class, and vendor
+            if not resize_images:
+                if not final_test:
+                    resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid.csv", index=True)
+                    resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid.csv", index=True)
+                else:
+                    resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid_final_{dataset.lower()}.csv", index=True)
+                    resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid_final_{dataset.lower()}.csv", index=True)
+            elif final_test:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid_final_{dataset.lower()}.csv", index=True)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid_final_{dataset.lower()}.csv", index=True)
             else:
-                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid_final_{dataset.lower()}.csv", index=True)
-                resulting_class_df.to_csv(f"results/{run_name}_class_dice_wfluid_final_{dataset.lower()}.csv", index=False)
-                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid_final_{dataset.lower()}.csv", index=True)
-        elif not final_test:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid.csv", index=True)
-            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wfluid.csv", index=False)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid.csv", index=True)
-        else:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid_final_{dataset.lower()}.csv", index=True)
-            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wfluid_final_{dataset.lower()}.csv", index=False)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid_final_{dataset.lower()}.csv", index=True)
-        
-        # Handles the information only on the slices that do not have fluid
-        slice_df_wof = slice_df.copy()
-        # Iterates through all the classes available
-        for i in range(number_of_classes):
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid.csv", index=True)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid.csv", index=True)
+            
+            # Handles the information only on the slices that do not have fluid
+            slice_df_wof = slice_df.copy()
             # Gets the DataFrame that contains a non-negative number of voxels for each column
-            slice_df_wof.loc[slice_df_wof[f"voxels_{label_to_fluids.get(i)}"] > 0, f"dice_{label_to_fluids.get(i)}"] = np.nan
+            slice_df_wof.loc[slice_df_wof[f"voxels_{fluid}"] > 0, f"dice_{fluid}"] = np.nan
 
-        # Adds the vendor, volume, and number of the slice information to the DataFrame
-        slice_df_wof[['vendor', 'volume', 'slice_number']] = slice_df_wof['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
-        # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
-        volume_df_mean = slice_df_wof[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").mean()
-        volume_df_mean.index.name = "Volume"
-        volume_df_std = slice_df_wof[["volume", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("volume").std()
-        volume_df_std.index.name = "Volume"
-        resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
+            # Adds the vendor, volume, and number of the slice information to the DataFrame
+            slice_df_wof[['vendor', 'volume', 'slice_number']] = slice_df_wof['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
+            # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
+            volume_df_mean = slice_df_wof[["volume", f"dice_{fluid}"]].groupby("volume").mean()
+            volume_df_mean.index.name = "Volume"
+            volume_df_std = slice_df_wof[["volume", f"dice_{fluid}"]].groupby("volume").std()
+            volume_df_std.index.name = "Volume"
+            resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
 
-        # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
-        vendor_df_mean = slice_df_wof[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").mean()
-        vendor_df_mean.index.name = "Vendor"
-        vendor_df_std = slice_df_wof[["vendor", "dice_IRF", "dice_SRF", "dice_PED"]].groupby("vendor").std()
-        vendor_df_std.index.name = "Vendor"
-        resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
+            # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
+            vendor_df_mean = slice_df_wof[["vendor", f"dice_{fluid}"]].groupby("vendor").mean()
+            vendor_df_mean.index.name = "Vendor"
+            vendor_df_std = slice_df_wof[["vendor", f"dice_{fluid}"]].groupby("vendor").std()
+            vendor_df_std.index.name = "Vendor"
+            resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
 
-        # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
-        class_df_mean = slice_df_wof[["dice_IRF", "dice_SRF", "dice_PED"]].mean().to_frame().T
-        class_df_std = slice_df_wof[["dice_IRF", "dice_SRF", "dice_PED"]].std().to_frame().T
-        resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
+            # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
+            class_df_mean = slice_df_wof[f"dice_{fluid}"].mean()
+            class_df_std = slice_df_wof[f"dice_{fluid}"].std()
+            resulting_class_df_wof = str(class_df_mean) + " (" + str(class_df_std) + ")"
 
-        # Saves the DataFrame that contains the values for each volume, class, and vendor
-        if not resize_images:
-            if not final_test:
-                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid.csv", index=True)
-                resulting_class_df.to_csv(f"results/{run_name}_class_dice_wofluid.csv", index=False)
-                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid.csv", index=True)
-                binary_dices_name = "fluid_dice"
+            # Appends all the results to a list that will be saved in a Series
+            classes_results = [resulting_class_df, resulting_class_df_wf, resulting_class_df_wof] 
+
+            classes_df = Series(classes_results).to_frame().T
+            classes_df.columns = ["AllSlices", "SlicesWithFluid", "SlicesWithoutFluid"]
+
+            # Saves the DataFrame that contains the values for each volume, class, and vendor
+            if not resize_images:
+                if not final_test:
+                    resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid.csv", index=True)
+                    resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid.csv", index=True)
+                    classes_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
+                else:
+                    resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid_final_{dataset.lower()}.csv", index=True)
+                    resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid_final_{dataset.lower()}.csv", index=True)
+                    classes_df.to_csv(f"results/{run_name}_class_dice_final_{dataset.lower()}.csv", index=False)
+            elif final_test:
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid_final_{dataset.lower()}.csv", index=True)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid_final_{dataset.lower()}.csv", index=True)
+                classes_df.to_csv(f"results/{run_name}_class_dice_resized_final_{dataset.lower()}.csv", index=False)
             else:
-                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid_final_{dataset.lower()}.csv", index=True)
-                resulting_class_df.to_csv(f"results/{run_name}_class_dice_wofluid_final_{dataset.lower()}.csv", index=False)
-                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid_final_{dataset.lower()}.csv", index=True)
-                binary_dices_name = f"fluid_dice_final_{dataset.lower()}"
-        elif not final_test:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid.csv", index=True)
-            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wofluid.csv", index=False)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid.csv", index=True)
-            binary_dices_name = "fluid_dice_resized"
-        else:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid_final_{dataset.lower()}.csv", index=True)
-            resulting_class_df.to_csv(f"results/{run_name}_class_dice_resized_wofluid_final_{dataset.lower()}.csv", index=False)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid_final_{dataset.lower()}.csv", index=True)
-            binary_dices_name = f"fluid_dice_resized_final_{dataset.lower()}"
-
-        # Initializes a list that will hold the results for the binary case
-        binary_dices = []
-        # Appends the binary Dice coefficient to a list that holds these values
-        binary_dices.append(f"{slice_df['binary_dice'].mean()} ({slice_df['binary_dice'].std()})")
-
-        # Get the fluid voxel column names (i = 1, 2, 3)
-        fluid_voxel_cols = [f"voxels_{label_to_fluids[i]}" for i in [1, 2, 3]]
-
-        # Copies the original DataFrame 
-        # on which changes will be applied
-        slice_df_wf = slice_df.copy()
-        slice_df_wof = slice_df.copy()
-
-        # For the 'with fluid' DataFrame, the slices with no fluid will be set to NaN in the 
-        # column that contains the binary Dice        
-        slice_df_wf.loc[slice_df_wf[fluid_voxel_cols].sum(axis=1) == 0, 'binary_dice'] = np.nan
-
-        # For the 'without fluid' DataFrame, the slices with any fluid will be set to NaN in the 
-        # column that contains the binary Dice
-        slice_df_wof.loc[slice_df_wof[fluid_voxel_cols].sum(axis=1) > 0, 'binary_dice'] = np.nan
-
-        # The mean and std of each column is added to a list that contains the results in binary conditions
-        binary_dices.append(f"{slice_df_wf['binary_dice'].mean()} ({slice_df_wf['binary_dice'].std()})")
-        binary_dices.append(f"{slice_df_wof['binary_dice'].mean()} ({slice_df_wof['binary_dice'].std()})")
-
-        # Saves the results as a DataFrame
-        df = Series(binary_dices).to_frame().T
-        df.columns = ["AllSlices", "SlicesWithFluid", "SlicesWithoutFluid"]
-        df.to_csv(f"results/{run_name}_{binary_dices_name}.csv", index=False)
-    else:
-        # Adds the vendor, volume, and number of the slice information to the DataFrame
-        slice_df[['vendor', 'volume', 'slice_number']] = slice_df['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
-        # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
-        volume_df_mean = slice_df[["volume", f"dice_{fluid}"]].groupby("volume").mean()
-        volume_df_mean.index.name = "Volume"
-        volume_df_std = slice_df[["volume", f"dice_{fluid}"]].groupby("volume").std()
-        volume_df_std.index.name = "Volume"
-        resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
-
-        # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
-        vendor_df_mean = slice_df[["vendor", f"dice_{fluid}"]].groupby("vendor").mean()
-        vendor_df_mean.index.name = "Vendor"
-        vendor_df_std = slice_df[["vendor", f"dice_{fluid}"]].groupby("vendor").std()
-        vendor_df_std.index.name = "Vendor"
-        resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
-
-        # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
-        class_df_mean = slice_df[f"dice_{fluid}"].mean()
-        class_df_std = slice_df[f"dice_{fluid}"].std()
-        resulting_class_df = class_df_mean.astype(str) + " (" + class_df_std.astype(str) + ")"
-
-        # Saves the DataFrame that contains the values for each volume, class, and vendor
-        if not resize_images:
-            if not final_test:
-                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice.csv", index=True)
-                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice.csv", index=True)
-            else:
-                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_final_{dataset.lower()}.csv", index=True)
-                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_final_{dataset.lower()}.csv", index=True)
-        elif final_test:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_final_{dataset.lower()}.csv", index=True)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_final_{dataset.lower()}.csv", index=True)
-        else:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized.csv", index=True)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized.csv", index=True)
-
-        # Handles the information only on the slices that have the fluid
-        slice_df_wf = slice_df.copy()
-        # Sets the Dice values to NaN whenever there is no fluid of that type
-        slice_df_wf.loc[slice_df_wf[f"voxels_{fluid}"] == 0, f"dice_{fluid}"] = np.nan
-
-        # Adds the vendor, volume, and number of the slice information to the DataFrame
-        slice_df_wf[['vendor', 'volume', 'slice_number']] = slice_df_wf['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
-        # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
-        volume_df_mean = slice_df_wf[["volume", f"dice_{fluid}"]].groupby("volume").mean()
-        volume_df_mean.index.name = "Volume"
-        volume_df_std = slice_df_wf[["volume", f"dice_{fluid}"]].groupby("volume").std()
-        volume_df_std.index.name = "Volume"
-        resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
-
-        # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
-        vendor_df_mean = slice_df_wf[["vendor", f"dice_{fluid}"]].groupby("vendor").mean()
-        vendor_df_mean.index.name = "Vendor"
-        vendor_df_std = slice_df_wf[["vendor", f"dice_{fluid}"]].groupby("vendor").std()
-        vendor_df_std.index.name = "Vendor"
-        resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
-
-        # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
-        class_df_mean = slice_df_wf[f"dice_{fluid}"].mean()
-        class_df_std = slice_df_wf[f"dice_{fluid}"].std()
-        resulting_class_df_wf = str(class_df_mean) + " (" + str(class_df_std) + ")"
-
-        # Saves the DataFrame that contains the values for each volume, class, and vendor
-        if not resize_images:
-            if not final_test:
-                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid.csv", index=True)
-                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid.csv", index=True)
-            else:
-                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wfluid_final_{dataset.lower()}.csv", index=True)
-                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wfluid_final_{dataset.lower()}.csv", index=True)
-        elif final_test:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid_final_{dataset.lower()}.csv", index=True)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid_final_{dataset.lower()}.csv", index=True)
-        else:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wfluid.csv", index=True)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wfluid.csv", index=True)
-        
-        # Handles the information only on the slices that do not have fluid
-        slice_df_wof = slice_df.copy()
-        # Gets the DataFrame that contains a non-negative number of voxels for each column
-        slice_df_wof.loc[slice_df_wof[f"voxels_{fluid}"] > 0, f"dice_{fluid}"] = np.nan
-
-        # Adds the vendor, volume, and number of the slice information to the DataFrame
-        slice_df_wof[['vendor', 'volume', 'slice_number']] = slice_df_wof['slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
-        # Saves the DataFrame with the mean and standard deviation for each OCT volume (e.g. mean (standard deviation))
-        volume_df_mean = slice_df_wof[["volume", f"dice_{fluid}"]].groupby("volume").mean()
-        volume_df_mean.index.name = "Volume"
-        volume_df_std = slice_df_wof[["volume", f"dice_{fluid}"]].groupby("volume").std()
-        volume_df_std.index.name = "Volume"
-        resulting_volume_df = volume_df_mean.astype(str) + " (" + volume_df_std.astype(str) + ")"
-
-        # Saves the DataFrame with the mean and standard deviation for each vendor (e.g. mean (standard deviation))
-        vendor_df_mean = slice_df_wof[["vendor", f"dice_{fluid}"]].groupby("vendor").mean()
-        vendor_df_mean.index.name = "Vendor"
-        vendor_df_std = slice_df_wof[["vendor", f"dice_{fluid}"]].groupby("vendor").std()
-        vendor_df_std.index.name = "Vendor"
-        resulting_vendor_df = vendor_df_mean.astype(str) + " (" + vendor_df_std.astype(str) + ")"
-
-        # Saves the DataFrame with the mean and standard deviation for each class (e.g. mean (standard deviation))
-        class_df_mean = slice_df_wof[f"dice_{fluid}"].mean()
-        class_df_std = slice_df_wof[f"dice_{fluid}"].std()
-        resulting_class_df_wof = str(class_df_mean) + " (" + str(class_df_std) + ")"
-
-        # Appends all the results to a list that will be saved in a Series
-        classes_results = [resulting_class_df, resulting_class_df_wf, resulting_class_df_wof] 
-
-        classes_df = Series(classes_results).to_frame().T
-        classes_df.columns = ["AllSlices", "SlicesWithFluid", "SlicesWithoutFluid"]
-
-        # Saves the DataFrame that contains the values for each volume, class, and vendor
-        if not resize_images:
-            if not final_test:
-                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid.csv", index=True)
-                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid.csv", index=True)
-                classes_df.to_csv(f"results/{run_name}_class_dice.csv", index=False)
-            else:
-                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_wofluid_final_{dataset.lower()}.csv", index=True)
-                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_wofluid_final_{dataset.lower()}.csv", index=True)
-                classes_df.to_csv(f"results/{run_name}_class_dice_final_{dataset.lower()}.csv", index=False)
-        elif final_test:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid_final_{dataset.lower()}.csv", index=True)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid_final_{dataset.lower()}.csv", index=True)
-            classes_df.to_csv(f"results/{run_name}_class_dice_resized_final_{dataset.lower()}.csv", index=False)
-        else:
-            resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid.csv", index=True)
-            resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid.csv", index=True)
-            classes_df.to_csv(f"results/{run_name}_class_dice_resized.csv", index=False)
+                resulting_volume_df.to_csv(f"results/{run_name}_volume_dice_resized_wofluid.csv", index=True)
+                resulting_vendor_df.to_csv(f"results/{run_name}_vendor_dice_resized_wofluid.csv", index=True)
+                classes_df.to_csv(f"results/{run_name}_class_dice_resized.csv", index=False)
         
 # In case it is preferred to run 
 # directly in this file, here lays 

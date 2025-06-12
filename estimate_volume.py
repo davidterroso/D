@@ -5,6 +5,7 @@ from IPython import get_ipython
 from os import fsdecode, fsencode, listdir, makedirs
 from skimage.io import imread
 from init.read_oct import load_oct_image
+from network_functions import dataset
 from paths import RETOUCH_PATH
 
 # Imports tqdm depending on whether 
@@ -15,7 +16,7 @@ if (get_ipython() is not None):
 else:
     from tqdm.auto import tqdm
 
-def estimate_volume(folder_path: str):
+def estimate_volume(folder_path: str, dataset_type: str="normal"):
     """
     In this function, the path to the folder that contains 
     the predicted masks by the model is indicated. The 
@@ -28,6 +29,9 @@ def estimate_volume(folder_path: str):
     Args:
         folder_path (str): path to the folder with the 
             predicted masks
+        dataset_type (str): indicates if the dataset had 
+            inferred images in between a known pair of slices
+            ('double') or not ('normal')
     
     Returns:
         None
@@ -85,9 +89,17 @@ def estimate_volume(folder_path: str):
             # in the non-edge slices and half the distance between 
             # slices in the edge slices (first and last slice)
             if int(slice_num) == 0 or int(slice_num) + 1 == vol.shape[0]:
-                voxel_volume = voxel_area * 0.5 * spacing[2]
+                if dataset_type == "normal":
+                    voxel_volume = voxel_area * 0.5 * spacing[2]
+                else:
+                    # The distance between slices is half
+                    voxel_volume = voxel_area * 0.5 * spacing[2] / 2
             else:
-                voxel_volume = voxel_area * spacing[2]
+                if dataset_type == "normal":
+                    voxel_volume = voxel_area * spacing[2]
+                else:
+                    # The distance between slices is half
+                    voxel_volume = voxel_area * spacing[2] / 2
             # The volume of each fluid in the slice is calculated 
             # by the multiplication of the voxel volume by the 
             # number of voxels present in the fluid mask
@@ -119,4 +131,4 @@ def estimate_volume(folder_path: str):
     volumes_df.to_csv(f".\\fluid_volumes\\{folder_name}_volumes.csv", index=False)
     vendors_df.to_csv(f".\\fluid_volumes\\{folder_name}_vendors.csv", index=False)
 
-estimate_volume(folder_path=r"D:\DavidTerroso\Images\OCT_images\segmentation\predictions\Run058_resized_final_retouch_masks\\")
+estimate_volume(folder_path=r"D:\DavidTerroso\Images\OCT_images\segmentation\predictions\Run058_resized_final_intergen_masks\\", dataset_type="double")

@@ -15,6 +15,7 @@ from network_functions.dataset import TestDatasetGAN
 from networks.pix2pix import Pix2PixGenerator
 from networks.unet import UNet
 from paths import IMAGES_PATH
+import os
 
 import matplotlib.pyplot as plt
 
@@ -266,6 +267,7 @@ def test_gan(
         device_name: str="GPU", 
         final_test: bool=False, 
         gen_model_name: str=None,
+        mode: str="test",
         number_of_classes: int=1,
         oct_device: str='all',
         save_images: bool=True,
@@ -291,6 +293,8 @@ def test_gan(
         gen_model_name (str): name of the trained generator 
             model used in the Pix2Pix. Can only be 'GAN' or
             'UNet'
+        mode (str): can be 'test' or 'infer' and indicates 
+            the operation performed
         number_of_classes (int): number of classes the 
             output will present
         oct_device (str): name of the OCT device from which the 
@@ -362,25 +366,17 @@ def test_gan(
     # to evaluation mode
     generator.eval()
 
-    # Creates the TestDatasetGAN object with the 
-    # list of volumes that will be used in training
-    test_dataset = TestDatasetGAN(test_volumes=test_volumes, oct_device=oct_device)
-    # Creates the DataLoader object using the dataset, declaring both the size of the 
-    # batch and the number of workers
-    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=12)
-
     # Extracts the name of the run from 
     # the name of the weights file
     run_name = weights_name.split("_")[0]
 
-    # Initiates the list that will 
-    # store the results of the slices 
-    slice_results = []
-
     # Declares the name of the folder in which the images will be saved
     if save_images:
         if final_test: 
-            folder_to_save = IMAGES_PATH + f"\\OCT_images\\generation\\predictions\\{run_name}_final\\"
+            if mode == "test":
+                folder_to_save = IMAGES_PATH + f"\\OCT_images\\generation\\predictions\\{run_name}_final\\"
+            elif mode == "infer":
+                folder_to_save = IMAGES_PATH + f"\\OCT_images\\generation\\predictions\\{run_name}_final_infer\\"
         # In case the folder to save exists, it is deleted and created again
         else:
             folder_to_save = IMAGES_PATH + f"\\OCT_images\\generation\\predictions\\{run_name}\\"
@@ -389,6 +385,19 @@ def test_gan(
             makedirs(folder_to_save)
         else:
             makedirs(folder_to_save)
+
+    # Creates the TestDatasetGAN object with the 
+    # list of volumes that will be used in training
+    test_dataset = TestDatasetGAN(test_volumes=test_volumes, oct_device=oct_device, mode=mode, folder_to_save=folder_to_save)
+    # Creates the DataLoader object using the dataset, declaring both the size of the 
+    # batch and the number of workers
+    test_dataloader = DataLoader(test_dataset, batch_size=batch_size, num_workers=12)
+
+
+    # Initiates the list that will 
+    # store the results of the slices 
+    slice_results = []
+
 
     # Informs that no backward propagation will be calculated 
     # because it is an inference, thus reducing memory consumption
@@ -403,39 +412,80 @@ def test_gan(
                 # Gets the stack of three images from the DataLoader
                 stack, mid_image_name = batch["stack"], batch["image_name"][0]
 
-                # Separates the stack in the previous image, 
-                # the middle image (the one we aim to predict), 
-                # and following image, allocating them to the GPU 
-                prev_imgs = stack[:,0,:,:].to(device=device)
-                mid_imgs = stack[:,1,:,:].to(device=device)
-                next_imgs = stack[:,2,:,:].to(device=device)
+                if mode == "test":
+                    # Separates the stack in the previous image, 
+                    # the middle image (the one we aim to predict), 
+                    # and following image, allocating them to the GPU 
+                    prev_imgs = stack[:,0,:,:].to(device=device)
+                    mid_imgs = stack[:,1,:,:].to(device=device)
+                    next_imgs = stack[:,2,:,:].to(device=device)
+                    # Using the trained generator, the previous and 
+                    # following images are used to generate the middle image
+                    if gen_model_name == "GAN":
+                        gen_imgs_wgenerator = generator(prev_imgs.detach(), next_imgs.detach())
+                    elif gen_model_name == "UNet":
+                        gen_imgs_wgenerator = generator(torch.stack([prev_imgs, next_imgs], dim=1).detach())
+                    elif gen_model_name is not None:
+                        print("Unrecognized generator model name. Available names: 'GAN' or 'UNet'")
+                        return
+                    # Generates the middle image
+                    # In the case of the GAN, even though we are 
+                    # dealing with 64x64 patches, the original 
+                    # we can input the whole image at the same time
+                    # due to the fully convolutional layer of the 
+                    # discriminator network
+                    if model_name == "GAN":
+                        gen_imgs = generator(prev_imgs.unsqueeze(1).detach(), next_imgs.unsqueeze(1).detach())
+                    elif model_name == "UNet":
+                        gen_imgs = generator(torch.stack([prev_imgs, next_imgs], dim=1).detach().to(device=device))
+                    elif model_name == "Pix2Pix":
+                        gen_imgs = pix2pix_generator(gen_imgs_wgenerator).to(device=device)
+                    # Converts the image from range [-1,1] to [0,1]
+                    mid_imgs = (mid_imgs + 1) / 2                
+                    gen_imgs = (gen_imgs + 1) / 2
+                    # Calculates the PSNR value
+                    img_psnr = round(psnr(mid_imgs.to(device=device), gen_imgs.to(device=device)), 3)
+                    # Removes batch dimension from the generated image
+                    mid_imgs = mid_imgs.squeeze(0).squeeze(0)
+                    gen_imgs = gen_imgs.squeeze(0).squeeze(0)
+                    # Calculates the SSIM value
+                    img_ssim = round(ssim(
+                                    mid_imgs.cpu().numpy(), gen_imgs.cpu().numpy(),
+                                    data_range=1,
+                                    gaussian_weights=True,
+                                    use_sample_covariance=False,
+                                    win_size=11
+                                ), 3)
+                    
+                    # Calculates the mean squared error (MSE) for the two images
+                    img_mse = torch.nn.functional.mse_loss(mid_imgs.to(device=device), gen_imgs.to(device=device)).item()
 
-                # Using the trained generator, the previous and 
-                # following images are used to generate the middle image
-                if gen_model_name == "GAN":
-                    gen_imgs_wgenerator = generator(prev_imgs.detach(), next_imgs.detach())
-                elif gen_model_name == "UNet":
-                    gen_imgs_wgenerator = generator(torch.stack([prev_imgs, next_imgs], dim=1).detach())
-                elif gen_model_name is not None:
-                    print("Unrecognized generator model name. Available names: 'GAN' or 'UNet'")
-                    return
-
-                # Generates the middle image
-                # In the case of the GAN, even though we are 
-                # dealing with 64x64 patches, the original 
-                # we can input the whole image at the same time
-                # due to the fully convolutional layer of the 
-                # discriminator network
-                if model_name == "GAN":
-                    gen_imgs = generator(prev_imgs.unsqueeze(1).detach(), next_imgs.unsqueeze(1).detach())
-                elif model_name == "UNet":
-                    gen_imgs = generator(torch.stack([prev_imgs, next_imgs], dim=1).detach().to(device=device))
-                elif model_name == "Pix2Pix":
-                    gen_imgs = pix2pix_generator(gen_imgs_wgenerator).to(device=device)
-
-                # Converts the image from range [-1,1] to [0,1]
-                mid_imgs = (mid_imgs + 1) / 2
-                gen_imgs = (gen_imgs + 1) / 2
+                    # Appends the images to the list of results
+                    slice_results.append([mid_image_name, img_psnr, img_ssim, img_mse])
+                elif mode == "infer":
+                    # Separates the stack in the previous image, 
+                    # the middle image (the one we aim to predict), 
+                    # and following image, allocating them to the GPU 
+                    prev_imgs = stack[:,0,:,:].to(device=device)
+                    next_imgs = stack[:,1,:,:].to(device=device)
+                    # Generates the middle image
+                    # In the case of the GAN, even though we are 
+                    # dealing with 64x64 patches, the original 
+                    # we can input the whole image at the same time
+                    # due to the fully convolutional layer of the 
+                    # discriminator network
+                    if model_name == "GAN":
+                        gen_imgs = generator(prev_imgs.unsqueeze(1).detach(), next_imgs.unsqueeze(1).detach())
+                    else:
+                        print("Unrecognized generator model name. Available names: 'GAN' or 'UNet'")
+                        return
+                    # Converts the image from range [-1,1] to [0,1]
+                    gen_imgs = (gen_imgs + 1) / 2
+                    gen_imgs = gen_imgs.squeeze(0).squeeze(0)
+                prev_imgs = (prev_imgs + 1) / 2
+                prev_imgs = prev_imgs.squeeze(0)
+                next_imgs = (next_imgs + 1) / 2
+                next_imgs = next_imgs.squeeze(0)
 
                 ########### USED ONLY FOR DEBUGGING #############
 
@@ -462,102 +512,107 @@ def test_gan(
 
                 # return
 
-                # Calculates the PSNR value
-                img_psnr = round(psnr(mid_imgs.to(device=device), gen_imgs.to(device=device)), 3)
-                # Removes batch dimension from the generated image
-                mid_imgs = mid_imgs.squeeze(0).squeeze(0)
-                gen_imgs = gen_imgs.squeeze(0).squeeze(0)
-                # Calculates the SSIM value
-                img_ssim = round(ssim(
-                                mid_imgs.cpu().numpy(), gen_imgs.cpu().numpy(),
-                                data_range=1,
-                                gaussian_weights=True,
-                                use_sample_covariance=False,
-                                win_size=11
-                            ), 3)
-                
-                # Calculates the mean squared error (MSE) for the two images
-                img_mse = torch.nn.functional.mse_loss(mid_imgs.to(device=device), gen_imgs.to(device=device)).item()
-
-                # Appends the images to the list of results
-                slice_results.append([mid_image_name, img_psnr, img_ssim, img_mse])
-
                 # Saves the images
                 if save_images:
                     # Converts from [0, 1] float to [0, 255] uint8
                     gen_imgs = (gen_imgs * 255).cpu().numpy().astype(uint8)
+                    prev_imgs = (prev_imgs * 255).cpu().numpy().astype(uint8)
+                    next_imgs = (next_imgs * 255).cpu().numpy().astype(uint8)
                     # The image is passed from the GPU to the CPU in case it 
                     # has previously been assigned to it, then it is converted from 
                     # a PyTorch tensor to a NumPy array and saved using Pillow
                     Image.fromarray(gen_imgs).save(
-                        str(folder_to_save + mid_image_name[:-5] + "_generated" + ".tiff"))
+                        str(folder_to_save + os.path.splitext(mid_image_name)[0] + "_generated.tiff"))
+                    
+                    if mode == "infer":
+                        # Remove "_generated" and split the name
+                        base = os.path.splitext(mid_image_name)[0]
+                        parts = base.split("_")
+
+                        # Extract the common prefix
+                        prefix = "_".join(parts[:-2])  # "Cirrus_TRAIN002"
+
+                        # Extract the frame numbers
+                        prev_num = parts[-2]  # "037"
+                        next_num = parts[-1]  # "038"
+
+                        # Compose filenames
+                        prev_image_name = f"{prefix}_{prev_num}.tiff"
+                        next_image_name = f"{prefix}_{next_num}.tiff"
+
+                        # The image is passed from the GPU to the CPU in case it 
+                        # has previously been assigned to it, then it is converted from 
+                        # a PyTorch tensor to a NumPy array and saved using Pillow
+                        Image.fromarray(prev_imgs).save(str(folder_to_save + prev_image_name))
+                        Image.fromarray(next_imgs).save(str(folder_to_save + next_image_name))
 
                 # Updates the progress bar
                 progress_bar.update(1)
 
-    # Creates the folder results in case 
-    # it does not exist yet
-    makedirs("results", exist_ok=True)
+    if mode == 'test':
+        # Creates the folder results in case 
+        # it does not exist yet
+        makedirs("results", exist_ok=True)
 
-    # Converts the information into a DataFrame
-    slice_df = DataFrame(slice_results, columns=["Slice", "PSNR", "SSIM", "MSE"])
+        # Converts the information into a DataFrame
+        slice_df = DataFrame(slice_results, columns=["Slice", "PSNR", "SSIM", "MSE"])
 
-    # Saves the DataFrame as a CSV file
-    if not final_test:
-        slice_df.to_csv(f"results/{run_name}_slice.csv", index=False)        
-    else:
-        slice_df.to_csv(f"results/{run_name}_slice_final.csv", index=False)
+        # Saves the DataFrame as a CSV file
+        if not final_test:
+            slice_df.to_csv(f"results/{run_name}_slice.csv", index=False)        
+        else:
+            slice_df.to_csv(f"results/{run_name}_slice_final.csv", index=False)
 
-    # Adds three columns to the DataFrame separating the information of the slice into vendor, volume, and slice_number
-    slice_df[['vendor', 'volume', 'slice_number']] = slice_df['Slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
+        # Adds three columns to the DataFrame separating the information of the slice into vendor, volume, and slice_number
+        slice_df[['vendor', 'volume', 'slice_number']] = slice_df['Slice'].str.replace('.tiff', '', regex=True).str.split('_', n=2, expand=True)
 
-    # Reads the CSV files with the information of the 
-    # OCT volumes used in training in the original dataset
-    train_df = read_csv("splits\\volumes_info.csv")
-    train_df["volume_key"] = "TRAIN" + train_df["VolumeNumber"].astype(str).str.zfill(3)
+        # Reads the CSV files with the information of the 
+        # OCT volumes used in training in the original dataset
+        train_df = read_csv("splits\\volumes_info.csv")
+        train_df["volume_key"] = "TRAIN" + train_df["VolumeNumber"].astype(str).str.zfill(3)
 
-    # Reads the CSV files with the information of the 
-    # OCT volumes used in testing in the original dataset
-    test_df = read_csv("splits\\volumes_info_test.csv")
-    test_df["volume_key"] = "TEST" + test_df["VolumeNumber"].astype(str).str.zfill(3)
+        # Reads the CSV files with the information of the 
+        # OCT volumes used in testing in the original dataset
+        test_df = read_csv("splits\\volumes_info_test.csv")
+        test_df["volume_key"] = "TEST" + test_df["VolumeNumber"].astype(str).str.zfill(3)
 
-    # Concatenates both DataFrames into a single one, keeping only the volume_key and the Device 
-    # information
-    volume_device_map = concat([train_df, test_df], ignore_index=True)[["volume_key", "Device"]]
+        # Concatenates both DataFrames into a single one, keeping only the volume_key and the Device 
+        # information
+        volume_device_map = concat([train_df, test_df], ignore_index=True)[["volume_key", "Device"]]
 
-    # Merges the dataFrame with 
-    # the information with the 
-    # one of the slices metrics
-    # so that it is possible to
-    # group by device 
-    slice_df = slice_df.merge(
-        volume_device_map,
-        how="left",
-        left_on="volume",
-        right_on="volume_key"
-    )
+        # Merges the dataFrame with 
+        # the information with the 
+        # one of the slices metrics
+        # so that it is possible to
+        # group by device 
+        slice_df = slice_df.merge(
+            volume_device_map,
+            how="left",
+            left_on="volume",
+            right_on="volume_key"
+        )
 
-    # Removes the key used to merge
-    slice_df = slice_df.drop(columns=["volume_key"])
+        # Removes the key used to merge
+        slice_df = slice_df.drop(columns=["volume_key"])
 
-    # Groups the PSNR, SSIM, and MSE by the mean of all slices, for each Device
-    device_df_mean = slice_df[["Device", "PSNR", "SSIM", "MSE"]].groupby("Device").mean()
-    device_df_mean.index.name = "Device"
-    device_df_std = slice_df[["Device", "PSNR", "SSIM", "MSE"]].groupby("Device").std()
-    device_df_std.index.name = "Device"
-    resulting_device_df = device_df_mean.astype(str) + " (" + device_df_std.astype(str) + ")"
+        # Groups the PSNR, SSIM, and MSE by the mean of all slices, for each Device
+        device_df_mean = slice_df[["Device", "PSNR", "SSIM", "MSE"]].groupby("Device").mean()
+        device_df_mean.index.name = "Device"
+        device_df_std = slice_df[["Device", "PSNR", "SSIM", "MSE"]].groupby("Device").std()
+        device_df_std.index.name = "Device"
+        resulting_device_df = device_df_mean.astype(str) + " (" + device_df_std.astype(str) + ")"
 
-    # Groups the PSNR, SSIM, and MSE by the mean of all slices
-    slice_df_mean = slice_df[["PSNR", "SSIM", "MSE"]].mean().to_frame().T
-    slice_df_mean.index.name = "AllDevices"
-    slice_df_std = slice_df[["PSNR", "SSIM", "MSE"]].std().to_frame().T
-    slice_df_std.index.name = "AllDevices"
-    resulting_slice_df = slice_df_mean.astype(str) + " (" + slice_df_std.astype(str) + ")"
+        # Groups the PSNR, SSIM, and MSE by the mean of all slices
+        slice_df_mean = slice_df[["PSNR", "SSIM", "MSE"]].mean().to_frame().T
+        slice_df_mean.index.name = "AllDevices"
+        slice_df_std = slice_df[["PSNR", "SSIM", "MSE"]].std().to_frame().T
+        slice_df_std.index.name = "AllDevices"
+        resulting_slice_df = slice_df_mean.astype(str) + " (" + slice_df_std.astype(str) + ")"
 
-    # Saves the DataFrames to a CSV file
-    if not final_test:
-        resulting_device_df.to_csv(f"results/{run_name}_device.csv")
-        resulting_slice_df.to_csv(f"results/{run_name}_results.csv")
-    else:
-        resulting_device_df.to_csv(f"results/{run_name}_device_final.csv")
-        resulting_slice_df.to_csv(f"results/{run_name}_results_final.csv")
+        # Saves the DataFrames to a CSV file
+        if not final_test:
+            resulting_device_df.to_csv(f"results/{run_name}_device.csv")
+            resulting_slice_df.to_csv(f"results/{run_name}_results.csv")
+        else:
+            resulting_device_df.to_csv(f"results/{run_name}_device_final.csv")
+            resulting_slice_df.to_csv(f"results/{run_name}_results_final.csv")

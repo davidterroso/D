@@ -6,7 +6,7 @@ from io import BytesIO
 from numpy import array, any, expand_dims, int8, max, min, ndarray, nonzero, stack, sum, uint8, zeros_like
 from numpy.random import random_sample
 from os import listdir, remove
-from os.path import exists
+from os.path import exists, join
 from paths import IMAGES_PATH
 from PIL import Image
 from skimage.io import imread
@@ -212,7 +212,8 @@ def patches_from_volumes(volumes_list: list, model: str,
     return patches_list
 
 def generation_images_from_volumes(volumes_list: list, model_name: str, 
-                                   oct_device: str='all'):
+                                   folder_to_save: str=None, oct_device: str='all', 
+                                   mode: str="test"):
     """
     Used to return the list of all the patches that are available to 
     train the GAN, knowing which volumes will be used
@@ -222,10 +223,14 @@ def generation_images_from_volumes(volumes_list: list, model_name: str,
             that will be used in training
         model_name (str): name of the model that is being trained. Can 
             only be "UNet" or "GAN"
+        folder_to_save (str): path to the folder in which the images 
+            will be saved
         oct_device (str): name of the OCT device from which the scans 
             while be used to train and validate the model. Can be 'all', 
             'Cirrus', 'Spectralis', 'T-1000', or 'T-2000'. The default 
             option is 'all'
+        mode (str): can be 'test' or 'infer' and indicates 
+            the operation performed
 
     Return:
         patches_list (List[str]): list of the name of the patches that 
@@ -298,14 +303,40 @@ def generation_images_from_volumes(volumes_list: list, model_name: str,
     filtered_paths = []
     # Iterates through all the volumes in the dataset
     for volume_id, slices_dict in volume_dict.items():
-        # Sorts paths for the volume to ensure correct order
         slice_numbers = sorted(slices_dict.keys())
-        # Excludes the first and last slices,
-        # while ensuring that there are enough 
-        # slices to analyze 
-        if len(slice_numbers) > 2:
+        if len(slice_numbers) < 2:
+            continue
+
+        # Extract vendor and volume info
+        vendor = volume_id.split("_")[0]
+        volume_num_str = volume_id.split("_")[1]
+        volume_number = int(volume_num_str[-3:])
+        volume_set = volume_num_str[:-3].lower()
+
+        df = training_volumes_df if volume_set == 'train' else testing_volumes_df
+        volume_row = df[(df["VolumeNumber"] == volume_number) & (df["Vendor"] == vendor)]
+        if volume_row.empty:
+            continue
+
+        num_slices = int(volume_row["SlicesNumber"].values[0])
+        last_slice = num_slices - 1
+
+        if mode == "test":
             for sn in slice_numbers[1:-1]:
                 filtered_paths.extend(slices_dict[sn])
+
+            if folder_to_save is not None:
+                # Save first and last slices to GAN results folder
+                for sn in [0, last_slice]:
+                    if sn in slices_dict:
+                        for folder, path in slices_dict[sn]:
+                            img = Image.open(join(folder, path))
+                            save_name = path if path.endswith(".tiff") else path.rsplit(".", 1)[0] + ".tiff"
+                            img.save(join(folder_to_save, save_name))
+        elif mode == "infer":
+            for sn in slice_numbers:
+                if sn != last_slice:
+                    filtered_paths.extend(slices_dict[sn])
     
     # Return only the filenames with their respective folder
     return [f"{path}" for folder, path in filtered_paths]
@@ -901,7 +932,10 @@ class TestDataset(Dataset):
         # Reads the image and the
         # fluid mask
         scan = imread(slice_name)
-        mask = imread(mask_name)
+        if exists(mask_name):
+            mask = imread(mask_name)
+        else:
+            mask = zeros_like(scan)
 
         # In case the selected model is the 2.5D, also loads the previous
         # and following slice
@@ -1497,7 +1531,8 @@ class TestDatasetGAN(Dataset):
     TestDatasetGAN with the available image's paths, thus 
     simplifying the testing process
     """
-    def __init__(self, test_volumes: list, oct_device: str='all'):
+    def __init__(self, test_volumes: list, oct_device: str='all', 
+                 mode: str="test", folder_to_save: str=None):
         """
         Initiates the Dataset object and gets the possible 
         names of the images that will be used in testing
@@ -1512,6 +1547,10 @@ class TestDatasetGAN(Dataset):
                 the model. Can be 'all', 'Cirrus', 'Spectralis', 
                 'T-1000', or 'T-2000'. The default option is 
                 'all'
+            mode (str): can be 'test' or 'infer' and indicates 
+                the operation performed
+            folder_to_save (str): path to the folder in which 
+                the images will be saved
                 
         Return:
             None
@@ -1522,7 +1561,10 @@ class TestDatasetGAN(Dataset):
         # test the model
         self.images_names = generation_images_from_volumes(test_volumes,
                                                            model_name="UNet", 
-                                                           oct_device=oct_device)
+                                                           oct_device=oct_device,
+                                                           mode=mode,
+                                                           folder_to_save=folder_to_save)
+        self.mode = mode
 
     def __len__(self):
         """
@@ -1564,16 +1606,21 @@ class TestDatasetGAN(Dataset):
         # Gets the number of the slice
         img_number = int(image_path.split(".")[0][-3:])
         # Sets the name of the previous and following images
-        prev_img_path = image_path.split(".")[0][:-3] + str(img_number - 1).zfill(3) + ".tiff"
-        next_img_path = image_path.split(".")[0][:-3] + str(img_number + 1).zfill(3) + ".tiff"
-
         # Loads the previous and the 
         # following images 
-        prev_img = torch.from_numpy(((imread(prev_img_path) / 255.) - 0.5) * 2.).float()
+        next_img_path = image_path.split(".")[0][:-3] + str(img_number + 1).zfill(3) + ".tiff"
         next_img = torch.from_numpy(((imread(next_img_path) / 255.) - 0.5) * 2.).float()
+        if self.mode == "test":
+            prev_img_path = image_path.split(".")[0][:-3] + str(img_number - 1).zfill(3) + ".tiff"
+            prev_img = torch.from_numpy(((imread(prev_img_path) / 255.) - 0.5) * 2.).float()
+            return_stack = torch.stack([prev_img, img, next_img], axis=0)
+            middle_image_name = self.images_names[index]
+        elif self.mode == "infer":
+            return_stack = torch.stack([img, next_img], axis=0)
+            middle_image_name = self.images_names[index].split(".")[0][:-3] + str(img_number).zfill(3) + "_" + str(img_number + 1).zfill(3) + ".tiff"
 
         # Organizes the data in a dictionary that contains the images stacked along the first axis under the key 
         # "stack" and the path of the middle image associated with the key "image_name"
-        sample = {"stack": torch.stack([prev_img, img, next_img], axis=0), "image_name": self.images_names[index]}
+        sample = {"stack": return_stack, "image_name": middle_image_name}
 
         return sample
