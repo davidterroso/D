@@ -240,7 +240,7 @@ def generation_images_from_volumes(volumes_list: list, model_name: str,
     # Reads the CSV files that contain the information of 
     # each OCT volume
     training_volumes_df = read_csv("splits\\volumes_info.csv")
-    testing_volumes_df = read_csv("splits\\volumes_info.csv")
+    testing_volumes_df = read_csv("splits\\volumes_info_test.csv")
 
     # Iterates through the available images
     # and registers the name of those that are 
