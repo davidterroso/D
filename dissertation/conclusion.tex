@@ -52,6 +52,24 @@ However, the oversegmentation in IRF is not only rooted to the dataset, but also
 \par
 For the same reason, the fluid estimation is also more accurate in Topcon. In the scans obtained with devices from this vendor, the patients present less deformation associated with the presence of fluid. Therefore, the model generalizes better, as these fluids seen in these scans tend to be more similar with the majority of those seen in training.
 
+\section{Limitations}
+
+Despite the promising results obtained in both segmentation and generative tasks, several limitations were associated with the methodology selected for this work. These methods were selected in accordance with the available time and hardware for training the models.
+\par
+In the segmentation task, the experiments performed utilized the base U-Net architecture, which was selected for its reliability and widespread adoption. As seen in the literature review and mentioned in the future research, other methods have been developed to tackle the segmentation problems previously shown, such as incorrect segmentation of complex structures and detection of fluid beyond the retina. Recent studies approached these problems by including enhancements such as attention mechanisms, transformer-based modules, and multi-scale feature integration. However, due to the time constraints, the difficult access to these developed solutions, and the limited computational resources, these more complex approaches were not considered.
+\par
+Similarly, three-dimensional convolutional networks were not considered for the segmentation of the retinal fluids. Despite the accessibility to three-dimensional networks such as the 3D U-Net, the computational resources required, such as memory and training time, and the necessity for larger datasets made its application unfeasible.
+\par
+The same happened with the generative models. When training a GAN, there are two networks being trained simultaneously, which increases the duration of training. This, combined with the increase in the available data, made the training of the GANs longer than the segmentation models. 
+\par
+This conditioned the selection of the GAN to create intermediate slices. Despite the trend to incorporate different modules and even different networks in the generative framework as seen in the literature, the limitations in time, computational resources, and accessibility to these implementations lead to the implementation of a simpler model.
+\par
+Since the calculation of the fluid volumes is inherently dependent on the quality of the segmentation masks, in Experiment 5, and also the quality of the generated slices, in Experiment 6, the obtained results in fluid volume estimation are also conditioned by the selection of the segmentation and generative models.
+\par
+The limited generalization of the segmentation models on the unseen CHUSJ dataset can be largely attributed to the training data characteristics. Since the model was trained exclusively on the RETOUCH dataset, its segmentation performance was optimized for images following specific acquisition protocols and visual characteristics.
+\par
+In RETOUCH, a benchmark dataset in the segmentation of retinal fluid, the images obtained with the same device follow the same imaging protocol and, therefore, present similar visual characteristics between each other, except for the patient-specific  details. Consequently, when presented with images acquired using different protocols, such as those in the CHUSJ dataset, the model struggles to adapt to features different from those in which it was trained on, such as varying levels of noise and the appearance of the structures in the choroid. This lead to multiple incorrect fluid segmentations.
+
 \section{Future Research}
 
 Despite the satisfying results obtained in the fluid segmentation experiments, improvements can still be made in order to reach better results, building on top of the experiments performed in this dissertation. These experiments used state-of-the-art methods combined with innovation in the model's inputs, producing good outputs in the rough delimitation and classification of fluid. However, three main issues were detected: oversegmentation outside the retina, poor attention to detail in smaller fluids, and weak generalization in different datasets. Therefore, these weaknesses leave space to further work.
@@ -65,9 +83,3 @@ To tackle this problem, a single U-Net is not enough, especially knowing that so
 Lastly, generalization to external datasets remains a challenge. In the CHUSJ dataset, the model would frequently predict fluid outside the retina, which could be mitigated using retinal layer delimitation. However, the variations of the speckle noise, which vary depending on the scan acquisition protocols, impacted the segmentation quality. To improve robustness under these conditions, future work could explore data augmentation with Gaussian noise or by training the models with data from different sources to increase variability in the training data.
 \par
 Nevertheless, an improvement in segmentation models would transfer to a more accurate fluid estimation. The suggested changes, which also enhance the segmentation of IRF, would be particularly useful in the estimation of this fluid, which does not generalize as well as SRF and PED, due to its characteristic diversity.
-
-\section{Limitations}
-Despite the promising results obtained in both segmentation and generative tasks, several limitations were associated with the methodology selected for this work. These methods were selected in accordance with the available time and hardware for training the models.
-\par
-In the segmentation task, the experiments performed utilized the base U-Net architecture, which was selected for its reliability and widespread adoption. As seen in the literature review and mentioned in the future research, other methods have been developed to tackle the segmentation problems previously shown, such as incorrect segmentation of complex structures and detection of fluid beyond the retina. Recent studies approached these problems by including enhancements such as attention mechanisms, transformer-based modules, and multi-scale feature integration. However, due to the time constraints, the difficult access to these developed solutions, and the limited computational resources, these approaches were not considered.
-\par
