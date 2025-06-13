@@ -793,7 +793,7 @@ The reason Topcon behaves differently is because, overall, the volumes obtained 
 \par
 When comparing the results across all slices between these binary models with the multi-class, it is seen a significant decrease in Dice coefficient in the models tasked to segment exclusively IRF. There are two main causes for this decrease, with the first being an increment in the number of pixels labeled as background. As the model attempts to exclusively segment IRF, all the pixels that are not labeled as IRF, are classified as background. This means that the regions of SRF and PED are also interpreted as background. The images in the dataset are predominantly composed of non-fluid pixels, but, by re-assigning the other fluids' pixels in the retina as background, the proportion of fluid pixels in the image, and particularly in the retina, becomes even smaller. As the number of background pixels increase, the more chances the model has of mislabeling them as fluid.
 \par
-The increased number of background pixels is further impacted with the lack of inter-class competition. This inter-class competition is particularly helpful in the segmentation of other ambiguous regions such as other fluids, which, in binary segmentation, is not contested by other classes. This does not incentive the model to learn the anatomical characteristics of the retina that are key to identifying the region corresponding to each fluid, often leading to over-segmentation. 
+The increased number of background pixels is further impacted with the lack of inter-class competition. This inter-class competition is particularly helpful in the segmentation of other ambiguous regions such as other fluids, which, in binary segmentation, is not contested by other classes. This does not motivate the model to learn the anatomical characteristics of the retina that are key to identifying the region corresponding to each fluid, often leading to over-segmentation. 
 \par
 This translates to a decrease in the IRF segmentation model's performance, particularly in the slices that do not present this fluid, with two examples shown in Figure \ref{fig:Experiment2IRFSegmentation}. The same performance decrease is also seen in SRF and PED, as shown further, due to the same reasons.
 
@@ -1120,7 +1120,7 @@ However, what really worsens the overall performance is fluid detection. All the
 \par
 The reason these values were so low is related with the loss function used. By keeping the Dice loss as a component of the training loss, the model is highly penalized when predicting fluid in an image which does not have fluid. Whenever any fluid is predicted in such image, the Dice coefficient is 0. This motivates the model to carefully predict pixels in regions of the image where it highly believes there is fluid.
 \par
-When removing the Dice component from the loss, the wrongful predictions are only penalized by the cross-entropy component. This component does not penalize as much the predictions of fluid in empty images. The cross-entropy of each B-scan is calculated adjusted to the number of pixels belonging to a class in the image, as shown in \ref{Methods} Methods. Whenever a background pixel is wrongfully classified as fluid, the resulting penalty is really small, due to the large quantity of background pixels in the mask. Therefore, the incentive to not segment fluid in images which are solely composed of background is much smaller than it is when the Dice is considered. This results in segmentations such as the one seen in Figure \ref{fig:BCESegmentationError}.
+When removing the Dice component from the loss, the wrongful predictions are only penalized by the cross-entropy component. This component does not penalize as much the predictions of fluid in empty images. The cross-entropy of each B-scan is calculated adjusted to the number of pixels belonging to a class in the image, as shown in \ref{Methods} Methods. Whenever a background pixel is wrongfully classified as fluid, the resulting penalty is really small, due to the large quantity of background pixels in the mask. Therefore, the motivation to not segment fluid in images which are solely composed of background is much smaller than it is when the Dice is considered. This results in segmentations such as the one seen in Figure \ref{fig:BCESegmentationError}.
 \par
 The cross-entropy is much more useful when regularizing the wrong labeling, especially in fluid. Since this loss component is adjusted to the representation of each class in the image, wrongfully labeling a fluid region as another fluid or background brings a large penalty to the model. This is why it is combined with the Dice loss in the original loss: while the Dice ensures that the correct areas of fluid are segmented, the cross-entropy makes sure that the correct labels are assigned to each pixel. For this reason, most of the segmentation errors that are seen in the predictions made by the models trained in Run 61 and 62 are oversegmentations, and not as many incorrect labelings. An example of how this translates to the model's segmentation is seen in Figure \ref{fig:BCESegmentationDecent}.
 
@@ -1402,7 +1402,7 @@ The use of resized images or their original shape did not translate to a signifi
 Lastly, the influence of the noise and different perceptions present in this dataset, as in the examples shown in Figure \ref{fig:CHUSJProblematicImages}, is more significant outside the retina. In Figure \ref{fig:CHUSJSegmentationOnNoisyScans}, the segmentation of these noisy B-scans is shown, where a decent segmentation of SRF is seen, with a prediction of PED coherent with the training data. However, it is outside the retina, in the choroid, where the wrong IRF segmentations are seen.
 
 \begin{figure}[!ht]
-	\centering	\includegraphics[width=0.9\linewidth]{figures/CHUSJSegmentationOnNoisyScans.png}
+	\centering	\includegraphics[width=0.75\linewidth]{figures/CHUSJSegmentationOnNoisyScans.png}
 	\caption{Fluid segmentations performed by the multi-class model in noisy B-scans from the CHUSJ dataset.}
 	\label{fig:CHUSJSegmentationOnNoisyScans}
 \end{figure}
@@ -1412,6 +1412,30 @@ Lastly, the influence of the noise and different perceptions present in this dat
 \subsection{Experiment 3}
 
 \subsection{Experiment 4}
+
+The second experiment in the scope of generating intermediate slices was performed using a U-Net and only a single model was trained. Examples of B-scans generated using this model are shown in Figure \ref{fig:GenerativeUNetResults}.
+
+\begin{figure}[!ht]
+	\centering	\includegraphics[width=0.75\linewidth]{figures/GenerativeUNetResults.png}
+	\caption{B-scans generated using the U-Net. The images on the left show the original B-scan while those on the left are the corresponding generated slices.}
+	\label{fig:GenerativeUNetResults}
+\end{figure}
+
+When evaluating the quality of the generated images, a noticeable lack of realism is observed, as these images often resemble a smoothed approximation of the GT. Despite the similarity in architecture between the generator used in the GAN and the U-Net, the second model could not reach a performance comparative with the GAN. The U-Net faces three significant challenges: its loss is not representative, it is trained with large images, and does not have a discriminator.
+\par
+The main problem comes from the network not being able to produce realistic images by reducing the loss. While the MAE is a good metric to compare two images, it does not perform well as the loss of a generative model in OCT. The reason MAE is insufficient to motivate the model to properly generate images is because the easiest, fastest, and safest way the model has of reducing the MAE in training is by creating blurred images, especially in noisy regions of the image.
+\par
+While these blurred images are not as realistic as the GT, the MAE is not as bad as it would be in case the model attempted to create images that are more visually similar to the real images. When dealing with OCT, a large portion of the image contains speckle noise, which is difficult to predict. Therefore, reaching results that are visually similar includes the representation of speckle noise in the intermediate slices, which results in a worse MAE.
+\par
+It is due to the inability of regularizing a generative model alone that the MAE was combined with other losses in the previous experiment. While this loss is important to represent the direct similarity between two images, it lacks to capture the perception of the structures and visual similarity between images. This is why the MAE loss was attributed such small weight in Experiment 3.
+\par
+When comparing to the work by \textcite{Nishimoto2024}, in which this experiment was inspired, the dataset presented almost no noise in most images. Therefore, the generative task was simpler and the model was able to generalize significantly better, as the MAE was enough to promote an accurate slice interpolation. However, when facing images with more noise, caused by the presence of metal artifacts in the CT, the generation of slices performed worse than the linear interpolation. Therefore, while this model generates good images when the slices have almost no noise present, it lacks the robustness to generate images where noise appears.
+\par
+The use of a U-Net to generate intermediate B-scans is also harmed by the input it received. While in the GAN, the discriminator and the generator were trained with small patches of 64 $\times$ 64, the U-Net was trained with the entire image. Consequently, this motivates the U-Net to focus on the more general details of the image, rather than on the finer characteristics, as done in the GAN, ultimately contributing to the generation of less realistic images.
+\par
+Lastly, this model lacks the regularization brought by an external network which is, in the case of a GAN, the discriminator. With the inclusion of a discriminator, a perceptual component is added to the loss. This motivates the model to produce the images that are not only similar to the pixel level, but also visually accurate. Therefore, this results in an image where the textures are more realistic, even if the difference at a pixel level is worse.
+\par
+Nevertheless, it is seen in Figure \ref{fig:GenerativeUNetResults} that the borders of the fluid regions are preserved. This representation is not as difficult as the other components of the B-scan, but is better in the generation of SRF and PED, where the fluid regions are more homogeneous. In IRF, the shape of the fluid is bounded by the deformations caused inside the retina, which makes it harder to generate, leading to the fluid regions appearing significantly different from what is expected. Furthermore, the goal of generating intermediate slices was not only to generate images that are similar in the fluid regions, but also in the overall image, and for this reason, no other generative U-Net model was trained. The accurate delimitation of the generated fluids does not directly translate to a good segmentation performance in the created slices, since the image's overall different appearance could impact the segmentation model's performance.
 
 \section{Fluid Volume Estimation}\label{FluidVolumeEstimation}
 
