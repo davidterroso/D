@@ -40,7 +40,7 @@
 \contentsline {subsection}{\numberline {4.3.1}Experiment 5}{77}{subsection.4.3.1}%
 \contentsline {subsection}{\numberline {4.3.2}Experiment 6}{79}{subsection.4.3.2}%
 \contentsline {chapter}{\numberline {5}Conclusion}{80}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Future Research}{83}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Limitations}{84}{section.5.2}%
-\contentsline {chapter}{References}{85}{section*.92}%
-\contentsline {chapter}{\numberline {A}Variability of the Segmentation U-Net}{92}{appendix.A}%
+\contentsline {section}{\numberline {5.1}Limitations}{83}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Future Research}{84}{section.5.2}%
+\contentsline {chapter}{References}{86}{section*.92}%
+\contentsline {chapter}{\numberline {A}Variability of the Segmentation U-Net}{93}{appendix.A}%
