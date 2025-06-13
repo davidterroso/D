@@ -34,6 +34,16 @@ In the CHUSJ, the performance was worse than in the RETOUCH dataset. While the s
 \par
 Overall, the fluid segmentation experiments were pivotal to the understanding of how the input shape and the patch extraction influence the segmentation of fluid in OCT, particularly through the observation of the models' learning process. 
 
+
+
+The results from Experiment 4 reveal the necessity of using a more complex approach to the generation task, in OCT. While the methods used in this experiment were enough to produce satisfying results in the original article, since the CT dataset used was less noisy, they are not robust enough to be applied in OCT.
+\par
+The capability of the U-Net to generate images is fundamentally constrained by the loss that regularizes the training. When using the MAE loss, the network can only compare the generated slices with its GT at a pixel level, without considering the general perception of the image. As a result, the U-Net produces blurry images, particularly in the regions with noise and uncertainty. In these regions, since predicting the exact noise pattern is impossible, the network learns to average the possible variations, smoothing the final output. This minimizes the MAE, at the cost of sharpness and realism.
+\par
+Since the speckle noise corrupts every region of the B-scans, the entirety of the output is blurred. This issue is mitigated by the addition of an adversarial loss in the GAN in Experiment 3. The adversarial noise, which corresponds to the ability to fool the discriminator network, that evaluates the perception of the image and promotes the representation of noise in the generated images, making them more similar to the real outputs. This highlights the need of a more complex and robust approach to the generation of OCT, where images are significantly affected by noise.
+\par
+The use of the entire image instead of the small patches, as done in Experiment 3, also contributes to the model generating images with less detail. The use of smaller patches motivates the network to focus on local structures more than the overall scan, resulting in an image richer in detail.
+\par
 In Experiment 5, where the volumes of each fluid in the OCT scans that compose the reserved fold were calculated, conclusions were drawn that supported the previous statements. 
 \par
 While the calculated volumes in the predicted masks were similar to those in the GT without presenting any extreme outlier, the model exhibits consistent oversegmentation. In most OCT volumes and particularly in IRF, the model segmented more fluid than there was in the GT. This oversegmentation is highly related with the RETOUCH dataset, in which it was trained, which promotes oversegmentation, as seen in the fluid segmentation experiments. 
@@ -55,3 +65,9 @@ To tackle this problem, a single U-Net is not enough, especially knowing that so
 Lastly, generalization to external datasets remains a challenge. In the CHUSJ dataset, the model would frequently predict fluid outside the retina, which could be mitigated using retinal layer delimitation. However, the variations of the speckle noise, which vary depending on the scan acquisition protocols, impacted the segmentation quality. To improve robustness under these conditions, future work could explore data augmentation with Gaussian noise or by training the models with data from different sources to increase variability in the training data.
 \par
 Nevertheless, an improvement in segmentation models would transfer to a more accurate fluid estimation. The suggested changes, which also enhance the segmentation of IRF, would be particularly useful in the estimation of this fluid, which does not generalize as well as SRF and PED, due to its characteristic diversity.
+
+\section{Limitations}
+Despite the promising results obtained in both segmentation and generative tasks, several limitations were associated with the methodology selected for this work. These methods were selected in accordance with the available time and hardware for training the models.
+\par
+In the segmentation task, the experiments performed utilized the base U-Net architecture, which was selected for its reliability and widespread adoption. As seen in the literature review and mentioned in the future research, other methods have been developed to tackle the segmentation problems previously shown, such as incorrect segmentation of complex structures and detection of fluid beyond the retina. Recent studies approached these problems by including enhancements such as attention mechanisms, transformer-based modules, and multi-scale feature integration. However, due to the time constraints, the difficult access to these developed solutions, and the limited computational resources, these approaches were not considered.
+\par
