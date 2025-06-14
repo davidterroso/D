@@ -5,7 +5,6 @@ from IPython import get_ipython
 from os import fsdecode, fsencode, listdir, makedirs
 from skimage.io import imread
 from init.read_oct import load_oct_image
-from network_functions import dataset
 from paths import RETOUCH_PATH
 
 # Imports tqdm depending on whether 
@@ -130,5 +129,3 @@ def estimate_volume(folder_path: str, dataset_type: str="normal"):
     # Saves the DataFrames in CSV files
     volumes_df.to_csv(f".\\fluid_volumes\\{folder_name}_volumes.csv", index=False)
     vendors_df.to_csv(f".\\fluid_volumes\\{folder_name}_vendors.csv", index=False)
-
-estimate_volume(folder_path=r"D:\DavidTerroso\Images\OCT_images\segmentation\predictions\Run058_resized_final_intergen_masks\\", dataset_type="double")

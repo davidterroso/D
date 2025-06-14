@@ -1220,7 +1220,7 @@ def generation_4_fold_split():
     # per fold
     cirrus_split = [9, 9, 8, 8]
     spectralis_split = [9, 8, 8, 8]
-    t1000_split = [3, 2, 2, 2]
+    t1000_split = [3, 3, 3, 2]
     t2000_split = [5, 5, 5, 4]
     # Two special cases with 64 slices each
     t2000_special_split_1 = [1, 0, 0, 0]
@@ -1261,7 +1261,6 @@ def generation_4_fold_split():
         # a NumPy matrix of shape 
         # (5, 4)
         matrix = np.array(combo)
-
         # Ensures that no column has 5 T-2000 
         # volumes and one the each special cases
         invalid = False
@@ -1307,17 +1306,22 @@ def generation_4_fold_split():
 
     # Combines both sets into a single DataFrame
     full_data = pd.concat([train_volumes, test_volumes], ignore_index=True)
-
     # Create a unified identifier column with shape "1_train"
     full_data["VolumeNumber"] = full_data["VolumeNumber"].astype(str) + "_" + full_data["origin_set"]
 
-    # Createsa dictionary that contains 
-    # a list of volumes for each fold
-    folds = {i: [] for i in range(4)}
+    # Loads the reserved fold first
+    fold_1_raw = pd.read_csv("..\\splits\\competitive_fold_selection.csv")["1"]
+    fold_1 = [str(int(vol)) + "_train" for vol in fold_1_raw.dropna()]
+    
     # Initiates a set that 
     # contains all the used 
     # volumes
-    used_indices = set()
+    used_indices = set(fold_1)
+
+    # Creates a dictionary that contains 
+    # a list of volumes for each fold
+    folds = {i: [] for i in range(5)}
+    folds[1] = fold_1  # Assign reserved fold directly to fold index 1
 
     # Creates a matrix of 
     # devices and assign 
@@ -1331,79 +1335,66 @@ def generation_4_fold_split():
         ('T-2000', False)
     ]
 
+    # Fold column index to target fold ID mapping
+    fold_mapping = {0: 0, 1: 2, 2: 3, 3: 4}
+
     # Iterates through all the devices available
     for device_idx, (device_name, _) in enumerate(matrix_devices):
-        # Gets the row that explains the device partition
         matrix_row = best_matrix[device_idx]
-        # Gets a sub-DataFrame with the data of this device
+        
         device_volumes = full_data[full_data['Device'] == device_name]
-        # Shuffles the list to ensure the volumes are 
-        # picked randomly
+
+        if device_name == 'T-2000':
+            device_volumes = device_volumes[device_volumes['SlicesNumber'] != 64]
+
         device_volumes = device_volumes.sample(frac=1)
 
-        # Iterates through all the five folds
-        for fold_idx, num_samples in enumerate(matrix_row):
-            # Counts the total number 
-            # of samples
+        for col_idx, num_samples in enumerate(matrix_row):
+            # Remap column index to target fold
+            target_fold = fold_mapping[col_idx]
             count = int(num_samples)
-            # Appends the 
-            # selected volumes 
-            # to a list
             selected = []
 
-            # Iterates through all the volumes in 
-            # of the said device
             for _, row in device_volumes.iterrows():
-                # Gets the ID of 
-                # the device
-                row_id = row.name
-                # Checks if it has not been 
-                # used yet
-                if row_id not in used_indices:
-                    # In case it is unused, 
-                    # appends it to the list
-                    # of the volumes of this 
-                    # split and to the list of
-                    # seen volumes
-                    selected.append(row_id)
-                    used_indices.add(row_id)
-                    # Whenever all the volumes 
-                    # have been seen, it breaks
+                vol_id = row["VolumeNumber"]
+                if vol_id not in used_indices:
+                    selected.append(vol_id)
+                    used_indices.add(vol_id)
                     if len(selected) == count:
                         break
 
-            # Gets the volumes selected to a list
-            fold_ids = full_data.loc[selected, 'VolumeNumber'].tolist()
-            # Assigns the list to the dictionary 
-            # with the volumes identifiers
-            folds[fold_idx].extend(fold_ids)
+            folds[target_fold].extend(selected)
 
-    # Handles the two special cases manually
-    # Selects the data and shuffles them
     special_volumes = full_data[
-        (full_data['Device'] == 'T-2000') & (full_data['SlicesNumber'] == 64)
+        (full_data['Device'] == 'T-2000') &
+        (full_data['SlicesNumber'] == 64) &
+        (~full_data['VolumeNumber'].isin(used_indices))  # Exclude already used volumes
     ].sample(frac=1)
 
-    # Gets the folds to which it is expected 
-    # to append
-    special_1_fold = np.argmax(best_matrix[4])
+    # Map the matrix column to the actual fold index
+    special_1_fold = fold_mapping[np.argmax(best_matrix[4])]
+    if not special_volumes.empty:
+        special_vol_id = special_volumes.iloc[0]["VolumeNumber"]
+        folds[special_1_fold].append(special_vol_id)
+        used_indices.add(special_vol_id)
+    else:
+        print("Warning: No available special volume to assign!")
 
-    # Assigns each one to the target folder
-    folds[special_1_fold].append(special_volumes.iloc[0]['VolumeNumber'])
+    max_len = max(len(fold) for fold in folds.values())
+    for i in range(5):
+        if len(folds[i]) < max_len:
+            folds[i] += [pd.NA] * (max_len - len(folds[i]))
 
-    # Gets the information from the first fold of the train split
-    fold_1 = pd.read_csv("..\\splits\\competitive_fold_selection.csv")["1"]
-    fold_1 = [str(int(fold_1[k])) + "_train" for k in range(len(fold_1))] + [pd.NA] * (len(folds.get(0)) - len(fold_1))
-
-    # Creates the output DataFrame with indexes from 0 to 4 as the names
-    split_df = pd.DataFrame({"0": folds.get(0)})
-    split_df["1"] = fold_1
-    split_df["2"] = folds.get(1)
-    split_df["3"] = folds.get(2)
-    split_df["4"] = folds.get(3)
+    split_df = pd.DataFrame({
+        "0": folds[0],
+        "1": folds[1],
+        "2": folds[2],
+        "3": folds[3],
+        "4": folds[4]
+    })
 
     # Saves the data to a CSV
-    split_df.to_csv("..\\splits\\generation_4_fold_split.csv", index=False)
+    split_df.to_csv("..\\splits\\generation_4_fold_split_new.csv", index=False)
 
 def splits_to_25d(split_path: str, test_fold: int=1):
     """
@@ -1494,3 +1485,5 @@ def splits_to_25d(split_path: str, test_fold: int=1):
         # Saves the results as a CSV file
         out_path = f"..\\splits_ptl\\competitive_fold_selection_{fold_idx}.csv"
         train_df.to_csv(out_path, index=False)
+
+generation_4_fold_split()
