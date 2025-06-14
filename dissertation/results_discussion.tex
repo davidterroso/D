@@ -1440,7 +1440,7 @@ Nevertheless, it is seen in Figure \ref{fig:GenerativeUNetResults} that the bord
 \section{Fluid Volume Estimation}\label{FluidVolumeEstimation}
 
 \subsection{Experiment 5}
-In Experiment 5, the fluid volume was calculated for each type of fluid in the OCT volumes from the reserved fold, using the previously described in \ref{Methods} Methods. The volume of each fluid, for each OCT volume in the reserved fold, is shown in Table \ref{tab:FluidVolumesExperiment1}, in mm$^{3}$. In Figure \ref{fig:FluidVolumeScatterExperiment5}, the comparison between the values calculated using the GT masks and the masks predicted by the segmentation model is shown, using the values present in this table.
+In Experiment 5, the fluid volume was calculated for each type of fluid in the OCT volumes from the reserved fold, using the previously described in \ref{Methods} Methods. The volume of each fluid, for each OCT volume in the reserved fold, is shown in Table \ref{tab:FluidVolumesExperiment5}, in mm$^{3}$. In Figure \ref{fig:FluidVolumeScatterExperiment5}, the comparison between the values calculated using the GT masks and the masks predicted by the segmentation model is shown, using the values present in this table.
 
 \begin{table*}[!ht]
 	\centering
@@ -1463,15 +1463,15 @@ In Experiment 5, the fluid volume was calculated for each type of fluid in the O
 		 Topcon & TRAIN064 & 0.058 & 0.060 & 0.000 & 0.003 & 0.000 & 0.075 \\
 		 Topcon & TRAIN067 & 0.188 & 0.170 & 0.000 & 0.000 & 0.000 & 0.000 \\
 		 Topcon & TRAIN068 & 0.406 & 0.550 & 0.004 & 0.006 & 0.000 & 0.008 \\ \hline
-		 \multicolumn{2}{|c|}{\textbf{MAE}} & \multicolumn{2}{c|}{0.09} & \multicolumn{2}{c|}{0.03} & \multicolumn{2}{c|}{0.04} \\ \hline
+		 \multicolumn{2}{|c|}{\textbf{MAE}} & \multicolumn{2}{c|}{0.092} & \multicolumn{2}{c|}{0.025} & \multicolumn{2}{c|}{0.041} \\ \hline
 		 
 	\end{tabular}
-	\label{tab:FluidVolumesExperiment1}
+	\label{tab:FluidVolumesExperiment5}
 \end{table*}
 
 \begin{figure}[!ht]
 	\centering	\includegraphics[width=0.75\linewidth]{figures/FluidVolumeScatterExperiment5.png}
-	\caption{Volume estimated for each fluid in OCT volume using the masks predicted by the segmentation model compared with the volumes calculated using the GT masks. The OCT scans considered are the same as in \ref{tab:FluidVolumesExperiment1} and the gray marks the points in which the fluid volume in the GT is equal to the predicted.}
+	\caption{Volume estimated for each fluid in OCT volume using the masks predicted by the segmentation model compared with the volumes calculated using the GT masks. The OCT scans considered are the same as in \ref{tab:FluidVolumesExperiment5} and the gray marks the points in which the fluid volume in the GT is equal to the predicted.}
 	\label{fig:FluidVolumeScatterExperiment5}
 \end{figure}
 
@@ -1489,6 +1489,49 @@ Regarding the performances per vendor, there is no significant differences to no
 \par
 It is interesting to note that in discrepancies between the real volume and the predicted volume, the segmentation model tends to overpredict fluid, which is associated with the oversegmentation trend seen in the predictions performed by this model. This is an important aspect to note, as it is rooted to the segmentation criteria used in the training data, the RETOUCH dataset. This trend further justifies the oversegmentations seen by the model in the CHUSJ dataset.
 \par
-In the following subsection, the results shown in Table \ref{tab:FluidVolumesExperiment1} will be compared with the estimated fluid volumes obtained using only generated slices and in an enhanced volume, where between every known slice another slice is generated.
+In the following subsection, the results shown in Table \ref{tab:FluidVolumesExperiment5} will be compared with the estimated fluid volumes obtained using only generated slices and in an enhanced volume, where between every known slice another slice is generated.
 
 \subsection{Experiment 6}
+
+\begin{table*}[!ht]
+	\centering
+	\caption{Volume of each fluid calculated for the masks segmented in the RETOUCH (GT) and the masks segmented by the best segmentation model from Experiment 1 and 2 (P). The volumes correspond to the total fluid volume in the B-scan, in mm$^{3}$.}
+	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|cccc|cccc|cccc|}
+		\hline
+		\multirow{2}{*}{\textbf{Vendor}} & \multirow{2}{*}{\textbf{Volume}} & \multicolumn{4}{c|}{\textbf{IRF}} & \multicolumn{4}{c|}{\textbf{SRF}} & \multicolumn{4}{c|}{\textbf{PED}} \\ \cline{3-14} 
+		& & \textbf{GT} & \textbf{P} & \textbf{G} & \textbf{E} & \textbf{GT} & \textbf{P} & \textbf{G} & \textbf{E} & \textbf{GT} & \textbf{P} & \textbf{G} & \textbf{E} \\ \hline
+		
+ 		Cirrus & TRAIN002 & 0.228 & 0.373 & 0.356 & 0.372 & 0.008 & 0.013 & 0.014 & 0.013 & 0.000 & 0.000 & 0.000 & 0.000 \\
+ 		
+		Cirrus & TRAIN012 & 0.000 & 0.001 & 0.001 & 0.001 & 0.704 & 0.673 & 0.664 & 0.670 & 0.888 & 0.946 & 0.939 & 0.943 \\
+		
+		Cirrus & TRAIN014 & 0.000 & 0.000 & 0.001 & 0.003 & 0.517 & 0.575 & 0.561 & 0.572 & 0.332 & 0.252 & 0.207 & 0.227 \\
+		
+		Cirrus & TRAIN016 & 0.771 & 1.129 & 0.957 & 1.050 & 0.000 & 0.000 & 0.001 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+		
+ 		Spectralis & TRAIN027 & 0.937 & 1.071 & 1.066 & 1.063 & 0.096 & 0.132 & 0.136 & 0.136 & 0.000 & 0.001 & 0.002 & 0.002 \\
+ 		
+		Spectralis & TRAIN033 & 0.254 & 0.380 & 0.414 & 0.385 & 0.314 & 0.307 & 0.298 & 0.320 & 0.367 & 0.471 & 0.397 & 0.427 \\
+		
+		Spectralis & TRAIN039 & 0.622 & 0.839 & 0.726 & 0.779 & 0.000 & 0.000 & 0.002 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+		
+		Spectralis & TRAIN042 & 0.002 & 0.009 & 0.017 & 0.011 & 1.900 & 1.875 & 1.828 & 1.852 & 0.603 & 0.771 & 0.822 & 0.781 \\
+
+		Spectralis & TRAIN048 & 0.328 & 0.446 & 0.336 & 0.398 & 0.000 & 0.008 & 0.013 & 0.009 & 0.000 & 0.000 & 0.001 & 0.001 \\
+
+		Topcon & TRAIN062 & 0.047 & 0.058 & 0.043 & 0.051 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+
+		Topcon & TRAIN063 & 0.000 & 0.011 & 0.007 & 0.010 & 0.747 & 0.568 & 0.507 & 0.546 & 0.034 & 0.110 & 0.111 & 0.108 \\
+		
+		Topcon & TRAIN064 & 0.058 & 0.060 & 0.061 & 0.063 & 0.000 & 0.003 & 0.025 & 0.008 & 0.000 & 0.075 & 0.215 & 0.114 \\
+
+		Topcon & TRAIN067 & 0.188 & 0.170 & 0.137 & 0.160 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+
+		Topcon & TRAIN068 & 0.406 & 0.550 & 0.543 & 0.548 & 0.004 & 0.006 & 0.006 & 0.006 & 0.000 & 0.008 & 0.010 & 0.008 \\
+		
+		\hline
+		%  \multicolumn{2}{|c|}{\textbf{MAE}} & \multicolumn{2}{c|}{0.092} & \multicolumn{2}{c|}{0.025} & \multicolumn{2}{c|}{0.041} \\ \hline
+		
+	\end{tabular}}
+	\label{tab:FluidVolumesExperiment6}
+\end{table*}
