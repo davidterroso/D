@@ -59,6 +59,6 @@
 \contentsline {figure}{\numberline {4.27}{\ignorespaces Segmentation of multiple fluids in the choroid region of the B-scans. This is performed often, significantly reducing the Dice coefficients seen in Table \ref {tab:CHUSJSegmentationResults}.\relax }}{74}{figure.caption.87}%
 \contentsline {figure}{\numberline {4.28}{\ignorespaces Fluid segmentations performed by the multi-class model in noisy B-scans from the CHUSJ dataset.\relax }}{75}{figure.caption.88}%
 \contentsline {figure}{\numberline {4.29}{\ignorespaces B-scans generated using the U-Net. The images on the left show the original B-scan while those on the left are the corresponding generated slices.\relax }}{76}{figure.caption.89}%
-\contentsline {figure}{\numberline {4.30}{\ignorespaces Volume estimated for each fluid in OCT volume using the masks predicted by the segmentation model compared with the volumes calculated using the GT masks. The OCT scans considered are the same as in \ref {tab:FluidVolumesExperiment1} and the gray marks the points in which the fluid volume in the GT is equal to the predicted.\relax }}{79}{figure.caption.91}%
+\contentsline {figure}{\numberline {4.30}{\ignorespaces Volume estimated for each fluid in OCT volume using the masks predicted by the segmentation model compared with the volumes calculated using the GT masks. The OCT scans considered are the same as in \ref {tab:FluidVolumesExperiment5} and the gray marks the points in which the fluid volume in the GT is equal to the predicted.\relax }}{79}{figure.caption.91}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
