@@ -1364,7 +1364,7 @@ The worst performing fluid segmented in this dataset is the PED. In the binary m
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.9\linewidth]{figures/CHUSJPEDSegmentation.png}
+	\includegraphics[width=0.65\linewidth]{figures/CHUSJPEDSegmentation.png}
 	\caption{SRF and PED segmentation in two B-scans from CHUSJ. The regions segmented by the model as PED could also be considered fluid, depending on the criteria applied.}
 	\label{fig:CHUSJPEDSegmentation}
 \end{figure}
@@ -1373,7 +1373,7 @@ The segmentation of SRF was the most consistent in this dataset. While the Dice 
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.9\linewidth]{figures/CHUSJSRFSegmentation.png}
+	\includegraphics[width=0.60\linewidth]{figures/CHUSJSRFSegmentation.png}
 	\caption{SRF and PED segmentation (right) in a B-scan from CHUSJ, compared to its GT (left). This shows the tendency to oversegmentation by the model.}
 	\label{fig:CHUSJSRFSegmentation}
 \end{figure}
@@ -1382,7 +1382,7 @@ Similar to SRF, the IRF segmentation is also decent in the slices which contain 
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.9\linewidth]{figures/CHUSJSRFSegmentation.png}
+	\includegraphics[width=0.60\linewidth]{figures/CHUSJIRFSegmentation.png}
 	\caption{Segmentation of IRF regions (right) compared to its respective GT (left). The prediction of fluid regions in the choroid is also noticeable.}
 	\label{fig:CHUSJIRFSegmentation}
 \end{figure}
@@ -1390,7 +1390,7 @@ Similar to SRF, the IRF segmentation is also decent in the slices which contain 
 However, the main reason behind the poor Dice coefficients when considering all the slices is the fluid detection. In slices in which the fluids are not present, particularly in IRF and PED, they are still predicted outside the retina, usually in the choroid. While this is already visible in Figure \ref{fig:CHUSJIRFSegmentation}, where all the fluids are segmented in the choroid, more examples are shown in Figure \ref{fig:CHUSJChoroidSegmentation}.
 
 \begin{figure}[!ht]
-	\centering	\includegraphics[width=0.75\linewidth]{figures/CHUSJChoroidSegmentation.png}
+	\centering	\includegraphics[width=0.65\linewidth]{figures/CHUSJChoroidSegmentation.png}
 	\caption{Segmentation of multiple fluids in the choroid region of the B-scans. This is performed often, significantly reducing the Dice coefficients seen in Table \ref{tab:CHUSJSegmentationResults}.}
 	\label{fig:CHUSJChoroidSegmentation}
 \end{figure}
@@ -1409,14 +1409,94 @@ Lastly, the influence of the noise and different perceptions present in this dat
 
 \section{Intermediate Slice Synthesis}\label{IntermediateSliceSynthesis}
 
+This section presents the results obtained in the generation of intermediate B-scans between two consecutive real slices. In this section, the images generated using two different generative models are compared: the GAN and the U-Net.
+\par
+The comparison between these different methods is mainly qualitative, as the quality and perception of the images are prioritized over the calculated metrics, since the realism of the images and the performance of segmentation models on the generated slices are significantly affected by the appearance of the images.
+\par
+Nevertheless, the GANs trained on different folds are still compared through PSNR and SSIM, as a way to objectively select the best performing model for the \ref{FluidVolumeEstimation} Fluid Volume Estimation experiments.
+\par
+The comparison between these metrics and other articles in the literature is not possible. The only article of intermediate slice synthesis applied in OCT, developed by \textcite{Lopez2023}, does not evaluate the generated slices using these metrics. The articles in other imaging techniques such as CT and MRI have significantly different levels of noise and the values attained in these metrics in OCT are, therefore, very different.
+
 \subsection{Experiment 3}
+
+In Experiment 3, a GAN was trained with the objective of generating the intermediate slice between a pair of two known and consecutive slices. In Table \ref{tab:Experiment1Metrics}, the PSNR and SSIM are shown for each fold in which the network was trained.
+
+\begin{table*}[!ht]
+	\caption{PSNR and SSIM in every device, for the generated slices in every validation fold.}
+	\centering
+	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|cccc|c|cccc|c|}
+		\hline
+		\multirow{2}{*}{\textbf{Run}} & \multirow{2}{*}{\textbf{VF}} & \multicolumn{4}{c|}{\textbf{PSNR}} & \multirow{2}{*}{\textbf{PSNR}} & \multicolumn{4}{c|}{\textbf{SSIM}} & \multirow{2}{*}{\textbf{SSIM}} \\ \cline{3-6} \cline{8-11}
+		&  & \textbf{Cirrus} & \textbf{Spectralis} & \textbf{T-1000} & \textbf{T-2000} &  & \textbf{Cirrus} & \textbf{Spectralis} & \textbf{T-1000} & \textbf{T-2000} &  \\ \hline
+		\textbf{Run 1} & 2 & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  \\
+		\textbf{Run 2} & 3 & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  \\
+		\textbf{Run 3} & 4 & \multicolumn{1}{c|}{20.40} & \multicolumn{1}{c|}{24.93} & \multicolumn{1}{c|}{21.95} & \multicolumn{1}{c|}{22.56} & 21.91 & \multicolumn{1}{c|}{0.175} & \multicolumn{1}{c|}{0.498} & \multicolumn{1}{c|}{0.228} & \multicolumn{1}{c|}{0.263} & 0.257 \\
+		\textbf{Run 4} & 0 & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  &  \\
+		\hline
+		\hline
+		\textbf{Set 1} & - & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  \\ \hline
+	\end{tabular}}
+	\label{tab:Experiment1Metrics}
+\end{table*}
+
+One of the trends that becomes evident when looking at this table is the difference in results between devices, which is constant across independent of the fold in which it was trained.
+\par
+In every fold, the scans generated with the Spectralis device show better values both in PSNR and SSIM, while those obtained with Cirrus are significantly worse. This is tied to the characteristics of the images obtained with each device. In Spectralis, the inter-slice distance is larger than in Cirrus, but this is compensated by the better B-scan quality, contrast, and reduced levels of noise. The opposite happens in Cirrus, as the B-scans are noisier and with a decent contrast, but separated by a smaller distance. In Topcon, the distance is similar to the Cirrus, but presents less noise with worse contrast. 
+\par
+As the speckle noise is hard to predict due to its random nature, the performance metrics are worse in the scans with more noise. These metrics compare the similarity between different images at a pixel level and in noisy regions, which occupy most of the B-scan, the differences at a pixel-level between generated and real images are significant, even if the differences are almost imperceptible.
+\par
+In other imaging techniques like MRI and CT, the noise levels are much less significant than OCT, resulting in better PSNR and SSIM values, that directly translate to image quality.
+\par
+When comparing the results across different runs, it turns out that the performance changes very slightly when the training data differs. Unlike the segmentation task, where the results in different validation folds were harshly affected by the fluid content present in the OCT volumes that compose them, the generation task appears indifferent to the random distribution of fluid.
+\par
+In the segmentation task, the model and evaluation focused solely on the fluid, which is a small portion of the image, while in generation the model attempts to accurately generate the whole scan as similar to the target slice as possible. By considering the entirety of the B-scan, less of the performance is affected by the fluid region, which is why the distribution of fluid does not affect the overall performance as much as it did in segmentation, even if it is the most difficult section to generate.
+\par
+Despite the significant worse performance in Cirrus when compared to Spectralis, the visual similarity between generated images and real images, at an human level, is not very different. In Figure \ref{fig:GeneratedSlicesCirrusVsSpectralis}, two pairs of real and generated images from these devices are shown.
+\par
+The generated slices capture the rough idea of the image, especially the retinal layers, but miss on the small details such as noise patterns, and brighter and unexpected structures. Overall, the generated Cirrus scan captures the details present in the real image better than the Spectralis. For example, the structures which appear in the choroid are similar to the original slice in the generated Cirrus slice, while in Spectralis these structures appear blurred. However, due to the highest levels of noise, this does not translate to better PSNR or SSIM.
+
+\begin{figure}[!ht]
+	\centering	\includegraphics[width=0.75\linewidth]{figures/GeneratedSlicesCirrusVsSpectralis.png}
+	\caption{Example of two pairs of generated slices, one from Cirrus and one from Spectralis, which capture the retinal layers.}
+	\label{fig:GeneratedSlicesCirrusVsSpectralis}
+\end{figure}
+
+The differences in performance exhibited in this image regarding the representation of details are related with the inter-slice distance of the OCT volumes. In Cirrus, where the inter-slice distance is smaller than in Spectralis, the differences between the surrounding slices and the middle slice are smaller. Therefore, it is easier for the model to predict the content in the middle slice of a Cirrus volume than it is in Spectralis. Figure \ref{fig:TransitionBetweenConsecutiveBScansCirrusVsSpectralis} shows the surrounding slices of the B-scans generated in Figure \ref{fig:GeneratedSlicesCirrusVsSpectralis}. It becomes evident the difference in the transitions between the surrounding slices and the intermediate slices. For example, in the choroid region, where the generative model output was blurred, the structures that appear in the previous slice are significantly different in the following slice. In the same region, the Cirrus B-scans present a much smoother transition, which results in an improved and more realistic output.
+
+\begin{figure}[!ht]
+	\centering	\includegraphics[width=1.0\linewidth]{figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png}
+	\caption{Surrounding slices of the B-scans generated in Figure \ref{fig:GeneratedSlicesCirrusVsSpectralis}.}
+	\label{fig:TransitionBetweenConsecutiveBScansCirrusVsSpectralis}
+\end{figure}
+
+However, it is of our best interest to generate slices that accurately represent the fluid regions, on top of being visually similar to the original scans, as an accurate representation of the generated fluids, directly translates to a better performance in the segmentation of fluid in theses slices. 
+\par
+An accurate segmentation of fluid in generated B-scans is mainly dependent on the overall quality of the image and its resemblance to the images in which it was trained and the aspect of the generated fluid regions.
+\par
+Similar to what was seen in other structures such as the choroid and the retinal layers, the quality of the generated fluid regions is dependent on the distance between scans more than the contrast and levels of noise in the image. However, the characteristics of each fluid also influence its generation, mainly because of their progression between consecutive slices. For example, the SRF usually appears in a more homogeneous and continuous shape, making it easier to predict its characteristics given the information of the surrounding slices. Contrasting, the IRF usually appears in small and irregular shapes, commonly separated by small retinal tissue. In consecutive slices, the small IRF regions quickly change its shape and may even merge together, which makes it harder to predict. The PED fluid can appear both as small inconsistent fluid like the IRF, but most commonly as a large and predictable region, similar to SRF.
+\par
+An example of each generated fluid is seen in Figure \ref{fig:GeneratedSlicesWithFluid}, where the generation of IRF confuses the model while the fake SRF and PED appear similar to its GT. The characteristics of these generated fluids is particularly important to understand the consequences that slice generation has in fluid volume estimation.
+
+\begin{figure}[!ht]
+	\centering	\includegraphics[width=1.0\linewidth]{figures/GeneratedSlicesWithFluid.png}
+	\caption{Examples of generated B-scans with fluid.}
+	\label{fig:GeneratedSlicesWithFluid}
+\end{figure}
+
+In this figure, it becomes evident that the generation of SRF and PED, seen in Topcon example, is a much simpler task than the generation of any other fluid. In fact, the overall structure of this region has been very accurately preserved, apart from small visual details.
+\par
+The generation of IRF, however, appears more troublesome, particularly in Spectralis. In this last device, while in the GT the fluid regions appear individually separated by small retinal tissue, in the generated images the structures surrounding the fluid appear deformed, making it hard to understand which region is fluid and which is retina. It is interesting to note that the SRF shape stays consistent, highlighting that this fluid changes much slower as the slices progress than IRF. In Cirrus, the model preserves the IRF structures accurately, apart from the small and thin sections of retinal tissue which separate the fluid regions, where some merging occurs. This small details occur due to the target slice being located between one slice that contains this small tissues and another that does not. Nevertheless, the characteristics of this fluid are much more similar to the GT than in Spectralis, emphasizing the impact that the inter-slice distance has in slice generation.
+\par
+The poor generation of IRF is also partially related with the loss used to train the GAN. Since this network was adapted from a video frame interpolation application, the method is not prepared for datasets that contain as much noise as OCT does. In the video use case, it makes sense to use a loss function that primarily evaluates the images at a pixel level, while being complimented by a perception component, which is the adversarial loss, that corresponds to the capability of a fake image fooling the discriminator. However, in OCT, the speckle that corrupts the image makes it considerably more difficult to optimize a network to generate images that are similar at a pixel level, since this noise is impossible to predict. Therefore, as the network attempts to reproduce the noise that occupies most of the B-scans, it does not apply as much attention to the fluid as it should, particularly in IRF that needs it more. Ultimately, this results in visually similar images in the matters of noise and retinal layers, but worse in the generation of fluids.
+\par
+To perform the generation of intermediate slices in Experiment 6, the model from Run 3 was selected, as it obtained the best metrics in PSNR and SSIM.
 
 \subsection{Experiment 4}
 
 The second experiment in the scope of generating intermediate slices was performed using a U-Net and only a single model was trained. Examples of B-scans generated using this model are shown in Figure \ref{fig:GenerativeUNetResults}.
 
 \begin{figure}[!ht]
-	\centering	\includegraphics[width=0.75\linewidth]{figures/GenerativeUNetResults.png}
+	\centering	\includegraphics[width=1.0\linewidth]{figures/GenerativeUNetResults.png}
 	\caption{B-scans generated using the U-Net. The images on the left show the original B-scan while those on the left are the corresponding generated slices.}
 	\label{fig:GenerativeUNetResults}
 \end{figure}
@@ -1427,7 +1507,7 @@ The main problem comes from the network not being able to produce realistic imag
 \par
 While these blurred images are not as realistic as the GT, the MAE is not as bad as it would be in case the model attempted to create images that are more visually similar to the real images. When dealing with OCT, a large portion of the image contains speckle noise, which is difficult to predict. Therefore, reaching results that are visually similar includes the representation of speckle noise in the intermediate slices, which results in a worse MAE.
 \par
-It is due to the inability of regularizing a generative model alone that the MAE was combined with other losses in the previous experiment. While this loss is important to represent the direct similarity between two images, it lacks to capture the perception of the structures and visual similarity between images. This is why the MAE loss was attributed such small weight in Experiment 3.
+It is due to the inability of regularizing a generative model alone that the MAE was combined with other losses in the previous experiment. While this loss is important to represent the direct similarity between two images, it fails to capture the perception of the structures and visual similarity between images. This is why the MAE loss was attributed such small weight in Experiment 3.
 \par
 When comparing to the work by \textcite{Nishimoto2024}, in which this experiment was inspired, the dataset presented almost no noise in most images. Therefore, the generative task was simpler and the model was able to generalize significantly better, as the MAE was enough to promote an accurate slice interpolation. However, when facing images with more noise, caused by the presence of metal artifacts in the CT, the generation of slices performed worse than the linear interpolation. Therefore, while this model generates good images when the slices have almost no noise present, it lacks the robustness to generate images where noise appears.
 \par
@@ -1438,6 +1518,18 @@ Lastly, this model lacks the regularization brought by an external network which
 Nevertheless, it is seen in Figure \ref{fig:GenerativeUNetResults} that the borders of the fluid regions are preserved. This representation is not as difficult as the other components of the B-scan, but is better in the generation of SRF and PED, where the fluid regions are more homogeneous. In IRF, the shape of the fluid is bounded by the deformations caused inside the retina, which makes it harder to generate, leading to the fluid regions appearing significantly different from what is expected. Furthermore, the goal of generating intermediate slices was not only to generate images that are similar in the fluid regions, but also in the overall image, and for this reason, no other generative U-Net model was trained. The accurate delimitation of the generated fluids does not directly translate to a good segmentation performance in the created slices, since the image's overall different appearance could impact the segmentation model's performance.
 
 \section{Fluid Volume Estimation}\label{FluidVolumeEstimation}
+
+The experiments discussed in this section relate to the estimation of fluid volume using the segmentation masks of each B-scan in an OCT volume. In both experiments, the fluid volumes predicted using the segmentation models are compared to the fluid volumes calculated using the GT masks from the dataset, in the reserved fold. 
+\par
+This fold had not been seen by any segmentation or generative model and the GT fluid masks are available for all OCT scans.
+\par
+The discussion of these experiments aim to understand the applicability of enhancing the resolution of an OCT volume and how that affects the total fluid volume estimated, among other aspects such as the perception of the generated slices by the segmentation model.
+\par
+The results are shown in tables where for each considered OCT volume, the fluid volume estimated for each fluid type (IRF, SRF, and PED) is presented in mm$^{3}$. At the end of each table, the MAE is shown to resume the differences between the GT fluid volumes and the prediction.
+\par
+In Experiment 6, the Dice coefficient for the predict segmentation masks in fully generated OCT volumes is shown, allowing the comparison between the segmentation model's performance in real data and generated data, providing an insight on which fluids are affected the most the generation.
+\par
+Lastly, scatter plots are shown for each comparison between predictions, where the each of the fluids' volumes calculated for each OCT scan are compared with each other, providing an intuitive and visual representation of the differences associated with the used data.
 
 \subsection{Experiment 5}
 In Experiment 5, the fluid volume was calculated for each type of fluid in the OCT volumes from the reserved fold, using the previously described in \ref{Methods} Methods. The volume of each fluid, for each OCT volume in the reserved fold, is shown in Table \ref{tab:FluidVolumesExperiment5}, in mm$^{3}$. In Figure \ref{fig:FluidVolumeScatterExperiment5}, the comparison between the values calculated using the GT masks and the masks predicted by the segmentation model is shown, using the values present in this table.
@@ -1458,11 +1550,11 @@ In Experiment 5, the fluid volume was calculated for each type of fluid in the O
 		 Spectralis & TRAIN039 & 0.622 & 0.839 & 0.000 & 0.000 & 0.000 & 0.000 \\
 		 Spectralis & TRAIN042 & 0.002 & 0.009 & 1.900 & 1.875 & 0.603 & 0.771 \\
 		 Spectralis & TRAIN048 & 0.328 & 0.446 & 0.000 & 0.008 & 0.000 & 0.000 \\
-		 Topcon & TRAIN062 & 0.047 & 0.058 & 0.000 & 0.000 & 0.000 & 0.000 \\
-		 Topcon & TRAIN063 & 0.000 & 0.011 & 0.747 & 0.568 & 0.034 & 0.110 \\
-		 Topcon & TRAIN064 & 0.058 & 0.060 & 0.000 & 0.003 & 0.000 & 0.075 \\
-		 Topcon & TRAIN067 & 0.188 & 0.170 & 0.000 & 0.000 & 0.000 & 0.000 \\
-		 Topcon & TRAIN068 & 0.406 & 0.550 & 0.004 & 0.006 & 0.000 & 0.008 \\ \hline
+		 T-2000 & TRAIN062 & 0.047 & 0.058 & 0.000 & 0.000 & 0.000 & 0.000 \\
+		 T-1000 & TRAIN063 & 0.000 & 0.011 & 0.747 & 0.568 & 0.034 & 0.110 \\
+		 T-1000 & TRAIN064 & 0.058 & 0.060 & 0.000 & 0.003 & 0.000 & 0.075 \\
+		 T-2000 & TRAIN067 & 0.188 & 0.170 & 0.000 & 0.000 & 0.000 & 0.000 \\
+		 T-2000 & TRAIN068 & 0.406 & 0.550 & 0.004 & 0.006 & 0.000 & 0.008 \\ \hline
 		 \multicolumn{2}{|c|}{\textbf{MAE}} & \multicolumn{2}{c|}{0.092} & \multicolumn{2}{c|}{0.025} & \multicolumn{2}{c|}{0.041} \\ \hline
 		 
 	\end{tabular}
@@ -1470,8 +1562,8 @@ In Experiment 5, the fluid volume was calculated for each type of fluid in the O
 \end{table*}
 
 \begin{figure}[!ht]
-	\centering	\includegraphics[width=0.75\linewidth]{figures/FluidVolumeScatterExperiment5.png}
-	\caption{Volume estimated for each fluid in OCT volume using the masks predicted by the segmentation model compared with the volumes calculated using the GT masks. The OCT scans considered are the same as in \ref{tab:FluidVolumesExperiment5} and the gray marks the points in which the fluid volume in the GT is equal to the predicted.}
+	\centering	\includegraphics[width=0.66\linewidth]{figures/FluidVolumeScatterExperiment5.png}
+	\caption{Volume estimated for each fluid in OCT volume using the masks predicted by the segmentation model compared with the volumes calculated using the GT masks. The OCT scans considered are the same as in \ref{tab:FluidVolumesExperiment5} and the gray line marks the points in which the fluid volume in the GT is equal to the predicted.}
 	\label{fig:FluidVolumeScatterExperiment5}
 \end{figure}
 
@@ -1492,6 +1584,10 @@ It is interesting to note that in discrepancies between the real volume and the 
 In the following subsection, the results shown in Table \ref{tab:FluidVolumesExperiment5} will be compared with the estimated fluid volumes obtained using only generated slices and in an enhanced volume, where between every known slice another slice is generated.
 
 \subsection{Experiment 6}
+
+The results obtained regarding fluid estimation with generated slices, in the scope of Experiment 6, are shown in Table  \ref{tab:FluidVolumesExperiment6}. In this table, four different fluid volume estimates are shown for each OCT volume in the reserved fold, separately for each fluid type. The first estimate, ``GT'', is obtained using the unchanged B-scans from each volume and the fluid masks provided in the RETOUCH dataset. The second estimate, ``P'', corresponds to the fluid masks predicted by the segmentation model in the unchanged B-scans of the same OCT volumes. Both predictions and fluid estimations were already presented in Experiment 5. In the third estimate, ``G'', the B-scans from the RETOUCH dataset are substituted with their corresponding generated B-scan, obtained using the selected GAN model. In these generated scans, the segmentation model predicts the fluid masks, from which the estimated volumes presented in this table are obtained. Lastly, in the fourth estimation ``E'', the original OCT volumes from the RETOUCH dataset are enhanced, as a B-scan is generated between every two consecutive slices. The segmentation model predicts the fluid masks both in the original and generated slices.
+\par
+In the last three rows of the table, multiple MAE are calculated to compare the results obtained in the multiple columns. The first row, shows the MAE between the estimations in the column ``GT'' and the estimations from the other columns. In the second row, the estimations performed using the segmentation model in column ``P'' are compared to the estimations made in the columns ``G'' and ``E'', while the third row compares the results obtained in these last two columns.
 
 \begin{table*}[!ht]
 	\centering
@@ -1519,15 +1615,15 @@ In the following subsection, the results shown in Table \ref{tab:FluidVolumesExp
 
 		Spectralis & TRAIN048 & 0.328 & 0.446 & 0.336 & 0.398 & 0.000 & 0.008 & 0.013 & 0.009 & 0.000 & 0.000 & 0.001 & 0.001 \\
 
-		Topcon & TRAIN062 & 0.047 & 0.058 & 0.043 & 0.051 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+		T-2000 & TRAIN062 & 0.047 & 0.058 & 0.043 & 0.051 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
 
-		Topcon & TRAIN063 & 0.000 & 0.011 & 0.007 & 0.010 & 0.747 & 0.568 & 0.507 & 0.546 & 0.034 & 0.110 & 0.111 & 0.108 \\
+		T-1000 & TRAIN063 & 0.000 & 0.011 & 0.007 & 0.010 & 0.747 & 0.568 & 0.507 & 0.546 & 0.034 & 0.110 & 0.111 & 0.108 \\
 		
-		Topcon & TRAIN064 & 0.058 & 0.060 & 0.061 & 0.063 & 0.000 & 0.003 & 0.025 & 0.008 & 0.000 & 0.075 & 0.215 & 0.114 \\
+		T-1000 & TRAIN064 & 0.058 & 0.060 & 0.061 & 0.063 & 0.000 & 0.003 & 0.025 & 0.008 & 0.000 & 0.075 & 0.215 & 0.114 \\
 
-		Topcon & TRAIN067 & 0.188 & 0.170 & 0.137 & 0.160 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+		T-2000 & TRAIN067 & 0.188 & 0.170 & 0.137 & 0.160 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
 
-		Topcon & TRAIN068 & 0.406 & 0.550 & 0.543 & 0.548 & 0.004 & 0.006 & 0.006 & 0.006 & 0.000 & 0.008 & 0.010 & 0.008 \\
+		T-2000 & TRAIN068 & 0.406 & 0.550 & 0.543 & 0.548 & 0.004 & 0.006 & 0.006 & 0.006 & 0.000 & 0.008 & 0.010 & 0.008 \\
 		
 		\hline
 		\multicolumn{2}{|c|}{\textbf{MAE compared to GT}} & - & 0.092 & 0.067 & 0.079 & - & 0.025 & 0.036 & 0.029 & - & 0.041 & 0.052 & 0.043 \\ 
@@ -1538,6 +1634,29 @@ In the following subsection, the results shown in Table \ref{tab:FluidVolumesExp
 	\end{tabular}}
 	\label{tab:FluidVolumesExperiment6}
 \end{table*}
+
+In Figures \ref{fig:Experiment6GTvsAll}, \ref{fig:Experiment6PredictedVsAll}, and \ref{fig:Experiment6GeneratedVsEnhanced}, the estimated volumes shown in Table \ref{tab:FluidVolumesExperiment6} are plotted and compared with each other, providing a visual insight in the relationships between the estimated fluids, making the analysis easier. Figure \ref{fig:Experiment6GTvsAll} compares the volumes estimated using the GT masks with the volumes estimated in the other columns, ``P'', ``G'', and ``E''. Similarly, Figure \ref{fig:Experiment6PredictedVsAll} confronts the fluid volume estimations made using the fluid masks predicted by the segmentation model to the estimations made in columns ``G'' and ``E''. Finally, Figure \ref{fig:Experiment6GeneratedVsEnhanced} confronts the fluid volumes predicted in the generated dataset to the fluid volumes predicted in the enhanced dataset.
+
+\begin{figure}[!ht]
+	\centering	
+	\includegraphics[width=1.0\linewidth]{figures/Experiment6GTvsAll.png}
+	\caption{Volume estimated for each fluid in the OCT volumes using the GT masks, compared with the volumes estimated in columns ``P'', ``G'', and ``E''.}
+	\label{fig:Experiment6GTvsAll}
+\end{figure}
+
+\begin{figure}[!ht]
+	\centering	\includegraphics[width=1.0\linewidth]{figures/Experiment6PredictedVsAll.png}
+	\caption{Volume estimated for each fluid in the OCT volumes using the masks predicted by the segmentation model compared with the volumes calculated using the masks from columns ``G'' and ``E''.}
+	\label{fig:Experiment6PredictedVsAll}
+\end{figure}
+
+\begin{figure}[!ht]
+	\centering	\includegraphics[width=0.50\linewidth]{figures/Experiment6GeneratedVsEnhanced.png}
+	\caption{Volume estimated for each fluid in the OCT volumes using the masks predicted by the segmentation model in the generated dataset, compared with the volumes calculated in the enhanced dataset.}
+	\label{fig:Experiment6GeneratedVsEnhanced}
+\end{figure}
+
+In Table \ref{tab:Experiment6DiceInGeneratedDataset}, the Dice coefficients is calculated for the predicted masks in the generated dataset. These predicted fluid masks are compared to the real GT masks of the equivalent slices. The information shown in this table helps the understanding of which fluids' segmentation and which vendors are the most affected by generating intermediate slices and how these slices are understood by the model.
 
 \begin{table*}[!ht]
 	\caption{Comparison in Dice scores for every vendor and fluid in the reserved fold (fold 1), using the best segmentation model to segment the original B-scans and their generated equivalent.}
