@@ -1,4 +1,14 @@
 \chapter*{Resumo}
 
 \chapter*{Abstract}
-
+Damage to the retina can result in significant visual impairment, negatively limiting the quality of life of those impacted. Diseases such as age-related macular degeneration (AMD), diabetic macular edema (DME), and retinal vein occlusion (RVO) are among the leading causes of retinal damage and are typically characterized by the presence and accumulation of fluid in the retina. 
+\par
+The characteristics of these fluids, visible in retinal optical coherence tomography (OCT) scans, serve as important biomarkers in disease progression. However, the manual annotation of these fluids is laborious, time consuming, and prone to inter-observer variability, which motivates the need for automatic characterization approaches.
+\par
+This dissertation explores the state-of-the-art deep learning techniques for semantic segmentation of retinal fluids, targeting the segmentation of intra-retinal fluid (IRF), sub-retinal fluid (SRF), and pigment epithelial detachment (PED), in the RETOUCH dataset. 
+\par
+Additionally, the work investigates the use of generative models, such as the generative adversarial networks (GANs), to synthesize intermediate OCT slices, aiming to enhance the inter-slice resolution throughout an OCT volume. The segmentation results in the enhanced dataset are used in the fluid volume calculation, an important biomarker in the progression of the mentioned retinal diseases.
+\par
+The experimental works show that the segmentation model achieved comparable outcomes with the existing approaches in the literature, particularly when using as input larger patches that contribute with enough anatomic context for the segmentation. Meanwhile, the generative models, though less explored in OCT, demonstrate promising results in the synthesis of realistic interpolated slices. This combination of segmentation and generation supports a more robust characterization of the retinal fluids, providing more confidence to the fluid volumes estimated.
+\par
+Despite the encouraging obtained results, several limitations remain, particularly in segmentation model generalization to external datasets and in the fine-detail realism of the generated slices and segmentation masks. Future works should explore advanced architectures, such as attention mechanism, and perceptual loss functions, to improve detail and robustness across diverse imaging conditions.

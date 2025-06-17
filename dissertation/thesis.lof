@@ -66,5 +66,7 @@
 \contentsline {figure}{\numberline {4.34}{\ignorespaces Volume estimated for each fluid in the OCT volumes using the GT masks, compared with the volumes estimated in columns ``P'', ``G'', and ``E''.\relax }}{85}{figure.caption.97}%
 \contentsline {figure}{\numberline {4.35}{\ignorespaces Volume estimated for each fluid in the OCT volumes using the masks predicted by the segmentation model compared with the volumes calculated using the masks from columns ``G'' and ``E''.\relax }}{86}{figure.caption.98}%
 \contentsline {figure}{\numberline {4.36}{\ignorespaces Volume estimated for each fluid in the OCT volumes using the masks predicted by the segmentation model in the generated dataset, compared with the volumes calculated in the enhanced dataset.\relax }}{86}{figure.caption.99}%
+\contentsline {figure}{\numberline {4.37}{\ignorespaces Example of IRF segmentation in the enhanced volume TRAIN039.\relax }}{88}{figure.caption.101}%
+\contentsline {figure}{\numberline {4.38}{\ignorespaces Example of SRF and PED segmentation in the enhanced volume TRAIN012.\relax }}{89}{figure.caption.102}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
