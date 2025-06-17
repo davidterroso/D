@@ -3882,6 +3882,54 @@
       \verb 10.48550/arXiv.1412.6980
       \endverb
     \endentry
+    \entry{Melo2023}{article}{}
+      \name{author}{4}{}{%
+        {{hash=bd342ed48037ee13ef4f8eb6ca148053}{%
+           family={Melo},
+           familyi={M\bibinitperiod},
+           given={Tânia},
+           giveni={T\bibinitperiod}}}%
+        {{hash=90a2da66cad97752b3f912ba2dd70dd2}{%
+           family={Carneiro},
+           familyi={C\bibinitperiod},
+           given={Ângela},
+           giveni={Â\bibinitperiod}}}%
+        {{hash=ace173bb3c63a891d05fd810a3932d00}{%
+           family={Campilho},
+           familyi={C\bibinitperiod},
+           given={Aurélio},
+           giveni={A\bibinitperiod}}}%
+        {{hash=f169ffebdabfcc532c8867833206177c}{%
+           family={Mendonça},
+           familyi={M\bibinitperiod},
+           given={Ana\bibnamedelima Maria},
+           giveni={A\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {SPIE}%
+      }
+      \strng{namehash}{053021dafc5b1d0a981ea080396eb7a8}
+      \strng{fullhash}{0a5623baed15273031df749bbf842d4e}
+      \strng{bibnamehash}{0a5623baed15273031df749bbf842d4e}
+      \strng{authorbibnamehash}{0a5623baed15273031df749bbf842d4e}
+      \strng{authornamehash}{053021dafc5b1d0a981ea080396eb7a8}
+      \strng{authorfullhash}{0a5623baed15273031df749bbf842d4e}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issue}{1}
+      \field{journaltitle}{Journal of Medical Imaging}
+      \field{title}{{Retinal layer and fluid segmentation in optical coherence tomography images using a hierarchical framework}}
+      \field{volume}{10}
+      \field{year}{2023}
+      \field{pages}{14006}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1117/1.JMI.10.1.014006
+      \endverb
+      \keyw{Cross validation,Deep learning,Education and training,Image segmentation,Lithium,Matrices,Optical coherence tomography,Performance modeling,Retina,Retinal diseases,computer-aided diagnosis,fluid segmentation,hierarchical framework,optical coherence tomography,retina,retinal layer segmentation}
+    \endentry
     \entry{Sara2019}{article}{}
       \name{author}{3}{}{%
         {{hash=bac74c079939c08e62ec4a024acf109e}{%
