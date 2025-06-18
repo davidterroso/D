@@ -1,8 +1,8 @@
 \babel@toc {english}{}\relax 
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {1.1}{\ignorespaces OCT B-scans (A), when taken at a fixed distance along the azimuthal axis, form a volume of the posterior segment of the eye (B) \blx@tocontentsinit {0}\parencite {Jain2010}.\relax }}{2}{figure.caption.9}%
-\contentsline {figure}{\numberline {1.2}{\ignorespaces The three distinct fluid types on an OCT B-scan: IRF in red, SRF in green, and PED in blue \blx@tocontentsinit {0}\cite {Bogunovic2019a}.\relax }}{3}{figure.caption.10}%
-\contentsline {figure}{\numberline {1.3}{\ignorespaces OCT scan of the retinal layers \blx@tocontentsinit {0}\cite {Almonte2020}.\relax }}{3}{figure.caption.11}%
+\contentsline {figure}{\numberline {1.1}{\ignorespaces OCT B-scans (A), acquired at fixed intervals along the azimuthal axis, form a volume representation of the posterior segment of the eye (B) \blx@tocontentsinit {0}\parencite {Jain2010}.\relax }}{2}{figure.caption.9}%
+\contentsline {figure}{\numberline {1.2}{\ignorespaces The three distinct fluid types on an OCT B-scan: IRF in red, SRF in green, and PED in blue \blx@tocontentsinit {0}\parencite {Bogunovic2019a}.\relax }}{3}{figure.caption.10}%
+\contentsline {figure}{\numberline {1.3}{\ignorespaces OCT scan of the retinal layers \blx@tocontentsinit {0}\parencite {Almonte2020}.\relax }}{3}{figure.caption.11}%
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {2.1}{\ignorespaces Grouping of the articles included in the literature review.\relax }}{6}{figure.caption.12}%
 \contentsline {figure}{\numberline {2.2}{\ignorespaces Example of a CNN architecture used in fluid binary segmentation. Image A depicts the neural network architecture. B shows the used multi-scale block, while C and D exhibit the residual convolutional blocks \blx@tocontentsinit {0}\parencite {Guo2020}.\relax }}{7}{figure.caption.13}%
