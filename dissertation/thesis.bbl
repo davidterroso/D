@@ -3857,31 +3857,6 @@
       \endverb
       \keyw{Image segmentation;Retina;Training;Pathology;Biomedical imaging;Three-dimensional displays;Fluids;retinal fluid segmentation;Optical Coherence Tomography (OCT);OCT segmentation;macular edema;deep learning;GAN}
     \endentry
-    \entry{Kingma2015}{inproceedings}{}
-      \name{author}{1}{}{%
-        {{hash=b6fbd171848aad4edf3925543f1f1522}{%
-           family={Kingma},
-           familyi={K\bibinitperiod},
-           given={Diederik\bibnamedelima P},
-           giveni={D\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
-      }
-      \strng{namehash}{b6fbd171848aad4edf3925543f1f1522}
-      \strng{fullhash}{b6fbd171848aad4edf3925543f1f1522}
-      \strng{bibnamehash}{b6fbd171848aad4edf3925543f1f1522}
-      \strng{authorbibnamehash}{b6fbd171848aad4edf3925543f1f1522}
-      \strng{authornamehash}{b6fbd171848aad4edf3925543f1f1522}
-      \strng{authorfullhash}{b6fbd171848aad4edf3925543f1f1522}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{booktitle}{{3rd International Conference for Learning Representations}}
-      \field{title}{{Adam: A method for stochastic optimization}}
-      \field{year}{2015}
-      \verb{doi}
-      \verb 10.48550/arXiv.1412.6980
-      \endverb
-    \endentry
     \entry{Melo2023}{article}{}
       \name{author}{4}{}{%
         {{hash=bd342ed48037ee13ef4f8eb6ca148053}{%
@@ -4300,6 +4275,31 @@
       \field{year}{2016}
       \verb{doi}
       \verb 10.48550/arXiv.1511.05440
+      \endverb
+    \endentry
+    \entry{Kingma2015}{inproceedings}{}
+      \name{author}{1}{}{%
+        {{hash=b6fbd171848aad4edf3925543f1f1522}{%
+           family={Kingma},
+           familyi={K\bibinitperiod},
+           given={Diederik\bibnamedelima P},
+           giveni={D\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+      }
+      \strng{namehash}{b6fbd171848aad4edf3925543f1f1522}
+      \strng{fullhash}{b6fbd171848aad4edf3925543f1f1522}
+      \strng{bibnamehash}{b6fbd171848aad4edf3925543f1f1522}
+      \strng{authorbibnamehash}{b6fbd171848aad4edf3925543f1f1522}
+      \strng{authornamehash}{b6fbd171848aad4edf3925543f1f1522}
+      \strng{authorfullhash}{b6fbd171848aad4edf3925543f1f1522}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{{3rd International Conference for Learning Representations}}
+      \field{title}{{Adam: A method for stochastic optimization}}
+      \field{year}{2015}
+      \verb{doi}
+      \verb 10.48550/arXiv.1412.6980
       \endverb
     \endentry
     \entry{Akesson2024}{article}{}

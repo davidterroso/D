@@ -1,0 +1,120 @@
+\chapter{Experiments}\label{Experiments}
+Building upon the methods and materials exposed, the experiments conducted during this dissertation are explained in depth in this chapter. It begins with a description of how the data were split, followed by the experiments on fluid segmentation, intermediate slice generation, and fluid volume estimation.
+\par
+All experiments were conducted using an NVIDIA GeForce RTX 3080 GPU and the \hbox{PyTorch} machine learning library (version 2.5.1).
+
+\section{Data Partition}\label{CrossValidation}
+To promote consistency across all experiments, the conditions were held identical. In every experiment, the data were split into five folds, with different splits being used for the segmentation and generation tasks. From these five folds, one was reserved until the end to compare the performance of the models trained in the different experiments and identify the one that generalizes best to an unseen image set. The remaining four folds were used for training the models through a 4-fold cross-validation procedure, in which three folds were used for training and one for validation. Therefore, four training runs are completed in each experiment, rotating the validation fold across runs. The reserved fold consists of the same OCT volumes for all experiments, allowing for further comparisons on data not seen by any of the models.
+\par
+The images in the fold that was used in validation allowed an insight into how the model was learning. In the segmentation experiments, the instance of the model that achieved the lowest loss on validation data was saved, as this typically indicates the best generalization performance on unseen data. Also, when the model was no longer improving, training could be stopped, saving computational resources.
+\par
+The data were split so that the quantity of each fluid and the number of volumes per vendor were evenly distributed across the folds. This balanced distribution allows for a fairer assessment of the model's learning ability and its performance on data with varying characteristics (e.g., from different vendors). To achieve this, a custom algorithm was developed to divide the data into five folds while minimizing discrepancies in fluid distribution and the number of slices per vendor within each fold.
+\par
+A possible distribution of the 70 OCT volumes from the RETOUCH dataset, which were used in the training of the fluid segmentation models, can be seen in Table \ref{tab:FiveFoldSplit}. The split was applied to the volumes and not to the slices. Slices from the same volume must be kept together to prevent data leakage, where similar images obtained from the same patient appear in both the training and validation sets, potentially resulting in overly optimistic performance metrics.
+
+\begin{table*}[!ht]
+	\setlength{\tabcolsep}{6pt}
+	\renewcommand{\arraystretch}{1.3}
+	\caption{Number of OCT volumes per vendor in each fold, considering a 5-fold split.}
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		\textbf{Vendors} & \textbf{1$^{st}$} & \textbf{2$^{nd}$} & \textbf{3$^{rd}$} & \textbf{4$^{th}$} & \textbf{5$^{th}$} \\
+		\hline
+		\textbf{Cirrus} & 5 & 5 & 5 & 5 & 4 \\
+		\textbf{Spectralis} & 5 & 5 & 5 & 5 & 4 \\
+		\textbf{Topcon} & 4$^{a}$ + 1$^{b}$ & 4$^{a}$ + 1$^{b}$ & 4$^{a}$ & 4$^{a}$ & 4$^{a}$ \\
+		\hline
+		\multicolumn{6}{l}{Volumes marked with \textbf{\textit{a}} consist of 128 B-scans.} \\
+		\multicolumn{6}{l}{Volumes marked with \textbf{\textit{b}} consist of 64 B-scans.} \\
+	\end{tabular}
+	\label{tab:FiveFoldSplit}
+\end{table*}
+
+For experiments using a binary segmentation approach, the volumes can be redistributed using the same algorithm, but with fewer constrains. In this case, the folds are created based only on the vendor and amount of the target fluid, thus eliminating the restrictions imposed by the quantities of the other two fluids. Nevertheless, the volumes that are in the previously defined reserved fold must not be used in either training in validation.
+\par
+For the experiments related with inter-slice generation, the 5-fold split of the data was not done by considering the quantity of fluid in each fold. Since the test volumes of the RETOUCH dataset were used in this experiment and fluid masks are not available, the quantity of fluid in each test volume is unknown. Please note that, for comparison purposes, one of the folds in this 5-fold split is the one reserved in the multi-class segmentation split for testing.
+\par
+The split was performed by taking into consideration solely the number of slices per device. In these experiments, the characteristics of each device are important, since each device has a specific inter-slice distance. This distance varies even across devices from the same vendor and is an important factor in image generation.
+\par
+Considering both training and testing volumes of the RETOUCH dataset, there are 38 Cirrus, 38 Spectralis, 13 Topcon T-1000, and 23 Topcon T-2000 (two of which with 64 slices). The fold reserved in the multi-class segmentation task for testing is composed of the following volumes: 4 Cirrus, 5 Spectralis, 3 Topcon T-1000, and 2 Topcon T-2000 (one of which with 64 slices). The volumes remaining for the four folds used in the generation task are distributed as shown in Table \ref{tab:FourFoldSplit}.
+
+\begin{table*}[!ht]
+	\setlength{\tabcolsep}{6pt}
+	\renewcommand{\arraystretch}{1.3}
+	\caption{Device-wise distribution of OCT volumes across the four folds used for training and validation in OCT slice synthesis.}
+	\centering
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		\textbf{Devices} & \textbf{1$^{st}$} & \textbf{2$^{nd}$} & \textbf{3$^{rd}$} & \textbf{4$^{th}$} \\
+		\hline
+		\textbf{Cirrus} & 9 & 8 & 8 & 9 \\
+		\textbf{Spectralis} & 9 & 8 & 9 & 8 \\
+		\textbf{T-1000} & 3 & 3 & 2 & 3 \\
+		\textbf{T-2000} & 4 & 5 & 5 & 5 \\
+		\textbf{T-2000$^{b}$} & 1 & 0 & 0 & 0 \\
+		\hline
+		\multicolumn{5}{l}{Volumes marked with \textbf{\textit{b}} consist of 64 B-scans.} \\
+	\end{tabular}
+	\label{tab:FourFoldSplit}
+\end{table*}
+	
+Since the partition is not constrained by the quantity of fluid in each volume, it is possible to compute the optimal partition by iterating through all the possible combinations. In each combination, the standard deviation of the total number of B-scans in each fold is calculated. The combination with the smallest deviation was used. Similar to what was done in the fluid segmentation task, three folds were used in training while one was used in validation.
+
+\section{Experiment 1 - Fluid Segmentation Using Multi-class U-Net}\label{Experiment1}
+
+In the first experiment, the base U-Net model was trained to perform 2D multi-class segmentation of the retinal fluids in OCT volumes.
+\par
+This was the most extensive set of experiments, where many variables were tested. Different patch shapes, transformations, and hyperparameters were experimented, until the best training settings were determined. The best settings were then used in \ref{Experiment2} Experiment 2. All the experiments were done using the Adam optimizer \parencite{Kingma2015} with a learning rate of $2 \times 10^{-5}$.
+
+\subsection{Experiment 1.1}
+
+In the Experiment 1.1, two sets of four training runs were performed, using each fold as validation. In both sets, the conditions were exactly the same, except the input patches, aiming to understand the effect that the random patch extraction has on the model's performances. The model was trained during 100 epochs with a batch size of 32, with no early stopping.
+
+The patches are then randomly transformed by a rotation between 0 and 10 degrees, and horizontal flipping. 
+
+\subsection{Experiment 1.2}
+In Experiment 1.2, the patch shape was changed from 256 $\times$ 128 to 496 $\times$ 512. By using such shape, the model receives a larger context of the B-scan as input, allowing it to learn the anatomic references that characterize and limit the fluids.
+\par
+
+
+
+\subsection{Experiment 1.3}
+Another patch shape was experimented in Experiment 1.3. In this experiment, the images from different vendors were resized from their original dimensions to 496 $\times$ 512, the shape of the smaller images of the dataset, obtained with the Spectralis device. 
+\par
+
+When using four vertical patches, the model was trained both for 100 and 200 epochs, maintaining a batch size of 32 and a maximum rotation of $10^{\circ}$, without early stopping. 
+\par
+Then, the model was trained using seven and thirteen patches for the best and worse performing folds when using four patches, while stopping early in case the validation loss did not progress 25 epochs after the minimum validation loss was encountered. This was used because the model progressed much faster when using seven and thirteen patches per B-scan, as it was trained in a much larger number of images per epoch. Henceforth, it also required more computational power, which further motivated the early stopping.
+\par
+Using seven vertical patches per image, which was the number of patches that performed best, three different rotations were experimented: no rotation, maximum rotation of $5^{\circ}$, and maximum rotation of $10^{\circ}$. These values were tested for a better understanding of how the rotation of the image affects the segmentation and the model's understanding of anatomic references. The models where rotation was applied were trained on a minimum of 100 epochs, after which a patience of 25 epochs was applied. Therefore, if after 100 epochs the model did not improve its validation loss for 25 consecutive epochs, then training would be interrupted. The models trained without rotation converged much faster and, for that reason, the minimum number of epochs used was 25, while still keeping the same patience. All models were trained for up to 200 epochs.
+\par
+Lastly, the model was trained using four patches and a maximum rotation of $5^{\circ}$, using the same early stopping criteria as in the last seven patches runs. This allowed for one last comparison between the two number of patches used in training, under the same conditions. The best model between those trained with four patches and those trained with seven patches was selected to infer on the reserved fold and in the private CHUSJ dataset.
+
+\section{Experiment 2 - Fluid Segmentation Using Binary U-Nets}\label{Experiment2}
+
+The second experiment also involved multi-class segmentation of the retinal fluids. Contrasting with the first experiment, where the segmentation was done using a U-Net, three U-Nets were used in this experiment, one for each fluid. Each U-Net model focused only on the segmentation of one fluid, with one model for IRF, one for SRF, and one for PED.
+\par
+One of the main problems with multi-class segmentation performed by binary models is the merging of the multiple masks. In this context, multiple fluid classes can be predicted for the same voxel, while only one of those can be correct. In this experiment, two alternatives were explored: order of priority, where the merging of the fluid masks follows a predefined hierarchy that determines which fluid takes precedence, and highest probability, where the assigned class is the one that was predicted with highest probability by its model.
+\par
+Two different losses were used to regulate the model. Initially, the same loss as the one used in \ref{Experiment1} Experiment 1, with only two classes (background and the fluid that would be segmented), and then, the weighted cross-entropy, using weights that balance the larger quantity of background voxels. This last loss is described in Equation \ref{eq:SegmentationCE}, with $N=2$.
+\par
+When using the loss from \ref{Experiment1} Experiment 1, each model was trained on two different splits: the split used in the multi-class segmentation experiments and a split created specifically for the segmentation of the fluid that was being segmented. 
+\par
+The balanced cross-entropy loss was tested on the best performing folds of the multi-class and IRF splits, for the segmentation of IRF, in the same conditions. However, since the results were much worse than those obtained with the initial loss, no more folds or fluids were considered.
+\par
+All the models were trained with seven vertical patches extracted from each B-scan, on a minimum of 100 epochs, after which a patience of 25 epochs was applied, like what was done in the last runs of \ref{Experiment1} Experiment 1. Similarly, the random transformations applied to the images consisted of horizontal flipping and a maximum rotation of $5^{\circ}$.
+
+\section{Experiment 3 - Intermediate Slices Synthesis Using a GAN}
+The GAN was trained in 250 epochs, using a batch size of 32 and $2 \times 10^{-4}$ as the learning rate. The selected optimizer was Adam, with $\beta_{1}=0.5$ and $\beta_{2}=0.999$.
+
+\section{Experiment 4 - Intermediate Slices Synthesis Using a U-Net}
+In this experiment, the whole image is input to the network and for that reason the batch size was set to 8. The optimizer utilized was Adam with a learning rate of $2 \times 10^{-4}$ and the model was trained for 200 epochs.
+
+\section{Experiment 5 - Fluid Volume Estimation Using Predicted Masks in Real OCT Volumes}
+
+In this experiment, the fluid volumes were calculated for the OCT scans without the generated slices. The best segmentation model was utilized to segment the fluid in three classes and the volume was estimated for each class as described. The results from this experiment allow the comparison with the values obtained in the following experiment, where slice generation was used.
+
+\section{Experiment 6 - Fluid Volume Estimation Using Predicted Masks in Generated and Super-resolved OCT Volumes}
+
+This experiment consisted of the fluid volume estimation in OCT scans with generated images. The model used in segmentation was the same as in the previous experiment, which predicted the fluid masks for all the slices. From the predicted fluid masks, the fluid volume was estimated and compared with those obtained in the previous experiment. 
