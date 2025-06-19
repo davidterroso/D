@@ -1,30 +1,34 @@
 \chapter*{UN Sustainable Development Goals} \label{chap:UnitedNations}
 
-The United Nations Sustainable Development Goals (SDGs) provide a global framework to achieve a better and more sustainable future for all. 
-It includes 17 goals to address the world's most pressing challenges, including poverty, inequality, climate change, environmental degradation, peace, and justice. 
-
-Quisque ullamcorper placerat ipsum. Cras nibh. Morbi vel justo vitae lacus tincidunt ultrices.
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. 
-In hac habitasse platea dictumst. Integer tempus convallis augue. Etiam facilisis. 
-
-The specific Sustainable Development Goals mentioned have the following names:
+The United Nations Sustainable Development Goals (SDGs) provide a global framework to achieve a more equitable, healthy, and sustainable future for all. Comprising 17 different goals, this framework addresses pressing world's challenges,including poverty, hunger, health, and education.
+\par
+This dissertation contributes to these SDGs by advancing automated tools for the detection and characterization of retinal diseases, which are among the leading causes of vision impairment and blindness. The proposed methods support the ``SDG 3: Ensure healthy lives and promote well-being for all at all ages'', by developing fast, automatic, scalable, and accurate diagnostic tools that assist in the early identification and monitoring of retinal conditions. Since these solutions are fast, accessible, and easily deployed, they have the potential to be used in developing countries, where resources and access to trained specialists are scarce, supporting the target 3.d., which aims to support the capacity of all countries for early detection and monitoring of health risks. Additionally, through the prediction and monitoring of retinal diseases, this technology can also reduce the load on the healthcare systems, while improving decision making and access to a more accessible and equitable healthcare, tackling target 3.d, once again.
+\par
+In addition to the healthcare contributions, the studied technology can also be implemented as a teaching material, providing an alternative tool for the understanding and visualization of retinal fluid pathologies, aligning with ``SDG 4: Ensure inclusive and equitable quality education and promote lifelong learning opportunities for all''. This tackles target 4.4, which focus on the increasing of the number of young adults with relevant technical skills, and target 3.c, which aims to improve the training of healthcare personnel.
+\par
+The relevant SGDs, their associated contributions, and performance metrics are explained in the following table:
 
 \begin{description}
 \item [SDG 3]
 Ensure healthy lives and promote well-being for all at all ages
+\item [SDG 4]
+Ensure inclusive and equitable quality education and promote lifelong learning opportunities for all
 \end{description}
 
 \begin{center}
-\begin{tabular}{|l|l|p{58mm}|p{52mm}|}
-\hline
-\textbf{SGD} & \textbf{Target} & \textbf{Contribution} & \textbf{Performance Indicators and Metrics} \\ 
-\hline
-\hline
-    \multirow{3}{*}{3} & 3.b & & \\
-    \cline{2-4}
-    & 3.c & & \\
-    \cline{2-4}
-    & 3.d & & \\
-\hline
-\end{tabular}
+	\begin{tabular}{|l|l|p{58mm}|p{52mm}|}
+		\hline
+		\textbf{SGD} & \textbf{Target} & \textbf{Contribution} & \textbf{Performance Indicators and Metrics} \\ 
+		\hline
+		\hline
+		\multirow{3}{*}{3} 
+		& 3.d & Developed a GAN that generates intermediate slices between two known scans, increasing the spatial resolution and continuity of OCT volumes. & Reduction in misdiagnosis cases; Increased detection of early-stage retinal conditions.\\
+		\cline{2-4}
+		& 3.d & Designed an automatic fluid volume estimation pipeline which integrates the segmentation of retinal fluids and the generation of slices, and can accurately calculate the quantity of each fluid in an OCT volume, enabling disease progression monitoring and reducing workload. & Reduction in clinician time spent per patient; Improved diagnostic consistency across clinicians.\\
+		\cline{2-4}
+		& 3.c & \parbox[t]{58mm}{Developed a segmentation model which performs accurate retinal fluid segmentation in OCT B-scans automatically, which can be used as a learning tool for the understanding of retinal pathologies.} & \parbox[t]{52mm}{Improvement in diagnostic skills before and after using this tool; Increased acceptability of AI tools in the clinical workflow.}\\
+		\cline{1-2}
+		4 & 4.4 & & \\
+		\hline
+	\end{tabular}
 \end{center}

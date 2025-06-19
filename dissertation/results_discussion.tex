@@ -1429,8 +1429,8 @@ In Experiment 3, a GAN was trained with the objective of generating the intermed
 		\multirow{2}{*}{\textbf{Run}} & \multirow{2}{*}{\textbf{VF}} & \multicolumn{4}{c|}{\textbf{PSNR}} & \multirow{2}{*}{\textbf{PSNR}} & \multicolumn{4}{c|}{\textbf{SSIM}} & \multirow{2}{*}{\textbf{SSIM}} \\ \cline{3-6} \cline{8-11}
 		&  & \textbf{Cirrus} & \textbf{Spectralis} & \textbf{T-1000} & \textbf{T-2000} &  & \textbf{Cirrus} & \textbf{Spectralis} & \textbf{T-1000} & \textbf{T-2000} &  \\ \hline
 		\textbf{Run 1} & 2 & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  \\
-		\textbf{Run 2} & 3 & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  \\
-		\textbf{Run 3} & 4 & \multicolumn{1}{c|}{20.40} & \multicolumn{1}{c|}{24.93} & \multicolumn{1}{c|}{21.95} & \multicolumn{1}{c|}{22.56} & 21.91 & \multicolumn{1}{c|}{0.175} & \multicolumn{1}{c|}{0.498} & \multicolumn{1}{c|}{0.228} & \multicolumn{1}{c|}{0.263} & 0.257 \\
+		\textbf{Run 2} & 3 & \multicolumn{1}{c|}{\textbf{20.44}} & \multicolumn{1}{c|}{24.58} & \multicolumn{1}{c|}{21.63} & \multicolumn{1}{c|}{22.24} & 21.69 & \multicolumn{1}{c|}{\textbf{0.181}} & \multicolumn{1}{c|}{0.484} & \multicolumn{1}{c|}{0.188} & \multicolumn{1}{c|}{0.246} & 0.247 \\
+		\textbf{Run 3} & 4 & \multicolumn{1}{c|}{20.40} & \multicolumn{1}{c|}{\textbf{24.93}} & \multicolumn{1}{c|}{\textbf{21.95}} & \multicolumn{1}{c|}{\textbf{22.56}} & \textbf{21.91} & \multicolumn{1}{c|}{0.175} & \multicolumn{1}{c|}{\textbf{0.498}} & \multicolumn{1}{c|}{\textbf{0.228}} & \multicolumn{1}{c|}{\textbf{0.263}} & \textbf{0.257} \\
 		\textbf{Run 4} & 0 & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  &  \\
 		\hline
 		\hline
@@ -1656,6 +1656,22 @@ In Figures \ref{fig:Experiment6GTvsAll}, \ref{fig:Experiment6PredictedVsAll}, an
 	\label{fig:Experiment6GeneratedVsEnhanced}
 \end{figure}
 
+Considering the information exposed in the previous table and figures, many conclusions can be drawn regarding fluid volume estimation. For example, the differences between columns in the estimated fluid volumes, are always larger in IRF. The generation of this fluid was seen in Experiment 3, to be the most difficult, due to the finer details that change in the transitions between consecutive B-scans. Combined with the worse quality in the generated slices, the segmentation of this fluid was also seen to be the most difficult fluid to segment in the volumes from this fold, as shown in Table \ref{tab:Experiment1VsExperiment2}, where the IRF Dice coefficient is lower than in any other fluid. Both aspects significantly influence the estimation of this fluid in the unseen data. 
+\par
+The SRF presents the smallest differences between columns, as the MAE in this fluid are smaller than in any other fluid. The fluid estimation of SRF benefits from the accurate representation of this fluid in the generated slices, due to its uniform, homogeneous, and predictable characteristics, as seen in Experiment 3. Contrary to IRF, the segmentation model performs exceptionally well in the segmentation of SRF, when compared to the other fluids. Therefore, an accurate representation of the SRF masks is obtained, leading to an accurate fluid estimation.
+\par
+The estimation of the PED volume appears as an intermediate performance between the other two fluids. The segmentation of this fluid is better than IRF, but worse than PED, while its representation in generated slices is accurate when presented in large regions, but not so good when appearing in small regions. This translates to a smaller deviation between columns when comparing to IRF, but not as good as SRF.
+\par
+The differences between the columns ``GT'' and ``P'' are inherent to the capability of the segmentation model. This model's capabilities also limit the accuracy of the estimated volumes in the generated and enhanced datasets, as the masks predicted in the generated slices are obtained using this model. Therefore, to understand the effect that generating slices has in total fluid volume estimation, it is important to observe the differences between the ``P'', ``G'', and ``E'' columns. 
+\par
+The differences between these columns are much smaller than the differences calculated when comparing these results to the GT. This indicates that the fluid estimation is more limited by the segmentation model, than it is by the generated slices. This is particularly true when comparing column ``P'' to column ``E'', as illustrated in Figure \ref{fig:Experiment6PredictedVsAll}. In this figure, most of the points appear close to the gray line, which indicates that the fluid volumes predicted when adding the generated slices are similar to the fluid volumes estimated when predicting the segmentation masks in the original RETOUCH dataset.
+\par
+To isolate the impact of the generated slices in the fluid estimation, it is more important to look at the differences between the fluids estimated in columns ``P'' and ``G'', as well as Figures \ref{fig:Experiment6PredictedVsAll} and \ref{fig:Experiment6GeneratedVsEnhanced}. By observing this data, it becomes evident the similarity between performances in these datasets. In the SRF fluid estimation, the values are particularly similar, as well as in most cases of PED. However, it is in IRF where the largest differences appear, where the predictions of IRF by the segmentation model are of less quantity in the generated dataset.
+\par
+As seen in Experiment 3, IRF is the most difficult fluid to generate and attempts to recreate this fluid in intermediate slice, originate structures that do not resemble the IRF fluid. As a result, the segmentation models do not perceive this generated regions as IRF and do not segment them. This trend also seen in Figure \ref{fig:Experiment6PredictedVsAll} in the comparison between the original dataset and the enhanced dataset, where the largest differences appear in the segmentation of IRF, as the segmentation model predicts less fluid in the generated slices. However, since these B-scans are also mixed with original B-scans to form the OCT volume, the resulting differences are less significant.
+\par
+It is interesting to note that of the three biggest differences in IRF between the columns ``P'' and ``E'', TRAIN016, TRAIN039, and TRAIN048, which are highlighted in Figure \ref{fig:Experiment6PredictedVsAll} as the furthest points from the gray line, are in OCT volumes obtained with the Spectralis device. This trend is related with the larger inter-slice distance in Spectralis than in any other device, which makes it harder to create accurate IRF regions, which is amplified by this fluid's characteristics.
+\par
 In Table \ref{tab:Experiment6DiceInGeneratedDataset}, the Dice coefficients is calculated for the predicted masks in the generated dataset. These predicted fluid masks are compared to the real GT masks of the equivalent slices. The information shown in this table helps the understanding of which fluids' segmentation and which vendors are the most affected by generating intermediate slices and how these slices are understood by the model.
 
 \begin{table*}[!ht]
@@ -1664,7 +1680,7 @@ In Table \ref{tab:Experiment6DiceInGeneratedDataset}, the Dice coefficients is c
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|ccc|ccc|ccc|c|c|c|c|}
 			\hline
 			% Headers
-			\multirow{2}{*}{\textbf{Slices}} &
+			\multirow{2}{*}{\textbf{OCT Volumes}} &
 			\multirow{2}{*}{\textbf{Slices}} &  
 			\multirow{2}{*}{\textbf{VF}} & 
 			\multicolumn{3}{c|}{\textbf{Cirrus}} & 
@@ -1711,3 +1727,39 @@ In Table \ref{tab:Experiment6DiceInGeneratedDataset}, the Dice coefficients is c
 	\end{tabular}}
 	\label{tab:Experiment6DiceInGeneratedDataset}
 \end{table*}
+
+As expected, the segmentation model performs better in the original dataset, where the structures present in the B-scans are the most similar to those seen in training. Nevertheless, in some metrics, the differences between the generated slices and the original slices is larger than in others.
+\par
+Regarding the segmentation of slices without fluid, the segmentation model behaves almost similarly to what is seen in the original data in most fluids and vendors. However, there are some exceptions, particularly in IRF and slices from Spectralis. Of all fluids, it is in IRF where the detection of fluid changes the most. This is due to the quality of the generated scans in IRF regions: since this area is harder to predict, the model outputs fluid regions that visually do not resemble IRF, leading the segmentation model to not predict this region as fluid. This particularly affects Spectralis, where the distance between slices is larger, making it harder to interpolate an intermediate slice. For this same reasons, the detection of SRF is affected, particularly due to the poor generation of small SRF regions.
+\par
+However, it is in the segmentation of slices with fluid where the performances significantly decrease. The segmentation of SRF and PED is not very affected by the generated slices in Cirrus and Topcon when compared to the other fluids. As seen in Experiment 3, the overall shape and characteristics of these fluids are easier to interpolate than IRF, as their structure is constant and homogeneous, with smooth transitions between consecutive slices, particularly in these vendors where the interslice distance is smaller.
+\par
+Again, the Spectralis generated slices are the ones that result in the largest decrement of segmentation performance in IRF and SRF. As stated previously, the reason behind this poor segmentation is tied to the poor generation of slices when compared to other vendors, which is related to the distance between consecutive slices. The reasons that cause the poor segmentation of the slices with IRF and SRF are the same reasons that lead to the oversegmentation of these fluids in B-scans that do not contain the fluids.
+\par
+One of the most noticeable outliers of the IRF volume estimation is the Spectralis volume TRAIN039. In Figure \ref{fig:SpectralisTrain039GenerationAndSegmentation}, the segmentation of IRF, as well as two generated slices, are shown.
+
+\begin{figure}[!ht]
+	\centering	\includegraphics[width=1.0\linewidth]{figures/SpectralisTrain039GenerationAndSegmentation.png}
+	\caption{Example of IRF segmentation in the enhanced volume TRAIN039.}
+	\label{fig:SpectralisTrain039GenerationAndSegmentation}
+\end{figure}
+
+It is visible in this figure that the second generated slice does not clearly represent the IRF region, as it appears slightly blurred and a large portion of the information does not resemble any structure present in the training images. For this reason, the segmentation model predicts a small area of fluid as IRF in this slice. The predicted area is much smaller than the area of IRF in the surrounding slices. This indicates that the area segmented is not coherent with the information in the surrounding slices, leading to an incorrect predicted fluid volume. The same occurs in the first generated slice of the shown example, but only a smaller portion of the image is unintelligible. 
+\par
+These two different situations further highlight that the rough transitions particularly affect the slices with small fluid regions, as the model is not capable of predicting which of these regions will appear in the intermediate slice.
+\par
+In the presented example, a single example of incorrect segmentation due to a poorly generated slice is shown, but multiple examples such as this appear in the predictions made in the mentioned enhanced volume. Accumulating this errors from multiple slices, results in a small total fluid volume than in the predictions made in the original dataset. This explains the decrease in total IRF segmented in the enhanced Spectralis volume when compared to the predictions in the original volume, as seen in Table \ref{tab:FluidVolumesExperiment6}.
+\par
+Figure \ref{fig:CirrusTrain012GenerationAndSegmentation} shows the segmentation of large SRF and PED volumes in the enhanced Cirrus TRAIN012 volume.
+
+\begin{figure}[!ht]
+	\centering	\includegraphics[width=1.0\linewidth]{figures/CirrusTrain012GenerationAndSegmentation.png}
+	\caption{Example of SRF and PED segmentation in the enhanced volume TRAIN012.}
+	\label{fig:CirrusTrain012GenerationAndSegmentation}
+\end{figure}
+
+In the shown generated images, the overall structure of the SRF and PED fluids is easier to accurately represent in the intermediate slices. Not only the transitions are smoother due to the smaller inter-slice distance in the Cirrus volumes, but also because of their homogeneous and regular shapes. Small artifacts that are seen in the GT slices are not represented in the intermediate slice, as they are unpredictable.
+\par
+As the generated fluid regions show the appearance that is characteristics of the true fluid regions in the original scans that compose the RETOUCH dataset, its segmentation is visually similar to the segmentation performed in the surrounding slices, which resemble the GT masks of the surrounding slices. 
+\par
+This example shows an accurate segmentation and generation of an enhanced OCT volume. This is a sample of segmentation and generation in the TRAIN012 volume, but most slices are segmented and generated as accurately as the shown example. This results in predicted fluid volumes that are similar to those estimated with the GT masks and with the predicted masks in the unchanged OCT volume.
