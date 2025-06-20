@@ -1,18 +1,18 @@
 \chapter{Materials and Methods}\label{Methods}
-This chapter starts with an overview of the dataset selected for the fluid segmentation and intermediate slice synthesis tasks, along with the requirements needed for the training of each model and the reasoning behind the selection. 
+This chapter starts with an overview of the datasets selected for the fluid segmentation and intermediate slice synthesis tasks, along with the requirements needed for the training of each model and the reasoning behind the selection. 
 
-\section{Databases}
+\section{Datasets}
 The training of a model for the segmentation of different types of fluid in OCT volumes requires a large number of images annotated with those types of fluids. However, the manual segmentation of large amounts of B-scans is a laborious process, which results in a shortage of publicly available annotated OCT datasets. Furthermore, the majority of these datasets contain a limited quantity of images.
 
-\subsection{RETOUCH Database}
+\subsection{RETOUCH Dataset}
 
-The dataset selected to be used in this dissertation was the RETOUCH dataset \parencite{Bogunovic2019b}. It consists of 112 OCT volumes, obtained with four different devices: 38 from the Cirrus HD-OCT (Zeiss Meditec), 38 from the Spectralis (Heidelberg Engineering), and 36 from the \mbox{T-1000}/T-2000 (Topcon). The 112 volumes are split into a training (70 volumes) and a test set (42 volumes). Only the OCT volumes in the training set have annotations of the retinal fluids (IRF, SRF, and PED). In this dissertation, only the annotated volumes were used for training and testing the fluid segmentation.
+The dataset selected to be used in this dissertation was the RETOUCH dataset \parencite{Bogunovic2019b}. It consists of 112 OCT volumes, obtained with four different devices: 38 from the Cirrus HD-OCT (Zeiss Meditec), 38 from the Spectralis (Heidelberg Engineering), and 36 from the \mbox{T-1000}/T-2000 (Topcon). The 112 volumes are split into a training (70 volumes) and a test set (42 volumes). Only the OCT volumes in the training set have annotations of the retinal fluids (IRF, SRF, and PED). The annotations present in this dataset were performed by two clinicians and both segmentations were considered correct. In this dissertation, only the annotated volumes were used for training and testing the fluid segmentation.
 \par
 From those 70 OCT volumes, 24 were obtained with the Cirrus, 24 volumes were acquired with the Spectralis, and 22 were obtained with the two Topcon devices. The number of B-scans per volume, the dimensions of the B-scans, and the axial resolutions vary according to the device. Figure \ref{fig:CirrusTopconSpectralisRetinalLayerComparison} illustrates how different axial resolutions affect the visualization of the retinal layers. The volumes acquired using the Cirrus have 128 B-scans, while those obtained with Spectralis have 49 B-scans. The volumes acquired using Topcon devices (\mbox{T-1000} or \mbox{T-2000}) typically contain 128 B-scans; however, two volumes include only 64 \mbox{B-scans}. In total, 6838 B-scans were used on the training and testing of the segmentation models.
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.4\linewidth]{figures/CirrusTopconSpectralisRetinalLayerComparison.png}
+	\includegraphics[width=0.80\linewidth]{figures/CirrusTopconSpectralisRetinalLayerComparison.png}
 	\caption{B-scan of the retinal layers in different patients, using Cirrus (left), Topcon (middle), and Spectralis (right) devices. Despite representing the same structure, in Cirrus, the retinal layers appear much thicker than in the scans obtained with other vendors.}
 	\label{fig:CirrusTopconSpectralisRetinalLayerComparison}
 \end{figure}
@@ -49,15 +49,15 @@ When compared with other renowned OCT datasets annotated with retinal fluid, suc
 	\footnotesize{$^{b}$ Two of the training volumes obtained using the Topcon devices have only 64 slices.}
 \end{table*}
 
-The diversity and dimension of the RETOUCH dataset make it one of the most widely used databases for the development of fluid segmentation models \parencite{Rahil2023, Zhang2023, Xing2022, Tang2022, Liu2024, Li2023, Hassan2021b, Lu2019}. These aspects also motivated the selection of the RETOUCH dataset for the implementation of fluid segmentation models in this dissertation.
+The diversity and dimension of the RETOUCH dataset make it one of the most widely used datasets for the development of fluid segmentation models \parencite{Rahil2023, Zhang2023, Xing2022, Tang2022, Liu2024, Li2023, Hassan2021b, Lu2019}. These aspects also motivated the selection of the RETOUCH dataset for the implementation of fluid segmentation models in this dissertation.
 \par
 Regarding intermediate slice synthesis, the 112 OCT volumes that constitute the RETOUCH dataset were used for the training and evaluation of the models. The volumes that do not have segmentation masks can also be included since these masks are not necessary in the intermediate slice generation task.
 \par
 The consistent number of slices per volume and large quantity of OCT volumes make the RETOUCH dataset suitable for the training and evaluation of the models developed to generate intermediate slices.
 
-\subsection{Centro Hospitalar Universitário de São João OCT Database}
+\subsection{Centro Hospitalar Universitário de São João OCT Dataset}
 
-A private dataset provided by the Centro Hospitalar Universitário de São João (CHUSJ) was also used for external evaluation of the proposed segmentation models. This dataset comprises six Spectralis OCT volumes, containing 19 slices each. The volumes vary in resolution, dimensions, noise levels, and contrast, offering diverse testing scenarios. All volumes include at least one type of fluid, though the overall fluid presence is limited.
+A private dataset provided by the Centro Hospitalar Universitário de São João (CHUSJ) was also used for external evaluation of the proposed segmentation models. This dataset comprises six Spectralis OCT volumes, containing 19 slices each. The volumes vary in resolution, dimensions, noise levels, and contrast, offering diverse testing scenarios. All volumes include at least one type of fluid, though the overall fluid presence is limited. Unlike RETOUCH, which includes the annotations from two clinicians, this dataset was segmented by a single one.
 \par
 Despite the scans in this dataset also being obtained with a Spectralis device, the images have different dimensions. In RETOUCH, all the Spectralis scans present a size of 496 $\times$ 512 pixels (height $\times$ width; this notation is used for images shapes throughout this dissertation), while in CHUSJ dataset the images differ in width, depending on the OCT volume. The dimensions of the OCT B-scans vary between 496 $\times$ 1024, 496 $\times$ 768, and 496 $\times$ 512 pixels. Since the images in this dataset do not contain metadata specifying the resolution of each slice, the slices had to be observed individually in order to determine whether the pixels in each B-scan corresponded to the same physical dimensions. Figure 3.1 shows three OCT B-scans with different dimensions, highlighting the variation in resolution across the images.
 
@@ -69,33 +69,6 @@ Despite the scans in this dataset also being obtained with a Spectralis device, 
 \end{figure}
 
 In the same figure, it is also possible to see different image characteristics. For example, in the left image, the choroid is very well-defined, while in the middle image it looks more blurry. The noise levels also differ depending on the image. The background in the left image exhibits minimal noise, and the retinal layers are easily identifiable. In the middle image, some noise appears in the background and the retinal layers become harder to differentiate. Lastly, the image on the right contains noticeable background noise, while the retinal layers appear brighter than in the other images. 
-\par
-In the RETOUCH dataset, the volumes were extracted with consistent dimensions and noise levels across the same vendor. This results in visually similar images, whose differences can be attributed to the patient's characteristics. Therefore, while the differences seen in the CHUSJ dataset are a good test to understand the models' robustness, those trained in RETOUCH may not generalize well to this new dataset, as the visually similar images seen in training do not prepare the model for images with different visual appearances. In Figure \ref{fig:CHUSJProblematicImages}, three B-scans with really different characteristics are shown. The left B-scan is well oriented, but the choroid region is very defined, as opposed to the RETOUCH images where this region is blurry. The middle and right B-scan present an odd orientation and are much noisier than the examples seen in training.
-
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=1.0\linewidth]{figures/CHUSJProblematicImages.png}
-	\caption{Three B-scans with characteristics different from those in RETOUCH. The left scan shows definition on the choroid, while the middle and right scan present an odd orientation and significant noise.}
-	\label{fig:CHUSJProblematicImages}
-\end{figure}
-
-The last problem when considering segmentation masks from different sources is the criteria used in the segmentation. In medical images, the segmentation performed by different professionals may result in different outcomes, as shown in Figure \ref{fig:RETOUCHSegmentationDifferences}. Therefore, the criteria followed to segment fluid by the evaluator on CHUSJ dataset may be different from the criteria followed in the RETOUCH dataset. Furthermore, considering that in RETOUCH the approach to merge predictions by different evaluators is to consider both correct, the models trained in this data are prone to oversegment in unseen volumes.
-\par
-An example of different segmentation criteria between the RETOUCH and CHUSJ datasets is seen in Figure \ref{fig:RETOUCHvsCHUSJSegmentationCriteria}, where visually and anatomically similar regions are segmented only in one dataset. While in manual segmentation the context from the surrounding slices is relevant, the visual similarity between regions is the most important characteristic in the segmentation using CNNs. Therefore, when visually similar regions are not segmented equally or following the same criteria in the training and testing data, the predicted segmentation masks for the testing volumes may not coincide with the GT.
-
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=1.0\linewidth]{figures/RETOUCHSegmentationDifferences.png}
-	\caption{Significantly different segmentations (middle images) of the same B-scan (left image) by different evaluators, in the RETOUCH dataset. The mask seen in cyan in the last image represents the final fluid regions when considering both evaluations \parencite{Bogunovic2019b}.}
-	\label{fig:RETOUCHSegmentationDifferences}
-\end{figure}
-
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=1.0\linewidth]{figures/RETOUCHvsCHUSJSegmentationCriteria.png}
-	\caption{Visually similar PED regions are segmented in one dataset but not on the other. This ambiguous segmentation can translate to worse performances in the model testing.}
-	\label{fig:RETOUCHvsCHUSJSegmentationCriteria}
-\end{figure}
 
 \section{Methodology for Fluid Segmentation}
 The initial experiments of this dissertation focused on training networks on the fluid segmentation task. The goal of these experiments is to determine which segmentation network performs the best in the considered task, which were later required for the fluid volume estimation.
@@ -162,7 +135,7 @@ The second patch size experimented was significantly larger. They were no longer
 	\label{fig:BigPatchExtraction}
 \end{figure}
 
-In the third patch size utilized, all the B-scans images were resized to the same size. As seen in Figure \ref{fig:CirrusTopconSpectralisRetinalLayerComparison}, the images present different appearances across the vendors, since the real dimensions of each voxel are different depending on the device used to obtain the volume. These differences across vendors makes the learning of the segmentation harder. Therefore, by resizing all the images to the same shape, the structures would present more consistent dimensions across vendors and the voxels would roughly translate to the same dimensions, leading to a easier learning process for the model.
+In the third patch size utilized, all the B-scans images were resized to the same size. As seen in Figure \ref{fig:CirrusTopconSpectralisRetinalLayerComparison}, the images present different appearances across the vendors, since the real dimensions of each voxel are different, depending on the device used to obtain the volume. These differences across vendors makes the learning of the segmentation harder. Therefore, by resizing all the images to the same shape, the structures would present more consistent dimensions across vendors and the voxels would roughly translate to the same dimensions, leading to an easier learning process for the model.
 \par
 Then, vertical patches, of shape 496 $\times$ 128 pixels, were extracted from each resized B-scan. The number of patches extracted from each image was changed, experimenting with four (Figure \ref{fig:CirrusFourPatchExtraction}), seven (Figure \ref{fig:CirrusSevenPatchExtraction}), and thirteen (Figure \ref{fig:CirrusThirteenPatchExtraction}) patches. The advantage of extracting vertical patches is that each image contains both the complete retinal layer and the background. This does not happen in the previous experiments, where the patches are either too small to contain both background and the retinal layers (in the first patch shape) or the retinal layers are cropped during patch extraction (in the second patch shape, as seen in Figure \ref{fig:BigPatchExtraction}).
 
@@ -187,7 +160,13 @@ Then, vertical patches, of shape 496 $\times$ 128 pixels, were extracted from ea
 	\label{fig:CirrusThirteenPatchExtraction}
 \end{figure}
 
-After selecting the best segmentation model, the inference in CHUSJ required the support of a retinal layer segmentation model, developed by \textcite{Melo2023}, to ensure anatomically consistent predictions. This necessity comes from the differences in image quality between the CHUSJ and the RETOUCH dataset, on which the model was trained. For instance, in the RETOUCH dataset, the Spectralis B-scans present the choroid region blurred, while in the CHUSJ dataset, this region appears with much greater quality and definition. This discrepancy confuses the segmentation model, which often misinterprets the well-defined choroid region as IRF, leading to incorrect the segmentations.
+In the first segmentation experiment, a single U-Net was utilized to perform multi-class segmentation, outputting a four channel mask. However, in the second experiment, three binary U-Nets were used in the segmentation of all fluids, with one network being trained for the segmentation of each fluid.
+\par
+One of the main problems with multi-class segmentation performed by binary models is the merging of the multiple masks. In this context, multiple fluid classes can be predicted for the same voxel, while only one of those can be correct. In this experiment, two alternatives were explored: order of priority, where the merging of the fluid masks follows a predefined hierarchy that determines which fluid takes precedence, and highest probability, where the assigned class is the one that was predicted with highest probability by its model.
+\par
+Two different losses were used in the regulation of the binary segmentation models. Initially, the same loss as the one used in multi-class experiment with only two classes (background and the fluid that would be segmented), and then, the weighted cross-entropy, using weights that balance the larger quantity of background voxels. This last loss is described in Equation \ref{eq:SegmentationCE}, with $N=2$.
+\par
+After selecting the best segmentation model, the inference in CHUSJ required the support of a retinal layer segmentation model, developed by \textcite{Melo2023}, to ensure anatomically consistent predictions. This necessity comes from the differences in image quality between the CHUSJ and the RETOUCH dataset, on which the model was trained. For instance, in the RETOUCH, the Spectralis B-scans present the choroid region blurred, while in the CHUSJ, this region appears with much greater quality and definition. This discrepancy confuses the segmentation model, which often misinterprets the well-defined choroid region as IRF, leading to incorrect the segmentations.
 \par
 The retinal layer segmentation model was used exclusively to post-process the masks predicted by the segmentation model, removing any fluid that appeared outside the retina, as a way to mitigate the oversegmentations that occurred in the choroid region.
 
@@ -340,7 +319,7 @@ The last component of the loss is the GDL, proposed originally by \textcite{Math
 
 After the images are generated and evaluated using the previously defined generator loss, two images are input, subsequently, to the discriminator, with one of them being fake while the other is real. The discriminator outputs the probability of each image being real and its result is compared to the true label of each image using the BCE. The BCE is calculated for the probabilities predicted by the discriminator and the image's respective label as described in Equation \ref{eq:AdversarialLoss}. This is done for the fake image and for the real image. The mean between the BCE calculated for the fake image and the BCE computed for the real image is the discriminator loss.
 \par
-In the second intermediate slice synthesis experiment, the network utilized as the U-Net, inspired by the work of \textcite{Nishimoto2024}. While the U-Net is more commonly applied in segmentation, as seen in the reviewed literature, \textcite{Nishimoto2024} applied it to generate the intermediate slices of a subvolume. The U-Net receives the edge slices as input and forces the output of the intermediate ones. In the paper \parencite{Nishimoto2024}, this was tested for three, four, and five slices. However, in this experiment it was utilized to generate a single intermediate slice. The loss used to regularize the network training was the MAE, previously described in Equation \ref{eq:MAEEquation}.
+In the second intermediate slice synthesis experiment, the selected network was the U-Net, inspired by the work of \textcite{Nishimoto2024}. While the U-Net is more commonly applied in segmentation, as seen in the reviewed literature, \textcite{Nishimoto2024} applied it to generate the intermediate slices of a subvolume. The network receives the edge slices as input and forces the output of the intermediate ones. In the paper \parencite{Nishimoto2024}, this was tested for three, four, and five slices. However, in this experiment it was utilized to generate a single intermediate slice. The loss used to regularize the network training was the MAE, previously described in Equation \ref{eq:MAEEquation}.
 
 \section{Methodology for Fluid Volume Estimation}
 The estimation of fluid volume was done using the optimal segmentation and intermediate slice generation models. The GAN was used in the generation of the intermediate slices in the OCT volumes, while the best performing multi-class segmentation U-Net model inferred the segmentation masks to both the unaltered volumes and the volumes with generated slices. 
@@ -375,4 +354,8 @@ The total volume of fluid from class $c$ in a slice of index $s$ is defined in E
 	\label{eq:FluidEstimationVolume}
 \end{equation}
 
-The fluid volumes resulting from both experiments were compared. Since there is no true value for the fluid quantity in the OCT scans, the results were compared with each other. Therefore, the results would be deemed satisfying in case they do not vary more than an order of magnitude between each other. In case a significant difference was observed, the generated images and their respective masks were analyzed, in order to understand what is causing the observed difference between experiments. Using the GAN, the corresponding fake OCT volumes of the reserved fold were created. In these volumes, the segmentation model inferred the fluid masks and they were compared to the GT masks of the original volumes, using the Dice coefficient.
+The fluid volumes resulting from both experiments were compared. Since there is no true value for the fluid quantity in the OCT scans, the results were compared with each other. Therefore, the results would be deemed satisfying in case they do not vary more than an order of magnitude between each other. In case a significant difference was observed, the generated images and their respective masks were analyzed, in order to understand what is causing the observed difference between experiments. 
+\par
+Using the GAN, the corresponding fake OCT volumes of the reserved fold were created. In these volumes, the segmentation model inferred the fluid masks and they were compared to the GT masks of the original volumes, using the Dice coefficient. 
+\par
+Also utilizing the GAN, the OCT volumes were super-resolved, as a slice was generated between each pair of two known slices. To calculate the fluid volume in the super-resolved volumes, the OCT's inter-slice distance was reduced in half.
