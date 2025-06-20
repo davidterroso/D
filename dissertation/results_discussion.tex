@@ -1,6 +1,6 @@
 \chapter{Results and Discussion}\label{ResultsDiscussion}
 
-This chapter presents the results from the experiments described in the \ref{Experiments} Experiments chapter. These outcomes are organized in the following sections as done in the Methods chapter: ``\ref{FluidSegmentation} Fluid Segmentation'', ``\ref{IntermediateSliceSynthesis} Intermediate Slice Synthesis'', and ``\ref{FluidVolumeEstimation} Fluid Volume Estimation''. After showing the results from the experiments, the factors influencing them are discussed, while providing visual examples of the models' performances. The results are also compared with other similar approaches in literature, while explaining how these different methods lead to different results.
+This chapter presents the results from the experiments described in the \ref{Experiments} Experiments chapter. These outcomes are organized in the following sections: ``\ref{FluidSegmentation} Fluid Segmentation'', ``\ref{IntermediateSliceSynthesis} Intermediate Slice Synthesis'', and ``\ref{FluidVolumeEstimation} Fluid Volume Estimation''. After showing the results from the experiments, the factors influencing them are discussed, while providing visual examples of the models' performances. The results are also compared with other similar approaches in literature, while explaining how these different methods lead to different results.
 
 \section{Fluid Segmentation}\label{FluidSegmentation}
 In this section, the results from the experiments performed in multi-class fluid segmentation are shown. This includes all the runs made in \ref{Experiment1} Experiment 1 and \ref{Experiment2} Experiment 2. In these sections, the resulting Dice coefficients are displayed in tables. Each value corresponds to the mean Dice coefficient computed across all slices present in the validation OCT volumes. The results are shown for each fluid (IRF, SRF, and PED) both grouped by vendor and across all vendors. There is also a column that contains the Dice coefficient when considering all the fluids as a single binary label. Unless specified otherwise, the Dice coefficient calculated for a fluid considers all the slices and not just those that contain the specified fluid and the values highlighted in bold are the best values obtained in each column. 
@@ -9,9 +9,9 @@ These values are presented for each run, which follows the conditions described 
 \par
 In the following subsections, images displaying the segmentation performed by the models and the respective GT are shown. In these masks, IRF is represented in red, SRF in green, and PED in blue.
 
-\subsection{Experiment 1}
+\subsection{Experiment 1 - Fluid Segmentation Using Multi-class U-Net}
 
-\subsubsection{Experiment 1.1}
+\subsubsection{Experiment 1.1 - Random Patch Extraction}
 
 The results from the first experiment performed, Experiment 1.1, are shown in Table \ref{tab:Experiment1.1Results}. In this experiment, for each validation fold, two runs were made, while keeping the same conditions. The only difference is the input data: as it is extracted randomly, as described in \ref{Methods} Materials and Methods, it is different for every run. 
 
@@ -103,7 +103,7 @@ In the same figure, it is seen that the model has not learned the anatomical rel
 	\label{fig:Experiment11Segmentation}
 \end{figure}
 
-\subsubsection{Experiment 1.2}
+\subsubsection{Experiment 1.2 - Large Patch Extraction}
 
 The resulting Dice coefficient values obtained in Experiment 1.2, where patches of shape 496 $\times$ 512 were used, are shown in Table \ref{tab:Experiment1.2Results}.
 
@@ -186,7 +186,7 @@ In Figure \ref{fig:BigPatchesSegmentationTopcon}, it is seen that the model conf
 	\label{fig:BigPatchesSegmentationTopcon}
 \end{figure}
 
-\subsubsection{Experiment 1.3}
+\subsubsection{Experiment 1.3 - Vertical Patch Extraction}
 Experiment 1.3 contains all the runs that were performed using vertical patches extracted from resized B-scans as input of the multi-class segmentation U-Net. In the first two sets, shown in Table \ref{tab:Experiment1.3FourPatches}, the models were trained using four vertical patches, obtained as explained in the \ref{Methods} Materials and Methods chapter. In this table, the ``Set 4'' is composed of runs that were trained on 100 epochs, while the runs in ``Set 5'' were trained on up to 200 epochs with a 100 epoch patience.
 
 \begin{table*}[!ht]
@@ -716,10 +716,10 @@ The performance seen by this model in the reserved fold was subsequently compare
 	\label{fig:Experiment1FinalModelPredictionsTopcon}
 \end{figure}
 
-\subsection{Experiment 2}
+\subsection{Experiment 2 - Fluid Segmentation Using Binary U-Nets}
 The results shown in this subsection correspond to the use of three separate U-Nets, one for each fluid, to perform multi-class fluid segmentation. In Experiment 2.1, the loss function was the same as in Experiment 1, while in Experiment 2.2 the loss function was changed to the weighted cross-entropy. The results in these experiments were compared with each other.
 
-\subsubsection{Experiment 2.1}
+\subsubsection{Experiment 2.1 - Multi-class Segmentation Loss}
 In this experiment, for each fluid, eight models were trained. One model was trained for each fold in the multi-class 5-fold split and then one model was trained for each fold in a fluid-specific 5-fold split.
 \par
 Table \ref{tab:Experiment2IRF} illustrates the performance of the models trained to segment IRF, with the upper block corresponding to the models trained on the multi-class split while the second block shows the performances for the models trained on the split specifically made for IRF segmentation.
@@ -1057,7 +1057,7 @@ In Figures \ref{fig:Experiment2FinalModelPredictionsCirrus}, \ref{fig:Experiment
 	\label{fig:Experiment2FinalModelPredictionsTopcon}
 \end{figure}
 
-\subsubsection{Experiment 2.2}
+\subsubsection{Experiment 2.2 - Balanced Cross-entropy Loss}
 
 In this experiment, the loss function used in the training of the segmentation models was changed from a combination of a weighted cross-entropy and Dice coefficient of the foreground to the weighted cross-entropy. The results are shown in Table \ref{tab:Experiment2.2Results}, where only two runs were performed for the segmentation of IRF, one in each 5-fold split. 
 
@@ -1360,6 +1360,33 @@ The results obtained in the CHUSJ private dataset were not as good as those obta
 	\label{tab:CHUSJSegmentationResults}
 \end{table*}
 
+In the RETOUCH dataset, the volumes were extracted with consistent dimensions and noise levels across the same vendor. This results in visually similar images, whose differences can be attributed to the patient's characteristics. Therefore, while the differences seen in the CHUSJ dataset are a good test to understand the models' robustness, those trained in RETOUCH did not generalize well to this new dataset, as the visually similar images seen in training do not prepare the model for images with different visual appearances. In Figure \ref{fig:CHUSJProblematicImages}, three B-scans with really different characteristics are shown. The left B-scan is well oriented, but the choroid region is very defined, as opposed to the RETOUCH images where this region is blurry. The middle and right B-scan present an odd orientation and are much noisier than the examples seen in training.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1.0\linewidth]{figures/CHUSJProblematicImages.png}
+	\caption{Three B-scans with characteristics different from those in RETOUCH. The left scan shows definition on the choroid, while the middle and right scan present an odd orientation and significant noise.}
+	\label{fig:CHUSJProblematicImages}
+\end{figure}
+
+The last problem when considering segmentation masks from different sources is the criteria used in the segmentation. In medical images, the segmentation performed by different professionals may result in different outcomes, as shown in Figure \ref{fig:RETOUCHSegmentationDifferences}. Therefore, the criteria followed to segment fluid by the evaluator on CHUSJ dataset may be different from the criteria followed in the RETOUCH dataset. Furthermore, considering that in RETOUCH the approach to merge predictions by different evaluators is to consider both correct, the models trained in this data are prone to oversegment in unseen volumes.
+\par
+An example of different segmentation criteria between the RETOUCH and CHUSJ datasets is seen in Figure \ref{fig:RETOUCHvsCHUSJSegmentationCriteria}, where visually and anatomically similar regions are segmented only in one dataset. While in manual segmentation the context from the surrounding slices is relevant, the visual similarity between regions is the most important characteristic in the segmentation using CNNs. Therefore, when visually similar regions are not segmented equally or following the same criteria in the training and testing data, the predicted segmentation masks for the testing volumes did not coincide with the GT.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1.0\linewidth]{figures/RETOUCHSegmentationDifferences.png}
+	\caption{Significantly different segmentations (middle images) of the same B-scan (left image) by different evaluators, in the RETOUCH dataset. The mask seen in cyan in the last image represents the final fluid regions when considering both evaluations \parencite{Bogunovic2019b}.}
+	\label{fig:RETOUCHSegmentationDifferences}
+\end{figure}
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=1.0\linewidth]{figures/RETOUCHvsCHUSJSegmentationCriteria.png}
+	\caption{Visually similar PED regions are segmented in one dataset but not on the other. This ambiguous segmentation can translate to worse performances in the model testing.}
+	\label{fig:RETOUCHvsCHUSJSegmentationCriteria}
+\end{figure}
+
 The worst performing fluid segmented in this dataset is the PED. In the binary models, this fluid was wrongfully detected in every slice. The oversegmentation and prediction of PED was already a problem seen in previous experiment, especially in the Spectralis volumes during Experiment 2. The segmentation in slices with PED also resulted in small Dice coefficients. While this is largely due to the oversegmentations across multiple slices, it is also impacted by the small quantity of PED present across the entire dataset. However, it is important to note that many of the oversegmentations are in regions where the presence of PED could vary according to the applied segmentation criteria. In Figure \ref{fig:CHUSJPEDSegmentation}, two slices and their respective GT are shown, highlighting the segmentation of PED in a region which could be segmented with this fluid and a satisfying segmentation of SRF.
 
 \begin{figure}[!ht]
@@ -1395,7 +1422,7 @@ However, the main reason behind the poor Dice coefficients when considering all 
 	\label{fig:CHUSJChoroidSegmentation}
 \end{figure}
 
-The incorrect segmentations in the choroid are caused by the different quality of the image in this dataset. When training the segmentation models with the RETOUCH dataset, the Spectralis scans are focused on the retinal layers, blurring the structures outside of it, including the choroid. In the B-scans which compose the CHUSJ dataset, this region is not blurred. This confuses the segmentation model which also interpret the choroid as retina, thus predicting the existence of fluid regions there. The fluid which is the most affected by this segmentation is the IRF, due to the resemblance with the structures and intensities present in this region. Therefore, in case the region outside the retina was not considered in the final masks, the Dice coefficients would improve significantly. These segmentation errors are more prominent in the predictions performed by the binary models' segmentation as they present weaker capabilities of understanding anatomic references, basing their predictions more on the pixels intensities, thus being more easily fooled by the choroid.
+The incorrect segmentations in the choroid are caused by the different quality of the image in this dataset, previously explained. When training the segmentation models with the RETOUCH dataset, the Spectralis scans are focused on the retinal layers, blurring the structures outside of it, including the choroid. In the B-scans which compose the CHUSJ dataset, this region is not blurred. This confuses the segmentation model which also interpret the choroid as retina, thus predicting the existence of fluid regions there. The fluid which is the most affected by this segmentation is the IRF, due to the resemblance with the structures and intensities present in this region. Therefore, in case the region outside the retina was not considered in the final masks, the Dice coefficients would improve significantly. These segmentation errors are more prominent in the predictions performed by the binary models' segmentation as they present weaker capabilities of understanding anatomic references, basing their predictions more on the pixels intensities, thus being more easily fooled by the choroid.
 \par
 The use of resized images or their original shape did not translate to a significant difference in segmentation, as the performances remained almost unchanged when varying the slices shape. Since these transformations are applied along the horizontal axis, the different resolutions are harder to perceive, as they do not significantly change the perception of the structures in the B-scan.
 \par
@@ -1417,7 +1444,7 @@ Nevertheless, the GANs trained on different folds are still compared through PSN
 \par
 The comparison between these metrics and other articles in the literature is not possible. The only article of intermediate slice synthesis applied in OCT, developed by \textcite{Lopez2023}, does not evaluate the generated slices using these metrics. The articles in other imaging techniques such as CT and MRI have significantly different levels of noise and the values attained in these metrics in OCT are, therefore, very different.
 
-\subsection{Experiment 3}
+\subsection{Experiment 3 - Intermediate Slices Synthesis Using a GAN}
 
 In Experiment 3, a GAN was trained with the objective of generating the intermediate slice between a pair of two known and consecutive slices. In Table \ref{tab:Experiment1Metrics}, the PSNR and SSIM are shown for each fold in which the network was trained.
 
@@ -1428,9 +1455,9 @@ In Experiment 3, a GAN was trained with the objective of generating the intermed
 		\hline
 		\multirow{2}{*}{\textbf{Run}} & \multirow{2}{*}{\textbf{VF}} & \multicolumn{4}{c|}{\textbf{PSNR}} & \multirow{2}{*}{\textbf{PSNR}} & \multicolumn{4}{c|}{\textbf{SSIM}} & \multirow{2}{*}{\textbf{SSIM}} \\ \cline{3-6} \cline{8-11}
 		&  & \textbf{Cirrus} & \textbf{Spectralis} & \textbf{T-1000} & \textbf{T-2000} &  & \textbf{Cirrus} & \textbf{Spectralis} & \textbf{T-1000} & \textbf{T-2000} &  \\ \hline
-		\textbf{Run 1} & 2 & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  \\
-		\textbf{Run 2} & 3 & \multicolumn{1}{c|}{\textbf{20.44}} & \multicolumn{1}{c|}{24.58} & \multicolumn{1}{c|}{21.63} & \multicolumn{1}{c|}{22.24} & 21.69 & \multicolumn{1}{c|}{\textbf{0.181}} & \multicolumn{1}{c|}{0.484} & \multicolumn{1}{c|}{0.188} & \multicolumn{1}{c|}{0.246} & 0.247 \\
-		\textbf{Run 3} & 4 & \multicolumn{1}{c|}{20.40} & \multicolumn{1}{c|}{\textbf{24.93}} & \multicolumn{1}{c|}{\textbf{21.95}} & \multicolumn{1}{c|}{\textbf{22.56}} & \textbf{21.91} & \multicolumn{1}{c|}{0.175} & \multicolumn{1}{c|}{\textbf{0.498}} & \multicolumn{1}{c|}{\textbf{0.228}} & \multicolumn{1}{c|}{\textbf{0.263}} & \textbf{0.257} \\
+		\textbf{Run 1} & 2 & \multicolumn{1}{c|}{\textbf{20.64}} & \multicolumn{1}{c|}{24.42} & \multicolumn{1}{c|}{21.56} & \multicolumn{1}{c|}{22.51} & \textbf{21.92} & \multicolumn{1}{c|}{\textbf{0.193}} & \multicolumn{1}{c|}{0.482} & \multicolumn{1}{c|}{0.177} & \multicolumn{1}{c|}{0.250} & \textbf{0.260} \\
+		\textbf{Run 2} & 3 & \multicolumn{1}{c|}{20.44} & \multicolumn{1}{c|}{24.58} & \multicolumn{1}{c|}{21.63} & \multicolumn{1}{c|}{22.24} & 21.69 & \multicolumn{1}{c|}{0.181} & \multicolumn{1}{c|}{0.484} & \multicolumn{1}{c|}{0.188} & \multicolumn{1}{c|}{0.246} & 0.247 \\
+		\textbf{Run 3} & 4 & \multicolumn{1}{c|}{20.40} & \multicolumn{1}{c|}{\textbf{24.93}} & \multicolumn{1}{c|}{\textbf{21.95}} & \multicolumn{1}{c|}{\textbf{22.56}} & 21.91 & \multicolumn{1}{c|}{0.175} & \multicolumn{1}{c|}{\textbf{0.498}} & \multicolumn{1}{c|}{\textbf{0.228}} & \multicolumn{1}{c|}{\textbf{0.263}} & \textbf{0.257} \\
 		\textbf{Run 4} & 0 & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  &  \\
 		\hline
 		\hline
@@ -1491,7 +1518,7 @@ The poor generation of IRF is also partially related with the loss used to train
 \par
 To perform the generation of intermediate slices in Experiment 6, the model from Run 3 was selected, as it obtained the best metrics in PSNR and SSIM.
 
-\subsection{Experiment 4}
+\subsection{Experiment 4 - Intermediate Slices Synthesis Using a U-Net}
 
 The second experiment in the scope of generating intermediate slices was performed using a U-Net and only a single model was trained. Examples of B-scans generated using this model are shown in Figure \ref{fig:GenerativeUNetResults}.
 
@@ -1531,7 +1558,7 @@ In Experiment 6, the Dice coefficient for the predict segmentation masks in full
 \par
 Lastly, scatter plots are shown for each comparison between predictions, where the each of the fluids' volumes calculated for each OCT scan are compared with each other, providing an intuitive and visual representation of the differences associated with the used data.
 
-\subsection{Experiment 5}
+\subsection{Experiment 5 - Fluid Volume Estimation Using Predicted Masks in Real OCT Volumes}
 In Experiment 5, the fluid volume was calculated for each type of fluid in the OCT volumes from the reserved fold, using the previously described in \ref{Methods} Materials and Methods. The volume of each fluid, for each OCT volume in the reserved fold, is shown in Table \ref{tab:FluidVolumesExperiment5}, in mm$^{3}$. In Figure \ref{fig:FluidVolumeScatterExperiment5}, the comparison between the values calculated using the GT masks and the masks predicted by the segmentation model is shown, using the values present in this table.
 
 \begin{table*}[!ht]
@@ -1583,7 +1610,7 @@ It is interesting to note that in discrepancies between the real volume and the 
 \par
 In the following subsection, the results shown in Table \ref{tab:FluidVolumesExperiment5} will be compared with the estimated fluid volumes obtained using only generated slices and in an enhanced volume, where between every known slice another slice is generated.
 
-\subsection{Experiment 6}
+\subsection{Experiment 6 - Fluid Volume Estimation Using Predicted Masks in Generated and Super-resolved OCT Volumes}
 
 The results obtained regarding fluid estimation with generated slices, in the scope of Experiment 6, are shown in Table  \ref{tab:FluidVolumesExperiment6}. In this table, four different fluid volume estimates are shown for each OCT volume in the reserved fold, separately for each fluid type. The first estimate, ``GT'', is obtained using the unchanged B-scans from each volume and the fluid masks provided in the RETOUCH dataset. The second estimate, ``P'', corresponds to the fluid masks predicted by the segmentation model in the unchanged B-scans of the same OCT volumes. Both predictions and fluid estimations were already presented in Experiment 5. In the third estimate, ``G'', the B-scans from the RETOUCH dataset are substituted with their corresponding generated B-scan, obtained using the selected GAN model. In these generated scans, the segmentation model predicts the fluid masks, from which the estimated volumes presented in this table are obtained. Lastly, in the fourth estimation ``E'', the original OCT volumes from the RETOUCH dataset are enhanced, as a B-scan is generated between every two consecutive slices. The segmentation model predicts the fluid masks both in the original and generated slices.
 \par

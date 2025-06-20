@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  19 JUN 2025 23:50
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  20 JUN 2025 20:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -124,7 +124,25 @@ Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-)) (feupteses.sty
+)) (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/makecell\makecell.st
+y
+Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
+
+(C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
+Package: array 2022/09/04 v2.5g Tabular extension package (FMi)
+\col@sep=\dimen150
+\ar@mcellbox=\box53
+\extrarowheight=\dimen151
+\NC@list=\toks23
+\extratabsurround=\skip67
+\backup@length=\skip68
+\ar@cellbox=\box54
+)
+\rotheadsize=\dimen152
+\c@nlinenum=\count272
+\TeXr@lab=\toks24
+)
+(feupteses.sty
 Package: feupteses 2024/10/07 1.1.3 
 
 Document Style `FEUP Teses' 1.1.3 <2024/10/07>
@@ -139,13 +157,13 @@ Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
 )
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/generic/babel\babel.sty
 Package: babel 2023/02/13 3.86 The Babel package
-\babel@savecnt=\count272
-\U@D=\dimen150
+\babel@savecnt=\count273
+\U@D=\dimen153
 \l@unhyphenated=\language79
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/generic/babel\txtbabel.def)
 \bbl@readstream=\read2
-\bbl@dirlevel=\count273
+\bbl@dirlevel=\count274
 
 *************************************
 * Local config file bblopts.cfg used
@@ -174,23 +192,23 @@ Package: geometry 2020/01/02 v5.9 Page Geometry
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
-\KV@toks@=\toks23
+\KV@toks@=\toks25
 )
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 )
-\Gm@cnth=\count274
-\Gm@cntv=\count275
-\c@Gm@tempcnt=\count276
-\Gm@bindingoffset=\dimen151
-\Gm@wd@mp=\dimen152
-\Gm@odd@mp=\dimen153
-\Gm@even@mp=\dimen154
-\Gm@layoutwidth=\dimen155
-\Gm@layoutheight=\dimen156
-\Gm@layouthoffset=\dimen157
-\Gm@layoutvoffset=\dimen158
-\Gm@dimlist=\toks24
+\Gm@cnth=\count275
+\Gm@cntv=\count276
+\c@Gm@tempcnt=\count277
+\Gm@bindingoffset=\dimen154
+\Gm@wd@mp=\dimen155
+\Gm@odd@mp=\dimen156
+\Gm@even@mp=\dimen157
+\Gm@layoutwidth=\dimen158
+\Gm@layoutheight=\dimen159
+\Gm@layouthoffset=\dimen160
+\Gm@layoutvoffset=\dimen161
+\Gm@dimlist=\toks26
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg))
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\mathptmx.sty
@@ -251,8 +269,8 @@ Package graphics Info: Driver file: pdftex.def on input line 107.
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
 File: pdftex.def 2022/09/22 v1.2b Graphics/color driver for pdftex
 ))
-\Gin@req@height=\dimen159
-\Gin@req@width=\dimen160
+\Gin@req@height=\dimen162
+\Gin@req@width=\dimen163
 ) (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
 \Urlmuskip=\muskip17
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
@@ -265,18 +283,18 @@ Package: caption 2022/03/01 v3.6b Customizing captions (AR)
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty
 Package: caption3 2022/03/17 v2.3b caption3 kernel (AR)
-\caption@tempdima=\dimen161
-\captionmargin=\dimen162
-\caption@leftmargin=\dimen163
-\caption@rightmargin=\dimen164
-\caption@width=\dimen165
-\caption@indent=\dimen166
-\caption@parindent=\dimen167
-\caption@hangindent=\dimen168
+\caption@tempdima=\dimen164
+\captionmargin=\dimen165
+\caption@leftmargin=\dimen166
+\caption@rightmargin=\dimen167
+\caption@width=\dimen168
+\caption@indent=\dimen169
+\caption@parindent=\dimen170
+\caption@hangindent=\dimen171
 Package caption Info: Standard document class detected.
 )
-\c@caption@flags=\count277
-\c@continuedfloat=\count278
+\c@caption@flags=\count278
+\c@continuedfloat=\count279
 )
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
 Package: xcolor 2022/06/12 v2.14 LaTeX color extensions (UK)
@@ -297,25 +315,25 @@ Package xcolor Info: Model `Gray' substituted by `gray' on input line 1375.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1376.
 ) (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count279
-\float@exts=\toks25
-\float@box=\box53
-\@float@everytoks=\toks26
-\@floatcapt=\box54
+\c@float@type=\count280
+\float@exts=\toks27
+\float@box=\box55
+\@float@everytoks=\toks28
+\@floatcapt=\box56
 )
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multirow.sty
 Package: multirow 2021/03/15 v2.8 Span multiple rows of a table
-\multirow@colwidth=\skip67
-\multirow@cntb=\count280
-\multirow@dima=\skip68
-\bigstrutjot=\dimen169
+\multirow@colwidth=\skip69
+\multirow@cntb=\count281
+\multirow@dima=\skip70
+\bigstrutjot=\dimen172
 )
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/lineno\lineno.sty
 Package: lineno 2025/01/29 line numbers on paragraphs v5.4
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
 Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count281
+\etb@tempcnta=\count282
 )
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
 Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
@@ -325,32 +343,32 @@ Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
 Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
 ))
-\linenopenalty=\count282
-\output=\toks27
-\linenoprevgraf=\count283
-\linenumbersep=\dimen170
-\linenumberwidth=\dimen171
-\c@linenumber=\count284
-\c@pagewiselinenumber=\count285
-\c@LN@truepage=\count286
-\c@internallinenumber=\count287
-\c@internallinenumbers=\count288
-\quotelinenumbersep=\dimen172
-\bframerule=\dimen173
-\bframesep=\dimen174
-\bframebox=\box55
-\@LN@amsmath@ams@eqpen=\count289
+\linenopenalty=\count283
+\output=\toks29
+\linenoprevgraf=\count284
+\linenumbersep=\dimen173
+\linenumberwidth=\dimen174
+\c@linenumber=\count285
+\c@pagewiselinenumber=\count286
+\c@LN@truepage=\count287
+\c@internallinenumber=\count288
+\c@internallinenumbers=\count289
+\quotelinenumbersep=\dimen175
+\bframerule=\dimen176
+\bframesep=\dimen177
+\bframebox=\box57
+\@LN@amsmath@ams@eqpen=\count290
 LaTeX Info: Redefining \\ on input line 3187.
 )
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/csquotes\csquotes.sty
 Package: csquotes 2024-04-04 v5.2o context-sensitive quotations (JAW)
-\csq@reset=\count290
-\csq@gtype=\count291
-\csq@glevel=\count292
-\csq@qlevel=\count293
-\csq@maxlvl=\count294
-\csq@tshold=\count295
-\csq@ltx@everypar=\toks28
+\csq@reset=\count291
+\csq@gtype=\count292
+\csq@glevel=\count293
+\csq@qlevel=\count294
+\csq@maxlvl=\count295
+\csq@tshold=\count296
+\csq@ltx@everypar=\toks30
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/csquotes\csquotes.def
 File: csquotes.def 2024-04-04 v5.2o csquotes generic definitions (JAW)
@@ -378,7 +396,7 @@ Package pdftexcmds Info: \pdf@ifprimitive is available.
 Package pdftexcmds Info: \pdfdraftmode found.
 ) (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/logreq\logreq.sty
 Package: logreq 2010/08/04 v1.0 xml request logger
-\lrq@indent=\count296
+\lrq@indent=\count297
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/logreq\logreq.def
 File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
@@ -386,63 +404,63 @@ File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
 Package: ifthen 2022/04/13 v1.1d Standard LaTeX ifthen package (DPC)
 )
-\c@tabx@nest=\count297
-\c@listtotal=\count298
-\c@listcount=\count299
-\c@liststart=\count300
-\c@liststop=\count301
-\c@citecount=\count302
-\c@citetotal=\count303
-\c@multicitecount=\count304
-\c@multicitetotal=\count305
-\c@instcount=\count306
-\c@maxnames=\count307
-\c@minnames=\count308
-\c@maxitems=\count309
-\c@minitems=\count310
-\c@citecounter=\count311
-\c@maxcitecounter=\count312
-\c@savedcitecounter=\count313
-\c@uniquelist=\count314
-\c@uniquename=\count315
-\c@refsection=\count316
-\c@refsegment=\count317
-\c@maxextratitle=\count318
-\c@maxextratitleyear=\count319
-\c@maxextraname=\count320
-\c@maxextradate=\count321
-\c@maxextraalpha=\count322
-\c@abbrvpenalty=\count323
-\c@highnamepenalty=\count324
-\c@lownamepenalty=\count325
-\c@maxparens=\count326
-\c@parenlevel=\count327
-\blx@tempcnta=\count328
-\blx@tempcntb=\count329
-\blx@tempcntc=\count330
-\c@blx@maxsection=\count331
-\blx@maxsegment@0=\count332
-\blx@notetype=\count333
-\blx@parenlevel@text=\count334
-\blx@parenlevel@foot=\count335
-\blx@sectionciteorder@0=\count336
-\blx@sectionciteorderinternal@0=\count337
-\blx@entrysetcounter=\count338
-\blx@biblioinstance=\count339
-\labelnumberwidth=\skip69
-\labelalphawidth=\skip70
-\biblabelsep=\skip71
-\bibitemsep=\skip72
-\bibnamesep=\skip73
-\bibinitsep=\skip74
-\bibparsep=\skip75
-\bibhang=\skip76
+\c@tabx@nest=\count298
+\c@listtotal=\count299
+\c@listcount=\count300
+\c@liststart=\count301
+\c@liststop=\count302
+\c@citecount=\count303
+\c@citetotal=\count304
+\c@multicitecount=\count305
+\c@multicitetotal=\count306
+\c@instcount=\count307
+\c@maxnames=\count308
+\c@minnames=\count309
+\c@maxitems=\count310
+\c@minitems=\count311
+\c@citecounter=\count312
+\c@maxcitecounter=\count313
+\c@savedcitecounter=\count314
+\c@uniquelist=\count315
+\c@uniquename=\count316
+\c@refsection=\count317
+\c@refsegment=\count318
+\c@maxextratitle=\count319
+\c@maxextratitleyear=\count320
+\c@maxextraname=\count321
+\c@maxextradate=\count322
+\c@maxextraalpha=\count323
+\c@abbrvpenalty=\count324
+\c@highnamepenalty=\count325
+\c@lownamepenalty=\count326
+\c@maxparens=\count327
+\c@parenlevel=\count328
+\blx@tempcnta=\count329
+\blx@tempcntb=\count330
+\blx@tempcntc=\count331
+\c@blx@maxsection=\count332
+\blx@maxsegment@0=\count333
+\blx@notetype=\count334
+\blx@parenlevel@text=\count335
+\blx@parenlevel@foot=\count336
+\blx@sectionciteorder@0=\count337
+\blx@sectionciteorderinternal@0=\count338
+\blx@entrysetcounter=\count339
+\blx@biblioinstance=\count340
+\labelnumberwidth=\skip71
+\labelalphawidth=\skip72
+\biblabelsep=\skip73
+\bibitemsep=\skip74
+\bibnamesep=\skip75
+\bibinitsep=\skip76
+\bibparsep=\skip77
+\bibhang=\skip78
 \blx@bcfin=\read3
 \blx@bcfout=\write3
 \blx@langwohyphens=\language80
-\c@mincomprange=\count340
-\c@maxcomprange=\count341
-\c@mincompwidth=\count342
+\c@mincomprange=\count341
+\c@maxcomprange=\count342
+\c@mincompwidth=\count343
 Package biblatex Info: Trying to load biblatex default data model...
 Package biblatex Info: ... file 'blx-dm.def' found.
 
@@ -453,88 +471,88 @@ Package biblatex Info: Trying to load biblatex style data model...
 Package biblatex Info: ... file 'ieee.dbx' not found.
 Package biblatex Info: Trying to load biblatex custom data model...
 Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
-\c@afterword=\count343
-\c@savedafterword=\count344
-\c@annotator=\count345
-\c@savedannotator=\count346
-\c@author=\count347
-\c@savedauthor=\count348
-\c@bookauthor=\count349
-\c@savedbookauthor=\count350
-\c@commentator=\count351
-\c@savedcommentator=\count352
-\c@editor=\count353
-\c@savededitor=\count354
-\c@editora=\count355
-\c@savededitora=\count356
-\c@editorb=\count357
-\c@savededitorb=\count358
-\c@editorc=\count359
-\c@savededitorc=\count360
-\c@foreword=\count361
-\c@savedforeword=\count362
-\c@holder=\count363
-\c@savedholder=\count364
-\c@introduction=\count365
-\c@savedintroduction=\count366
-\c@namea=\count367
-\c@savednamea=\count368
-\c@nameb=\count369
-\c@savednameb=\count370
-\c@namec=\count371
-\c@savednamec=\count372
-\c@translator=\count373
-\c@savedtranslator=\count374
-\c@shortauthor=\count375
-\c@savedshortauthor=\count376
-\c@shorteditor=\count377
-\c@savedshorteditor=\count378
-\c@labelname=\count379
-\c@savedlabelname=\count380
-\c@institution=\count381
-\c@savedinstitution=\count382
-\c@lista=\count383
-\c@savedlista=\count384
-\c@listb=\count385
-\c@savedlistb=\count386
-\c@listc=\count387
-\c@savedlistc=\count388
-\c@listd=\count389
-\c@savedlistd=\count390
-\c@liste=\count391
-\c@savedliste=\count392
-\c@listf=\count393
-\c@savedlistf=\count394
-\c@location=\count395
-\c@savedlocation=\count396
-\c@organization=\count397
-\c@savedorganization=\count398
-\c@origlocation=\count399
-\c@savedoriglocation=\count400
-\c@origpublisher=\count401
-\c@savedorigpublisher=\count402
-\c@publisher=\count403
-\c@savedpublisher=\count404
-\c@language=\count405
-\c@savedlanguage=\count406
-\c@origlanguage=\count407
-\c@savedoriglanguage=\count408
-\c@pageref=\count409
-\c@savedpageref=\count410
-\shorthandwidth=\skip77
-\shortjournalwidth=\skip78
-\shortserieswidth=\skip79
-\shorttitlewidth=\skip80
-\shortauthorwidth=\skip81
-\shorteditorwidth=\skip82
-\locallabelnumberwidth=\skip83
-\locallabelalphawidth=\skip84
-\localshorthandwidth=\skip85
-\localshortjournalwidth=\skip86
-\localshortserieswidth=\skip87
-\localshorttitlewidth=\skip88
-\localshortauthorwidth=\skip89
-\localshorteditorwidth=\skip90
+\c@afterword=\count344
+\c@savedafterword=\count345
+\c@annotator=\count346
+\c@savedannotator=\count347
+\c@author=\count348
+\c@savedauthor=\count349
+\c@bookauthor=\count350
+\c@savedbookauthor=\count351
+\c@commentator=\count352
+\c@savedcommentator=\count353
+\c@editor=\count354
+\c@savededitor=\count355
+\c@editora=\count356
+\c@savededitora=\count357
+\c@editorb=\count358
+\c@savededitorb=\count359
+\c@editorc=\count360
+\c@savededitorc=\count361
+\c@foreword=\count362
+\c@savedforeword=\count363
+\c@holder=\count364
+\c@savedholder=\count365
+\c@introduction=\count366
+\c@savedintroduction=\count367
+\c@namea=\count368
+\c@savednamea=\count369
+\c@nameb=\count370
+\c@savednameb=\count371
+\c@namec=\count372
+\c@savednamec=\count373
+\c@translator=\count374
+\c@savedtranslator=\count375
+\c@shortauthor=\count376
+\c@savedshortauthor=\count377
+\c@shorteditor=\count378
+\c@savedshorteditor=\count379
+\c@labelname=\count380
+\c@savedlabelname=\count381
+\c@institution=\count382
+\c@savedinstitution=\count383
+\c@lista=\count384
+\c@savedlista=\count385
+\c@listb=\count386
+\c@savedlistb=\count387
+\c@listc=\count388
+\c@savedlistc=\count389
+\c@listd=\count390
+\c@savedlistd=\count391
+\c@liste=\count392
+\c@savedliste=\count393
+\c@listf=\count394
+\c@savedlistf=\count395
+\c@location=\count396
+\c@savedlocation=\count397
+\c@organization=\count398
+\c@savedorganization=\count399
+\c@origlocation=\count400
+\c@savedoriglocation=\count401
+\c@origpublisher=\count402
+\c@savedorigpublisher=\count403
+\c@publisher=\count404
+\c@savedpublisher=\count405
+\c@language=\count406
+\c@savedlanguage=\count407
+\c@origlanguage=\count408
+\c@savedoriglanguage=\count409
+\c@pageref=\count410
+\c@savedpageref=\count411
+\shorthandwidth=\skip79
+\shortjournalwidth=\skip80
+\shortserieswidth=\skip81
+\shorttitlewidth=\skip82
+\shortauthorwidth=\skip83
+\shorteditorwidth=\skip84
+\locallabelnumberwidth=\skip85
+\locallabelalphawidth=\skip86
+\localshorthandwidth=\skip87
+\localshortjournalwidth=\skip88
+\localshortserieswidth=\skip89
+\localshorttitlewidth=\skip90
+\localshortauthorwidth=\skip91
+\localshorteditorwidth=\skip92
 Package biblatex Info: Trying to load compatibility code...
 Package biblatex Info: ... file 'blx-compat.def' found.
 
@@ -545,19 +563,19 @@ Package biblatex Info: Trying to load generic definitions...
 Package biblatex Info: ... file 'biblatex.def' found.
  (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/biblatex\biblatex.def
 File: biblatex.def 2022/07/12 v3.18b biblatex compatibility (PK/MW)
-\c@textcitecount=\count411
-\c@textcitetotal=\count412
-\c@textcitemaxnames=\count413
-\c@biburlbigbreakpenalty=\count414
-\c@biburlbreakpenalty=\count415
-\c@biburlnumpenalty=\count416
-\c@biburlucpenalty=\count417
-\c@biburllcpenalty=\count418
+\c@textcitecount=\count412
+\c@textcitetotal=\count413
+\c@textcitemaxnames=\count414
+\c@biburlbigbreakpenalty=\count415
+\c@biburlbreakpenalty=\count416
+\c@biburlnumpenalty=\count417
+\c@biburlucpenalty=\count418
+\c@biburllcpenalty=\count419
 \biburlbigskip=\muskip18
 \biburlnumskip=\muskip19
 \biburlucskip=\muskip20
 \biburllcskip=\muskip21
-\c@smartand=\count419
+\c@smartand=\count420
 )
 Package biblatex Info: Trying to load bibliography style 'ieee'...
 Package biblatex Info: ... file 'ieee.bbx' found.
@@ -582,8 +600,8 @@ Package biblatex Info: ... file 'standard.bbx' found.
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/biblatex/bbx\standard.b
 bx
 File: standard.bbx 2022/07/12 v3.18b biblatex bibliography style (PK/MW)
-\c@bbx:relatedcount=\count420
-\c@bbx:relatedtotal=\count421
+\c@bbx:relatedcount=\count421
+\c@bbx:relatedtotal=\count422
 )))
 
 Package biblatex Warning: Macro 'volume+number' undefined.
@@ -627,8 +645,8 @@ Package: expl3 2023-02-07 L3 programming layer (loader)
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
 tex.def
 File: l3backend-pdftex.def 2023-01-16 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count422
-\l__pdf_internal_box=\box56
+\l__color_backend_stack_int=\count423
+\l__pdf_internal_box=\box58
 ))
 Package biblatex Info: ... and expl3
 (biblatex)             2023-02-07 L3 programming layer (loader) 
@@ -644,21 +662,21 @@ Package: xparse 2023-01-16 L3 Experimental document command parser
 Package: blx-case-expl3 2022/07/12 v3.18b expl3 case changing code for biblatex
 
 ))
-\@vivatext=\box57
-\@supervisorstext=\box58
+\@vivatext=\box59
+\@supervisorstext=\box60
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/fancyhdr\fancyhdr.sty
 Package: fancyhdr 2022/11/09 v4.1 Extensive control of page headers and footers
 
-\f@nch@headwidth=\skip91
-\f@nch@O@elh=\skip92
-\f@nch@O@erh=\skip93
-\f@nch@O@olh=\skip94
-\f@nch@O@orh=\skip95
-\f@nch@O@elf=\skip96
-\f@nch@O@erf=\skip97
-\f@nch@O@olf=\skip98
-\f@nch@O@orf=\skip99
+\f@nch@headwidth=\skip93
+\f@nch@O@elh=\skip94
+\f@nch@O@erh=\skip95
+\f@nch@O@olh=\skip96
+\f@nch@O@orh=\skip97
+\f@nch@O@elf=\skip98
+\f@nch@O@erf=\skip99
+\f@nch@O@olf=\skip100
+\f@nch@O@orf=\skip101
 )
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
 Package: hyperref 2023-02-07 v7.00v Hypertext links for LaTeX
@@ -690,11 +708,11 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 lestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count423
+\c@section@level=\count424
 )
-\@linkdim=\dimen175
-\Hy@linkcounter=\count424
-\Hy@pagecounter=\count425
+\@linkdim=\dimen178
+\Hy@linkcounter=\count425
+\Hy@pagecounter=\count426
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
 File: pd1enc.def 2023-02-07 v7.00v Hyperref: PDFDocEncoding definition (HO)
@@ -707,7 +725,7 @@ Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/generic/etexcmds\etexcmds.sty
 Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
 )
-\Hy@SavedSpaceFactor=\count426
+\Hy@SavedSpaceFactor=\count427
  (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
 File: puenc.def 2023-02-07 v7.00v Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
@@ -724,9 +742,9 @@ Package hyperref Info: Plain pages OFF on input line 4192.
 Package hyperref Info: Backreferencing OFF on input line 4197.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4425.
-\c@Hy@tempcnt=\count427
+\c@Hy@tempcnt=\count428
 LaTeX Info: Redefining \url on input line 4763.
-\XeTeXLinkMargin=\dimen176
+\XeTeXLinkMargin=\dimen179
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
@@ -736,9 +754,9 @@ Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
-\Fld@menulength=\count428
-\Field@Width=\dimen177
-\Fld@charsize=\dimen178
+\Fld@menulength=\count429
+\Field@Width=\dimen180
+\Fld@charsize=\dimen181
 Package hyperref Info: Hyper figures ON on input line 6040.
 Package hyperref Info: Link nesting OFF on input line 6047.
 Package hyperref Info: Hyper index ON on input line 6050.
@@ -751,9 +769,9 @@ Package hyperref Info: PDF/A mode OFF on input line 6072.
 Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
 package with kernel methods
 )
-\Hy@abspage=\count429
-\c@Item=\count430
-\c@Hfootnote=\count431
+\Hy@abspage=\count430
+\c@Item=\count431
+\c@Hfootnote=\count432
 )
 Package hyperref Info: Driver: hpdftex.
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
@@ -764,8 +782,8 @@ Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend pac
 kage
 with kernel methods
 )
-\Fld@listcount=\count432
-\c@bookmark@seq@number=\count433
+\Fld@listcount=\count433
+\c@bookmark@seq@number=\count434
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfil
 echeck.sty
@@ -778,7 +796,7 @@ Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 85.
 )
-\Hy@SectionHShift=\skip100
+\Hy@SectionHShift=\skip102
 )
 Package hyperref Info: Option `plainpages' set `false' on input line 528.
 Package hyperref Info: Option `bookmarksopen' set `false' on input line 528.
@@ -792,7 +810,7 @@ Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
 Package csquotes Info: Adjusting default style.
 Package csquotes Info: Redefining alias 'default' -> 'english'.
-LaTeX Font Info:    Trying to load font information for T1+ptm on input line 17
+LaTeX Font Info:    Trying to load font information for T1+ptm on input line 18
 .
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1ptm.fd
@@ -803,24 +821,24 @@ File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
 (experiments.aux) (results_discussion.aux) (conclusion.aux) (appendix1.aux))
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -860,17 +878,17 @@ LaTeX Font Info:    ... okay on input line 17.
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count434
-\scratchdimen=\dimen179
-\scratchbox=\box59
-\nofMPsegments=\count435
-\nofMParguments=\count436
-\everyMPshowfont=\toks29
-\MPscratchCnt=\count437
-\MPscratchDim=\dimen180
-\MPnumerator=\count438
-\makeMPintoPDFobject=\count439
-\everyMPtoPDFconversion=\toks30
+\scratchcounter=\count435
+\scratchdimen=\dimen182
+\scratchbox=\box61
+\nofMPsegments=\count436
+\nofMParguments=\count437
+\everyMPshowfont=\toks31
+\MPscratchCnt=\count438
+\MPscratchDim=\dimen183
+\MPnumerator=\count439
+\makeMPintoPDFobject=\count440
+\everyMPtoPDFconversion=\toks32
 )
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
 ase.sty
@@ -901,18 +919,18 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'thesis.bbl' found.
  (thesis.bbl)
-Package biblatex Info: Reference section=0 on input line 17.
-Package biblatex Info: Reference segment=0 on input line 17.
-Package hyperref Info: Link coloring ON on input line 17.
+Package biblatex Info: Reference section=0 on input line 18.
+Package biblatex Info: Reference segment=0 on input line 18.
+Package hyperref Info: Link coloring ON on input line 18.
  (thesis.out) (thesis.out)
 \@outlinefile=\write4
 \openout4 = `thesis.out'.
 
-\@crestbox=\box60
-<figures//uporto-feup.pdf, id=187, 338.26375pt x 126.4725pt>
+\@crestbox=\box62
+<figures//uporto-feup.pdf, id=195, 338.26375pt x 126.4725pt>
 File: figures//uporto-feup.pdf Graphic file (type pdf)
 <use figures//uporto-feup.pdf>
-Package pdftex.def Info: figures//uporto-feup.pdf  used on input line 38.
+Package pdftex.def Info: figures//uporto-feup.pdf  used on input line 39.
 (pdftex.def)             Requested size: 204.85983pt x 76.59618pt.
  [-3
 
@@ -920,7 +938,7 @@ Package pdftex.def Info: figures//uporto-feup.pdf  used on input line 38.
 {C:/Users/david/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map} <./figures//u
 porto-feup.pdf>]
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 3
-8.
+9.
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
@@ -983,7 +1001,7 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 19.
 
 Underfull \hbox (badness 10000) in paragraph at lines 21--22
-[]\T1/ptm/b/n/10.95 Performance In-di-ca-tors and
+[]|\T1/ptm/b/n/10.95 Performance In-di-ca-tors and
  []
 
 
@@ -1060,18 +1078,18 @@ Chapter 1.
 
 
 ]
-<figures/OCTVolume.png, id=582, 293.29575pt x 330.033pt>
+<figures/OCTVolume.png, id=594, 293.29575pt x 330.033pt>
 File: figures/OCTVolume.png Graphic file (type png)
 <use figures/OCTVolume.png>
 Package pdftex.def Info: figures/OCTVolume.png  used on input line 16.
 (pdftex.def)             Requested size: 213.39568pt x 240.13144pt.
-<figures/SegmentedFluidsOCT.png, id=589, 551.81157pt x 313.17pt>
+<figures/SegmentedFluidsOCT.png, id=601, 551.81157pt x 313.17pt>
 File: figures/SegmentedFluidsOCT.png Graphic file (type png)
 <use figures/SegmentedFluidsOCT.png>
 Package pdftex.def Info: figures/SegmentedFluidsOCT.png  used on input line 26.
 
 (pdftex.def)             Requested size: 320.0935pt x 181.67216pt.
-<figures/RetinalLayers.png, id=592, 712.91344pt x 282.30469pt>
+<figures/RetinalLayers.png, id=604, 712.91344pt x 282.30469pt>
 File: figures/RetinalLayers.png Graphic file (type png)
 <use figures/RetinalLayers.png>
 Package pdftex.def Info: figures/RetinalLayers.png  used on input line 32.
@@ -1088,12 +1106,12 @@ Chapter 2.
 
 
 ]
-<figures/ArticlesSelection.png, id=654, 571.13374pt x 342.27875pt>
+<figures/ArticlesSelection.png, id=666, 571.13374pt x 342.27875pt>
 File: figures/ArticlesSelection.png Graphic file (type png)
 <use figures/ArticlesSelection.png>
 Package pdftex.def Info: figures/ArticlesSelection.png  used on input line 18.
 (pdftex.def)             Requested size: 320.0935pt x 191.83147pt.
-<figures/BinarySegmentationExample.png, id=655, 685.05937pt x 331.99031pt>
+<figures/BinarySegmentationExample.png, id=667, 685.05937pt x 331.99031pt>
 File: figures/BinarySegmentationExample.png Graphic file (type png)
 <use figures/BinarySegmentationExample.png>
 Package pdftex.def Info: figures/BinarySegmentationExample.png  used on input l
@@ -1101,7 +1119,7 @@ ine 24.
 (pdftex.def)             Requested size: 426.79135pt x 206.83487pt.
  [6 <./figures/ArticlesSelection.png>] [7 <./figures/BinarySegmentationExample.
 png>]
-<figures/PreSegmentationAndFluidSegmentation.png, id=750, 759.58781pt x 315.428
+<figures/PreSegmentationAndFluidSegmentation.png, id=762, 759.58781pt x 315.428
 44pt>
 File: figures/PreSegmentationAndFluidSegmentation.png Graphic file (type png)
 <use figures/PreSegmentationAndFluidSegmentation.png>
@@ -1109,14 +1127,14 @@ Package pdftex.def Info: figures/PreSegmentationAndFluidSegmentation.png  used
 on input line 51.
 (pdftex.def)             Requested size: 426.79135pt x 177.23553pt.
  [8] [9 <./figures/PreSegmentationAndFluidSegmentation.png>]
-<figures/GANGenerationFramework.png, id=804, 505.89pt x 499.11469pt>
+<figures/GANGenerationFramework.png, id=816, 505.89pt x 499.11469pt>
 File: figures/GANGenerationFramework.png Graphic file (type png)
 <use figures/GANGenerationFramework.png>
 Package pdftex.def Info: figures/GANGenerationFramework.png  used on input line
  77.
 (pdftex.def)             Requested size: 298.75264pt x 294.75688pt.
  [10]
-<figures/XiaFramework.png, id=822, 1043.097pt x 492.03825pt>
+<figures/XiaFramework.png, id=834, 1043.097pt x 492.03825pt>
 File: figures/XiaFramework.png Graphic file (type png)
 <use figures/XiaFramework.png>
 Package pdftex.def Info: figures/XiaFramework.png  used on input line 92.
@@ -1127,7 +1145,7 @@ Overfull \hbox (19.4673pt too wide) in paragraph at lines 91--93
  []
 
 [11 <./figures/GANGenerationFramework.png>] [12 <./figures/XiaFramework.png>]
-<figures/ZhangFramework.png, id=846, 946.737pt x 383.63326pt>
+<figures/ZhangFramework.png, id=858, 946.737pt x 383.63326pt>
 File: figures/ZhangFramework.png Graphic file (type png)
 <use figures/ZhangFramework.png>
 Package pdftex.def Info: figures/ZhangFramework.png  used on input line 120.
@@ -1138,7 +1156,7 @@ Overfull \hbox (19.4673pt too wide) in paragraph at lines 119--121
  []
 
 [13 <./figures/ZhangFramework.png>]
-<figures/FangArchitecture.png, id=860, 753.5653pt x 283.81032pt>
+<figures/FangArchitecture.png, id=872, 753.5653pt x 283.81032pt>
 File: figures/FangArchitecture.png Graphic file (type png)
 <use figures/FangArchitecture.png>
 Package pdftex.def Info: figures/FangArchitecture.png  used on input line 133.
@@ -1149,13 +1167,13 @@ Overfull \hbox (36.50835pt too wide) in paragraph at lines 132--134
  []
 
 [14 <./figures/FangArchitecture.png>] [15]
-<figures/RIFEPipeline.png, id=892, 364.9635pt x 158.39175pt>
+<figures/RIFEPipeline.png, id=904, 364.9635pt x 158.39175pt>
 File: figures/RIFEPipeline.png Graphic file (type png)
 <use figures/RIFEPipeline.png>
 Package pdftex.def Info: figures/RIFEPipeline.png  used on input line 168.
 (pdftex.def)             Requested size: 362.77525pt x 157.45119pt.
  [16 <./figures/RIFEPipeline.png>]
-<figures/VideoGANFramework.png, id=905, 427.00374pt x 241.74825pt>
+<figures/VideoGANFramework.png, id=917, 427.00374pt x 241.74825pt>
 File: figures/VideoGANFramework.png Graphic file (type png)
 <use figures/VideoGANFramework.png>
 Package pdftex.def Info: figures/VideoGANFramework.png  used on input line 181.
@@ -1167,14 +1185,14 @@ Package pdftex.def Info: figures/VideoGANFramework.png  used on input line 181.
 
  (methods.tex
 Chapter 3.
-<figures/CirrusTopconSpectralisRetinalLayerComparison.png, id=918, 846.873pt x 
+<figures/CirrusTopconSpectralisRetinalLayerComparison.png, id=930, 846.873pt x 
 542.025pt>
 File: figures/CirrusTopconSpectralisRetinalLayerComparison.png Graphic file (ty
 pe png)
 <use figures/CirrusTopconSpectralisRetinalLayerComparison.png>
 Package pdftex.def Info: figures/CirrusTopconSpectralisRetinalLayerComparison.p
 ng  used on input line 15.
-(pdftex.def)             Requested size: 170.71393pt x 109.26321pt.
+(pdftex.def)             Requested size: 341.43437pt x 218.53471pt.
 [18
 
 
@@ -1188,114 +1206,92 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 46.
  [19 <./figures/CirrusTopconSpectralisRetinalLayerComparison.png>]
-<figures/CHUSJDifferentResolutions.png, id=950, 955.059pt x 199.509pt>
+<figures/CHUSJDifferentResolutions.png, id=962, 955.059pt x 199.509pt>
 File: figures/CHUSJDifferentResolutions.png Graphic file (type png)
 <use figures/CHUSJDifferentResolutions.png>
 Package pdftex.def Info: figures/CHUSJDifferentResolutions.png  used on input l
 ine 66.
 (pdftex.def)             Requested size: 426.79135pt x 89.15718pt.
-<figures/CHUSJProblematicImages.png, id=952, 962.724pt x 301.563pt>
-File: figures/CHUSJProblematicImages.png Graphic file (type png)
-<use figures/CHUSJProblematicImages.png>
-Package pdftex.def Info: figures/CHUSJProblematicImages.png  used on input line
- 77.
-(pdftex.def)             Requested size: 426.79135pt x 133.68665pt.
  [20 <./figures/CHUSJDifferentResolutions.png>]
-<figures/RETOUCHSegmentationDifferences.png, id=960, 745.5855pt x 130.086pt>
-File: figures/RETOUCHSegmentationDifferences.png Graphic file (type png)
-<use figures/RETOUCHSegmentationDifferences.png>
-Package pdftex.def Info: figures/RETOUCHSegmentationDifferences.png  used on in
-put line 88.
-(pdftex.def)             Requested size: 426.79135pt x 74.46538pt.
-<figures/RETOUCHvsCHUSJSegmentationCriteria.png, id=963, 884.322pt x 383.25pt>
-File: figures/RETOUCHvsCHUSJSegmentationCriteria.png Graphic file (type png)
-<use figures/RETOUCHvsCHUSJSegmentationCriteria.png>
-Package pdftex.def Info: figures/RETOUCHvsCHUSJSegmentationCriteria.png  used o
-n input line 95.
-(pdftex.def)             Requested size: 426.79135pt x 184.96375pt.
- [21 <./figures/CHUSJProblematicImages.png> <./figures/RETOUCHSegmentationDiffe
-rences.png>]
-<figures/UNet.png, id=972, 426.09187pt x 287.57437pt>
+<figures/UNet.png, id=970, 426.09187pt x 287.57437pt>
 File: figures/UNet.png Graphic file (type png)
 <use figures/UNet.png>
-Package pdftex.def Info: figures/UNet.png  used on input line 109.
+Package pdftex.def Info: figures/UNet.png  used on input line 82.
 (pdftex.def)             Requested size: 320.0935pt x 216.04884pt.
- [22 <./figures/RETOUCHvsCHUSJSegmentationCriteria.png>] [23 <./figures/UNet.pn
-g>]
-<figures/FluidAndROI.png, id=1003, 963.6pt x 312.951pt>
+ [21 <./figures/UNet.png>] [22]
+<figures/FluidAndROI.png, id=1001, 963.6pt x 312.951pt>
 File: figures/FluidAndROI.png Graphic file (type png)
 <use figures/FluidAndROI.png>
-Package pdftex.def Info: figures/FluidAndROI.png  used on input line 151.
+Package pdftex.def Info: figures/FluidAndROI.png  used on input line 124.
 (pdftex.def)             Requested size: 426.79135pt x 138.60616pt.
-<figures/BigPatchExtraction.png, id=1005, 490.998pt x 327.186pt>
+<figures/BigPatchExtraction.png, id=1003, 490.998pt x 327.186pt>
 File: figures/BigPatchExtraction.png Graphic file (type png)
 <use figures/BigPatchExtraction.png>
-Package pdftex.def Info: figures/BigPatchExtraction.png  used on input line 160
+Package pdftex.def Info: figures/BigPatchExtraction.png  used on input line 133
 .
 (pdftex.def)             Requested size: 277.41176pt x 184.86542pt.
- [24 <./figures/FluidAndROI.png>]
-<figures/CirrusFourPatchExtraction.png, id=1017, 799.131pt x 503.7pt>
+ [23 <./figures/FluidAndROI.png>]
+<figures/CirrusFourPatchExtraction.png, id=1014, 799.131pt x 503.7pt>
 File: figures/CirrusFourPatchExtraction.png Graphic file (type png)
 <use figures/CirrusFourPatchExtraction.png>
 Package pdftex.def Info: figures/CirrusFourPatchExtraction.png  used on input l
-ine 171.
+ine 144.
 (pdftex.def)             Requested size: 277.41176pt x 174.85269pt.
-<figures/CirrusSevenPatchExtraction.png, id=1018, 828.477pt x 509.394pt>
+<figures/CirrusSevenPatchExtraction.png, id=1015, 828.477pt x 509.394pt>
 File: figures/CirrusSevenPatchExtraction.png Graphic file (type png)
 <use figures/CirrusSevenPatchExtraction.png>
 Package pdftex.def Info: figures/CirrusSevenPatchExtraction.png  used on input 
-line 178.
+line 151.
 (pdftex.def)             Requested size: 277.41176pt x 170.56448pt.
-<figures/CirrusThirteenPatchExtraction.png, id=1019, 925.275pt x 508.299pt>
+<figures/CirrusThirteenPatchExtraction.png, id=1016, 925.275pt x 508.299pt>
 File: figures/CirrusThirteenPatchExtraction.png Graphic file (type png)
 <use figures/CirrusThirteenPatchExtraction.png>
 Package pdftex.def Info: figures/CirrusThirteenPatchExtraction.png  used on inp
-ut line 185.
+ut line 158.
 (pdftex.def)             Requested size: 320.0935pt x 175.84421pt.
- [25 <./figures/BigPatchExtraction.png>] [26 <./figures/CirrusFourPatchExtracti
-on.png> <./figures/CirrusSevenPatchExtraction.png> <./figures/CirrusThirteenPat
+ [24 <./figures/BigPatchExtraction.png> <./figures/CirrusFourPatchExtraction.pn
+g>] [25 <./figures/CirrusSevenPatchExtraction.png> <./figures/CirrusThirteenPat
 chExtraction.png>]
-<figures/FrameInterpolationFramework.png, id=1036, 511.9125pt x 281.25075pt>
+<figures/FrameInterpolationFramework.png, id=1034, 511.9125pt x 281.25075pt>
 File: figures/FrameInterpolationFramework.png Graphic file (type png)
 <use figures/FrameInterpolationFramework.png>
 Package pdftex.def Info: figures/FrameInterpolationFramework.png  used on input
- line 201.
+ line 180.
 (pdftex.def)             Requested size: 426.79135pt x 234.48518pt.
- [27 <./figures/FrameInterpolationFramework.png>]
-[28]
-<figures/GANFramework.png, id=1089, 616.55344pt x 347.79938pt>
+ [26 <./figures/FrameInterpolationFramework.png>] [27]
+<figures/GANFramework.png, id=1086, 616.55344pt x 347.79938pt>
 File: figures/GANFramework.png Graphic file (type png)
 <use figures/GANFramework.png>
-Package pdftex.def Info: figures/GANFramework.png  used on input line 240.
+Package pdftex.def Info: figures/GANFramework.png  used on input line 219.
 (pdftex.def)             Requested size: 298.75264pt x 168.52858pt.
-<figures/CirrusSixtyFourPatchExtraction.png, id=1094, 880.161pt x 478.953pt>
+<figures/CirrusSixtyFourPatchExtraction.png, id=1091, 880.161pt x 478.953pt>
 File: figures/CirrusSixtyFourPatchExtraction.png Graphic file (type png)
 <use figures/CirrusSixtyFourPatchExtraction.png>
 Package pdftex.def Info: figures/CirrusSixtyFourPatchExtraction.png  used on in
-put line 251.
+put line 230.
 (pdftex.def)             Requested size: 298.75264pt x 162.56415pt.
-<figures/GeneratorArchitecture.png, id=1096, 489.62926pt x 214.401pt>
+ [28 <./figures/GANFramework.png>]
+<figures/GeneratorArchitecture.png, id=1100, 489.62926pt x 214.401pt>
 File: figures/GeneratorArchitecture.png Graphic file (type png)
 <use figures/GeneratorArchitecture.png>
 Package pdftex.def Info: figures/GeneratorArchitecture.png  used on input line 
-260.
+239.
 (pdftex.def)             Requested size: 426.79135pt x 186.88394pt.
- [29 <./figures/GANFramework.png>] [30 <./figures/CirrusSixtyFourPatchExtractio
-n.png>]
+ [29 <./figures/CirrusSixtyFourPatchExtraction.png>]
 
-LaTeX Warning: Text page 31 contains only floats.
+LaTeX Warning: Text page 30 contains only floats.
 
-[31 <./figures/GeneratorArchitecture.png>] [32] [33]) [34]
+[30 <./figures/GeneratorArchitecture.png>] [31] [32]) [33]
 \openout2 = `experiments.aux'.
 
  (experiments.tex
 Chapter 4.
-[35
+[34
 
 
 
 
-] [36] [37] [38]) [39] [40]
+] [35] [36] [37] [38]) [39] [40]
 \openout2 = `results_discussion.aux'.
 
  (results_discussion.tex
@@ -1306,13 +1302,13 @@ Chapter 5.
 
 
 ] [42]
-<figures/CirrusPatchExample.png, id=1212, 66.4884pt x 133.33815pt>
+<figures/CirrusPatchExample.png, id=1215, 66.4884pt x 133.33815pt>
 File: figures/CirrusPatchExample.png Graphic file (type png)
 <use figures/CirrusPatchExample.png>
 Package pdftex.def Info: figures/CirrusPatchExample.png  used on input line 88.
 
 (pdftex.def)             Requested size: 76.8193pt x 154.06401pt.
-<figures/Experiment11Segmentation.png, id=1214, 729.051pt x 179.361pt>
+<figures/Experiment11Segmentation.png, id=1217, 729.051pt x 179.361pt>
 File: figures/Experiment11Segmentation.png Graphic file (type png)
 <use figures/Experiment11Segmentation.png>
 Package pdftex.def Info: figures/Experiment11Segmentation.png  used on input li
@@ -1320,28 +1316,28 @@ ne 101.
 (pdftex.def)             Requested size: 426.79135pt x 105.001pt.
  [43 <./figures/CirrusPatchExample.png>] [44 <./figures/Experiment11Segmentatio
 n.png>]
-<figures/BigPatchSegmentationCirrus.png, id=1233, 359.16pt x 348.21pt>
+<figures/BigPatchSegmentationCirrus.png, id=1236, 359.16pt x 348.21pt>
 File: figures/BigPatchSegmentationCirrus.png Graphic file (type png)
 <use figures/BigPatchSegmentationCirrus.png>
 Package pdftex.def Info: figures/BigPatchSegmentationCirrus.png  used on input 
 line 177.
 (pdftex.def)             Requested size: 213.39568pt x 206.88731pt.
-<figures/BigPatchSegmentationTopcon.png, id=1236, 346.458pt x 219.657pt>
+<figures/BigPatchSegmentationTopcon.png, id=1239, 346.458pt x 219.657pt>
 File: figures/BigPatchSegmentationTopcon.png Graphic file (type png)
 <use figures/BigPatchSegmentationTopcon.png>
 Package pdftex.def Info: figures/BigPatchSegmentationTopcon.png  used on input 
 line 184.
 (pdftex.def)             Requested size: 256.07741pt x 162.36264pt.
- [45 <./figures/BigPatchSegmentationCirrus.png>] [46 <./figures/BigPatchSegment
-ationTopcon.png>]
-<figures/TrainingValidationLosses.png, id=1258, 720.291pt x 284.86424pt>
+ [45 <./figures/BigPatchSegmentationCirrus.png> <./figures/BigPatchSegmentation
+Topcon.png>] [46]
+<figures/TrainingValidationLosses.png, id=1261, 720.291pt x 284.86424pt>
 File: figures/TrainingValidationLosses.png Graphic file (type png)
 <use figures/TrainingValidationLosses.png>
 Package pdftex.def Info: figures/TrainingValidationLosses.png  used on input li
 ne 265.
 (pdftex.def)             Requested size: 426.79135pt x 168.79pt.
  [47 <./figures/TrainingValidationLosses.png>]
-<figures/VerticalPatchesSegmentationTopcon.png, id=1271, 870.744pt x 275.283pt>
+<figures/VerticalPatchesSegmentationTopcon.png, id=1274, 870.744pt x 275.283pt>
 
 File: figures/VerticalPatchesSegmentationTopcon.png Graphic file (type png)
 <use figures/VerticalPatchesSegmentationTopcon.png>
@@ -1349,7 +1345,7 @@ Package pdftex.def Info: figures/VerticalPatchesSegmentationTopcon.png  used on
  input line 278.
 (pdftex.def)             Requested size: 426.79135pt x 134.93184pt.
 [48 <./figures/VerticalPatchesSegmentationTopcon.png>]
-<figures/ValidationLossesFourSevenThirteenPatches.png, id=1279, 636.57825pt x 3
+<figures/ValidationLossesFourSevenThirteenPatches.png, id=1282, 636.57825pt x 3
 29.43076pt>
 File: figures/ValidationLossesFourSevenThirteenPatches.png Graphic file (type p
 ng)
@@ -1358,13 +1354,13 @@ Package pdftex.def Info: figures/ValidationLossesFourSevenThirteenPatches.png
 used on input line 341.
 (pdftex.def)             Requested size: 426.79135pt x 220.86826pt.
  [49 <./figures/ValidationLossesFourSevenThirteenPatches.png>]
-<figures/CirrusSegmentationErrors.png, id=1289, 783.144pt x 226.665pt>
+<figures/CirrusSegmentationErrors.png, id=1292, 783.144pt x 226.665pt>
 File: figures/CirrusSegmentationErrors.png Graphic file (type png)
 <use figures/CirrusSegmentationErrors.png>
 Package pdftex.def Info: figures/CirrusSegmentationErrors.png  used on input li
 ne 356.
 (pdftex.def)             Requested size: 426.79135pt x 123.52823pt.
-<figures/TransformationsInVerticalPatches.png, id=1290, 405.15pt x 373.395pt>
+<figures/TransformationsInVerticalPatches.png, id=1293, 405.15pt x 373.395pt>
 File: figures/TransformationsInVerticalPatches.png Graphic file (type png)
 <use figures/TransformationsInVerticalPatches.png>
 Package pdftex.def Info: figures/TransformationsInVerticalPatches.png  used on 
@@ -1372,13 +1368,13 @@ input line 363.
 (pdftex.def)             Requested size: 213.39568pt x 196.67343pt.
  [50 <./figures/CirrusSegmentationErrors.png> <./figures/TransformationsInVerti
 calPatches.png>]
-<figures/DifferentRetinaOrientation.png, id=1304, 547.5pt x 252.069pt>
+<figures/DifferentRetinaOrientation.png, id=1307, 547.5pt x 252.069pt>
 File: figures/DifferentRetinaOrientation.png Graphic file (type png)
 <use figures/DifferentRetinaOrientation.png>
 Package pdftex.def Info: figures/DifferentRetinaOrientation.png  used on input 
 line 435.
 (pdftex.def)             Requested size: 298.75264pt x 137.54988pt.
-<figures/SegmentationErrorsNoRotation.png, id=1305, 580.788pt x 270.465pt>
+<figures/SegmentationErrorsNoRotation.png, id=1308, 580.788pt x 270.465pt>
 File: figures/SegmentationErrorsNoRotation.png Graphic file (type png)
 <use figures/SegmentationErrorsNoRotation.png>
 Package pdftex.def Info: figures/SegmentationErrorsNoRotation.png  used on inpu
@@ -1386,7 +1382,7 @@ t line 442.
 (pdftex.def)             Requested size: 298.75264pt x 139.12387pt.
  [51] [52 <./figures/DifferentRetinaOrientation.png> <./figures/SegmentationErr
 orsNoRotation.png>]
-<figures/SegmentationsComparisonBetweenDifferentRotations.png, id=1326, 889.578
+<figures/SegmentationsComparisonBetweenDifferentRotations.png, id=1329, 889.578
 pt x 275.283pt>
 File: figures/SegmentationsComparisonBetweenDifferentRotations.png Graphic file
  (type png)
@@ -1397,7 +1393,7 @@ ns.png  used on input line 575.
 
 [53] [54 <./figures/SegmentationsComparisonBetweenDifferentRotations.png>]
 [55]
-<figures/Experiment1FinalModelPredictionsCirrus.png, id=1352, 828.477pt x 502.6
+<figures/Experiment1FinalModelPredictionsCirrus.png, id=1355, 828.477pt x 502.6
 05pt>
 File: figures/Experiment1FinalModelPredictionsCirrus.png Graphic file (type png
 )
@@ -1405,7 +1401,7 @@ File: figures/Experiment1FinalModelPredictionsCirrus.png Graphic file (type png
 Package pdftex.def Info: figures/Experiment1FinalModelPredictionsCirrus.png  us
 ed on input line 700.
 (pdftex.def)             Requested size: 384.1096pt x 233.01868pt.
-<figures/Experiment1FinalModelPredictionsSpectralis.png, id=1353, 827.82pt x 50
+<figures/Experiment1FinalModelPredictionsSpectralis.png, id=1356, 827.82pt x 50
 4.795pt>
 File: figures/Experiment1FinalModelPredictionsSpectralis.png Graphic file (type
  png)
@@ -1413,7 +1409,7 @@ File: figures/Experiment1FinalModelPredictionsSpectralis.png Graphic file (type
 Package pdftex.def Info: figures/Experiment1FinalModelPredictionsSpectralis.png
   used on input line 707.
 (pdftex.def)             Requested size: 384.1096pt x 234.22658pt.
-<figures/Experiment1FinalModelPredictionsTopcon.png, id=1354, 830.886pt x 501.7
+<figures/Experiment1FinalModelPredictionsTopcon.png, id=1357, 830.886pt x 501.7
 29pt>
 File: figures/Experiment1FinalModelPredictionsTopcon.png Graphic file (type png
 )
@@ -1421,10 +1417,10 @@ File: figures/Experiment1FinalModelPredictionsTopcon.png Graphic file (type png
 Package pdftex.def Info: figures/Experiment1FinalModelPredictionsTopcon.png  us
 ed on input line 714.
 (pdftex.def)             Requested size: 384.1096pt x 231.93884pt.
- [56 <./figures/Experiment1FinalModelPredictionsCirrus.png>] [57 <./figures/Exp
-eriment1FinalModelPredictionsSpectralis.png> <./figures/Experiment1FinalModelPr
+ [56 <./figures/Experiment1FinalModelPredictionsCirrus.png> <./figures/Experime
+nt1FinalModelPredictionsSpectralis.png>] [57 <./figures/Experiment1FinalModelPr
 edictionsTopcon.png>] [58]
-<figures/Experiment2IRFSegmentation.png, id=1375, 487.713pt x 475.668pt>
+<figures/Experiment2IRFSegmentation.png, id=1378, 487.713pt x 475.668pt>
 File: figures/Experiment2IRFSegmentation.png Graphic file (type png)
 <use figures/Experiment2IRFSegmentation.png>
 Package pdftex.def Info: figures/Experiment2IRFSegmentation.png  used on input 
@@ -1432,14 +1428,14 @@ line 802.
 (pdftex.def)             Requested size: 298.75264pt x 291.38367pt.
  [59 <./figures/Experiment2IRFSegmentation.png>]
 [60] [61]
-<figures/Experiment2PEDSegmentation.png, id=1393, 487.713pt x 473.478pt>
+<figures/Experiment2PEDSegmentation.png, id=1396, 487.713pt x 473.478pt>
 File: figures/Experiment2PEDSegmentation.png Graphic file (type png)
 <use figures/Experiment2PEDSegmentation.png>
 Package pdftex.def Info: figures/Experiment2PEDSegmentation.png  used on input 
 line 951.
 (pdftex.def)             Requested size: 298.75264pt x 290.04211pt.
  [62 <./figures/Experiment2PEDSegmentation.png>]
-<figures/ProbabilityVsPrioritySegmentation.png, id=1400, 642.60075pt x 349.305p
+<figures/ProbabilityVsPrioritySegmentation.png, id=1403, 642.60075pt x 349.305p
 t>
 File: figures/ProbabilityVsPrioritySegmentation.png Graphic file (type png)
 <use figures/ProbabilityVsPrioritySegmentation.png>
@@ -1447,7 +1443,7 @@ Package pdftex.def Info: figures/ProbabilityVsPrioritySegmentation.png  used on
  input line 968.
 (pdftex.def)             Requested size: 426.79135pt x 231.99709pt.
  [63 <./figures/ProbabilityVsPrioritySegmentation.png>] [64]
-<figures/Experiment2FinalModelPredictionsCirrus.png, id=1415, 644.517pt x 525.8
+<figures/Experiment2FinalModelPredictionsCirrus.png, id=1418, 644.517pt x 525.8
 19pt>
 File: figures/Experiment2FinalModelPredictionsCirrus.png Graphic file (type png
 )
@@ -1455,7 +1451,7 @@ File: figures/Experiment2FinalModelPredictionsCirrus.png Graphic file (type png
 Package pdftex.def Info: figures/Experiment2FinalModelPredictionsCirrus.png  us
 ed on input line 1041.
 (pdftex.def)             Requested size: 298.75264pt x 243.73306pt.
-<figures/Experiment2FinalModelPredictionsSpectralis.png, id=1416, 621.96pt x 52
+<figures/Experiment2FinalModelPredictionsSpectralis.png, id=1419, 621.96pt x 52
 1.439pt>
 File: figures/Experiment2FinalModelPredictionsSpectralis.png Graphic file (type
  png)
@@ -1463,7 +1459,7 @@ File: figures/Experiment2FinalModelPredictionsSpectralis.png Graphic file (type
 Package pdftex.def Info: figures/Experiment2FinalModelPredictionsSpectralis.png
   used on input line 1048.
 (pdftex.def)             Requested size: 298.75264pt x 250.47087pt.
-<figures/Experiment2FinalModelPredictionsTopcon.png, id=1417, 624.807pt x 542.0
+<figures/Experiment2FinalModelPredictionsTopcon.png, id=1420, 624.807pt x 542.0
 25pt>
 File: figures/Experiment2FinalModelPredictionsTopcon.png Graphic file (type png
 )
@@ -1477,13 +1473,13 @@ LaTeX Warning: Text page 66 contains only floats.
 
 [66 <./figures/Experiment2FinalModelPredictionsSpectralis.png> <./figures/Exper
 iment2FinalModelPredictionsTopcon.png>] [67]
-<figures/BCESegmentationError.png, id=1439, 773.07pt x 431.43pt>
+<figures/BCESegmentationError.png, id=1442, 773.07pt x 431.43pt>
 File: figures/BCESegmentationError.png Graphic file (type png)
 <use figures/BCESegmentationError.png>
 Package pdftex.def Info: figures/BCESegmentationError.png  used on input line 1
 129.
 (pdftex.def)             Requested size: 341.43437pt x 190.54074pt.
-<figures/BCESegmentationDecent.png, id=1440, 742.848pt x 337.917pt>
+<figures/BCESegmentationDecent.png, id=1443, 742.848pt x 337.917pt>
 File: figures/BCESegmentationDecent.png Graphic file (type png)
 <use figures/BCESegmentationDecent.png>
 Package pdftex.def Info: figures/BCESegmentationDecent.png  used on input line 
@@ -1491,175 +1487,194 @@ Package pdftex.def Info: figures/BCESegmentationDecent.png  used on input line
 (pdftex.def)             Requested size: 341.43437pt x 155.3148pt.
  [68 <./figures/BCESegmentationError.png> <./figures/BCESegmentationDecent.png>
 ] [69] [70] [71] [72]
-<figures/CHUSJPEDSegmentation.png, id=1491, 549.909pt x 525.162pt>
+<figures/CHUSJProblematicImages.png, id=1494, 962.724pt x 301.563pt>
+File: figures/CHUSJProblematicImages.png Graphic file (type png)
+<use figures/CHUSJProblematicImages.png>
+Package pdftex.def Info: figures/CHUSJProblematicImages.png  used on input line
+ 1367.
+(pdftex.def)             Requested size: 426.79135pt x 133.68665pt.
+ [73 <./figures/CHUSJProblematicImages.png>]
+<figures/RETOUCHSegmentationDifferences.png, id=1503, 745.5855pt x 130.086pt>
+File: figures/RETOUCHSegmentationDifferences.png Graphic file (type png)
+<use figures/RETOUCHSegmentationDifferences.png>
+Package pdftex.def Info: figures/RETOUCHSegmentationDifferences.png  used on in
+put line 1378.
+(pdftex.def)             Requested size: 426.79135pt x 74.46538pt.
+<figures/RETOUCHvsCHUSJSegmentationCriteria.png, id=1506, 884.322pt x 383.25pt>
+
+File: figures/RETOUCHvsCHUSJSegmentationCriteria.png Graphic file (type png)
+<use figures/RETOUCHvsCHUSJSegmentationCriteria.png>
+Package pdftex.def Info: figures/RETOUCHvsCHUSJSegmentationCriteria.png  used o
+n input line 1385.
+(pdftex.def)             Requested size: 426.79135pt x 184.96375pt.
+<figures/CHUSJPEDSegmentation.png, id=1508, 549.909pt x 525.162pt>
 File: figures/CHUSJPEDSegmentation.png Graphic file (type png)
 <use figures/CHUSJPEDSegmentation.png>
 Package pdftex.def Info: figures/CHUSJPEDSegmentation.png  used on input line 1
-367.
+394.
 (pdftex.def)             Requested size: 277.41176pt x 264.92825pt.
-<figures/CHUSJSRFSegmentation.png, id=1493, 807.015pt x 384.783pt>
+ [74 <./figures/RETOUCHSegmentationDifferences.png> <./figures/RETOUCHvsCHUSJSe
+gmentationCriteria.png>]
+<figures/CHUSJSRFSegmentation.png, id=1516, 807.015pt x 384.783pt>
 File: figures/CHUSJSRFSegmentation.png Graphic file (type png)
 <use figures/CHUSJSRFSegmentation.png>
 Package pdftex.def Info: figures/CHUSJSRFSegmentation.png  used on input line 1
-376.
+403.
 (pdftex.def)             Requested size: 256.07741pt x 122.09384pt.
-<figures/CHUSJIRFSegmentation.png, id=1495, 794.313pt x 375.585pt>
+<figures/CHUSJIRFSegmentation.png, id=1518, 794.313pt x 375.585pt>
 File: figures/CHUSJIRFSegmentation.png Graphic file (type png)
 <use figures/CHUSJIRFSegmentation.png>
 Package pdftex.def Info: figures/CHUSJIRFSegmentation.png  used on input line 1
-385.
+412.
 (pdftex.def)             Requested size: 256.07741pt x 121.08368pt.
-<figures/CHUSJChoroidSegmentation.png, id=1498, 570.495pt x 800.226pt>
+ [75 <./figures/CHUSJPEDSegmentation.png> <./figures/CHUSJSRFSegmentation.png>]
+<figures/CHUSJChoroidSegmentation.png, id=1527, 570.495pt x 800.226pt>
 File: figures/CHUSJChoroidSegmentation.png Graphic file (type png)
 <use figures/CHUSJChoroidSegmentation.png>
 Package pdftex.def Info: figures/CHUSJChoroidSegmentation.png  used on input li
-ne 1393.
+ne 1420.
 (pdftex.def)             Requested size: 277.41176pt x 389.13483pt.
- [73] [74 <./figures/CHUSJPEDSegmentation.png> <./figures/CHUSJSRFSegmentation.
-png>] [75 <./figures/CHUSJIRFSegmentation.png> <./figures/CHUSJChoroidSegmentat
-ion.png>]
-<figures/CHUSJSegmentationOnNoisyScans.png, id=1520, 558.888pt x 519.906pt>
+<figures/CHUSJSegmentationOnNoisyScans.png, id=1532, 558.888pt x 519.906pt>
 File: figures/CHUSJSegmentationOnNoisyScans.png Graphic file (type png)
 <use figures/CHUSJSegmentationOnNoisyScans.png>
 Package pdftex.def Info: figures/CHUSJSegmentationOnNoisyScans.png  used on inp
-ut line 1405.
+ut line 1432.
 (pdftex.def)             Requested size: 320.0935pt x 297.76953pt.
-
-[76 <./figures/CHUSJSegmentationOnNoisyScans.png>] [77]
-<figures/GeneratedSlicesCirrusVsSpectralis.png, id=1534, 490.998pt x 466.47pt>
+ [76 <./figures/CHUSJIRFSegmentation.png>] [77 <./figures/CHUSJChoroidSegmentat
+ion.png>] [78 <./figures/CHUSJSegmentationOnNoisyScans.png>]
+<figures/GeneratedSlicesCirrusVsSpectralis.png, id=1552, 490.998pt x 466.47pt>
 File: figures/GeneratedSlicesCirrusVsSpectralis.png Graphic file (type png)
 <use figures/GeneratedSlicesCirrusVsSpectralis.png>
 Package pdftex.def Info: figures/GeneratedSlicesCirrusVsSpectralis.png  used on
- input line 1459.
+ input line 1486.
 (pdftex.def)             Requested size: 320.0935pt x 304.12009pt.
- [78 <./figures/GeneratedSlicesCirrusVsSpectralis.png>]
-<figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png, id=1542, 729
+ [79]
+<figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png, id=1560, 729
 .051pt x 468.441pt>
 File: figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png Graphic 
 file (type png)
 <use figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png>
 Package pdftex.def Info: figures/TransitionBetweenConsecutiveBScansCirrusVsSpec
-tralis.png  used on input line 1467.
+tralis.png  used on input line 1494.
 (pdftex.def)             Requested size: 426.79135pt x 274.23343pt.
- [79 <./figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png>]
-<figures/GeneratedSlicesWithFluid.png, id=1552, 721.386pt x 478.296pt>
+ [80 <./figures/GeneratedSlicesCirrusVsSpectralis.png>]
+<figures/GeneratedSlicesWithFluid.png, id=1569, 721.386pt x 478.296pt>
 File: figures/GeneratedSlicesWithFluid.png Graphic file (type png)
 <use figures/GeneratedSlicesWithFluid.png>
 Package pdftex.def Info: figures/GeneratedSlicesWithFluid.png  used on input li
-ne 1481.
+ne 1508.
 (pdftex.def)             Requested size: 426.79135pt x 282.9731pt.
- [80 <./figures/GeneratedSlicesWithFluid.png>]
-<figures/GenerativeUNetResults.png, id=1559, 523.41pt x 310.104pt>
+ [81 <./figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png>]
+<figures/GenerativeUNetResults.png, id=1576, 523.41pt x 310.104pt>
 File: figures/GenerativeUNetResults.png Graphic file (type png)
 <use figures/GenerativeUNetResults.png>
 Package pdftex.def Info: figures/GenerativeUNetResults.png  used on input line 
-1499.
+1526.
 (pdftex.def)             Requested size: 426.79135pt x 252.85791pt.
-
-[81 <./figures/GenerativeUNetResults.png>] [82]
-<figures/FluidVolumeScatterExperiment5.png, id=1574, 292.146pt x 301.782pt>
+ [82 <./figures/GeneratedSlicesWithFluid.png>] [83 <./figures/GenerativeUNetRes
+ults.png>] [84]
+<figures/FluidVolumeScatterExperiment5.png, id=1596, 292.146pt x 301.782pt>
 File: figures/FluidVolumeScatterExperiment5.png Graphic file (type png)
 <use figures/FluidVolumeScatterExperiment5.png>
 Package pdftex.def Info: figures/FluidVolumeScatterExperiment5.png  used on inp
-ut line 1565.
+ut line 1592.
 (pdftex.def)             Requested size: 281.68385pt x 290.99216pt.
- [83] [84] [85 <./figures/FluidVolumeScatterExperiment5.png>]
-<figures/Experiment6GTvsAll.png, id=1600, 606.411pt x 603.564pt>
+ [85] [86 <./figures/FluidVolumeScatterExperiment5.png>]
+<figures/Experiment6GTvsAll.png, id=1618, 606.411pt x 603.564pt>
 File: figures/Experiment6GTvsAll.png Graphic file (type png)
 <use figures/Experiment6GTvsAll.png>
-Package pdftex.def Info: figures/Experiment6GTvsAll.png  used on input line 164
-2.
+Package pdftex.def Info: figures/Experiment6GTvsAll.png  used on input line 166
+9.
 (pdftex.def)             Requested size: 426.79135pt x 424.78511pt.
-<figures/Experiment6PredictedVsAll.png, id=1601, 605.973pt x 301.782pt>
+<figures/Experiment6PredictedVsAll.png, id=1619, 605.973pt x 301.782pt>
 File: figures/Experiment6PredictedVsAll.png Graphic file (type png)
 <use figures/Experiment6PredictedVsAll.png>
 Package pdftex.def Info: figures/Experiment6PredictedVsAll.png  used on input l
-ine 1648.
+ine 1675.
 (pdftex.def)             Requested size: 426.79135pt x 212.54451pt.
-<figures/Experiment6GeneratedVsEnhanced.png, id=1602, 292.146pt x 301.782pt>
+<figures/Experiment6GeneratedVsEnhanced.png, id=1620, 292.146pt x 301.782pt>
 File: figures/Experiment6GeneratedVsEnhanced.png Graphic file (type png)
 <use figures/Experiment6GeneratedVsEnhanced.png>
 Package pdftex.def Info: figures/Experiment6GeneratedVsEnhanced.png  used on in
-put line 1654.
+put line 1681.
 (pdftex.def)             Requested size: 213.39568pt x 220.43716pt.
- [86] [87 <./figures/Experiment6GTvsAll.png>]
-[88 <./figures/Experiment6PredictedVsAll.png> <./figures/Experiment6GeneratedVs
-Enhanced.png>] [89]
-<figures/SpectralisTrain039GenerationAndSegmentation.png, id=1630, 965.571pt x 
+ [87] [88] [89 <./figures/Experiment6GTvsAll.png>] [90 <./figures/Experiment6Pr
+edictedVsAll.png> <./figures/Experiment6GeneratedVsEnhanced.png>] [91]
+<figures/SpectralisTrain039GenerationAndSegmentation.png, id=1653, 965.571pt x 
 558.888pt>
 File: figures/SpectralisTrain039GenerationAndSegmentation.png Graphic file (typ
 e png)
 <use figures/SpectralisTrain039GenerationAndSegmentation.png>
 Package pdftex.def Info: figures/SpectralisTrain039GenerationAndSegmentation.pn
-g  used on input line 1742.
+g  used on input line 1769.
 (pdftex.def)             Requested size: 426.79135pt x 247.02863pt.
- [90 <./figures/SpectralisTrain039GenerationAndSegmentation.png>]
-<figures/CirrusTrain012GenerationAndSegmentation.png, id=1638, 965.352pt x 558.
+<figures/CirrusTrain012GenerationAndSegmentation.png, id=1656, 965.352pt x 558.
 888pt>
 File: figures/CirrusTrain012GenerationAndSegmentation.png Graphic file (type pn
 g)
 <use figures/CirrusTrain012GenerationAndSegmentation.png>
 Package pdftex.def Info: figures/CirrusTrain012GenerationAndSegmentation.png  u
-sed on input line 1756.
+sed on input line 1783.
 (pdftex.def)             Requested size: 426.79135pt x 247.08833pt.
- [91 <./figures/CirrusTrain012GenerationAndSegmentation.png>]) [92]
+
+[92 <./figures/SpectralisTrain039GenerationAndSegmentation.png>]) [93 <./figure
+s/CirrusTrain012GenerationAndSegmentation.png>]
 \openout2 = `conclusion.aux'.
 
-
-(conclusion.tex
+ (conclusion.tex
 Chapter 6.
-[93
+[94
 
 
 
 
-] [94] [95] [96] [97] [98] [99] [100]) [101]
+] [95] [96] [97] [98] [99] [100] [101]) [102]
 LaTeX Font Info:    Trying to load font information for T1+pcrs on input line 6
-5.
+6.
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/courier-scaled\t1pcrs.f
 d
 File: t1pcrs.fd 2004/07/09 scalable font definitions for T1/pcrs.
 )
 LaTeX Font Info:    Font shape `T1/pcrs/m/n' will be
-(Font)              scaled to size 10.40245pt on input line 65.
+(Font)              scaled to size 10.40245pt on input line 66.
 
-Overfull \hbox (0.69101pt too wide) in paragraph at lines 65--65
+Overfull \hbox (0.69101pt too wide) in paragraph at lines 66--66
 \T1/ptm/m/n/10.95 op-ti-cal co-her-ence to-mog-ra-phy (OCT): A com-pre-hen-sive
  sur-vey,^^Q \T1/ptm/m/it/10.95 Neu-ro-com-put-ing\T1/ptm/m/n/10.95 , vol. 507,
 
  []
 
-[102
+[103
 
 
 
 
 ]
-Overfull \hbox (0.44347pt too wide) in paragraph at lines 65--65
+Overfull \hbox (0.44347pt too wide) in paragraph at lines 66--66
 []\T1/ptm/m/n/10.95 H. Liu et al., ^^P  Se-man-tic un-cer-tainty Guided Cross-T
 ransformer for en-hanced mac-u-lar edema
  []
 
-[103] [104]
-Overfull \hbox (19.33269pt too wide) in paragraph at lines 65--65
+[104] [105]
+Overfull \hbox (19.33269pt too wide) in paragraph at lines 66--66
 \T1/ptm/m/n/10.95 Sys-tem-atic Re-view of Re-cent De-vel-op-ments and Chal-leng
 es,^^Q \T1/ptm/m/it/10.95 arXiv e-prints\T1/ptm/m/n/10.95 , arXiv:2407.00116,
  []
 
-[105] [106]
-Overfull \hbox (10.93967pt too wide) in paragraph at lines 65--65
+[106] [107]
+Overfull \hbox (10.93967pt too wide) in paragraph at lines 66--66
 \T1/ptm/m/n/10.95 ^^P  Gen-er-a-tive Ad-ver-sar-ial Net-works: An Overview,^^Q 
 \T1/ptm/m/it/10.95 IEEE Sig-nal Pro-cess-ing Mag-a-zine\T1/ptm/m/n/10.95 , vol.
  35,
  []
 
-[107] [108]
+[108] [109]
 \openout2 = `appendix1.aux'.
 
  (appendix1.tex
 Appendix A.
-) [109
+) [110
 
 
 ] (thesis.aux (abstract.aux) (un-sdg.aux) (acknowledgements.aux)
@@ -1667,16 +1682,16 @@ Appendix A.
 (methods.aux) (experiments.aux) (results_discussion.aux) (conclusion.aux)
 (appendix1.aux))
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: 5B081B2CB4345D23BFAD3E95468C2A0E;10640.
+(rerunfilecheck)             Checksum: AE21D0B28FDAD4B0BA2C461E6B85DA70;13556.
 Package logreq Info: Writing requests to 'thesis.run.xml'.
 \openout1 = `thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 23809 strings out of 476339
- 443226 string characters out of 5788120
- 1897340 words of memory out of 5000000
- 43361 multiletter control sequences out of 15000+600000
+ 24046 strings out of 476339
+ 446535 string characters out of 5788120
+ 1898340 words of memory out of 5000000
+ 43588 multiletter control sequences out of 15000+600000
  596425 words of font info for 139 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  78i,18n,82p,1463b,3232s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1695,9 +1710,9 @@ X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (127 pages, 152483005 bytes).
+Output written on thesis.pdf (128 pages, 152494289 bytes).
 PDF statistics:
- 1967 PDF objects out of 2073 (max. 8388607)
- 381 named destinations out of 1000 (max. 500000)
- 699 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1986 PDF objects out of 2073 (max. 8388607)
+ 385 named destinations out of 1000 (max. 500000)
+ 715 words of extra memory for PDF output out of 10000 (max. 10000000)
 

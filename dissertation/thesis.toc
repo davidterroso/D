@@ -11,42 +11,44 @@
 \contentsline {subsubsection}{\numberline {2.2.1.3}Three-dimensional SR}{15}{subsubsection.2.2.1.3}%
 \contentsline {subsubsection}{\numberline {2.2.1.4}Video Frame Interpolation for Inter-slice SR in Medical Imaging}{15}{subsubsection.2.2.1.4}%
 \contentsline {chapter}{\numberline {3}Materials and Methods}{18}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Databases}{18}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}RETOUCH Database}{18}{subsection.3.1.1}%
-\contentsline {subsection}{\numberline {3.1.2}Centro Hospitalar Universitário de São João OCT Database}{20}{subsection.3.1.2}%
-\contentsline {section}{\numberline {3.2}Methodology for Fluid Segmentation}{22}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Methodology for Intermediate Slice Synthesis}{27}{section.3.3}%
-\contentsline {section}{\numberline {3.4}Methodology for Fluid Volume Estimation}{33}{section.3.4}%
-\contentsline {chapter}{\numberline {4}Experiments}{35}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Data Partition}{35}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Experiment 1 - Fluid Segmentation Using Multi-class U-Net}{37}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Experiment 1.1}{37}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Experiment 1.2}{37}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Experiment 1.3}{38}{subsection.4.2.3}%
-\contentsline {section}{\numberline {4.3}Experiment 2 - Fluid Segmentation Using Binary U-Nets}{38}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Experiment 3 - Intermediate Slices Synthesis Using a GAN}{39}{section.4.4}%
-\contentsline {section}{\numberline {4.5}Experiment 4 - Intermediate Slices Synthesis Using a U-Net}{39}{section.4.5}%
+\contentsline {section}{\numberline {3.1}Datasets}{18}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}RETOUCH Dataset}{18}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Centro Hospitalar Universitário de São João OCT Dataset}{20}{subsection.3.1.2}%
+\contentsline {section}{\numberline {3.2}Methodology for Fluid Segmentation}{21}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Methodology for Intermediate Slice Synthesis}{26}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Methodology for Fluid Volume Estimation}{32}{section.3.4}%
+\contentsline {chapter}{\numberline {4}Experiments}{34}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Data Partition}{34}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Experiment 1 - Fluid Segmentation Using Multi-class U-Net}{36}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Experiment 1.1 - Random Patch Extraction}{36}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Experiment 1.2 - Large Patch Extraction}{36}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Experiment 1.3 - Vertical Patch Extraction}{37}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}Experiment 2 - Fluid Segmentation Using Binary U-Nets}{37}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Experiment 2.1 - Multi-class Segmentation Loss}{38}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Experiment 2.2 - Balanced Cross-entropy Loss}{38}{subsection.4.3.2}%
+\contentsline {section}{\numberline {4.4}Experiment 3 - Intermediate Slices Synthesis Using a GAN}{38}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Experiment 4 - Intermediate Slices Synthesis Using a U-Net}{38}{section.4.5}%
 \contentsline {section}{\numberline {4.6}Experiment 5 - Fluid Volume Estimation Using Predicted Masks in Real OCT Volumes}{39}{section.4.6}%
-\contentsline {section}{\numberline {4.7}Experiment 6 - Fluid Volume Estimation Using Predicted Masks in Generated and Super-resolved OCT Volumes}{40}{section.4.7}%
+\contentsline {section}{\numberline {4.7}Experiment 6 - Fluid Volume Estimation Using Predicted Masks in Generated and Super-resolved OCT Volumes}{39}{section.4.7}%
 \contentsline {chapter}{\numberline {5}Results and Discussion}{41}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Fluid Segmentation}{41}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Experiment 1}{42}{subsection.5.1.1}%
-\contentsline {subsubsection}{\numberline {5.1.1.1}Experiment 1.1}{42}{subsubsection.5.1.1.1}%
-\contentsline {subsubsection}{\numberline {5.1.1.2}Experiment 1.2}{44}{subsubsection.5.1.1.2}%
-\contentsline {subsubsection}{\numberline {5.1.1.3}Experiment 1.3}{45}{subsubsection.5.1.1.3}%
-\contentsline {subsection}{\numberline {5.1.2}Experiment 2}{56}{subsection.5.1.2}%
-\contentsline {subsubsection}{\numberline {5.1.2.1}Experiment 2.1}{56}{subsubsection.5.1.2.1}%
-\contentsline {subsubsection}{\numberline {5.1.2.2}Experiment 2.2}{67}{subsubsection.5.1.2.2}%
-\contentsline {subsection}{\numberline {5.1.3}Experiment 1 and Experiment 2 Comparison in RETOUCH Dataset}{69}{subsection.5.1.3}%
+\contentsline {subsection}{\numberline {5.1.1}Experiment 1 - Fluid Segmentation Using Multi-class U-Net}{42}{subsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.1.1}Experiment 1.1 - Random Patch Extraction}{42}{subsubsection.5.1.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.1.2}Experiment 1.2 - Large Patch Extraction}{43}{subsubsection.5.1.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.1.3}Experiment 1.3 - Vertical Patch Extraction}{46}{subsubsection.5.1.1.3}%
+\contentsline {subsection}{\numberline {5.1.2}Experiment 2 - Fluid Segmentation Using Binary U-Nets}{57}{subsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.2.1}Experiment 2.1 - Multi-class Segmentation Loss}{57}{subsubsection.5.1.2.1}%
+\contentsline {subsubsection}{\numberline {5.1.2.2}Experiment 2.2 - Balanced Cross-entropy Loss}{65}{subsubsection.5.1.2.2}%
+\contentsline {subsection}{\numberline {5.1.3}Experiment 1 and Experiment 2 Comparison in RETOUCH Dataset}{68}{subsection.5.1.3}%
 \contentsline {subsection}{\numberline {5.1.4}Experiment 1 and Experiment 2 Comparison in CHUSJ Dataset}{72}{subsection.5.1.4}%
-\contentsline {section}{\numberline {5.2}Intermediate Slice Synthesis}{76}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Experiment 3}{77}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Experiment 4}{81}{subsection.5.2.2}%
-\contentsline {section}{\numberline {5.3}Fluid Volume Estimation}{83}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Experiment 5}{83}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Experiment 6}{85}{subsection.5.3.2}%
-\contentsline {chapter}{\numberline {6}Conclusion}{93}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Limitations}{98}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Future Research}{99}{section.6.2}%
-\contentsline {chapter}{References}{102}{section*.100}%
-\contentsline {chapter}{\numberline {A}Impact of Random Initialization of the U-Net in Segmentation Performance}{109}{appendix.A}%
+\contentsline {section}{\numberline {5.2}Intermediate Slice Synthesis}{77}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Experiment 3 - Intermediate Slices Synthesis Using a GAN}{78}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Experiment 4 - Intermediate Slices Synthesis Using a U-Net}{82}{subsection.5.2.2}%
+\contentsline {section}{\numberline {5.3}Fluid Volume Estimation}{84}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Experiment 5 - Fluid Volume Estimation Using Predicted Masks in Real OCT Volumes}{85}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Experiment 6 - Fluid Volume Estimation Using Predicted Masks in Generated and Super-resolved OCT Volumes}{87}{subsection.5.3.2}%
+\contentsline {chapter}{\numberline {6}Conclusion}{94}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Limitations}{99}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Future Research}{100}{section.6.2}%
+\contentsline {chapter}{References}{103}{section*.101}%
+\contentsline {chapter}{\numberline {A}Impact of Random Initialization of the U-Net in Segmentation Performance}{110}{appendix.A}%
