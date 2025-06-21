@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  21 JUN 2025 01:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  21 JUN 2025 13:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1558,7 +1558,7 @@ ion.png>] [79 <./figures/CHUSJSegmentationOnNoisyScans.png>]
 File: figures/GeneratedSlicesCirrusVsSpectralis.png Graphic file (type png)
 <use figures/GeneratedSlicesCirrusVsSpectralis.png>
 Package pdftex.def Info: figures/GeneratedSlicesCirrusVsSpectralis.png  used on
- input line 1486.
+ input line 1491.
 (pdftex.def)             Requested size: 320.0935pt x 304.12009pt.
  [80]
 <figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png, id=1566, 729
@@ -1567,21 +1567,21 @@ File: figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png Graphic
 file (type png)
 <use figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png>
 Package pdftex.def Info: figures/TransitionBetweenConsecutiveBScansCirrusVsSpec
-tralis.png  used on input line 1494.
+tralis.png  used on input line 1499.
 (pdftex.def)             Requested size: 426.79135pt x 274.23343pt.
  [81 <./figures/GeneratedSlicesCirrusVsSpectralis.png>]
 <figures/GeneratedSlicesWithFluid.png, id=1575, 721.386pt x 478.296pt>
 File: figures/GeneratedSlicesWithFluid.png Graphic file (type png)
 <use figures/GeneratedSlicesWithFluid.png>
 Package pdftex.def Info: figures/GeneratedSlicesWithFluid.png  used on input li
-ne 1508.
+ne 1513.
 (pdftex.def)             Requested size: 426.79135pt x 282.9731pt.
  [82 <./figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png>]
 <figures/GenerativeUNetResults.png, id=1582, 523.41pt x 310.104pt>
 File: figures/GenerativeUNetResults.png Graphic file (type png)
 <use figures/GenerativeUNetResults.png>
 Package pdftex.def Info: figures/GenerativeUNetResults.png  used on input line 
-1526.
+1531.
 (pdftex.def)             Requested size: 426.79135pt x 252.85791pt.
  [83 <./figures/GeneratedSlicesWithFluid.png>] [84 <./figures/GenerativeUNetRes
 ults.png>] [85]
@@ -1589,26 +1589,26 @@ ults.png>] [85]
 File: figures/FluidVolumeScatterExperiment5.png Graphic file (type png)
 <use figures/FluidVolumeScatterExperiment5.png>
 Package pdftex.def Info: figures/FluidVolumeScatterExperiment5.png  used on inp
-ut line 1592.
+ut line 1597.
 (pdftex.def)             Requested size: 281.68385pt x 290.99216pt.
  [86] [87 <./figures/FluidVolumeScatterExperiment5.png>]
 <figures/Experiment6GTvsAll.png, id=1624, 606.411pt x 603.564pt>
 File: figures/Experiment6GTvsAll.png Graphic file (type png)
 <use figures/Experiment6GTvsAll.png>
-Package pdftex.def Info: figures/Experiment6GTvsAll.png  used on input line 166
-9.
+Package pdftex.def Info: figures/Experiment6GTvsAll.png  used on input line 167
+4.
 (pdftex.def)             Requested size: 426.79135pt x 424.78511pt.
 <figures/Experiment6PredictedVsAll.png, id=1625, 605.973pt x 301.782pt>
 File: figures/Experiment6PredictedVsAll.png Graphic file (type png)
 <use figures/Experiment6PredictedVsAll.png>
 Package pdftex.def Info: figures/Experiment6PredictedVsAll.png  used on input l
-ine 1675.
+ine 1680.
 (pdftex.def)             Requested size: 426.79135pt x 212.54451pt.
 <figures/Experiment6GeneratedVsEnhanced.png, id=1626, 292.146pt x 301.782pt>
 File: figures/Experiment6GeneratedVsEnhanced.png Graphic file (type png)
 <use figures/Experiment6GeneratedVsEnhanced.png>
 Package pdftex.def Info: figures/Experiment6GeneratedVsEnhanced.png  used on in
-put line 1681.
+put line 1686.
 (pdftex.def)             Requested size: 213.39568pt x 220.43716pt.
  [88] [89] [90 <./figures/Experiment6GTvsAll.png>] [91 <./figures/Experiment6Pr
 edictedVsAll.png> <./figures/Experiment6GeneratedVsEnhanced.png>] [92]
@@ -1618,7 +1618,7 @@ File: figures/SpectralisTrain039GenerationAndSegmentation.png Graphic file (typ
 e png)
 <use figures/SpectralisTrain039GenerationAndSegmentation.png>
 Package pdftex.def Info: figures/SpectralisTrain039GenerationAndSegmentation.pn
-g  used on input line 1769.
+g  used on input line 1774.
 (pdftex.def)             Requested size: 426.79135pt x 247.02863pt.
 <figures/CirrusTrain012GenerationAndSegmentation.png, id=1662, 965.352pt x 558.
 888pt>
@@ -1626,7 +1626,7 @@ File: figures/CirrusTrain012GenerationAndSegmentation.png Graphic file (type pn
 g)
 <use figures/CirrusTrain012GenerationAndSegmentation.png>
 Package pdftex.def Info: figures/CirrusTrain012GenerationAndSegmentation.png  u
-sed on input line 1783.
+sed on input line 1788.
 (pdftex.def)             Requested size: 426.79135pt x 247.08833pt.
 
 [93 <./figures/SpectralisTrain039GenerationAndSegmentation.png>]) [94 <./figure
@@ -1722,7 +1722,7 @@ X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (129 pages, 151606989 bytes).
+Output written on thesis.pdf (129 pages, 151607118 bytes).
 PDF statistics:
  1992 PDF objects out of 2073 (max. 8388607)
  386 named destinations out of 1000 (max. 500000)
