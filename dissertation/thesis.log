@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  21 JUN 2025 16:35
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  22 JUN 2025 00:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1585,12 +1585,12 @@ Package pdftex.def Info: figures/GenerativeUNetResults.png  used on input line
 (pdftex.def)             Requested size: 426.79135pt x 252.85791pt.
  [83 <./figures/GeneratedSlicesWithFluid.png>] [84 <./figures/GenerativeUNetRes
 ults.png>] [85]
-<figures/FluidVolumeScatterExperiment5.png, id=1603, 292.146pt x 301.782pt>
+<figures/FluidVolumeScatterExperiment5.png, id=1603, 292.146pt x 294.117pt>
 File: figures/FluidVolumeScatterExperiment5.png Graphic file (type png)
 <use figures/FluidVolumeScatterExperiment5.png>
 Package pdftex.def Info: figures/FluidVolumeScatterExperiment5.png  used on inp
 ut line 1597.
-(pdftex.def)             Requested size: 281.68385pt x 290.99216pt.
+(pdftex.def)             Requested size: 281.68385pt x 283.60121pt.
  [86] [87 <./figures/FluidVolumeScatterExperiment5.png>]
 <figures/Experiment6GTvsAll.png, id=1624, 603.783pt x 588.672pt>
 File: figures/Experiment6GTvsAll.png Graphic file (type png)
@@ -1618,7 +1618,7 @@ File: figures/SpectralisTrain039GenerationAndSegmentation.png Graphic file (typ
 e png)
 <use figures/SpectralisTrain039GenerationAndSegmentation.png>
 Package pdftex.def Info: figures/SpectralisTrain039GenerationAndSegmentation.pn
-g  used on input line 1774.
+g  used on input line 1776.
 (pdftex.def)             Requested size: 426.79135pt x 247.02863pt.
 
 [93 <./figures/SpectralisTrain039GenerationAndSegmentation.png>]
@@ -1628,19 +1628,21 @@ File: figures/CirrusTrain012GenerationAndSegmentation.png Graphic file (type pn
 g)
 <use figures/CirrusTrain012GenerationAndSegmentation.png>
 Package pdftex.def Info: figures/CirrusTrain012GenerationAndSegmentation.png  u
-sed on input line 1788.
+sed on input line 1792.
 (pdftex.def)             Requested size: 426.79135pt x 247.08833pt.
-) [94 <./figures/CirrusTrain012GenerationAndSegmentation.png>]
+ [94
+
+ <./figures/CirrusTrain012GenerationAndSegmentation.png>]) [95]
 \openout2 = `conclusion.aux'.
 
  (conclusion.tex
 Chapter 6.
-[95
+[96
 
 
 
 
-] [96] [97] [98] [99] [100] [101] [102]) [103]
+] [97] [98] [99] [100] [101] [102] [103]) [104]
 LaTeX Font Info:    Trying to load font information for T1+pcrs on input line 6
 6.
 
@@ -1657,7 +1659,7 @@ Overfull \hbox (0.69101pt too wide) in paragraph at lines 66--66
 
  []
 
-[104
+[105
 
 
 
@@ -1668,25 +1670,25 @@ Overfull \hbox (0.44347pt too wide) in paragraph at lines 66--66
 ransformer for en-hanced mac-u-lar edema
  []
 
-[105] [106]
+[106] [107]
 Overfull \hbox (19.33269pt too wide) in paragraph at lines 66--66
 \T1/ptm/m/n/10.95 Sys-tem-atic Re-view of Re-cent De-vel-op-ments and Chal-leng
 es,^^Q \T1/ptm/m/it/10.95 arXiv e-prints\T1/ptm/m/n/10.95 , arXiv:2407.00116,
  []
 
-[107] [108]
+[108] [109]
 Overfull \hbox (10.93967pt too wide) in paragraph at lines 66--66
 \T1/ptm/m/n/10.95 ^^P  Gen-er-a-tive Ad-ver-sar-ial Net-works: An Overview,^^Q 
 \T1/ptm/m/it/10.95 IEEE Sig-nal Pro-cess-ing Mag-a-zine\T1/ptm/m/n/10.95 , vol.
  35,
  []
 
-[109] [110]
+[110] [111]
 \openout2 = `appendix1.aux'.
 
  (appendix1.tex
 Appendix A.
-) [111
+) [112
 
 
 ] (thesis.aux (abstract.aux) (un-sdg.aux) (acknowledgements.aux)
@@ -1700,9 +1702,9 @@ Package logreq Info: Writing requests to 'thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 24048 strings out of 476339
- 446556 string characters out of 5788120
- 1898340 words of memory out of 5000000
+ 24049 strings out of 476339
+ 446564 string characters out of 5788120
+ 1936340 words of memory out of 5000000
  43589 multiletter control sequences out of 15000+600000
  596425 words of font info for 139 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1722,9 +1724,9 @@ X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (129 pages, 151556724 bytes).
+Output written on thesis.pdf (130 pages, 151561304 bytes).
 PDF statistics:
- 1992 PDF objects out of 2073 (max. 8388607)
- 386 named destinations out of 1000 (max. 500000)
+ 1996 PDF objects out of 2073 (max. 8388607)
+ 387 named destinations out of 1000 (max. 500000)
  715 words of extra memory for PDF output out of 10000 (max. 10000000)
 

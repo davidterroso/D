@@ -236,7 +236,7 @@ The GAN originally developed by \textcite{Tran2020} for interpolating intermedia
 \par
 The generator of the GAN is composed of a contracting and an expanding path. In the contracting path, convolutions are applied to the images and feature maps, followed by batch normalization, and a leaky ReLU activation function. After the images are downsampled to 512 $\times$ 8 $\times$ 8, reaching the bottleneck, the expanding path begins, where deconvolutions are applied, followed by batch normalization and a leaky ReLU. Finally, after the last deconvolution, the hyperbolic tangent function is used as the final activation function, resulting in an output of size 64 $\times$ 64, in the range of -1 to 1. An illustrative scheme of the generator is shown in Figure \ref{fig:GeneratorArchitecture}.
 
-\begin{figure}
+\begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1.0\linewidth]{figures/GeneratorArchitecture}
 	\caption{Architecture of the generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \parencite{Tran2020}.}
