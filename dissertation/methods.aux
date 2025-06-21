@@ -6,56 +6,56 @@
 \newlabel{Methods}{{3}{18}{Materials and Methods}{chapter.3}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3.1}Datasets}{18}{section.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}RETOUCH Dataset}{18}{subsection.3.1.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces B-scan of the retinal layers in different patients, using Cirrus (left), Topcon (middle), and Spectralis (right) devices. Despite representing the same structure, in Cirrus, the retinal layers appear much thicker than in the scans obtained with other vendors.\relax }}{19}{figure.caption.21}\protected@file@percent }
-\newlabel{fig:CirrusTopconSpectralisRetinalLayerComparison}{{3.1}{19}{B-scan of the retinal layers in different patients, using Cirrus (left), Topcon (middle), and Spectralis (right) devices. Despite representing the same structure, in Cirrus, the retinal layers appear much thicker than in the scans obtained with other vendors.\relax }{figure.caption.21}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Retinal layers B-scans from different patients, using Cirrus (left), Topcon (middle), and Spectralis (right) devices. Despite representing the same structure, the Cirrus scan, the retinal layers appear much thicker than in the scans obtained with other vendors.\relax }}{19}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:CirrusTopconSpectralisRetinalLayerComparison}{{3.1}{19}{Retinal layers B-scans from different patients, using Cirrus (left), Topcon (middle), and Spectralis (right) devices. Despite representing the same structure, the Cirrus scan, the retinal layers appear much thicker than in the scans obtained with other vendors.\relax }{figure.caption.21}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {3.1}{\ignorespaces Summary of the number of OCT volumes, B-scans per volume, total number of B-scans, and associated macular diseases in each dataset.\relax }}{19}{table.caption.22}\protected@file@percent }
 \newlabel{tab:DatasetsSummary}{{3.1}{19}{Summary of the number of OCT volumes, B-scans per volume, total number of B-scans, and associated macular diseases in each dataset.\relax }{table.caption.22}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}Centro Hospitalar Universitário de São João OCT Dataset}{20}{subsection.3.1.2}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Three B-scans with different dimensions (496 $\times $ 1024, 496 $\times $ 768, and 496 $\times $ 512 pixels, respectively) from the CHUSJ dataset. As indicated by scale bars in the bottom left corners of each B-scan, the resolution also differs across slices.\relax }}{20}{figure.caption.23}\protected@file@percent }
 \newlabel{fig:CHUSJDifferentResolutions}{{3.2}{20}{Three B-scans with different dimensions (496 $\times $ 1024, 496 $\times $ 768, and 496 $\times $ 512 pixels, respectively) from the CHUSJ dataset. As indicated by scale bars in the bottom left corners of each B-scan, the resolution also differs across slices.\relax }{figure.caption.23}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3.2}Methodology for Fluid Segmentation}{21}{section.3.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces U-Net architecture \blx@tocontentsinit {0}\parencite {Ronneberger2015}.\relax }}{21}{figure.caption.24}\protected@file@percent }
-\newlabel{fig:UNet}{{3.3}{21}{U-Net architecture \parencite {Ronneberger2015}.\relax }{figure.caption.24}{}}
-\newlabel{eq:DiceCoefficient}{{3.1}{22}{Methodology for Fluid Segmentation}{equation.3.2.1}{}}
+\newlabel{eq:DiceCoefficient}{{3.1}{21}{Methodology for Fluid Segmentation}{equation.3.2.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces U-Net architecture \blx@tocontentsinit {0}\parencite {Ronneberger2015}.\relax }}{22}{figure.caption.24}\protected@file@percent }
+\newlabel{fig:UNet}{{3.3}{22}{U-Net architecture \parencite {Ronneberger2015}.\relax }{figure.caption.24}{}}
 \newlabel{eq:DiceCoefficientPixels}{{3.2}{22}{Methodology for Fluid Segmentation}{equation.3.2.2}{}}
 \newlabel{eq:SegmentationLoss}{{3.3}{22}{Methodology for Fluid Segmentation}{equation.3.2.3}{}}
 \newlabel{eq:SegmentationDice}{{3.4}{22}{Methodology for Fluid Segmentation}{equation.3.2.4}{}}
 \newlabel{eq:SegmentationCE}{{3.5}{23}{Methodology for Fluid Segmentation}{equation.3.2.5}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Cirrus B-scan (left), fluid masks overlay (middle) with IRF in red, SRF in green, and PED in blue, and the ROI mask overlaid in purple (right). The red bounding box signals a possible 256 $\times $ 128 patch that could be extracted.\relax }}{23}{figure.caption.25}\protected@file@percent }
 \newlabel{fig:FluidAndROI}{{3.4}{23}{Cirrus B-scan (left), fluid masks overlay (middle) with IRF in red, SRF in green, and PED in blue, and the ROI mask overlaid in purple (right). The red bounding box signals a possible 256 $\times $ 128 patch that could be extracted.\relax }{figure.caption.25}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Cirrus B-scan and its respective three patches of shape 496 $\times $ 512.\relax }}{24}{figure.caption.26}\protected@file@percent }
-\newlabel{fig:BigPatchExtraction}{{3.5}{24}{Cirrus B-scan and its respective three patches of shape 496 $\times $ 512.\relax }{figure.caption.26}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Four vertical patches of shape 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }}{24}{figure.caption.27}\protected@file@percent }
-\newlabel{fig:CirrusFourPatchExtraction}{{3.6}{24}{Four vertical patches of shape 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }{figure.caption.27}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Seven vertical patches of shape 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }}{25}{figure.caption.28}\protected@file@percent }
-\newlabel{fig:CirrusSevenPatchExtraction}{{3.7}{25}{Seven vertical patches of shape 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }{figure.caption.28}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.8}{\ignorespaces Thirteen vertical patches of shape 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }}{25}{figure.caption.29}\protected@file@percent }
-\newlabel{fig:CirrusThirteenPatchExtraction}{{3.8}{25}{Thirteen vertical patches of shape 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }{figure.caption.29}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Cirrus B-scan with its three corresponding patches of size 496 $\times $ 512.\relax }}{24}{figure.caption.26}\protected@file@percent }
+\newlabel{fig:BigPatchExtraction}{{3.5}{24}{Cirrus B-scan with its three corresponding patches of size 496 $\times $ 512.\relax }{figure.caption.26}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Four vertical patches of dimension 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }}{24}{figure.caption.27}\protected@file@percent }
+\newlabel{fig:CirrusFourPatchExtraction}{{3.6}{24}{Four vertical patches of dimension 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }{figure.caption.27}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Seven vertical patches of dimension 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }}{25}{figure.caption.28}\protected@file@percent }
+\newlabel{fig:CirrusSevenPatchExtraction}{{3.7}{25}{Seven vertical patches of dimension 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }{figure.caption.28}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.8}{\ignorespaces Thirteen vertical patches of size 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }}{25}{figure.caption.29}\protected@file@percent }
+\newlabel{fig:CirrusThirteenPatchExtraction}{{3.8}{25}{Thirteen vertical patches of size 496 $\times $ 128 extracted from a Cirrus B-scan.\relax }{figure.caption.29}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3.3}Methodology for Intermediate Slice Synthesis}{26}{section.3.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.9}{\ignorespaces Scheme explaining the input data of the generative models. Each frame refers to B-scan from an OCT volume. Extracted from \blx@tocontentsinit {0}\textcite {Tran2020}.\relax }}{26}{figure.caption.30}\protected@file@percent }
-\newlabel{fig:FrameInterpolationFramework}{{3.9}{26}{Scheme explaining the input data of the generative models. Each frame refers to B-scan from an OCT volume. Extracted from \textcite {Tran2020}.\relax }{figure.caption.30}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.9}{\ignorespaces Scheme explaining the input data of the generative models. Each frame refers to a B-scan from an OCT volume. Extracted from \blx@tocontentsinit {0}\textcite {Tran2020}.\relax }}{27}{figure.caption.30}\protected@file@percent }
+\newlabel{fig:FrameInterpolationFramework}{{3.9}{27}{Scheme explaining the input data of the generative models. Each frame refers to a B-scan from an OCT volume. Extracted from \textcite {Tran2020}.\relax }{figure.caption.30}{}}
 \newlabel{eq:MAEEquation}{{3.6}{27}{Methodology for Intermediate Slice Synthesis}{equation.3.3.6}{}}
 \newlabel{eq:MSEEquation}{{3.7}{27}{Methodology for Intermediate Slice Synthesis}{equation.3.3.7}{}}
 \newlabel{eq:PSNREquation}{{3.8}{27}{Methodology for Intermediate Slice Synthesis}{equation.3.3.8}{}}
-\newlabel{eq:SSIMEquation}{{3.9}{27}{Methodology for Intermediate Slice Synthesis}{equation.3.3.9}{}}
+\newlabel{eq:SSIMEquation}{{3.9}{28}{Methodology for Intermediate Slice Synthesis}{equation.3.3.9}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3.10}{\ignorespaces Example of a GAN framework, where $\mathcal  {D}$ is the discriminator and $\mathcal  {G}$ is the generator \blx@tocontentsinit {0}\parencite {Creswell2018}.\relax }}{28}{figure.caption.31}\protected@file@percent }
 \newlabel{fig:GANFramework}{{3.10}{28}{Example of a GAN framework, where $\mathcal {D}$ is the discriminator and $\mathcal {G}$ is the generator \parencite {Creswell2018}.\relax }{figure.caption.31}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.11}{\ignorespaces Patches with shape 64 $\times $ 64 extracted from a Cirrus B-scan which was resized to 496 $\times $ 512.\relax }}{29}{figure.caption.32}\protected@file@percent }
-\newlabel{fig:CirrusSixtyFourPatchExtraction}{{3.11}{29}{Patches with shape 64 $\times $ 64 extracted from a Cirrus B-scan which was resized to 496 $\times $ 512.\relax }{figure.caption.32}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.12}{\ignorespaces Architecture of the generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \blx@tocontentsinit {0}\parencite {Tran2020}.\relax }}{30}{figure.caption.33}\protected@file@percent }
-\newlabel{fig:GeneratorArchitecture}{{3.12}{30}{Architecture of the generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \parencite {Tran2020}.\relax }{figure.caption.33}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3.2}{\ignorespaces Layers that compose the generator and the discriminator. Each convolution is represented by Conv2d(K, OC, S), where K is the kernel size, OC is the number of output channels, and S is the stride. The same notation is used in deconvolutions, represented by TransposedConv2d. The output size is shown following C $\times $ H $\times $ W notation, where C is the number of channels, H is the height, and W is the width. The inputs have shape $1 \times 64 \times 64$. Adapted from \blx@tocontentsinit {0}\textcite {Tran2020}.\relax }}{30}{table.caption.34}\protected@file@percent }
-\newlabel{tab:GeneratorDiscriminatorArchitecture}{{3.2}{30}{Layers that compose the generator and the discriminator. Each convolution is represented by Conv2d(K, OC, S), where K is the kernel size, OC is the number of output channels, and S is the stride. The same notation is used in deconvolutions, represented by TransposedConv2d. The output size is shown following C $\times $ H $\times $ W notation, where C is the number of channels, H is the height, and W is the width. The inputs have shape $1 \times 64 \times 64$. Adapted from \textcite {Tran2020}.\relax }{table.caption.34}{}}
-\newlabel{eq:GeneratorLoss}{{3.10}{31}{Methodology for Intermediate Slice Synthesis}{equation.3.3.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.11}{\ignorespaces Architecture of the generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \blx@tocontentsinit {0}\parencite {Tran2020}.\relax }}{29}{figure.caption.32}\protected@file@percent }
+\newlabel{fig:GeneratorArchitecture}{{3.11}{29}{Architecture of the generator used in the GAN. It has a contracting and an expanding path, making it a U-Net like network \parencite {Tran2020}.\relax }{figure.caption.32}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.12}{\ignorespaces Patches of size 64 $\times $ 64 extracted from a Cirrus B-scan previously resized to 496 $\times $ 512.\relax }}{30}{figure.caption.33}\protected@file@percent }
+\newlabel{fig:CirrusSixtyFourPatchExtraction}{{3.12}{30}{Patches of size 64 $\times $ 64 extracted from a Cirrus B-scan previously resized to 496 $\times $ 512.\relax }{figure.caption.33}{}}
+\newlabel{eq:GeneratorLoss}{{3.10}{30}{Methodology for Intermediate Slice Synthesis}{equation.3.3.10}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3.2}{\ignorespaces Layers that compose the generator and the discriminator. Each convolution is represented by Conv2d(K, OC, S), where K is the kernel size, OC is the number of output channels, and S is the stride. The same notation is used in deconvolutions, represented by TransposedConv2d. The output size is shown following C $\times $ H $\times $ W notation, where C is the number of channels, H is the height, and W is the width. The inputs have a size of $1 \times 64 \times 64$. Adapted from \blx@tocontentsinit {0}\textcite {Tran2020}.\relax }}{31}{table.caption.34}\protected@file@percent }
+\newlabel{tab:GeneratorDiscriminatorArchitecture}{{3.2}{31}{Layers that compose the generator and the discriminator. Each convolution is represented by Conv2d(K, OC, S), where K is the kernel size, OC is the number of output channels, and S is the stride. The same notation is used in deconvolutions, represented by TransposedConv2d. The output size is shown following C $\times $ H $\times $ W notation, where C is the number of channels, H is the height, and W is the width. The inputs have a size of $1 \times 64 \times 64$. Adapted from \textcite {Tran2020}.\relax }{table.caption.34}{}}
 \newlabel{eq:AdversarialLoss}{{3.11}{31}{Methodology for Intermediate Slice Synthesis}{equation.3.3.11}{}}
-\newlabel{eq:MSSSIMLoss}{{3.12}{31}{Methodology for Intermediate Slice Synthesis}{equation.3.3.12}{}}
-\newlabel{eq:MSSSIM}{{3.13}{31}{Methodology for Intermediate Slice Synthesis}{equation.3.3.13}{}}
+\newlabel{eq:MSSSIMLoss}{{3.12}{32}{Methodology for Intermediate Slice Synthesis}{equation.3.3.12}{}}
+\newlabel{eq:MSSSIM}{{3.13}{32}{Methodology for Intermediate Slice Synthesis}{equation.3.3.13}{}}
 \newlabel{eq:GDLLoss}{{3.14}{32}{Methodology for Intermediate Slice Synthesis}{equation.3.3.14}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3.4}Methodology for Fluid Volume Estimation}{32}{section.3.4}\protected@file@percent }
 \newlabel{eq:FluidEstimationSlice}{{3.15}{33}{Methodology for Fluid Volume Estimation}{equation.3.4.15}{}}
 \newlabel{eq:FluidEstimationVolume}{{3.16}{33}{Methodology for Fluid Volume Estimation}{equation.3.4.16}{}}
 \@setckpt{methods}{
-\setcounter{page}{34}
+\setcounter{page}{35}
 \setcounter{equation}{16}
 \setcounter{enumi}{4}
 \setcounter{enumii}{0}
@@ -78,7 +78,7 @@
 \setcounter{continuedfloat}{0}
 \setcounter{float@type}{4}
 \setcounter{linenumber}{0}
-\setcounter{LN@truepage}{51}
+\setcounter{LN@truepage}{52}
 \setcounter{tabx@nest}{0}
 \setcounter{listtotal}{0}
 \setcounter{listcount}{0}
