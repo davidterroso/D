@@ -1521,7 +1521,7 @@ The generation of IRF, however, appears more troublesome, particularly in Spectr
 \par
 The poor generation of IRF is also partially related with the loss used to train the GAN. Since this network was adapted from a video frame interpolation application, the method is not prepared for datasets that contain as much noise as OCT does. In the video use case, it makes sense to use a loss function that primarily evaluates the images at a pixel level, while being complimented by a perception component, which is the adversarial loss, that corresponds to the capability of a fake image fooling the discriminator. However, in OCT, the speckle that corrupts the image makes it considerably more difficult to optimize a network to generate images that are similar at a pixel level, since this noise is impossible to predict. Therefore, as the network attempts to reproduce the noise that occupies most of the B-scans, it does not apply as much attention to the fluid as it should, particularly in IRF that needs it more. Ultimately, this results in visually similar images in the matters of noise and retinal layers, but worse in the generation of fluids.
 \par
-To perform the generation of intermediate slices in Experiment 6, the model from Run 3 was selected, as it obtained the best metrics in PSNR and SSIM.
+The model trained on Run 3 was selected for generating intermediate slices in Experiment 6, as it achieved the best PSNR performance in three of the four devices utilized to acquire the B-scans. Additionally, its SSIM performance was comparable to those obtained in other runs.
 
 \subsection{Experiment 4 - Intermediate Slices Synthesis Using a U-Net}
 
