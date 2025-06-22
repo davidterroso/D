@@ -577,7 +577,7 @@ def test_model (
         else:
             folder_to_save = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}\\"
             folder_to_save_masks = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_masks\\"
-            folder_to_save_gts = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_final_gts\\"
+            folder_to_save_gts = IMAGES_PATH + f"\\OCT_images\\segmentation\\predictions\\{run_name}_gts\\"
 
     else:
         if final_test:
