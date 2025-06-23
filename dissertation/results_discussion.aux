@@ -109,48 +109,54 @@
 \newlabel{fig:CHUSJSRFSegmentation}{{5.28}{76}{SRF and PED segmentation (right) in a B-scan from CHUSJ, compared to its GT (left). This shows the tendency to oversegmentation by the model.\relax }{figure.caption.83}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {5.29}{\ignorespaces Segmentation of IRF regions (right) compared to its respective GT (left). The prediction of fluid regions in the choroid is also noticeable.\relax }}{77}{figure.caption.84}\protected@file@percent }
 \newlabel{fig:CHUSJIRFSegmentation}{{5.29}{77}{Segmentation of IRF regions (right) compared to its respective GT (left). The prediction of fluid regions in the choroid is also noticeable.\relax }{figure.caption.84}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.30}{\ignorespaces Segmentation of multiple fluids in the choroid region of the B-scans. This is performed often, significantly reducing the Dice coefficients seen in Table \ref {tab:CHUSJSegmentationResults}.\relax }}{78}{figure.caption.85}\protected@file@percent }
-\newlabel{fig:CHUSJChoroidSegmentation}{{5.30}{78}{Segmentation of multiple fluids in the choroid region of the B-scans. This is performed often, significantly reducing the Dice coefficients seen in Table \ref {tab:CHUSJSegmentationResults}.\relax }{figure.caption.85}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.2}Intermediate Slice Synthesis}{78}{section.5.2}\protected@file@percent }
-\newlabel{IntermediateSliceSynthesis}{{5.2}{78}{Intermediate Slice Synthesis}{section.5.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.31}{\ignorespaces Fluid segmentations performed by the multi-class model in noisy B-scans from the CHUSJ dataset.\relax }}{79}{figure.caption.86}\protected@file@percent }
-\newlabel{fig:CHUSJSegmentationOnNoisyScans}{{5.31}{79}{Fluid segmentations performed by the multi-class model in noisy B-scans from the CHUSJ dataset.\relax }{figure.caption.86}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.1}Experiment 3 - Intermediate Slices Synthesis Using a GAN}{79}{subsection.5.2.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.19}{\ignorespaces PSNR and SSIM in every device, for the generated slices in every validation fold.\relax }}{79}{table.caption.87}\protected@file@percent }
-\newlabel{tab:Experiment1Metrics}{{5.19}{79}{PSNR and SSIM in every device, for the generated slices in every validation fold.\relax }{table.caption.87}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.32}{\ignorespaces Example of two pairs of generated slices, one from Cirrus and one from Spectralis, which capture the retinal layers.\relax }}{81}{figure.caption.88}\protected@file@percent }
-\newlabel{fig:GeneratedSlicesCirrusVsSpectralis}{{5.32}{81}{Example of two pairs of generated slices, one from Cirrus and one from Spectralis, which capture the retinal layers.\relax }{figure.caption.88}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.33}{\ignorespaces Surrounding slices of the B-scans generated in Figure \ref {fig:GeneratedSlicesCirrusVsSpectralis}.\relax }}{82}{figure.caption.89}\protected@file@percent }
-\newlabel{fig:TransitionBetweenConsecutiveBScansCirrusVsSpectralis}{{5.33}{82}{Surrounding slices of the B-scans generated in Figure \ref {fig:GeneratedSlicesCirrusVsSpectralis}.\relax }{figure.caption.89}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.34}{\ignorespaces Examples of generated B-scans with fluid.\relax }}{83}{figure.caption.90}\protected@file@percent }
-\newlabel{fig:GeneratedSlicesWithFluid}{{5.34}{83}{Examples of generated B-scans with fluid.\relax }{figure.caption.90}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.2}Experiment 4 - Intermediate Slices Synthesis Using a U-Net}{83}{subsection.5.2.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5.35}{\ignorespaces B-scans generated using the U-Net. The images on the left show the original B-scan while those on the left are the corresponding generated slices.\relax }}{84}{figure.caption.91}\protected@file@percent }
-\newlabel{fig:GenerativeUNetResults}{{5.35}{84}{B-scans generated using the U-Net. The images on the left show the original B-scan while those on the left are the corresponding generated slices.\relax }{figure.caption.91}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.3}Fluid Volume Estimation}{85}{section.5.3}\protected@file@percent }
-\newlabel{FluidVolumeEstimation}{{5.3}{85}{Fluid Volume Estimation}{section.5.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}Experiment 5 - Fluid Volume Estimation Using Predicted Masks in Real OCT Volumes}{86}{subsection.5.3.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.20}{\ignorespaces Volume of each fluid calculated for the masks segmented in the RETOUCH (GT) and the masks segmented by the best segmentation model from Experiment 1 and 2 (P). The volumes correspond to the total fluid volume in the OCT scan, in mm$^{3}$.\relax }}{86}{table.caption.92}\protected@file@percent }
-\newlabel{tab:FluidVolumesExperiment5}{{5.20}{86}{Volume of each fluid calculated for the masks segmented in the RETOUCH (GT) and the masks segmented by the best segmentation model from Experiment 1 and 2 (P). The volumes correspond to the total fluid volume in the OCT scan, in mm$^{3}$.\relax }{table.caption.92}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.36}{\ignorespaces Volume estimated for each fluid in OCT volume using the masks predicted by the segmentation model compared with the volumes calculated using the GT masks. The OCT scans considered are the same as in \ref {tab:FluidVolumesExperiment5} and the gray line marks the points in which the fluid volume in the GT is equal to the predicted.\relax }}{87}{figure.caption.93}\protected@file@percent }
-\newlabel{fig:FluidVolumeScatterExperiment5}{{5.36}{87}{Volume estimated for each fluid in OCT volume using the masks predicted by the segmentation model compared with the volumes calculated using the GT masks. The OCT scans considered are the same as in \ref {tab:FluidVolumesExperiment5} and the gray line marks the points in which the fluid volume in the GT is equal to the predicted.\relax }{figure.caption.93}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}Experiment 6 - Fluid Volume Estimation Using Predicted Masks in Generated and Super-resolved OCT Volumes}{88}{subsection.5.3.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.21}{\ignorespaces Volume of each fluid calculated for the masks segmented in the RETOUCH (GT) and for the masks predicted by the best segmentation model in the original RETOUCH images (P), in the generated slices (G), and when the original dataset is enhanced, combining alternating the real images with B-scans generated between them (E). The values correspond to the total fluid volume in the OCT volume, measured in mm$^{3}$, with the relative error to the GT shown in parentheses below each volume.\relax }}{89}{table.caption.94}\protected@file@percent }
-\newlabel{tab:FluidVolumesExperiment6}{{5.21}{89}{Volume of each fluid calculated for the masks segmented in the RETOUCH (GT) and for the masks predicted by the best segmentation model in the original RETOUCH images (P), in the generated slices (G), and when the original dataset is enhanced, combining alternating the real images with B-scans generated between them (E). The values correspond to the total fluid volume in the OCT volume, measured in mm$^{3}$, with the relative error to the GT shown in parentheses below each volume.\relax }{table.caption.94}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.37}{\ignorespaces Volume estimated for each fluid in the OCT volumes using the GT masks, compared with the volumes estimated in columns ``P'', ``G'', and ``E''.\relax }}{90}{figure.caption.95}\protected@file@percent }
-\newlabel{fig:Experiment6GTvsAll}{{5.37}{90}{Volume estimated for each fluid in the OCT volumes using the GT masks, compared with the volumes estimated in columns ``P'', ``G'', and ``E''.\relax }{figure.caption.95}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.38}{\ignorespaces Volume estimated for each fluid in the OCT volumes using the masks predicted by the segmentation model compared with the volumes calculated using the masks from columns ``G'' and ``E''.\relax }}{91}{figure.caption.96}\protected@file@percent }
-\newlabel{fig:Experiment6PredictedVsAll}{{5.38}{91}{Volume estimated for each fluid in the OCT volumes using the masks predicted by the segmentation model compared with the volumes calculated using the masks from columns ``G'' and ``E''.\relax }{figure.caption.96}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.39}{\ignorespaces Volume estimated for each fluid in the OCT volumes using the masks predicted by the segmentation model in the generated dataset, compared with the volumes calculated in the enhanced dataset.\relax }}{91}{figure.caption.97}\protected@file@percent }
-\newlabel{fig:Experiment6GeneratedVsEnhanced}{{5.39}{91}{Volume estimated for each fluid in the OCT volumes using the masks predicted by the segmentation model in the generated dataset, compared with the volumes calculated in the enhanced dataset.\relax }{figure.caption.97}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.22}{\ignorespaces Comparison in Dice scores for every vendor and fluid in the reserved fold (fold 1), using the best segmentation model to segment the original B-scans and their generated equivalent.\relax }}{92}{table.caption.98}\protected@file@percent }
-\newlabel{tab:Experiment6DiceInGeneratedDataset}{{5.22}{92}{Comparison in Dice scores for every vendor and fluid in the reserved fold (fold 1), using the best segmentation model to segment the original B-scans and their generated equivalent.\relax }{table.caption.98}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.40}{\ignorespaces Example of IRF segmentation in the enhanced volume TRAIN039.\relax }}{93}{figure.caption.99}\protected@file@percent }
-\newlabel{fig:SpectralisTrain039GenerationAndSegmentation}{{5.40}{93}{Example of IRF segmentation in the enhanced volume TRAIN039.\relax }{figure.caption.99}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.41}{\ignorespaces Example of SRF and PED segmentation in the enhanced volume TRAIN012.\relax }}{94}{figure.caption.100}\protected@file@percent }
-\newlabel{fig:CirrusTrain012GenerationAndSegmentation}{{5.41}{94}{Example of SRF and PED segmentation in the enhanced volume TRAIN012.\relax }{figure.caption.100}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.30}{\ignorespaces Segmentation of multiple fluids in the choroid region of the B-scans. This is performed often, significantly reducing the Dice coefficients seen in Table \ref {tab:CHUSJSegmentationResults}.\relax }}{77}{figure.caption.85}\protected@file@percent }
+\newlabel{fig:CHUSJChoroidSegmentation}{{5.30}{77}{Segmentation of multiple fluids in the choroid region of the B-scans. This is performed often, significantly reducing the Dice coefficients seen in Table \ref {tab:CHUSJSegmentationResults}.\relax }{figure.caption.85}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.31}{\ignorespaces Fluid segmentations performed by the multi-class model in noisy B-scans from the CHUSJ dataset.\relax }}{78}{figure.caption.86}\protected@file@percent }
+\newlabel{fig:CHUSJSegmentationOnNoisyScans}{{5.31}{78}{Fluid segmentations performed by the multi-class model in noisy B-scans from the CHUSJ dataset.\relax }{figure.caption.86}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.19}{\ignorespaces Dice scores for every vendor and fluid in the CHUSJ dataset, using the best models from Experiment 1 and Experiment 2, while removing the fluids predicted outside the retina.\relax }}{79}{table.caption.87}\protected@file@percent }
+\newlabel{tab:CHUSJProcessedSegmentationResults}{{5.19}{79}{Dice scores for every vendor and fluid in the CHUSJ dataset, using the best models from Experiment 1 and Experiment 2, while removing the fluids predicted outside the retina.\relax }{table.caption.87}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.32}{\ignorespaces Processed fluid segmentations performed by the multi-class model in the examples of Figures \ref {fig:CHUSJIRFSegmentation} and \ref {fig:CHUSJChoroidSegmentation}.\relax }}{80}{figure.caption.88}\protected@file@percent }
+\newlabel{fig:CHUSJSegmentationAfterProcessing}{{5.32}{80}{Processed fluid segmentations performed by the multi-class model in the examples of Figures \ref {fig:CHUSJIRFSegmentation} and \ref {fig:CHUSJChoroidSegmentation}.\relax }{figure.caption.88}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.33}{\ignorespaces Processed fluid segmentations performed by the multi-class model, in the noisy scans shown in Figure \ref {fig:CHUSJSegmentationOnNoisyScans}.\relax }}{81}{figure.caption.89}\protected@file@percent }
+\newlabel{fig:CHUSJSegmentationAfterProcessingNoisyScans}{{5.33}{81}{Processed fluid segmentations performed by the multi-class model, in the noisy scans shown in Figure \ref {fig:CHUSJSegmentationOnNoisyScans}.\relax }{figure.caption.89}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Intermediate Slice Synthesis}{81}{section.5.2}\protected@file@percent }
+\newlabel{IntermediateSliceSynthesis}{{5.2}{81}{Intermediate Slice Synthesis}{section.5.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.1}Experiment 3 - Intermediate Slices Synthesis Using a GAN}{82}{subsection.5.2.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.20}{\ignorespaces PSNR and SSIM in every device, for the generated slices in every validation fold.\relax }}{82}{table.caption.90}\protected@file@percent }
+\newlabel{tab:Experiment1Metrics}{{5.20}{82}{PSNR and SSIM in every device, for the generated slices in every validation fold.\relax }{table.caption.90}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.34}{\ignorespaces Example of two pairs of generated slices, one from Cirrus and one from Spectralis, which capture the retinal layers.\relax }}{83}{figure.caption.91}\protected@file@percent }
+\newlabel{fig:GeneratedSlicesCirrusVsSpectralis}{{5.34}{83}{Example of two pairs of generated slices, one from Cirrus and one from Spectralis, which capture the retinal layers.\relax }{figure.caption.91}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.35}{\ignorespaces Surrounding slices of the B-scans generated in Figure \ref {fig:GeneratedSlicesCirrusVsSpectralis}.\relax }}{84}{figure.caption.92}\protected@file@percent }
+\newlabel{fig:TransitionBetweenConsecutiveBScansCirrusVsSpectralis}{{5.35}{84}{Surrounding slices of the B-scans generated in Figure \ref {fig:GeneratedSlicesCirrusVsSpectralis}.\relax }{figure.caption.92}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.36}{\ignorespaces Examples of generated B-scans with fluid.\relax }}{85}{figure.caption.93}\protected@file@percent }
+\newlabel{fig:GeneratedSlicesWithFluid}{{5.36}{85}{Examples of generated B-scans with fluid.\relax }{figure.caption.93}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.2}Experiment 4 - Intermediate Slices Synthesis Using a U-Net}{86}{subsection.5.2.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.37}{\ignorespaces B-scans generated using the U-Net. The images on the left show the original B-scan while those on the left are the corresponding generated slices.\relax }}{86}{figure.caption.94}\protected@file@percent }
+\newlabel{fig:GenerativeUNetResults}{{5.37}{86}{B-scans generated using the U-Net. The images on the left show the original B-scan while those on the left are the corresponding generated slices.\relax }{figure.caption.94}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}Fluid Volume Estimation}{88}{section.5.3}\protected@file@percent }
+\newlabel{FluidVolumeEstimation}{{5.3}{88}{Fluid Volume Estimation}{section.5.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}Experiment 5 - Fluid Volume Estimation Using Predicted Masks in Real OCT Volumes}{88}{subsection.5.3.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.21}{\ignorespaces Volume of each fluid calculated for the masks segmented in the RETOUCH (GT) and the masks segmented by the best segmentation model from Experiment 1 and 2 (P). The volumes correspond to the total fluid volume in the OCT scan, in mm$^{3}$.\relax }}{89}{table.caption.95}\protected@file@percent }
+\newlabel{tab:FluidVolumesExperiment5}{{5.21}{89}{Volume of each fluid calculated for the masks segmented in the RETOUCH (GT) and the masks segmented by the best segmentation model from Experiment 1 and 2 (P). The volumes correspond to the total fluid volume in the OCT scan, in mm$^{3}$.\relax }{table.caption.95}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.38}{\ignorespaces Volume estimated for each fluid in OCT volume using the masks predicted by the segmentation model compared with the volumes calculated using the GT masks. The OCT scans considered are the same as in \ref {tab:FluidVolumesExperiment5} and the gray line marks the points in which the fluid volume in the GT is equal to the predicted.\relax }}{90}{figure.caption.96}\protected@file@percent }
+\newlabel{fig:FluidVolumeScatterExperiment5}{{5.38}{90}{Volume estimated for each fluid in OCT volume using the masks predicted by the segmentation model compared with the volumes calculated using the GT masks. The OCT scans considered are the same as in \ref {tab:FluidVolumesExperiment5} and the gray line marks the points in which the fluid volume in the GT is equal to the predicted.\relax }{figure.caption.96}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}Experiment 6 - Fluid Volume Estimation Using Predicted Masks in Generated and Super-resolved OCT Volumes}{90}{subsection.5.3.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.22}{\ignorespaces Volume of each fluid calculated for the masks segmented in the RETOUCH (GT) and for the masks predicted by the best segmentation model in the original RETOUCH images (P), in the generated slices (G), and when the original dataset is enhanced, combining alternating the real images with B-scans generated between them (E). The values correspond to the total fluid volume in the OCT volume, measured in mm$^{3}$, with the relative error to the GT shown in parentheses below each volume.\relax }}{91}{table.caption.97}\protected@file@percent }
+\newlabel{tab:FluidVolumesExperiment6}{{5.22}{91}{Volume of each fluid calculated for the masks segmented in the RETOUCH (GT) and for the masks predicted by the best segmentation model in the original RETOUCH images (P), in the generated slices (G), and when the original dataset is enhanced, combining alternating the real images with B-scans generated between them (E). The values correspond to the total fluid volume in the OCT volume, measured in mm$^{3}$, with the relative error to the GT shown in parentheses below each volume.\relax }{table.caption.97}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.39}{\ignorespaces Volume estimated for each fluid in the OCT volumes using the GT masks, compared with the volumes estimated in columns ``P'', ``G'', and ``E''.\relax }}{92}{figure.caption.98}\protected@file@percent }
+\newlabel{fig:Experiment6GTvsAll}{{5.39}{92}{Volume estimated for each fluid in the OCT volumes using the GT masks, compared with the volumes estimated in columns ``P'', ``G'', and ``E''.\relax }{figure.caption.98}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.40}{\ignorespaces Volume estimated for each fluid in the OCT volumes using the masks predicted by the segmentation model compared with the volumes calculated using the masks from columns ``G'' and ``E''.\relax }}{93}{figure.caption.99}\protected@file@percent }
+\newlabel{fig:Experiment6PredictedVsAll}{{5.40}{93}{Volume estimated for each fluid in the OCT volumes using the masks predicted by the segmentation model compared with the volumes calculated using the masks from columns ``G'' and ``E''.\relax }{figure.caption.99}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.41}{\ignorespaces Volume estimated for each fluid in the OCT volumes using the masks predicted by the segmentation model in the generated dataset, compared with the volumes calculated in the enhanced dataset.\relax }}{93}{figure.caption.100}\protected@file@percent }
+\newlabel{fig:Experiment6GeneratedVsEnhanced}{{5.41}{93}{Volume estimated for each fluid in the OCT volumes using the masks predicted by the segmentation model in the generated dataset, compared with the volumes calculated in the enhanced dataset.\relax }{figure.caption.100}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.23}{\ignorespaces Comparison in Dice scores for every vendor and fluid in the reserved fold (fold 1), using the best segmentation model to segment the original B-scans and their generated equivalent.\relax }}{95}{table.caption.101}\protected@file@percent }
+\newlabel{tab:Experiment6DiceInGeneratedDataset}{{5.23}{95}{Comparison in Dice scores for every vendor and fluid in the reserved fold (fold 1), using the best segmentation model to segment the original B-scans and their generated equivalent.\relax }{table.caption.101}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.42}{\ignorespaces Example of IRF segmentation in the enhanced volume TRAIN039.\relax }}{96}{figure.caption.102}\protected@file@percent }
+\newlabel{fig:SpectralisTrain039GenerationAndSegmentation}{{5.42}{96}{Example of IRF segmentation in the enhanced volume TRAIN039.\relax }{figure.caption.102}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.43}{\ignorespaces Example of SRF and PED segmentation in the enhanced volume TRAIN012.\relax }}{97}{figure.caption.103}\protected@file@percent }
+\newlabel{fig:CirrusTrain012GenerationAndSegmentation}{{5.43}{97}{Example of SRF and PED segmentation in the enhanced volume TRAIN012.\relax }{figure.caption.103}{}}
 \@setckpt{results_discussion}{
-\setcounter{page}{96}
+\setcounter{page}{99}
 \setcounter{equation}{0}
 \setcounter{enumi}{4}
 \setcounter{enumii}{0}
@@ -165,15 +171,15 @@
 \setcounter{subsubsection}{0}
 \setcounter{paragraph}{0}
 \setcounter{subparagraph}{0}
-\setcounter{figure}{41}
-\setcounter{table}{22}
+\setcounter{figure}{43}
+\setcounter{table}{23}
 \setcounter{parentequation}{0}
 \setcounter{nlinenum}{0}
 \setcounter{caption@flags}{2}
 \setcounter{continuedfloat}{0}
 \setcounter{float@type}{4}
 \setcounter{linenumber}{0}
-\setcounter{LN@truepage}{113}
+\setcounter{LN@truepage}{116}
 \setcounter{tabx@nest}{0}
 \setcounter{listtotal}{0}
 \setcounter{listcount}{0}
@@ -183,7 +189,7 @@
 \setcounter{citetotal}{0}
 \setcounter{multicitecount}{0}
 \setcounter{multicitetotal}{0}
-\setcounter{instcount}{311}
+\setcounter{instcount}{312}
 \setcounter{maxnames}{2}
 \setcounter{minnames}{1}
 \setcounter{maxitems}{3}

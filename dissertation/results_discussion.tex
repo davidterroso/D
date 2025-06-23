@@ -1417,7 +1417,7 @@ Similar to SRF, the IRF segmentation is also decent in the slices which contain 
 However, the main reason behind the poor Dice coefficients when considering all the slices is the fluid detection. In slices in which the fluids are not present, particularly in IRF and PED, they are still predicted outside the retina, usually in the choroid. While this is already visible in Figure \ref{fig:CHUSJIRFSegmentation}, where all the fluids are segmented in the choroid, more examples are shown in Figure \ref{fig:CHUSJChoroidSegmentation}.
 
 \begin{figure}[!ht]
-	\centering	\includegraphics[width=0.65\linewidth]{figures/CHUSJChoroidSegmentation.png}
+	\centering	\includegraphics[width=1.0\linewidth]{figures/CHUSJChoroidSegmentation.png}
 	\caption{Segmentation of multiple fluids in the choroid region of the B-scans. This is performed often, significantly reducing the Dice coefficients seen in Table \ref{tab:CHUSJSegmentationResults}.}
 	\label{fig:CHUSJChoroidSegmentation}
 \end{figure}
@@ -1432,6 +1432,88 @@ Lastly, the influence of the noise and different perceptions present in this dat
 	\centering	\includegraphics[width=0.75\linewidth]{figures/CHUSJSegmentationOnNoisyScans.png}
 	\caption{Fluid segmentations performed by the multi-class model in noisy B-scans from the CHUSJ dataset.}
 	\label{fig:CHUSJSegmentationOnNoisyScans}
+\end{figure}
+
+After limiting the output to only the fluids predicted inside the retina, using the method developed by \textcite{Melo2023}, the Dices shown in Table \ref{tab:CHUSJProcessedSegmentationResults}, were obtained. When compared to the results seen in Table \ref{tab:CHUSJSegmentationResults}, the impact of limiting the predicted masks to the retina becomes evident, corroborating the previous claims.
+
+\begin{table*}[!ht]
+	\caption{Dice scores for every vendor and fluid in the CHUSJ dataset, using the best models from Experiment 1 and Experiment 2, while removing the fluids predicted outside the retina.}
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|c|}
+		\hline
+		% Headers
+		\textbf{Runs} &
+		\textbf{Resized} &
+		\textbf{Slices} &  
+		\textbf{IRF} & 
+		\textbf{SRF} & 
+		\textbf{PED} & 
+		\textbf{Fluid} \\
+		
+		\hline
+		
+		\multirow{3}{*}{\textbf{Run 32}} & \multirow{3}{*}{No} & All & 0.522 & 0.676 & 0.386 & \textbf{0.399} \\
+		
+		& & Fluid & \textbf{0.694} & \textbf{0.559} & 0.011 & \textbf{0.409} \\	
+		
+		& & No Fluid & 0.509 & 0.746 & 0.393 & \textbf{0.391}\\
+		
+		\hline
+		
+		\multirow{3}{*}{\textbf{Run 32}} & \multirow{3}{*}{Yes} & 
+		All & \textbf{0.530} & \textbf{0.681} & \textbf{0.404} & 0.358 \\
+		
+		& & Fluid & 0.681 & 0.551 & 0.023 & 0.397 \\
+		
+		& & No Fluid & \textbf{0.519} & \textbf{0.761} & \textbf{0.411} & 0.328\\
+		
+		\hline
+		\hline
+		
+		\multirow{3}{*}{\parbox{2cm}{\textbf{Runs 42, 52, and 59}}} & \multirow{3}{*}{No} & All & 0.455 & 0.579 & 0.230 & 0.222 \\
+		
+		& & Fluid & 0.605 & 0.466 & \textbf{0.096} & 0.287 \\
+		
+		& & No Fluid & 0.443 & 0.648 & 0.232 & 0.172\\
+		
+		\hline
+		
+		\multirow{3}{*}{\parbox{2cm}{\textbf{Runs 42, 52, and 59}}} & \multirow{3}{*}{Yes} & All & 0.487 & 0.593 & 0.273 & 0.248 \\
+		
+		& & Fluid & 0.683 & 0.479 & 0.041 & 0.285 \\
+		
+		& & No Fluid & 0.472 & 0.662 & 0.277 & 0.219\\
+		
+		\hline
+		
+	\end{tabular}
+	\label{tab:CHUSJProcessedSegmentationResults}
+\end{table*}
+
+The Dice coefficients in slices with fluid are the least affected by the retinal delimitation. As previously stated, in slices with fluid, the segmentation model often identified the fluid regions and correctly segmented, with small oversegmentations in the fluid region. However, the model also predicted fluid outside the retina, in the choroid, which reduced the Dice coefficient calculated in these slices. By removing these incorrect segmentations, the Dice coefficient associated with the slices increased, as the resulting predictions lead to a more accurate segmentation.
+\par
+The largest Dice coefficient improvements are seen in B-scans without fluid. By only keeping the segmentations within the retina, most of the oversegmentations that occurred in slices with no fluid were discarded, which appeared mainly on the choroid. This improved significantly the Dice coefficient as even the smallest segmentation in slices with no fluid, results in a Dice coefficient of 0.
+\par
+As the CHUSJ dataset contains a low quantity of slices with fluid, a significant improvement in the Dice coefficient of the slices without fluid, results in a significant enhancement of the Dice coefficient when all slices are considered. This improvement, combined with the noticeable, but smaller, increase of the Dice coefficient in the slices with fluid, leads to remarkable differences when comparing the results to those obtained without processing.
+\par
+Most of the improvements brought by this post-processing are seen in the segmentation of IRF. This fluid was commonly segmented in the choroid by the segmentation model, more than any other fluid. Therefore, by filtering the content outside the retina, the Dice coefficient of the segmentation model sees significant enhancements both in slices with and without IRF. 
+\par
+In the segmentation of SRF, a remarkable improvement is seen mainly in the slices without this fluid. The SRF segmentation was usually accurately performed within the retina, whenever the slices contained this fluid, but some small oversegmentations in the choroid appeared regularly. Despite the predicted masks appearing in this region less frequently than IRF, the Dice coefficient of SRF was also heavily penalized by the oversegmentations. When comparing these results to those before processing, the Dice in slices without fluid improves significantly when the masks are processed. As a consequence, the Dice coefficient when considering all slices, the same trend is noticeable. This is related with the number of slices with SRF being much smaller than the number of slices without this fluid, in this dataset.
+\par
+The segmentation of PED is the least affected by the post-processing. It was previously stated that the segmentation of PED did not reach satisfying results in this dataset due to the discrepancies between these masks and the training masks, regarding the segmentation criteria. For that reason, the performance in slices with PED did not change significantly. Contrasting, in slices without this fluid, the Dice coefficient improved noticeably, as the processing removed all the oversegmentations performed in the choroid region, a frequent problem in the predicted masks.
+\par
+Lastly, the addition of this post-processing resulted in general improvements in Dice coefficient and segmentation quality across all fluids and models. Figure \ref{fig:CHUSJSegmentationAfterProcessing} shows some fluid masks before and after the processing, compared to their respective GT. In Figure \ref{fig:CHUSJSegmentationAfterProcessingNoisyScans}, the processed masks predicted in the noisy B-scans exhibited in Figure \ref{fig:CHUSJSegmentationOnNoisyScans} are shown.
+
+\begin{figure}[!ht]
+	\centering	\includegraphics[width=1.0\linewidth]{figures/CHUSJSegmentationAfterProcessing.png}
+	\caption{Processed fluid segmentations performed by the multi-class model in the examples of Figures \ref{fig:CHUSJIRFSegmentation} and \ref{fig:CHUSJChoroidSegmentation}.}
+	\label{fig:CHUSJSegmentationAfterProcessing}
+\end{figure}
+
+\begin{figure}[!ht]
+	\centering	\includegraphics[width=1.0\linewidth]{figures/CHUSJSegmentationAfterProcessingNoisyScans.png}
+	\caption{Processed fluid segmentations performed by the multi-class model, in the noisy scans shown in Figure \ref{fig:CHUSJSegmentationOnNoisyScans}.}
+	\label{fig:CHUSJSegmentationAfterProcessingNoisyScans}
 \end{figure}
 
 \section{Intermediate Slice Synthesis}\label{IntermediateSliceSynthesis}
