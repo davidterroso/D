@@ -198,7 +198,8 @@ def runs_resume(prefix: str, starting_run: int,
 
 def runs_resume_final(folder: str, run_number: int, 
                       dataset: str="RETOUCH", 
-                      resized_imgs: bool=False):
+                      resized_imgs: bool=False,
+                      processed: bool=False):
     """
     Function used to resume all the results from 
     the final runs in a single CSV file making it 
@@ -214,6 +215,8 @@ def runs_resume_final(folder: str, run_number: int,
             name is RETOUCH
         resized_imgs (bool): flag which indicates 
             whether the images were resized or not 
+        processed (bool): flag which indicates 
+            whether the masks were processed or not 
     
     Return:
         None
@@ -221,21 +224,39 @@ def runs_resume_final(folder: str, run_number: int,
     # Declares the name of the files that will be handled,
     # depending on which the images have been resized or not
     if resized_imgs:
-        files_to_load = [f"vendor_dice_resized_final_{dataset.lower()}", 
-                        f"vendor_dice_resized_wfluid_final_{dataset.lower()}", 
-                        f"vendor_dice_resized_wofluid_final_{dataset.lower()}", 
-                        f"class_dice_resized_final_{dataset.lower()}", 
-                        f"class_dice_resized_wfluid_final_{dataset.lower()}", 
-                        f"class_dice_resized_wofluid_final_{dataset.lower()}", 
-                        f"fluid_dice_resized_final_{dataset.lower()}"]
+        if not processed:
+            files_to_load = [f"vendor_dice_resized_final_{dataset.lower()}", 
+                            f"vendor_dice_resized_wfluid_final_{dataset.lower()}", 
+                            f"vendor_dice_resized_wofluid_final_{dataset.lower()}", 
+                            f"class_dice_resized_final_{dataset.lower()}", 
+                            f"class_dice_resized_wfluid_final_{dataset.lower()}", 
+                            f"class_dice_resized_wofluid_final_{dataset.lower()}", 
+                            f"fluid_dice_resized_final_{dataset.lower()}"]
+        else:
+            files_to_load = [f"vendor_dice_resized_final_processed_{dataset.lower()}", 
+                            f"vendor_dice_resized_wfluid_final_processed_{dataset.lower()}", 
+                            f"vendor_dice_resized_wofluid_final_processed_{dataset.lower()}", 
+                            f"class_dice_resized_final_processed_{dataset.lower()}", 
+                            f"class_dice_resized_wfluid_final_processed_{dataset.lower()}", 
+                            f"class_dice_resized_wofluid_final_processed_{dataset.lower()}", 
+                            f"fluid_dice_resized_final_processed_{dataset.lower()}"]
     else:
-        files_to_load = [f"vendor_dice_final_{dataset.lower()}", 
-                        f"vendor_dice_wfluid_final_{dataset.lower()}", 
-                        f"vendor_dice_wofluid_final_{dataset.lower()}", 
-                        f"class_dice_final_{dataset.lower()}", 
-                        f"class_dice_wfluid_final_{dataset.lower()}", 
-                        f"class_dice_wofluid_final_{dataset.lower()}", 
-                        f"fluid_dice_final_{dataset.lower()}"]
+        if not processed:
+            files_to_load = [f"vendor_dice_final_{dataset.lower()}", 
+                            f"vendor_dice_wfluid_final_{dataset.lower()}", 
+                            f"vendor_dice_wofluid_final_{dataset.lower()}", 
+                            f"class_dice_final_{dataset.lower()}", 
+                            f"class_dice_wfluid_final_{dataset.lower()}", 
+                            f"class_dice_wofluid_final_{dataset.lower()}", 
+                            f"fluid_dice_final_{dataset.lower()}"]
+        else:
+            files_to_load = [f"vendor_dice_final_processed_{dataset.lower()}", 
+                            f"vendor_dice_wfluid_final_processed_{dataset.lower()}", 
+                            f"vendor_dice_wofluid_final_processed_{dataset.lower()}", 
+                            f"class_dice_final_processed_{dataset.lower()}", 
+                            f"class_dice_wfluid_final_processed_{dataset.lower()}", 
+                            f"class_dice_wofluid_final_processed_{dataset.lower()}", 
+                            f"fluid_dice_final_processed_{dataset.lower()}"]
 
     # Changes the number to match the one 
     # used in the files (e.g. 1 -> 001)
@@ -255,7 +276,8 @@ def runs_resume_final(folder: str, run_number: int,
         # the flag is changed to 
         # false and does not read
         # procede for that run number
-        if not exists(fp) or not fp.endswith(f"_final_{dataset.lower()}.csv"):
+        if ((not exists(fp) or not fp.endswith(f"_final_{dataset.lower()}.csv")) and not processed) \
+            or ((not exists(fp) or not fp.endswith(f"_final_processed_{dataset.lower()}.csv")) and processed):
             files_exist = False
     # In case all 
     # files exist, 
@@ -336,9 +358,15 @@ def runs_resume_final(folder: str, run_number: int,
         # "PED", "PED_wfluid", "PED_wofluid", 
         # "Fluid", "Fluid_wfluid", "Fluid_wofluid"
         if resized_imgs:
-            resumed_save_name = f".\\results\\{'Run' + run_number}_resized_final_{dataset.lower()}_resumed.csv"
+            if not processed:
+                resumed_save_name = f".\\results\\{'Run' + run_number}_resized_final_{dataset.lower()}_resumed.csv"
+            else:
+                resumed_save_name = f".\\results\\{'Run' + run_number}_resized_final_processed_{dataset.lower()}_resumed.csv"
         else:
-            resumed_save_name = f".\\results\\{'Run' + run_number}_final_{dataset.lower()}_resumed.csv"
+            if not processed:
+                resumed_save_name = f".\\results\\{'Run' + run_number}_final_{dataset.lower()}_resumed.csv"
+            else:
+                resumed_save_name = f".\\results\\{'Run' + run_number}_final_processed_{dataset.lower()}_resumed.csv"
         Series(results).to_frame().T.to_csv(resumed_save_name)
 
 def gan_runs_resume(folder: str=".\\results"):
@@ -469,6 +497,6 @@ def combine_csvs_to_excel(folder_path, output_excel_path):
 
 # runs_resume(starting_run=1, ending_run=120, folder=".\\results\\", prefix="Run")
 # runs_resume(starting_run=1, ending_run=32, folder=".\\results\\", prefix="Iteration")
-# runs_resume_final(folder=".\\results\\", run_number="058", dataset="generated", resized_imgs=True)
+runs_resume_final(folder=".\\results\\", run_number="058", dataset="chusj", resized_imgs=False, processed=True)
 # gan_runs_resume(folder=".\\results\\")
 combine_csvs_to_excel(folder_path=".\\results\\", output_excel_path=".\\results\\combined_output.xlsx")
