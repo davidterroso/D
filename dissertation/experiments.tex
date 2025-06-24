@@ -6,7 +6,7 @@ All experiments were conducted using an NVIDIA GeForce RTX 3080 GPU and the \hbo
 \section{Data Partition}\label{CrossValidation}
 To promote consistency across all experiments, the conditions were held identical. In every experiment, the data were split into five folds, with different splits being used for the segmentation and generation tasks. From these five folds, one was reserved until the end to compare the performance of the models trained in the different experiments and identify the one that generalizes best to an unseen image set. The remaining four folds were used for training the models through a 4-fold cross-validation procedure, in which three folds were used for training and one for validation. Therefore, four training runs are completed in each experiment, rotating the validation fold across runs. The reserved fold consists of the same OCT volumes for all experiments, allowing for further comparisons on data not seen by any of the models. Fold 1 was randomly selected as the reserved fold.
 \par
-The data were split so that the quantity of each fluid and the number of volumes per vendor were evenly distributed across the folds. This balanced distribution allows for a fairer assessment of the model's learning ability and its performance on data with varying characteristics (e.g., from different vendors). To achieve this, a custom algorithm was developed to divide the data into five folds while minimizing discrepancies in fluid distribution and the number of slices per vendor within each fold.
+For the multi-class segmentation models, the data were split so that the quantity of each fluid and the number of volumes per vendor were evenly distributed across the folds - referred to as a multi-class 5-fold split. This balanced distribution allows for a fairer assessment of the model's learning ability and its performance on data with varying characteristics (e.g., from different vendors). To achieve this, a custom algorithm was developed to divide the data into five folds while minimizing discrepancies in fluid distribution and the number of slices per vendor within each fold.
 \par
 A possible distribution of the 70 OCT volumes from the RETOUCH dataset, which were used in the training of the fluid segmentation models, can be seen in Table \ref{tab:FiveFoldSplit}. The split was applied to the volumes and not to the slices. Slices from the same volume must be kept together to prevent data leakage, where similar images obtained from the same patient appear in both the training and validation sets, potentially resulting in overly optimistic performance metrics.
 
@@ -29,7 +29,7 @@ A possible distribution of the 70 OCT volumes from the RETOUCH dataset, which we
 	\label{tab:FiveFoldSplit}
 \end{table*}
 
-For experiments using a binary segmentation approach, the volumes can be redistributed using the same algorithm, but with fewer constrains. In this case, the folds are created based only on the vendor and amount of the target fluid, thus eliminating the restrictions imposed by the quantities of the other two fluids. Nevertheless, the volumes that are in the previously defined reserved fold must not be used in either training in validation.
+For experiments using a binary segmentation approach, the volumes can be redistributed using the same algorithm, but with fewer constrains - a fluid-specific 5-fold split. In this case, the folds are created based only on the vendor and amount of the target fluid, thus eliminating the restrictions imposed by the quantities of the other two fluids. Nevertheless, the volumes that are in the previously defined reserved fold must not be used in either training in validation.
 \par
 For the experiments related with inter-slice generation, the 5-fold split of the data was not done by considering the quantity of fluid in each fold. Since the test volumes of the RETOUCH dataset were used in this experiment and fluid masks are not available, the quantity of fluid in each test volume is unknown. Please note that, for comparison purposes, one of the folds in this 5-fold split is the one reserved in the multi-class segmentation split for testing.
 \par
@@ -59,7 +59,7 @@ Considering both training and testing volumes of the RETOUCH dataset, there are 
 	
 Since the partition is not constrained by the quantity of fluid in each volume, it is possible to compute the optimal partition by iterating through all the possible combinations. In each combination, the standard deviation of the total number of B-scans in each fold is calculated. The combination with the smallest deviation was used. Similar to what was done in the fluid segmentation task, three folds were used in training while one was used in validation.
 
-\section{Experiment 1 - Fluid Segmentation Using Multi-class U-Net}\label{Experiment1}
+\section{Experiment 1 - Multi-class Fluid Segmentation using a single U-Net}\label{Experiment1}
 
 In the first experiment, the base U-Net model was trained to perform 2D multi-class segmentation of the retinal fluids in OCT scans.
 \par
@@ -88,7 +88,7 @@ Using seven vertical patches per image, which was the number of patches that per
 \par
 Lastly, the model was trained using four patches and a maximum rotation of $5^{\circ}$, using the same early stopping criteria as in the last seven patches runs. This allowed for one last comparison between the two number of patches used in training, under the same conditions. The best model between those trained with four patches and those trained with seven patches using this rotation was selected to infer on the reserved test fold and in the CHUSJ dataset.
 
-\section{Experiment 2 - Fluid Segmentation Using Binary U-Nets}\label{Experiment2}
+\section{Experiment 2 - Multi-class Fluid Segmentation using Three Separate U-Net models}\label{Experiment2}
 
 The second experiment also involved multi-class segmentation of the retinal fluids. In contrast with the first experiment, where the segmentation was done using a single U-Net, three binary U-Nets were used in this experiment, with one model for IRF, one for SRF, and one for PED.
 \par
