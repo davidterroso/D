@@ -1,22 +1,24 @@
 \chapter{Results and Discussion}\label{ResultsDiscussion}
 
-This chapter presents the results from the experiments described in the \ref{Experiments} Experiments chapter. These outcomes are organized in the following sections: ``\ref{FluidSegmentation} Fluid Segmentation'', ``\ref{IntermediateSliceSynthesis} Intermediate Slice Synthesis'', and ``\ref{FluidVolumeEstimation} Fluid Volume Estimation''. After showing the results from the experiments, the factors influencing them are discussed, while providing visual examples of the models' performances. The results are also compared with other similar approaches in literature, while explaining how these different methods lead to different results.
+This chapter presents the results from the experiments described in Chapter \ref{Experiments}. These outcomes are organized into three sections: ``Fluid Segmentation'', ``Intermediate Slice Synthesis'', and ``Fluid Volume Estimation''. After showing the results from the experiments, the factors influencing them are discussed, and visual examples of the models' performance are shown. The results are also compared with those from literature, with an explanation of how different methods lead to different results.
 
 \section{Fluid Segmentation}\label{FluidSegmentation}
-In this section, the results from the experiments performed in multi-class fluid segmentation are shown. This includes all the runs made in \ref{Experiment1} Experiment 1 and \ref{Experiment2} Experiment 2. In these sections, the resulting Dice coefficients are displayed in tables. Each value corresponds to the mean Dice coefficient computed across all slices present in the validation OCT volumes. The results are shown for each fluid (IRF, SRF, and PED) both grouped by vendor and across all vendors. There is also a column that contains the Dice coefficient when considering all the fluids as a single binary label. Unless specified otherwise, the Dice coefficient calculated for a fluid considers all the slices and not just those that contain the specified fluid and the values highlighted in bold are the best values obtained in each column. 
+In this section, the results from the experiments performed on multi-class fluid segmentation are shown. This includes all the runs described in Section \ref{Experiment1} (Experiment 1) and \ref{Experiment2} (Experiment 2). In these sections, the resulting Dice coefficients are displayed in tables.
 \par
-These values are presented for each run, which follows the conditions described in the \ref{FluidSegmentation} Fluid Segmentation section. Every four runs that are completed using a different validation fold but follow the same conditions are grouped in a single row, by calculating their mean (row ``Set''). From the 5-fold split, fold 1 was reserved, while the remaining four (0, 2, 3, and 4) are used in training and validation. The fold selected for validation in each run appears in the table's validation fold (``VF'') column. For example, if the fold in the ``VF'' column is 2, then the folds used in training were 0, 3, and 4.
-\par
-In the following subsections, images displaying the segmentation performed by the models and the respective GT are shown. In these masks, IRF is represented in red, SRF in green, and PED in blue.
+Jointly with the quantitative results, images illustrating the segmentation results of the models and the corresponding GT are also presented.
 
 \subsection{Experiment 1 - Fluid Segmentation Using Multi-class U-Net}
 
 \subsubsection{Experiment 1.1 - Random Patch Extraction}
 
-The results from the first experiment performed, Experiment 1.1, are shown in Table \ref{tab:Experiment1.1Results}. In this experiment, for each validation fold, two runs were made, while keeping the same conditions. The only difference is the input data: as it is extracted randomly, as described in \ref{Methods} Materials and Methods, it is different for every run. 
+The results from the Experiment 1.1 are shown in Table \ref{tab:Experiment1.1Results}. In this experiment, two runs were performed for each validation fold (VF), using the same conditions. The only difference was the patches used for training: as they were extracted randomly (as described in Section \ref{Methods}), they varied between runs. 
+\par
+Each value corresponds to the mean Dice coefficient computed across all slices in the validation OCT volumes. The results are shown for each fluid (IRF, SRF, and PED) both grouped by vendor and aggregated across all vendors. There is also a column that contains the Dice coefficient when considering all the fluids as a single binary label. Unless otherwise specified, the Dice coefficient calculated for a fluid considers all the slices and not just those that contain the specified fluid. 
+\par
+These values are presented for each run, following the conditions described in the Fluid Segmentation section. Every four runs completed using a different validation fold but following the same conditions are grouped into a single row, by calculating their mean (row ``Set''). From the 5-fold split, fold 1 was reserved, while the remaining four (0, 2, 3, and 4) were used in training and validation. The fold selected for validation in each run is listed in the table's VF column. For example, if the fold in the VF column is 2, then the folds used for training were 0, 3, and 4.
 
 \begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid for the runs done in Experiment 1.1. The conditions were the same for both sets except the extracted patches, which are different in every run due to the random patch extraction method used.}
+	\caption{Dice coefficients for every vendor and fluid for the runs done in Experiment 1.1. The conditions were the same for both sets except the extracted patches, which are different in every run due to the random patch extraction method used.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
@@ -54,7 +56,7 @@ The results from the first experiment performed, Experiment 1.1, are shown in Ta
 		
 		\hline
 	
-		\textbf{Set 1} & - & \multicolumn{1}{c|}{0.16} & \multicolumn{1}{c|}{0.18} & 0.09 & \multicolumn{1}{c|}{0.27} & \multicolumn{1}{c|}{0.45} & 0.34 & \multicolumn{1}{c|}{0.33} & \multicolumn{1}{c|}{0.49} & 0.14 & 0.24 & 0.34 & 0.15 & 0.20 \\ 
+		\textbf{Set 1} & - & \multicolumn{1}{c|}{0.163} & \multicolumn{1}{c|}{0.179} & 0.093 & \multicolumn{1}{c|}{0.270} & \multicolumn{1}{c|}{0.449} & 0.342 & \multicolumn{1}{c|}{0.326} & \multicolumn{1}{c|}{0.487} & 0.136 & 0.242 & 0.341 & 0.152 & 0.201 \\ 
 	
 		\hline
 		\hline
@@ -69,7 +71,7 @@ The results from the first experiment performed, Experiment 1.1, are shown in Ta
 		
 		\hline
 		
-		\textbf{Set 2} & - & \multicolumn{1}{c|}{\textbf{0.35}} & \multicolumn{1}{c|}{\textbf{0.24}} & \textbf{0.32} & \multicolumn{1}{c|}{\textbf{0.34}} & \multicolumn{1}{c|}{\textbf{0.51}} & \textbf{0.47} & \multicolumn{1}{c|}{\textbf{0.43}} & \multicolumn{1}{c|}{\textbf{0.64}} & \textbf{0.36} & \textbf{0.38} & \textbf{0.44} & \textbf{0.36} & \textbf{0.27} \\ 
+		\textbf{Set 2} & - & \multicolumn{1}{c|}{\textbf{0.347}} & \multicolumn{1}{c|}{\textbf{0.243}} & \textbf{0.318} & \multicolumn{1}{c|}{\textbf{0.337}} & \multicolumn{1}{c|}{\textbf{0.507}} & \textbf{0.474} & \multicolumn{1}{c|}{\textbf{0.434}} & \multicolumn{1}{c|}{\textbf{0.639}} & \textbf{0.361} & \textbf{0.380} & \textbf{0.439} & \textbf{0.362} & \textbf{0.274} \\ 
 	
 		\hline
 
@@ -77,38 +79,38 @@ The results from the first experiment performed, Experiment 1.1, are shown in Ta
 	\label{tab:Experiment1.1Results}
 \end{table*}
 
-By looking at the table, a few conclusions can be drawn. First, the difference in performance between runs using the same training OCT volumes is evident. Despite some values being similar for the same training volumes, this trend becomes evident when looking at the mean values in the rows ``Set'', where a significant difference is noted, especially in the Cirrus vendor and the PED fluid. It is also evident that some VFs are more consistent than others. For example, for different extracted patches, the models evaluated on validation fold 2 and validation fold 0 presented similar results, while those evaluated in validation fold 3 showed significant differences when the input patches were changed.
+By looking at the table, a few conclusions can be drawn. First, the difference in performance between runs using the same training OCT volumes is evident. Despite some values being similar for the same training volumes, this variability becomes clear when looking at the mean values in the ``Set'' rows, where a significant difference is noted, especially for the Cirrus vendor and the PED fluid. It is also apparent that some VFs are more consistent than others. For example, with different randomly extracted patches, the models evaluated on validation folds 0 and 2 presented similar results, whereas those evaluated on validation fold 3 showed significant variation when the training patches were different.
 \par
-The second conclusion is that, overall, the models are not performing well, as the Dice results are low for every VF. These values are specially low in Cirrus, but better both in Spectralis, and Topcon. One of the reasons the model performed so poorly is due to the input it was receiving. Most of the extracted patches do not capture the transitions from background to retina and from retina to the choroid due to the small patch size. These transitions are of great importance in fluid segmentation in OCT scans since they represent, among other concepts, the boundaries of the region where fluid can appear. In case the model does not understand these anatomic boundaries, segmentation can be performed outside the retina, which worsens the Dice coefficient.
+The second conclusion is that, overall, the models did not perform well, as indicated by the low Dice coefficients across all VFs. These values were specially low for Cirrus, but were comparatively better for Spectralis and Topcon. One of the reasons the model performed so poorly is related to the training data. Most of the extracted patches failed to capture the transitions between the background and the retina, and between the retina and the choroid, due to their small patch size. These transitions are of great importance in OCT fluid segmentation, as they often define the anatomical boundaries of the region where fluid can appear. In case the model does not understand these anatomic features, it may segment fluid outside the retina, which leads to a lower the Dice coefficient.
 \par
-Despite the performances not being good in every vendor, it is worse in Cirrus. In the literature, it is common to see worse performances in the images obtained with Cirrus and Topcon due to the larger presence of speckle noise in them. However, the poor performances observed in the Cirrus device were due to the size of the patches extracted from its B-scans. The B-scans in these volumes present a larger vertical resolution than those obtained with Topcon and Spectralis devices. Therefore, when extracting a patch of the same size across all devices, each patch from a Cirrus scan captures a smaller area of the retina. This translates to an worse understanding of the transition between background and retina and between retina and choroid, as shown in Figure \ref{fig:CirrusPatchExample}, ultimately leading to the oversegmentation beyond the retina.
+Although performance was suboptimal across all vendors, it was notably worse for Cirrus. In the literature, it is common to observe poorer performance with images from Cirrus and Topcon, due to the higher levels of speckle noise. However, the poor results observed for Cirrus were largely attributed to the patch size. The B-scans in these volumes present a higher vertical resolution compared to those from Topcon and Spectralis. Therefore, when the same patch size is used across devices, each patch from a Cirrus scan covers a smaller retinal area. This leads to a poorer understanding of the transitions between background and retina, and between retina and choroid, as shown in Figure \ref{fig:CirrusPatchExample}, ultimately causing oversegmentation beyond the retinal region.
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.18\linewidth]{figures/CirrusPatchExample.png}
-	\caption{Example of a patch extracted from a Cirrus OCT volume used in Experiment 1.1. In this patch, while the background is noticeable due to its darker shade, the choroid is harder to be identified by an observer (or a model) due to the lack of context.}
+	\caption{Example of a patch extracted from a Cirrus OCT volume used in Experiment 1.1. In this patch, the background is distinguishable due to its darker intensity; however, the choroid is harder to be identified by an observer (or a model) due to the lack of anatomical context.}
 	\label{fig:CirrusPatchExample}
 \end{figure}
 
-In Figure \ref{fig:Experiment11Segmentation}, it is shown a segmentation performed by the model trained in Run 1. In this figure it becomes evident that the model learned which areas can be segmented inside the retina, but does not understand how to handle the regions further away. For example, in the area significantly above the retina, the background is labeled as SRF. However, the background region closer to the retina is not so frequently labeled as any fluid, since it appears in the patches input to the model. The same problem occurs with the oversegmentation of PED in the choroid region, which does not appear in the input patches significantly. The fact that the patches are extracted exclusively from the ROI makes the model more prone to misclassify the background regions, as it did not see any patch that contained solely background.
-\par
-Oversegmentation beyond the retinal bounds is not exclusive to the Cirrus volumes, as it also appears in the OCT scans from other vendors. This suggests that the issue is primarily due to the small patch size and lack of background representitivity in the inputs rather than just the smaller retinal area captured in Cirrus patches, despite this amplifying the problem. 
-\par
-In the same figure, it is seen that the model has not learned the anatomical relationships between fluids, since it segmented IRF and PED close to each other. This occurs because the model has not learned the relationship between the retinal landmarks and the fluid types due to the small sized inputs.
+In Figure \ref{fig:Experiment11Segmentation}, the segmentation result of the model trained in Run 1 is shown. In this figure, it becomes evident that the model learned which areas can be segmented inside the retina, but does not understand how to process the regions further away. For example, in the area significantly above the retina, the background is labeled as SRF. However, the background region closer to the retina is not frequently labeled as fluid, since it rarely appears in the training patches. The same problem occurs with the oversegmentation of PED in the choroid region, which does not appear in the training patches with sufficient frequency. The fact that the patches are extracted exclusively from the ROI makes the model more prone to misclassify the background regions, as it did not see any patch that contained solely background.
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1.0\linewidth]{figures/Experiment11Segmentation.png}
-	\caption{Example of a poor segmentation made by the model trained in Run 1 (right). In the left, the GT mask for the same image is shown.}
+	\caption{Example of a poor segmentation made by the model trained in Run 1 (right). In the left, the GT mask for the same image is shown. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:Experiment11Segmentation}
 \end{figure}
 
+Oversegmentation beyond the retinal bounds is not exclusive to the Cirrus volumes, as it also appears in the OCT scans from other vendors. This suggests that the issue is primarily due to the small patch size and lack of background representativeness in the patches rather than just the smaller retinal area captured in Cirrus patches, despite this amplifying the problem. 
+\par
+In the same figure, it is evident that the model has not learned the anatomical relationships between fluids, since it segmented IRF and PED close to each other. This occurs because the model has not learned the relationship between the retinal landmarks and the fluid types due to the small dimensions of the patches.
+
 \subsubsection{Experiment 1.2 - Large Patch Extraction}
 
-The resulting Dice coefficient values obtained in Experiment 1.2, where patches of shape 496 $\times$ 512 were used, are shown in Table \ref{tab:Experiment1.2Results}.
+The Dice coefficient values obtained in Experiment 1.2, where patches of size 496 $\times$ 512 were used, are shown in Table \ref{tab:Experiment1.2Results}.
 
 \begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid for the runs done in Experiment 1.2.}
+	\caption{Dice coefficients for every vendor and fluid for the runs performed in the Experiment 1.2.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
@@ -147,12 +149,12 @@ The resulting Dice coefficient values obtained in Experiment 1.2, where patches 
 		
 		\hline
 		
-		\textbf{Set 3} & - & \multicolumn{1}{c|}{0.35} & \multicolumn{1}{c|}{0.46} & 0.44 & \multicolumn{1}{c|}{0.48} & \multicolumn{1}{c|}{0.62} & 0.46 & \multicolumn{1}{c|}{0.45} & \multicolumn{1}{c|}{0.65} & 0.52 & 0.41 & 0.56 & 0.47 & 0.42 \\
+		\textbf{Set 3} & - & \multicolumn{1}{c|}{0.350} & \multicolumn{1}{c|}{0.464} & 0.440 & \multicolumn{1}{c|}{0.484} & \multicolumn{1}{c|}{0.621} & 0.459 & \multicolumn{1}{c|}{0.451} & \multicolumn{1}{c|}{0.654} & 0.523 & 0.407 & 0.561 & 0.471 & 0.424 \\
 		
 		\hline
 		\hline
 		
-		\textbf{Set 2} & - & \multicolumn{1}{c|}{\textbf{0.35}} & \multicolumn{1}{c|}{\textbf{0.24}} & \textbf{0.32} & \multicolumn{1}{c|}{\textbf{0.34}} & \multicolumn{1}{c|}{\textbf{0.51}} & \textbf{0.47} & \multicolumn{1}{c|}{\textbf{0.43}} & \multicolumn{1}{c|}{\textbf{0.64}} & \textbf{0.36} & \textbf{0.38} & \textbf{0.44} & \textbf{0.36} & \textbf{0.27} \\ 
+		\textbf{Set 2} & - & \multicolumn{1}{c|}{0.347} & \multicolumn{1}{c|}{0.243} & 0.318 & \multicolumn{1}{c|}{0.337} & \multicolumn{1}{c|}{0.507} & 0.474 & \multicolumn{1}{c|}{0.434} & \multicolumn{1}{c|}{0.639} & 0.361 & 0.380 & 0.439 & 0.362 & 0.274 \\ 
 		
 		\hline
 					
@@ -160,37 +162,37 @@ The resulting Dice coefficient values obtained in Experiment 1.2, where patches 
 	\label{tab:Experiment1.2Results}
 \end{table*}
 
-The information resumed in this table allows the comparison between the performance in models that used smaller patches in Experiment 1.1 with those that used larger patches in this Experiment.
+The information summarized in this table allows for a comparison between the performance of models that used smaller patches in Experiment 1.1 and those that used larger patches in this experiment.
 \par
-By comparing the ``Set'' rows, it becomes evident an overall increase in performance when using larger patches. In fact, it is observed an increase in almost all the mean values when compared to the best performing set in Experiment 1.1. This increase is larger than one decimal point in some columns, and the largest improvements occur in the volumes obtained using the Cirrus device and when segmenting SRF or PED.
+By comparing the ``Set'' rows, an overall increase in performance becomes evident when using larger patches. In fact, almost all the mean values are higher compared to the best-performing set in Experiment 1.1. This increase exceeds one decimal point in some columns, with the most significant improvements observed in volumes obtained using the Cirrus device and in the segmentation of SRF or PED.
 \par
-The improvement in performance in Cirrus devices can be explained with the more contextual information given. In Experiment 1.1, the Cirrus patches input to the model were not big enough for the network to capture and understand the retinal borders or the relationship between them and the fluids, and the networks were trained with the small representation of background, thus leading to oversegmentation beyond the retina, as explained. In Experiment 1.2, as the same patch covers the retinal layer and the background simultaneously, the model has learned to not segment beyond the retina. In Figure \ref{fig:BigPatchesSegmentationCirrus}, the B-scan shown in Figure \ref{fig:Experiment11Segmentation}, is segmented by the model trained in Run 9 and it is possible to see that the labeling of the background as fluid is no longer happening.
-\par 
-This also partially justifies the significant improvement in the SRF and PED Dice coefficient. By providing inputs with enough context, the model is no longer segmenting these fluids outside the retina. However, in Figure \ref{fig:BigPatchesSegmentationCirrus} it is also seen that the model is no longer confusing the fluids in the retina, as it no longer segments the PED close to the IRF. This further justifies that the model is learning the anatomical references associated with PED, as confirmed in Figure \ref{fig:BigPatchesSegmentationTopcon}.
+The improvement in performance for Cirrus volumes can be attributed to the greater contextual information provided by the larger patches. In Experiment 1.1, the Cirrus patches used for training the model were large big enough for the network to capture and understand the retinal boundaries or the relationships between them and the fluids. Additionally, the model was trained with limited background representation, which led to oversegmentation beyond the retina, as previously explained. In Experiment 1.2, each extracted patch covers both the retinal layer and the background simultaneously, enabling to learn not to segment beyond the retina. In Figure \ref{fig:BigPatchesSegmentationCirrus}, the same OCT B-scan shown in Figure \ref{fig:Experiment11Segmentation} is segmented by the model trained in Run 9, and it is clear that background regions are no longer labeled as fluid. This also partially justifies the significant improvement in the SRF and PED Dice coefficient. By providing inputs with enough context, the model is no longer segmenting these fluids outside the retina. 
 \par
-Lastly, it is important to note that the IRF did not improve as much as the other fluids. This happens because the input patches in Experiment 1.1 where extracted mainly from the retina, providing all the anatomical context needed for the IRF segmentation. By training the model with larger patches, its attention to the finer details is reduced, therefore not producing fine and detailed segmentations in smaller fluid regions.
+Furthermore, Figure \ref{fig:BigPatchesSegmentationCirrus} shows that the model no longer confuses the fluids within the retina, as it no longer segmented the PED in the area typically occupied by IRF, as it did in Figure \ref{fig:Experiment11Segmentation}.
 \par
-In Figure \ref{fig:BigPatchesSegmentationTopcon}, it is seen that the model confuses the choroid with the retina, as it labels parts of that region as IRF and PED. The likely cause for this confusion is that the input patches are often cropped in the middle of the retinal layer (as illustrated in Figure \ref{fig:BigPatchExtraction}), which leads to the model not understanding the position of the choroid relative to the retina. This inaccurate IRF and PED segmentation is probably based on the visual resemblance between the structures seen in the choroid and the fluid regions in the retina. This indicates that the model does not know the location of the choroid.
+Lastly, it is important to note that the IRF did not improve as much as the other fluids. This happens because the training patches in Experiment 1.1 were already centered on the retina, providing sufficient anatomical context for IRF segmentation. By training the model with larger patches, its attention to the finer details may be reduced, resulting in less precise segmentations of small fluid regions.
+\par
+In Figure \ref{fig:BigPatchesSegmentationTopcon}, the model confuses the choroid with the retina, labeling parts of it as IRF and PED. The likely cause for this confusion is that the patches used for training are often cropped in the middle of the retinal layer (as illustrated in Figure \ref{fig:BigPatchExtraction}), preventing the model from fully the choroid's position relative to the retina. The inaccurate segmentation of IRF and PED in this region is probably due to the visual similarities between the structures observed in the choroid and the fluid regions in the retina. This indicates that the model does not correctly recognize the anatomical location of the choroid.
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.5\linewidth]{figures/BigPatchSegmentationCirrus.png}
-	\caption{Example of the segmentation done by the model trained in Run 9 (right) and its respective GT mask (left). The B-scan segmented is the same as in Figure \ref{fig:Experiment11Segmentation}.}
+	\caption{Example of the segmentation performed by the model trained in Run 9 (right) and its respective GT mask (left). The OCT B-scan segmented is the same as in Figure \ref{fig:Experiment11Segmentation}, and the predicted IRF is represented in red.}
 	\label{fig:BigPatchesSegmentationCirrus}
 \end{figure}
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.6\linewidth]{figures/BigPatchSegmentationTopcon.png}
-	\caption{Example of the segmentation done by the model trained in Run 12 (right) and its respective GT mask (left). It is noticeable that the model confuses the choroid with the retina, as segmentation of IRF and PED is performed in the choroid.}
+	\caption{Example of the segmentation performed by the model trained in Run 12 (right) and its respective GT mask (left). It is evident that the model confuses the choroid with the retina, as it segments IRF and PED within the choroid. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:BigPatchesSegmentationTopcon}
 \end{figure}
 
 \subsubsection{Experiment 1.3 - Vertical Patch Extraction}
-Experiment 1.3 contains all the runs that were performed using vertical patches extracted from resized B-scans as input of the multi-class segmentation U-Net. In the first two sets, shown in Table \ref{tab:Experiment1.3FourPatches}, the models were trained using four vertical patches, obtained as explained in the \ref{Methods} Materials and Methods chapter. In this table, the ``Set 4'' is composed of runs that were trained on 100 epochs, while the runs in ``Set 5'' were trained on up to 200 epochs with a 100 epoch patience.
+Experiment 1.3 contains all the runs that were performed using vertical patches extracted from resized B-scans for training the multi-class segmentation U-Net. In the first two sets, shown in Table \ref{tab:Experiment1.3FourPatches}, the models were trained using four vertical patches, obtained as explained in Chapter \ref{Methods}. In this table, the ``Set 4'' is composed of runs that were trained for 100 epochs, while the runs in ``Set 5'' were trained for up to 200 epochs with a 100-epoch patience.
 
 \begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid for the runs done using four vertical patches extracted from each B-scan. In ``Set 4'', the models were trained in 100 epochs, while in ``Set 5'' the models were trained on up to 200 epochs with a 100 epoch patience. The transformations applied in these sets were the same: horizontal flipping and a maximum rotation of $10^{\circ}$.}
+	\caption{Dice coefficients for every vendor and fluid obtained from runs using four vertical patches extracted from each B-scan. In ``Set 4'', the models were trained for 100 epochs, while in ``Set 5'' they were trained for up to 200 epochs with a 100-epoch patience. The transformations applied in these sets were the same: horizontal flipping and a maximum rotation of $10^{\circ}$.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
@@ -227,7 +229,7 @@ Experiment 1.3 contains all the runs that were performed using vertical patches 
 		
 		\hline
 		
-		\textbf{Set 4} & - & \multicolumn{1}{c|}{\textbf{0.60}} & \multicolumn{1}{c|}{\textbf{0.72}} & 0.58 & \multicolumn{1}{c|}{0.64} & \multicolumn{1}{c|}{\textbf{0.76}} & 0.63 & \multicolumn{1}{c|}{0.63} & \multicolumn{1}{c|}{\textbf{0.79}} & 0.63 & 0.61 & \textbf{0.75} & 0.61 & 0.58 \\
+		\textbf{Set 4} & - & \multicolumn{1}{c|}{\textbf{0.601}} & \multicolumn{1}{c|}{\textbf{0.716}} & 0.578 & \multicolumn{1}{c|}{0.642} & \multicolumn{1}{c|}{\textbf{0.764}} & 0.632 & \multicolumn{1}{c|}{0.627} & \multicolumn{1}{c|}{\textbf{0.795}} & 0.634 & 0.613 & \textbf{0.751} & 0.606 & 0.582 \\
 		
 		\hline
 		\hline
@@ -242,7 +244,7 @@ Experiment 1.3 contains all the runs that were performed using vertical patches 
 		
 		\hline
 		
-		\textbf{Set 5} & - & \multicolumn{1}{c|}{0.54} & \multicolumn{1}{c|}{0.63} & \textbf{0.60} & \multicolumn{1}{c|}{\textbf{0.66}} & \multicolumn{1}{c|}{0.76} & \textbf{0.70} & \multicolumn{1}{c|}{\textbf{0.69}} & \multicolumn{1}{c|}{0.78} & \textbf{0.69} & \textbf{0.62} & 0.71 & \textbf{0.65} & \textbf{0.59} \\
+		\textbf{Set 5} & - & \multicolumn{1}{c|}{0.540} & \multicolumn{1}{c|}{0.631} & \textbf{0.599} & \multicolumn{1}{c|}{\textbf{0.663}} & \multicolumn{1}{c|}{0.760} & \textbf{0.700} & \multicolumn{1}{c|}{\textbf{0.695}} & \multicolumn{1}{c|}{0.779} & \textbf{0.687} & \textbf{0.617} & 0.710 & \textbf{0.649} & \textbf{0.586} \\
 		
 		\hline
 			
@@ -250,40 +252,40 @@ Experiment 1.3 contains all the runs that were performed using vertical patches 
 	\label{tab:Experiment1.3FourPatches}
 \end{table*}
 
-The results of the sets shown in Table \ref{tab:Experiment1.3FourPatches} can be compared within each other and to the results obtained in the sets of previous experiments. 
+The results presented in Table \ref{tab:Experiment1.3FourPatches} can be compared with each other and with the results obtained in the sets from previous experiments. 
 \par
-When comparing the results between sets, it is noticeable that the runs with the best scores are mostly located in the ``Set'' that trained less epochs. For, the model validated on fold 4 (Run 15) sees a significant decrease in performance when trained for 100 more epochs (Run 19). When looking at the models validation loss per epoch, the lowest value is attained commonly before the 100 epochs. Since the model that is saved in each run is the model that attains the lowest loss on validation data, this means that the models trained in 100 or 200 epochs should perform equally, as long as the lowest validation loss occurred prior to the 100 epoch mark.
+When comparing the results between sets, it is evident that the runs with the best scores are mostly located in the set that was trained for fewer epochs. For example, the model validated on fold 4 (Run 15) sees a significant decrease in performance when trained for 100 more epochs (Run 19). When looking at the model's validation loss per epoch, the lowest value is commonly attained before 100 epochs. Since the model saved in each run is the one that achieves the lowest loss on validation data, this means that models trained for 100 or 200 epochs should perform equally, as long as the lowest validation loss occurs prior to the 100-epoch mark.
 \par
-However, looking at Figure \ref{fig:TrainingValidationLosses}, where the training and validation loss curves for the Run 13 and Run 17 are shown, similar trends and behavior is seen in both models. This does not reflect to similar performances in the same validation data, as shown in Table \ref{tab:Experiment1.3FourPatches}. In fact, a substantial increment is seen in Run 17.
-\par
-To justify this behavior, it is important to remind that the training of a neural network has some randomness associated with it. One aspect that affects the model performance despite using the same data and architecture is the weight initialization. The random initialization of weights affects the trajectory of gradient descent, resulting in different convergences for different runs. Another factor that affects the model learning is the data that composes each batch. The images that form a batch are randomly fetch from the available input images. This create batches with different distributions of characteristics, affecting the model's view of the data. Data augmentation, which randomly selects images to apply the transformations as they are fetch, also influences the model performance. Lastly, there are other factors that have a much smaller impact such as the optimizer behavior and non-deterministic operations at the GPU level \parencite{Akesson2024, Altarabichi2024}. 
-\par
-In Appendix \ref{ap1:SegmentationUNetVariability}, Table \ref{tab:SegmentationUNetVariability} shows the results for multiple models that were trained on the same conditions, aiming to give an insight on how the randomness associated with the U-Net affects the models performances. Five models were validated on fold 2, while nine models were validated in fold 3. The results obtained corroborate the differences seen in Table \ref{tab:Experiment1.3FourPatches}, where models trained on the same conditions for more epochs can obtain significantly worse Dice scores in validation.
+However, looking at Figure \ref{fig:TrainingValidationLosses}, which shows the training and validation loss curves for Run 13 and Run 17 are shown, it becomes clear that although both models reach their minimum validation loss in a similar number of epochs and follow comparable learning curves, their final performance is markedly different, as shown in Table \ref{tab:Experiment1.3FourPatches}.
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1.0\linewidth]{figures/TrainingValidationLosses.png}
-	\caption{Training and validation losses in Run 13 (left) and Run 17 (right). Despite reaching the validation loss minimum in a similar number of epochs and having comparable training and validation loss curves, the performance is really different in Table \ref{tab:Experiment1.3FourPatches}.}
+	\caption{Training and validation loss curves for Run 13 (left two plots) and Run 17 (right two plots). Despite reaching the minimum validation loss at a similar number of epochs and presenting comparable training and validation loss curves, the final performance, shown in Table \ref{tab:Experiment1.3FourPatches}, differs significantly.}
 	\label{fig:TrainingValidationLosses}
 \end{figure}
 
-Despite the differences in the results shown in Table \ref{tab:Experiment1.3FourPatches}, both sets attained better performances than the best results in the previous experiments. The improvements were significant, registering increases above 0.2 in some metrics when compared with the results in Experiment 1.3. Every vendor and every fluid seen a considerable increase of performance.
+To justify this behavior, it is important to remember that training a neural network involves some randomness. One aspect that affects the model performance, despite using the same data and architecture, is the weight initialization. The random initialization of weights affects the trajectory of gradient descent, resulting in different convergences for different runs. Another factor that affects the model learning is the data that composes each batch. The images that form a batch are randomly fetched from the available training images. This creates batches with different distributions of characteristics, affecting the model's perception of the data. Data augmentation, which randomly selects images to apply transformations as they are fetched, also influences performance. Lastly, there are other factors that have a much smaller impact, such as the optimizer's behavior and non-deterministic GPU operations \parencite{Akesson2024, Altarabichi2024}. 
 \par
-This overall increment can be attributed to two changes: training on vertical patches and resizing the images. By training the models on vertical patches, the model can focus on the finer details within each region. This is important because the retinal fluid segmentation relies heavily on the retina's characteristics, a region that occupies a small portion of the image. Despite the input being smaller than in Experiment 1.2, the patches could still capture the transitions between the retina and the choroid or background. Since the input size is smaller, less storage it occupies in memory, therefore allowing an increase in the batch size, that translates to a faster and more stable convergence. Meanwhile, the image's resizing makes the inputs more homogeneous across different vendors. This results in the same structures being represented with consistent shapes and sizes across the B-scans from different vendors, resulting in a significantly simpler learning process.
+In Appendix \ref{ap1:SegmentationUNetVariability}, Table \ref{tab:SegmentationUNetVariability} shows the results of multiple models trained under the same conditions, aiming to provide insight into how the randomness associated with the U-Net affects the model performance. Five models were validated on fold 2, while nine models were validated on fold 3. More models were trained on fold 3 because the performance gap between the models for 100 epochs and 200 epochs was significantly larger compared to fold 2. The results support the differences observed in Table \ref{tab:Experiment1.3FourPatches}, where models trained under identical conditions, but for more epochs, can achieve significantly worse Dice scores during validation.
 \par
-It was seen in Figure \ref{fig:BigPatchesSegmentationTopcon} that the model predicted fluid masks in the choroid region. In Figure \ref{fig:VerticalPatchesSegmentationTopcon}, it is seen that the models trained on vertical patches no longer predict fluid in the choroid region, despite inferring on the same B-scan. This means that, by feeding vertical patches to the model, it learns to not segment below the retina, in the choroid. This was not previously understood by the model when big patches were input, since these would frequently not capture both the retinal layer and the choroid in the same patch, restraining the model from learning the relative position of the choroid and its relationship with the fluid prediction.
+Despite performance variability observed in Table \ref{tab:Experiment1.3FourPatches}, both sets achieved better results than the best outcomes from previous experiments. The improvements were significant, with increases above 0.2 in some metrics when compared to the results from Experiment 1.2. Every vendor and every fluid type showed a considerable improvement in performance.
+\par
+This overall increment can be attributed to two main changes: training on vertical patches and resizing the images. Training with vertical patches enables the model to focus on finer details within each region. This is important because the retinal fluid segmentation relies heavily on the structural features of the retina, a region that occupies only a small portion of the entire image. Although the patch size in this experiment is smaller than in Experiment 1.2, the patches were still able to capture the transitions between the retina and the surrounding regions such as choroid and background. A smaller patch size also requires less memory, therefore allowing an increase in the batch size, leading to faster and more stable convergence during training. Meanwhile, resizing the input images makes them more homogeneous across different vendors. This results in the same anatomical structures being represented with consistent shapes and sizes across OCT B-scans from different vendors, simplifying the learning process considerably.
+\par
+As observed in Figure \ref{fig:BigPatchesSegmentationTopcon}, the model previously predicted fluid masks in the choroid region. However, in Figure \ref{fig:VerticalPatchesSegmentationTopcon}, the models trained on vertical patches no longer make such predictions, even when applying to the same B-scan. This suggest that, by using vertical patches, the model learns not to segment below the retina. This behavior was not observed when larger patches were used, since those often failed to simultaneously capture both the retinal layer and the choroid in the same patch, restraining the model from learning their spatial relationship, which led to incorrect fluid predictions in the choroid region.
 
-\begin{figure}[!ht]
+\begin{figure}
 	\centering
 	\includegraphics[width=1.0\linewidth]{figures/VerticalPatchesSegmentationTopcon.png}
-	\caption{Predicted masks by the models trained on Run 16 (middle) and Run 20 (right) and their respective GT (left).}
+	\caption{Predicted masks by the models trained on Run 16 (middle) and Run 20 (right) and their respective GT (left). SRF is represented in green and PED in blue.}
 	\label{fig:VerticalPatchesSegmentationTopcon}
 \end{figure}
 
-Afterwards, the use of seven and thirteen patches extracted from each B-scan was tested and the results are shown in Table \ref{tab:Experiment1.3SevenVsThirteenPatches}. Two models were trained for each number of patches extracted, one validated on fold 2 and another validated on fold 3. The models were trained on 200 maximum epochs, with a 25 epoch patience applied after the first 100 epochs.
+Afterwards, the use of seven and thirteen patches extracted from each B-scan was tested, and the results are shown in Table \ref{tab:Experiment1.3SevenVsThirteenPatches}. Two models were trained for each number of patches extracted, one validated on fold 2, and another validated on fold 3. The models were trained for up to 200 epochs, with a 25-epoch patience applied after the first 100 epochs.
 
 \begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid for the runs done using seven (Runs 21 and 22) and thirteen (Runs 23 and 24) vertical patches extracted from each B-scan. Only two folds were used in order to understand the viability of using these numbers of patches, which are represented in the column ``P''. Runs 17 and 18 are shown here to make the comparison between the number of patches easier. The values shown in bold represent the best value for the models validated in the same fold.}
+	\caption{Dice coefficients for every vendor and fluid from runs performed using seven (Runs 21 and 22) and thirteen (Runs 23 and 24) vertical patches extracted from each B-scan. Only two folds were used in order to understand the viability of using this number of patches, which are represented in the column ``P''. Runs 17 and 18 are shown here to make the comparison between the number of patches easier. The values shown in bold represent the best value for the models validated on the same fold.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
@@ -332,29 +334,27 @@ Afterwards, the use of seven and thirteen patches extracted from each B-scan was
 	\label{tab:Experiment1.3SevenVsThirteenPatches}
 \end{table*}
 
-Training the models on more patches per B-scan, significantly increases the quantity of data that is seen by the model during an epoch. Therefore, each epoch takes much longer to complete, requiring more computation power, leading to often bottlenecks. However, since the model sees many more patches per epoch, the model reaches the validation loss minimum much earlier than in the models trained with four patches. 
+Training the models on more patches per B-scan, significantly increases the amount of data that is seen by the model during each epoch. As a result, each epoch takes much longer to complete, requiring more computational power and often leading to bottlenecks. However, since the model sees many more patches per epoch, it reaches the validation loss minimum much earlier than models trained with only four patches. 
 \par
-In Figure \ref{fig:ValidationLossesFourSevenThirteenPatches}, it is possible to see a comparison between the training and validation losses of the models validated on fold 2, using four, seven, and thirteen vertical patches per B-scan. Despite following the same trends, the model learns significantly faster as the number of patches increases, resulting in a faster progression of the validation loss. As a result the models starts to overfit much earlier and aggressively with larger number of patches, which is signaled by the increase in validation loss after reaching low values.
+In Figure \ref{fig:ValidationLossesFourSevenThirteenPatches}, a comparison is shown between the validation losses of the models validated on fold 2, using four, seven, and thirteen vertical patches per OCT B-scan. Despite following the same trends, the model learns significantly faster as the number of patches increases, resulting in a faster progression of the validation loss. As a result the models starts to overfit much earlier and aggressively with larger number of patches, which is signaled by the increase in validation loss after reaching low values.
 
-\begin{figure}[!ht]
+\begin{figure}
 	\centering
 	\includegraphics[width=1.0\linewidth]{figures/ValidationLossesFourSevenThirteenPatches.png}
-	\caption{Training and validation losses for models validated on fold 2. The curve on the left are from the model trained on Run 17 with four patches, while the middle curves are from the model trained on Run 21, with seven patches. The curves on the right are from the model trained on Run 23, with thirteen patches.}
+	\caption{Validation loss curves for models validated on fold 2. The curve on the left is from the model trained in Run 17 with four patches, while the middle curve is from the model trained in Run 21 with seven patches. The curve on the right is from the model trained in Run 23 with thirteen patches.}
 	\label{fig:ValidationLossesFourSevenThirteenPatches}
 \end{figure}
 
-When comparing the models' performances, by looking at Table \ref{tab:Experiment1.3FourPatches}, the models trained on thirteen patches are outperformed by those trained in fewer patches. These results suggest that the faster progression in validation loss for the model trained with thirteen patches inhibits its ability to converge to a solution as optimal as those achieved by models trained more slowly with fewer patches.
+When comparing the models' performances (Table \ref{tab:Experiment1.3FourPatches}), the models trained with thirteen patches extracted from each training image are outperformed by those trained with fewer patches. These results suggest that the faster progression in validation loss for the model trained with thirteen patches from each training image inhibits its ability to converge to a solution as optimal as those achieved by models trained more slowly with fewer patches.
 \par
-The performance differences between the models trained with four and seven patches are smaller than the difference between either of those models and the model trained with thirteen patches. However, the model trained with seven patches consistently outperforms the one trained with four in most metrics. In the few cases the model trained with four patches performs better, the other model still achieves comparable results. The reverse is not true: when the model trained with seven patches outperforms the model trained with four patches, the performance gap is significantly larger. For these reasons, the model trained with seven patches was considered superior.
+The performance differences between the models trained with four and seven patches are smaller than the difference between either of those models and one model trained with thirteen patches. However, the model trained with seven patches consistently outperforms the one trained with four in most metrics. In the few cases where the model trained with four patches performs better, the other model still achieves comparable results. The reverse is not true: when the model trained with seven patches outperforms the one trained with four patches, the performance gap is significantly larger. For these reasons, the model trained with seven patches was considered superior.
 \par
-Nevertheless, both models still make wrongful predictions, which do not respect the anatomic context of the image. For example, in Figure \ref{fig:CirrusSegmentationErrors}, the IRF fluid is predicted below the PED, which is not anatomically possible and there are no examples in the dataset that exhibit this relationship.
-\par
-While this unexpected behavior could be attributed to the B-scan differing from the examples seen in training, the subsequent runs aimed to investigate whether this was caused by the rotation transformation. It was hypothesized that random rotations could alter the vertical order of fluid regions, potentially leading the model to learn incorrect patterns. Additionally, the padding that is performed to fill the rotated areas, as illustrated in Figure \ref{fig:TransformationsInVerticalPatches}, could also influence the model's performance.
+Nevertheless, both models still make incorrect predictions that do not respect the anatomical context of the image. For example, in Figure \ref{fig:CirrusSegmentationErrors}, the IRF fluid is predicted below the PED, which is not anatomically possible, and there are no examples in the dataset that exhibit this relationship. While this unexpected behavior could be attributed to the B-scan differing from the examples seen during training, the subsequent runs aimed to investigate whether it was caused by the rotation transformation. It was hypothesized that random rotations could alter the vertical order of fluid regions, potentially leading the model to learn incorrect patterns. Additionally, the padding applied to fill the rotated areas, as illustrated in Figure \ref{fig:TransformationsInVerticalPatches}, could also influence the model's performance.
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1.0\linewidth]{figures/CirrusSegmentationErrors.png}
-	\caption{Segmentation errors in Cirrus B-scans. The GT fluid masks, seen on the left, show a large region of PED fluid. Meanwhile, the predictions made by the models trained in Run 21 and 23, which respectively correspond to the B-scans in the middle and right, classify the center of this region as IRF.}
+	\caption{Segmentation errors in Cirrus B-scans. The GT fluid mask, seen on the left, shows a large region of PED fluid. Meanwhile, the predictions made by the models trained in Run 21 and 23, which respectively correspond to the B-scans in the middle and right, classify the center of this region as IRF. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:CirrusSegmentationErrors}
 \end{figure}
 
@@ -365,10 +365,10 @@ While this unexpected behavior could be attributed to the B-scan differing from 
 	\label{fig:TransformationsInVerticalPatches}
 \end{figure}
 
-Table \ref{tab:Experiment1.3SevenPatchesNoRotation} shows the results obtained in the runs performed using only horizontal flipping as transformation, without performing rotations. In these runs, seven input patches were extracted from each B-scan. Due to the faster progression of the models trained using seven vertical patches per B-scan, the model was trained on a minimum of 25 epochs with a 25 epoch patience after. Since the validation minimum is usually attained early in the models trained with more patches, as seen in Figure \ref{fig:ValidationLossesFourSevenThirteenPatches}, by setting such early stopping, the training duration would be shorter while maintaining the same performance.
+Table \ref{tab:Experiment1.3SevenPatchesNoRotation} shows the results obtained from the runs performed using only horizontal flipping as the transformation, without applying any rotation. In these runs, seven input patches were extracted from each B-scan. Due to the faster progression of models trained using seven vertical patches per B-scan, the model was trained on a minimum for 25 epochs with a 25-epoch patience applied afterward. Since the minimum validation is usually attained early in models trained with more patches, as seen in Figure \ref{fig:ValidationLossesFourSevenThirteenPatches}, applying early stopping shortens the training duration while maintaining the same performance.
 
-\begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid using seven vertical patches. The only transformation performed in these runs was horizontal flipping, without rotation. Runs 21 and 22 are also shown, promoting an easier comparison.}
+\begin{table*}
+	\caption{Dice coefficients for every vendor and fluid using seven vertical patches per image for training. The only transformation applied to these runs was horizontal flipping, without rotation. Runs 21 and 22 are also shown, promoting an easier comparison.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 			\hline
@@ -409,7 +409,7 @@ Table \ref{tab:Experiment1.3SevenPatchesNoRotation} shows the results obtained i
 			
 			\hline
 			
-			\textbf{Set 6} & - & \multicolumn{1}{c|}{0.62} & \multicolumn{1}{c|}{0.81} & 0.68 & \multicolumn{1}{c|}{0.65} & \multicolumn{1}{c|}{0.80} & 0.74 & \multicolumn{1}{c|}{0.71} & \multicolumn{1}{c|}{0.82} & 0.74 & 0.65 & 0.81 & 0.71 & 0.63 \\
+			\textbf{Set 6} & - & \multicolumn{1}{c|}{0.617} & \multicolumn{1}{c|}{0.813} & 0.684 & \multicolumn{1}{c|}{0.649} & \multicolumn{1}{c|}{0.797} & 0.736 & \multicolumn{1}{c|}{0.714} & \multicolumn{1}{c|}{0.818} & 0.740 & 0.652 & 0.811 & 0.710 & 0.632 \\
 			
 			\hline
 			\hline
@@ -424,30 +424,30 @@ Table \ref{tab:Experiment1.3SevenPatchesNoRotation} shows the results obtained i
 	\label{tab:Experiment1.3SevenPatchesNoRotation}
 \end{table*}
 
-Removing the rotation from the transformations applied to the input data, significantly worsen the models performances. In Table \ref{tab:Experiment1.3SevenPatchesNoRotation}, when comparing Run 21 to Run 25, which were validated on the same fold, the model trained in Run 21, with rotation, outperformed the model trained in Run 25 in every single metric. Following the same trend, the model trained in Run 26 only outperformed the model trained in Run 22 in four metrics: Spectralis PED and all the fluids in Topcon.
+Removing the rotation from the transformations applied to the input data, significantly worsened the models performances. In Table \ref{tab:Experiment1.3SevenPatchesNoRotation}, when comparing Run 21 to Run 25, both validated on the same fold, the model trained in Run 21, with rotation, outperformed the model trained in Run 25 in every metric. Following the same trend, the model trained in Run 26 outperformed the model trained in Run 22 in only four metrics: Spectralis PED and all the fluids in Topcon.
 \par
-The differences in performance here exposed highlight the importance of applying transformations to the inputs, despite the mentioned loss of information associated with it. The introduction of variability to the input data significantly improved the model's generalization, preventing the model from overfitting so early on the training stage. In OCT, the rotation is particularly important since different images exhibit different orientations of the retinal layer. By introducing rotation to the inputs, the model becomes more robust to varied input data and less specific to the orientations seen in training. This transformation particularly enhances the performance of the models trained in B-scans where the retinal layer appears horizontal. In Figure \ref{fig:DifferentRetinaOrientation}, two B-scans that illustrate the variability of the retina orientation are shown.
+The performance differences observed here highlight the importance of applying transformations to the inputs. The introduction of variability to the input data significantly improves the model generalization, preventing the model from overfitting so early on the training stage. In OCT imaging, the rotation is particularly important since different images exhibit different orientations of the retinal layer. By introducing rotation to the inputs, the model becomes more robust to varied input data and less specific to the orientations seen during training. This transformation particularly enhances the performance of the models trained on B-scans where the retinal layer appears horizontally. Figure \ref{fig:DifferentRetinaOrientation} two B-scans that illustrate the variability in retinal orientation.
 \par
-Nevertheless, the lack of rotation in the training dataset mitigated the poor segmentation shown in Figure \ref{fig:CirrusSegmentationErrors}. As exhibited in Figure \ref{fig:SegmentationErrorsNoRotation}, the model that was trained without rotation does not predict as much IRF in the PED region as those trained with rotation, as shown in Figure \ref{fig:CirrusSegmentationErrors}. However, the model that was trained without rotation also predicted IRF in a region that none of the other models did, exemplifying why this model performed worse than those.
+Nevertheless, the absence of rotation in the training data mitigated the poor segmentation shown in Figure \ref{fig:CirrusSegmentationErrors}. As shown in Figure \ref{fig:SegmentationErrorsNoRotation}, the model trained without rotation predicts less IRF in the PED region compared to models trained with rotation. However, it also predicted IRF in a region that none of the other models did, exemplifying why this model still underperformed relative to the others.
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.7\linewidth]{figures/DifferentRetinaOrientation.png}
-	\caption{Example of two B-scans in which the retina is oriented differently. The retina present in the right image is significantly more inclined. Both B-scans were obtained using a Cirrus device and do not present fluid.}
+	\caption{Example of two OCT B-scans in which the retina is oriented differently. The retina in the image on the right is significantly more inclined. Both B-scans were obtained using a Cirrus device and do not present fluid.}
 	\label{fig:DifferentRetinaOrientation}
 \end{figure}
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.7\linewidth]{figures/SegmentationErrorsNoRotation.png}
-	\caption{Segmentation errors in Cirrus B-scans when trained without random rotations, in the same B-scan as in Figure \ref{fig:CirrusSegmentationErrors}. In the left, the GT masks are shown, while in the right the predicted masks are exhibited.}
+	\caption{Segmentation errors in Cirrus B-scans when trained without random rotations, using the same B-scan as in Figure \ref{fig:CirrusSegmentationErrors}. On the left, the GT mask is shown, while on the right, the predicted masks are displayed. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:SegmentationErrorsNoRotation}
 \end{figure}
 
-In order to find an equilibrium between the robustness that training a model with rotated patches brings and the respect for the vertical order and relationships of the fluids, new runs were performed with a maximum $5^{\circ}$ rotation combined with the horizontal flipping. This rotation does not remove as much information from the patches as a $10^{\circ}$ rotation. The results obtained in these runs are shown in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation}.
+In order to balance the robustness introduced by rotation and the preservation of vertical anatomical relationships, new runs were performed using a maximum $5^{\circ}$ rotation combined with horizontal flipping. This smaller rotation does not remove as much information from the patches as a $10^{\circ}$ rotation. The results obtained in these runs are presented in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation}.
 
 \begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid using seven vertical patches. In these runs, horizontal flipping and $5^{\circ}$ rotation were used, instead of the usual $10^{\circ}$. The results obtained in Runs 21 and 22 are also shown, enabling a smoother comparison.}
+	\caption{Dice coefficients for every vendor and fluid using seven vertical patches per image for training. In these runs, horizontal flipping and $5^{\circ}$ rotation were used, instead of the usual $10^{\circ}$ rotation. The results obtained in Runs 21 and 22 are also shown, enabling a direct comparison.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
@@ -484,7 +484,7 @@ In order to find an equilibrium between the robustness that training a model wit
 		
 		\hline
 		
-		\textbf{Set 7} & - & \multicolumn{1}{c|}{0.60} & \multicolumn{1}{c|}{0.78} & 0.68 & \multicolumn{1}{c|}{0.71} & \multicolumn{1}{c|}{0.85} & 0.77 & \multicolumn{1}{c|}{0.74} & \multicolumn{1}{c|}{0.80} & 0.75 & 0.67 & 0.80 & 0.72 & 0.63 \\
+		\textbf{Set 7} & - & \multicolumn{1}{c|}{0.602} & \multicolumn{1}{c|}{0.779} & 0.685 & \multicolumn{1}{c|}{0.713} & \multicolumn{1}{c|}{0.850} & 0.769 & \multicolumn{1}{c|}{0.735} & \multicolumn{1}{c|}{0.804} & 0.748 & 0.665 & 0.797 & 0.720 & 0.633 \\
 		
 		\hline
 		\hline
@@ -499,10 +499,10 @@ In order to find an equilibrium between the robustness that training a model wit
 	\label{tab:Experiment1.3SevenPatches5DegreeRotation}
 \end{table*}
 
-When looking at the results in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation}, the runs trained using a maximum $10^{\circ}$ rotation attain a better Dice coefficient than those that are trained using $5^{\circ}$. However, it is important to also compare the performances only in the slices that have fluid, which are shown in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotationFluid}.
+When looking at the results in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation}, the runs trained using a maximum $10^{\circ}$ rotation attain a better Dice coefficient than those that are trained using $5^{\circ}$. However, it is important to also compare the performance specifically on slices containing fluid (Table \ref{tab:Experiment1.3SevenPatches5DegreeRotationFluid}).
 
 \begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid using seven vertical patches. The mean scores are calculated only for the B-scans that contain that fluid. For example, Cirrus IRF is the mean of the IRF Dice coefficient across all the Cirrus slices in the validation fold that contain IRF. The transformations utilized were the same as in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation}.}
+	\caption{Dice coefficients for every vendor and fluid using seven vertical patches per image for training. The mean scores are calculated only for the B-scans that contain that fluid. For example, Cirrus IRF is the mean of the IRF Dice coefficient across all the Cirrus slices in the validation fold that contain IRF. The transformations utilized were the same as in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation}.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 			\hline
@@ -543,7 +543,7 @@ When looking at the results in Table \ref{tab:Experiment1.3SevenPatches5DegreeRo
 			
 			\hline
 			
-			\textbf{Set 7} & - & \multicolumn{1}{c|}{0.61} & \multicolumn{1}{c|}{0.74} & 0.59 & \multicolumn{1}{c|}{0.65} & \multicolumn{1}{c|}{0.85} & 0.65 & \multicolumn{1}{c|}{0.58} & \multicolumn{1}{c|}{0.62} & 0.55 & 0.60 & 0.75 & 0.59 & 0.64 \\
+			\textbf{Set 7} & - & \multicolumn{1}{c|}{0.608} & \multicolumn{1}{c|}{0.742} & 0.586 & \multicolumn{1}{c|}{0.647} & \multicolumn{1}{c|}{0.848} & 0.649 & \multicolumn{1}{c|}{0.582} & \multicolumn{1}{c|}{0.620} & 0.552 & 0.605 & 0.746 & 0.590 & 0.643 \\
 
 			\hline
 			\hline
@@ -560,29 +560,29 @@ When looking at the results in Table \ref{tab:Experiment1.3SevenPatches5DegreeRo
 	\label{tab:Experiment1.3SevenPatches5DegreeRotationFluid}
 \end{table*}
 
-The results shown in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotationFluid} depict comparable results between the models trained with rotations of $5^{\circ}$ and $10^{\circ}$ degrees. While the results still slightly favor those trained with $10^{\circ}$ rotation, the difference between models is much smaller than it was in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation}. The differences observed indicate that the Dice coefficient measured in the models trained with $10^{\circ}$ rotation leverage on the high capability of detecting fluid. 
+The results shown in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotationFluid} depict comparable results between the models trained with rotations of $5^{\circ}$ and $10^{\circ}$. While the results still slightly favor those trained with $10^{\circ}$ rotation, the difference between models is much smaller than it was in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation}. The differences observed indicate that the Dice coefficient measured in the models trained with $10^{\circ}$ rotation leverages the model's high capability of detecting fluid. 
 \par
-This model is particularly good at detecting which slices have and do not have fluid. When the model does not detect fluid in a slice that does not have fluid, the Dice coefficient for that slice is 1. Meanwhile, in case the slices do not have fluid but the model still detects fluid in them, the B-scan's Dice coefficient for that fluid is 0.
+This model is particularly good at detecting which slices have or do not have fluid. When the model does not detect fluid in a slice that does not have fluid, the Dice coefficient for that slice is 1. Meanwhile, in case the slices do not have fluid but the model still detects fluid, the Dice coefficient for that fluid is 0.
 \par
-Due to the large quantity of slices that do not have fluid, which is larger than the slices that have fluid, a segmentation model can considerably improve its Dice performance by enhancing its capability of detecting fluid. Despite the model trained with $5^{\circ}$ performing worse at detecting fluid, most of these wrongful predictions are just a small quantity of sparse pixels (less than 100 pixels in each $496 \times 512$ image).
+Due to the large number of slices that do not have fluid, which is larger than the slices that have fluid, a segmentation model can considerably improve its Dice performance by enhancing its capability of detecting fluid. Despite the model trained with $5^{\circ}$ rotation performing worse at detecting fluid, most of these incorrect predictions involve only a small number of sparse pixels (less than 100 pixels in each $496 \times 512$ image).
 \par
-It is also of interest to look into the predictions made by each model. While the Dice coefficient is a good metric to represent the models performance, some relevant segmentation characteristics can not be expressed by this measurement.
+It is also of interest to look into the predictions made by each model. While the Dice coefficient is a good metric to represent the models performance, some relevant segmentation characteristics cannot be expressed by this measurement.
 \par
-When looking at the predictions made by both models, the model trained with $5^{\circ}$ rotations attains performances that are closer to the GT. An example of this can be seen in Figure \ref{fig:SegmentationsComparisonBetweenDifferentRotations}, where a comparison between the predictions made by different models are shown. In this image, it is seen that the masks predicted (middle image) by the model trained with $10^{\circ}$ rotation segments all the PED region, but also segments much more PED overall. Meanwhile, the model trained with $5^{\circ}$ rotation also identifies the PED region correctly, but segments less PED in the image (right image). The segmentation of IRF and SRF are really similar between both models.
+When looking at the predictions made by both models, the model trained with $5^{\circ}$ rotations achieves results that are closer to the GT. An example can be seen in Figure \ref{fig:SegmentationsComparisonBetweenDifferentRotations}, where a comparison between the predictions made by different models is shown. In this image, the mask predicted by the model trained with $10^{\circ}$ rotation (middle image) segments all the PED region, but also segments much more PED overall. Meanwhile, the model trained with $5^{\circ}$ rotation correctly identifies the PED region, but segments less PED in the image (right image). The segmentation of IRF and SRF is very similar between both models.
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1.0\linewidth]{figures/SegmentationsComparisonBetweenDifferentRotations.png}
-	\caption{Predictions by the models trained using $5^{\circ}$ (middle image) and $10^{\circ}$ (right image) rotations, compared with the respective GT (left image).}
+	\caption{Predictions by the models trained using $5^{\circ}$ (middle image) and $10^{\circ}$ (right image) rotations, compared with the respective GT (left image). IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:SegmentationsComparisonBetweenDifferentRotations}
 \end{figure}
 
-This is an example of how the model trained with $5^{\circ}$ rotations tends to be more conservative in the fluid segmentation, despite not being as good at identifying fluid in the B-scans. For this reason, it was expected that this model would perform better on unseen data than the model trained with $10^{\circ}$ which tends to oversegment. Therefore, the maximum rotation selected for further experiments was $5^{\circ}$.
+This illustrates how the model trained with $5^{\circ}$ rotations tends to be more conservative in the fluid segmentation, despite being less effective at identifying fluid in the B-scans. For this reason, it was expected that this model would perform better on unseen data than the model trained with $10^{\circ}$ rotation, which tends to oversegment. Therefore, the maximum rotation selected for further experiments was $5^{\circ}$.
 \par
-Following the experiments that applied a $5^{\circ}$ rotation to the seven vertical patches extracted from each B-scan, additional runs were made using the same rotation, but with only four patches extracted from each B-scan instead. The objective of these runs was to verify if model still performs better on seven patches than on four patches when the applied rotation is changed from $10^{\circ}$ to $5^{\circ}$. The results are shown in Table \ref{tab:Experiment1.3FourPatches5DegreeRotation}.
+Following the experiments that applied a $5^{\circ}$ rotation to the seven vertical patches extracted from each B-scan, additional runs were conducted using the same rotation, but with only four patches extracted from each B-scan instead. The objective of these runs was to verify whether the model still performs better with seven patches than with four patches when the applied rotation is changed from $10^{\circ}$ to $5^{\circ}$. The results are shown in Table \ref{tab:Experiment1.3FourPatches5DegreeRotation}.
 
-\begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid using four vertical patches. The rotation applied in these runs was of $5^{\circ}$, instead of the previously used $10^{\circ}$. ``Set 7'' and the best performing run in this set (Run 32) are also shown, promoting an easier comparison between the use of four and seven patches. The underlined values correspond to the best performances between the models trained in Run 32 and Run 33.}
+\begin{table*}
+	\caption{Dice scores for every vendor and fluid using four vertical patches per image for training. The rotation applied in these runs was of $5^{\circ}$, instead of the previously used $10^{\circ}$. ``Set 7'' and the best-performing run in this set (Run 32) are also shown, promoting an easier comparison between the use of four and seven patches. The underlined values correspond to the best performances between the models trained in Run 32 and Run 33.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
@@ -619,7 +619,7 @@ Following the experiments that applied a $5^{\circ}$ rotation to the seven verti
 		
 		\hline
 		
-		\textbf{Set 8} & - & \multicolumn{1}{c|}{0.57} & \multicolumn{1}{c|}{\textbf{0.78}} & \textbf{0.69} & \multicolumn{1}{c|}{0.63} & \multicolumn{1}{c|}{0.84} & \textbf{0.79} & \multicolumn{1}{c|}{0.70} & \multicolumn{1}{c|}{\textbf{0.83}} & \textbf{0.76} & 0.62 & \textbf{0.81} & \textbf{0.73} & 0.62 \\
+		\textbf{Set 8} & - & \multicolumn{1}{c|}{0.565} & \multicolumn{1}{c|}{\textbf{0.784}} & \textbf{0.686} & \multicolumn{1}{c|}{0.635} & \multicolumn{1}{c|}{0.841} & \textbf{0.787} & \multicolumn{1}{c|}{0.701} & \multicolumn{1}{c|}{\textbf{0.833}} & \textbf{0.765} & 0.625 & \textbf{0.809} & \textbf{0.730} & 0.619 \\
 		
 		\hline
 		\hline
@@ -628,7 +628,7 @@ Following the experiments that applied a $5^{\circ}$ rotation to the seven verti
 		
 		\hline
 		
-		\textbf{Set 7} & - & \multicolumn{1}{c|}{\textbf{0.60}} & \multicolumn{1}{c|}{\textbf{0.78}} & 0.68 & \multicolumn{1}{c|}{\textbf{0.71}} & \multicolumn{1}{c|}{\textbf{0.85}} & 0.77 & \multicolumn{1}{c|}{\textbf{0.74}} & \multicolumn{1}{c|}{0.80} & 0.75 & \textbf{0.67} & 0.80 & 0.72 & \textbf{0.63} \\
+		\textbf{Set 7} & - & \multicolumn{1}{c|}{\textbf{0.602}} & \multicolumn{1}{c|}{0.779} & 0.685 & \multicolumn{1}{c|}{\textbf{0.713}} & \multicolumn{1}{c|}{\textbf{0.850}} & 0.769 & \multicolumn{1}{c|}{\textbf{0.735}} & \multicolumn{1}{c|}{0.804} & 0.748 & \textbf{0.665} & 0.797 & 0.720 & \textbf{0.633} \\
 		
 		\hline
 			
@@ -636,14 +636,14 @@ Following the experiments that applied a $5^{\circ}$ rotation to the seven verti
 	\label{tab:Experiment1.3FourPatches5DegreeRotation}
 \end{table*}
 
-Contrasting with the results shown in Table \ref{tab:Experiment1.3FourPatches} and Table \ref{tab:Experiment1.3SevenVsThirteenPatches}, which show a significant improvement when using seven vertical patches over four, the results exhibited in Table \ref{tab:Experiment1.3FourPatches5DegreeRotation} present a similar performance between the models trained on four and seven vertical patches. The main performance differences are in the IRF segmentation, where the difference is more significant depending on the number of patches used, favoring the models trained with seven patches.
+Contrasting with the results shown in Table \ref{tab:Experiment1.3FourPatches} and Table \ref{tab:Experiment1.3SevenVsThirteenPatches}, which show a significant improvement when using seven vertical patches over four, the results presented in Table \ref{tab:Experiment1.3FourPatches5DegreeRotation} show a similar performance between the models trained on four and seven vertical patches. The most notable performance differences appear in the IRF segmentation, where the difference is more significant depending on the number of patches used, favoring the models trained with seven patches.
 \par
-However, it is necessary to select a single segmentation model to perform inference in the fold that was reserved. The best performing model from those trained with seven vertical patches obtained from each B-scan and a maximum rotation of $5^{\circ}$ is the model trained in Run 32. Meanwhile, the best performing model from ``Set 8'' is Run 33. In Table \ref{tab:Experiment1.3FourPatches5DegreeRotation}, the underlined values correspond to the best performance attained between Run 32 and 33.
+However, it is necessary to select a single segmentation model to perform inference on the reserved test fold. The best-performing model among those trained with seven vertical patches obtained from each B-scan and a maximum rotation of $5^{\circ}$ is the model trained in Run 32. Meanwhile, the best-performing model from ``Set 8'' is Run 33.
 \par
-In most metrics, the model trained on Run 32 performs better than the model trained on Run 33. Nevertheless, both performances are really similar in most metrics, with the only significant difference being the IRF segmentation, which is superior in Run 32. It is important to note that the models were nor trained nor validated on the same data and an assumption that this would directly translate to the performance in unseen data was made. However, it is possible that the data in which one model was trained prepares it better for the data on the reserved fold. Therefore, the U-Net model selected to represent the multi-class segmentation approach was the one trained in Run 32. This model subsequently performed the inference in the unseen fold (fold 1) and its results are shown in Table \ref{tab:Experiment1.3FinalResults}. In this table, the rows correspond to the model performances on different sets of slices. In the first row the performance across all slices is considered. In the second row only the slices with the fluid indicated in the column are quantified, while in the third row only those that do not present that fluid are considered.
+In most metrics, the model trained in Run 32 performs better than the model trained on Run 33. Nevertheless, both models perform very similarly, with the only significant difference being the IRF segmentation, which is superior in Run 32. It is important to note that the models were neither trained nor validated on the same data, and an assumption was made that this would directly translate to performance on unseen data. However, it is possible that the data on which one model was trained prepared it better for the data in the reserved fold. Therefore, the U-Net model selected to represent the multi-class segmentation approach was the one trained in Run 32. This model subsequently performed the inference on the unseen fold (fold 1), and its results are shown in Table \ref{tab:Experiment1.3FinalResults}. In this table, the rows correspond to the model's performance across different sets of slices. In the first row the performance across all slices is considered.
 
-\begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid in the reserved fold (fold 1). The first row reports the mean Dice across all slices. The second row shows the mean for slices containing the fluid specified in the column, while the third shows the mean for the slices without that fluid.}
+\begin{table*}[b]
+	\caption{Dice coefficients for every vendor and fluid in the reserved fold (fold 1). The first row reports the mean Dice coefficient across all slices. The second row shows the mean for slices containing the fluid specified in the respective column, while the third row shows the mean for the slices without that fluid type.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|ccc|ccc|ccc|c|c|c|c|}
 		\hline
@@ -683,36 +683,36 @@ In most metrics, the model trained on Run 32 performs better than the model trai
 	\label{tab:Experiment1.3FinalResults}
 \end{table*}
 
-The results shown in the table indicate that the model generalized well. The performance obtained in the reserved fold, whose data had not been used in training or validation, reveals the model's robustness across different fluids and vendors. Since the model performs equally well across the three vendors, a good cross-device generalization has been achieved. Therefore, the model is not dependent on the image quality of the B-scans to produce accurate predictions.
+The results shown in the table indicate that the model generalized well. The performance obtained in the reserved fold, whose data had not been used for training or validation, reveals the model's robustness across different fluids and vendors. Since the model performs equally well across the three vendors, a good cross-device generalization has been achieved. Therefore, the model is not dependent on the B-scan image quality to produce accurate predictions.
 \par
-The model behaved differently depending on the fluid expected to segment. The Dice coefficient was considerably larger in SRF and PED than in IRF. This is associated with the larger variety of IRF shape and position in the retina. IRF regions are usually irregular in shape, smaller, and less well-defined than the other fluids, often appearing as small structures. This fluid is also located between the retinal layers, making it harder for the model to distinguish from the surrounding tissue and often leading to labeling ambiguity. Still, the model attained a better performance in fluid segmentation than those seen in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotationFluid}, where only fluid is considered.
+The model behaved differently depending on the fluid it was expected to segment. The Dice coefficient was considerably higher for SRF and PED than for IRF. This is associated with the greater variability in IRF shape and position within the retina. IRF regions are usually irregular in shape, smaller, and less well-defined than the other fluids, often appearing as small structures. This fluid is also located between the retinal layers, making it harder for the model to distinguish from the surrounding tissue, often leading to labeling ambiguity. Still, the model attained a better performance in fluid segmentation than those reported in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotationFluid}, where only slices containing fluid are considered.
 \par
-When considering all the slices, the Dice coefficient improves significantly, when compared to its performance where only slices with fluid are considered. At the same time, the Dice coefficient obtained in the slices without fluid is also better than the fluid segmentation. This reflects the greater difficulty of accurately segmenting the fluids, when compared to the task of detecting their presence. Since most slices in the dataset do not present fluid, an accurate detection of it can significantly increase the Dice mean across all slices, as explained previously.
+When considering all slices, the Dice coefficient improves significantly compared to its performance on slices containing fluid only. At the same time, the Dice coefficient obtained in the slices without fluid is also higher than for slices containing fluid. This reflects the greater difficulty of accurately segmenting fluid regions compared to simply detecting their presence. Since most slices in the dataset do not contain fluid, an accurate detection of it can significantly increase the mean Dice across all slices, as explained previously.
 \par
-Overall, the performance obtained when validating in this unseen fold is significantly better than any other validation performance in previously seen in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation}. This indicates that the model did not overfit on training data, benefiting from the diversity introduced in training both through varying images and the transformations applied to them. This performance also benefits from selecting the best performing model in cross-validation, which allows the choice of a robust model. 
+Overall, the performance obtained on the unseen fold was significantly better than any other validation result previously shown in Table \ref{tab:Experiment1.3SevenPatches5DegreeRotation}. This indicates that the model did not overfit the training data and benefited from the diversity introduced during training - both through image variation and applied transformations. This performance also benefited from selecting the best-performing model during cross-validation, which allows the choice of a robust and generalizable model. 
 \par
-In Figures \ref{fig:Experiment1FinalModelPredictionsCirrus}, \ref{fig:Experiment1FinalModelPredictionsSpectralis}, and \ref{fig:Experiment1FinalModelPredictionsTopcon}, some examples of predictions performed by the model in the unseen data are shown. In the IRF segmentations, it is seen that the model can not correctly identify the retinal tissue that separates the fluid regions and connects nearby fluid regions. The PED segmentation is marked by accurate delimitation of the large PED regions, with some predictions made in B-scans without PED. Lastly, SRF is the fluid in which the prediction segmentation more resembles the GT.
+In Figures \ref{fig:Experiment1FinalModelPredictionsCirrus}, \ref{fig:Experiment1FinalModelPredictionsSpectralis}, and \ref{fig:Experiment1FinalModelPredictionsTopcon}, some examples of predictions made by the model on the unseen data are shown. In the IRF segmentations, it is observed that the model cannot correctly identify the retinal tissue that separates and connects nearby fluid regions. The PED segmentation is characterized by accurate delineation of large PED regions, although some predictions were made in B-scans without PED. Lastly, SRF is the fluid for which the predicted segmentation most closely resembles the GT.
 \par
-The performance seen by this model in the reserved fold was subsequently compared with the best performing models from the following experiment.
+The performance of this model on the reserved test fold was subsequently compared with the best-performing models from the following experiment.
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/Experiment1FinalModelPredictionsCirrus.png}
-	\caption{Predictions by the model trained on Run 32 in unseen Cirrus volumes of fold 1.}
+	\caption{Predictions made by the model trained on Run 32 on unseen Cirrus volumes of fold 1. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:Experiment1FinalModelPredictionsCirrus}
 \end{figure}
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/Experiment1FinalModelPredictionsSpectralis.png}
-	\caption{Predictions by the model trained on Run 32 in unseen Spectralis volumes of fold 1.}
+	\caption{Predictions made by the model trained on Run 32 on unseen Spectralis volumes of fold 1. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:Experiment1FinalModelPredictionsSpectralis}
 \end{figure}
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figures/Experiment1FinalModelPredictionsTopcon.png}
-	\caption{Predictions by the model trained on Run 32 in unseen Topcon volumes of fold 1.}
+	\caption{Predictions made by the model trained on Run 32 on unseen Topcon volumes of fold 1. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:Experiment1FinalModelPredictionsTopcon}
 \end{figure}
 
@@ -796,11 +796,10 @@ When comparing the results across all slices between these binary models with th
 The increased number of background pixels is further impacted with the lack of inter-class competition. This inter-class competition is particularly helpful in the segmentation of other ambiguous regions such as other fluids, which, in binary segmentation, is not contested by other classes. This does not motivate the model to learn the anatomical characteristics of the retina that are key to identifying the region corresponding to each fluid, often leading to over-segmentation. 
 \par
 This translates to a decrease in the IRF segmentation model's performance, particularly in the slices that do not present this fluid, with two examples shown in Figure \ref{fig:Experiment2IRFSegmentation}. The same performance decrease is also seen in SRF and PED, as shown further, due to the same reasons.
-
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.7\linewidth]{figures/Experiment2IRFSegmentation.png}
-	\caption{Predictions (right) performed by the binary IRF segmentation model and their respective GT (left). The prediction represented in the top show an example of an accurate IRF segmentation, while the bottom prediction reveals an oversegmentation in a slice that does not contain fluid.}
+	\caption{Predictions (right) performed by the binary IRF segmentation model and their respective GT (left). The prediction represented in the top show an example of an accurate IRF segmentation, represented in red, while the bottom prediction reveals an oversegmentation in a slice that does not contain fluid.}
 	\label{fig:Experiment2IRFSegmentation}
 \end{figure}
 
@@ -949,7 +948,7 @@ This translates to a good performance in the slices with fluid, but poor perform
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.7\linewidth]{figures/Experiment2PEDSegmentation.png}
-	\caption{Predictions (right) performed by the binary PED segmentation model and their respective GT (left). In top right, the model predicted PED fluid in a region where it does not exist. The bottom images show the undersegmentation of the model trained in Run 59. While this model is capable of detecting the fluid location, it fails to segment its entirety.}
+	\caption{Predictions (right) performed by the binary PED segmentation model and their respective GT (left). In top right, the model predicted PED fluid, represented in blue, in a region where it does not exist. The bottom images show the undersegmentation of the model trained in Run 59. While this model is capable of detecting the fluid location, it fails to segment its entirety.}
 	\label{fig:Experiment2PEDSegmentation}
 \end{figure}
 
@@ -966,7 +965,7 @@ When merging the masks from three independent binary segmentation models with th
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1.0\linewidth]{figures/ProbabilityVsPrioritySegmentation.png}
-	\caption{Comparison between the priority (left) and probability (right) merging approach.}
+	\caption{Comparison between the priority (left) and probability (right) merging approach. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:ProbabilityVsPrioritySegmentation}
 \end{figure}
 
@@ -1039,21 +1038,21 @@ In Figures \ref{fig:Experiment2FinalModelPredictionsCirrus}, \ref{fig:Experiment
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.7\linewidth]{figures/Experiment2FinalModelPredictionsCirrus.png}
-	\caption{Predictions by the models trained on Run 42, 52, and 59 in unseen Cirrus volumes of fold 1 (last row), contrasting with predictions made by the multi-class model from Experiment 1.}
+	\caption{Predictions by the models trained on Run 42, 52, and 59 in unseen Cirrus volumes of fold 1 (last row), contrasting with predictions made by the multi-class model from Experiment 1. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:Experiment2FinalModelPredictionsCirrus}
 \end{figure}
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.7\linewidth]{figures/Experiment2FinalModelPredictionsSpectralis.png}
-	\caption{Predictions by the models trained on Run 42, 52, and 59 in unseen Spectralis volumes of fold 1 (last row), contrasting with predictions made by the multi-class model from Experiment 1.}
+	\caption{Predictions by the models trained on Run 42, 52, and 59 in unseen Spectralis volumes of fold 1 (last row), contrasting with predictions made by the multi-class model from Experiment 1. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:Experiment2FinalModelPredictionsSpectralis}
 \end{figure}
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.7\linewidth]{figures/Experiment2FinalModelPredictionsTopcon.png}
-	\caption{Predictions by the models trained on Run 42, 52, and 59 in unseen Topcon volumes of fold 1 (last row), contrasting with predictions made by the multi-class model from Experiment 1.}
+	\caption{Predictions by the models trained on Run 42, 52, and 59 in unseen Topcon volumes of fold 1 (last row), contrasting with predictions made by the multi-class model from Experiment 1. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:Experiment2FinalModelPredictionsTopcon}
 \end{figure}
 
@@ -1134,7 +1133,7 @@ The cross-entropy is much more useful when regularizing the wrong labeling, espe
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.8\linewidth]{figures/BCESegmentationDecent.png}
-	\caption{Cirrus IRF segmentation performed by a model trained using BCE shown on the right, compared to its GT on the left. While this example has a decent segmentation, significant oversegmentation is seen on the top left of the image.}
+	\caption{Cirrus IRF segmentation, represented in red, performed by a model trained using BCE shown on the right, compared to its GT on the left. While this example has a decent segmentation, significant oversegmentation is seen on the top left of the image.}
 	\label{fig:BCESegmentationDecent}
 \end{figure}
 
@@ -1376,14 +1375,14 @@ An example of different segmentation criteria between the RETOUCH and CHUSJ data
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1.0\linewidth]{figures/RETOUCHSegmentationDifferences.png}
-	\caption{Significantly different segmentations (middle images) of the same B-scan (left image) by different evaluators, in the RETOUCH dataset. The mask seen in cyan in the last image represents the final fluid regions when considering both evaluations \parencite{Bogunovic2019b}.}
+	\caption{Significantly different segmentations (middle images) of the same B-scan (left image) by different evaluators, in the RETOUCH dataset. IRF is represented in red, SRF in green, and PED in blue. The mask seen in cyan in the last image represents the final fluid regions when considering both evaluations \parencite{Bogunovic2019b}.}
 	\label{fig:RETOUCHSegmentationDifferences}
 \end{figure}
 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=1.0\linewidth]{figures/RETOUCHvsCHUSJSegmentationCriteria.png}
-	\caption{Visually similar PED regions are segmented in one dataset but not on the other. This ambiguous segmentation can translate to worse performances in the model testing.}
+	\caption{Visually similar PED regions are segmented in one dataset but not on the other. This ambiguous segmentation can translate to worse performances in the model testing. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:RETOUCHvsCHUSJSegmentationCriteria}
 \end{figure}
 
@@ -1401,7 +1400,7 @@ The segmentation of SRF was the most consistent in this dataset. While the Dice 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.60\linewidth]{figures/CHUSJSRFSegmentation.png}
-	\caption{SRF and PED segmentation (right) in a B-scan from CHUSJ, compared to its GT (left). This shows the tendency to oversegmentation by the model.}
+	\caption{SRF (green) and PED (blue) segmentation (right) in a B-scan from CHUSJ, compared to its GT (left). This shows the tendency to oversegmentation by the model.}
 	\label{fig:CHUSJSRFSegmentation}
 \end{figure}
 
@@ -1410,7 +1409,7 @@ Similar to SRF, the IRF segmentation is also decent in the slices which contain 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.60\linewidth]{figures/CHUSJIRFSegmentation.png}
-	\caption{Segmentation of IRF regions (right) compared to its respective GT (left). The prediction of fluid regions in the choroid is also noticeable.}
+	\caption{Segmentation of IRF regions (right) compared to its respective GT (left). The prediction of fluid regions in the choroid is also noticeable. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:CHUSJIRFSegmentation}
 \end{figure}
 
@@ -1418,7 +1417,7 @@ However, the main reason behind the poor Dice coefficients when considering all 
 
 \begin{figure}[!ht]
 	\centering	\includegraphics[width=1.0\linewidth]{figures/CHUSJChoroidSegmentation.png}
-	\caption{Segmentation of multiple fluids in the choroid region of the B-scans. This is performed often, significantly reducing the Dice coefficients seen in Table \ref{tab:CHUSJSegmentationResults}.}
+	\caption{Segmentation of multiple fluids in the choroid region of the B-scans. This is performed often, significantly reducing the Dice coefficients seen in Table \ref{tab:CHUSJSegmentationResults}. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:CHUSJChoroidSegmentation}
 \end{figure}
 
@@ -1430,7 +1429,7 @@ Lastly, the influence of the noise and different perceptions present in this dat
 
 \begin{figure}[!ht]
 	\centering	\includegraphics[width=0.75\linewidth]{figures/CHUSJSegmentationOnNoisyScans.png}
-	\caption{Fluid segmentations performed by the multi-class model in noisy B-scans from the CHUSJ dataset.}
+	\caption{Fluid segmentations performed by the multi-class model in noisy B-scans from the CHUSJ dataset. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:CHUSJSegmentationOnNoisyScans}
 \end{figure}
 
@@ -1506,13 +1505,13 @@ Lastly, the addition of this post-processing resulted in general improvements in
 
 \begin{figure}[!ht]
 	\centering	\includegraphics[width=1.0\linewidth]{figures/CHUSJSegmentationAfterProcessing.png}
-	\caption{Processed fluid segmentations performed by the multi-class model in the examples of Figures \ref{fig:CHUSJIRFSegmentation} and \ref{fig:CHUSJChoroidSegmentation}.}
+	\caption{Processed fluid segmentations performed by the multi-class model in the examples of Figures \ref{fig:CHUSJIRFSegmentation} and \ref{fig:CHUSJChoroidSegmentation}. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:CHUSJSegmentationAfterProcessing}
 \end{figure}
 
 \begin{figure}[!ht]
 	\centering	\includegraphics[width=1.0\linewidth]{figures/CHUSJSegmentationAfterProcessingNoisyScans.png}
-	\caption{Processed fluid segmentations performed by the multi-class model, in the noisy scans shown in Figure \ref{fig:CHUSJSegmentationOnNoisyScans}.}
+	\caption{Processed fluid segmentations performed by the multi-class model, in the noisy scans shown in Figure \ref{fig:CHUSJSegmentationOnNoisyScans}. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:CHUSJSegmentationAfterProcessingNoisyScans}
 \end{figure}
 
@@ -1856,11 +1855,9 @@ One of the most noticeable outliers of the IRF volume estimation is the Spectral
 
 \begin{figure}[h!]
 	\centering	\includegraphics[width=1.0\linewidth]{figures/SpectralisTrain039GenerationAndSegmentation.png}
-	\caption{Example of IRF segmentation in the enhanced volume TRAIN039.}
+	\caption{Example of IRF (red) segmentation in the enhanced volume TRAIN039.}
 	\label{fig:SpectralisTrain039GenerationAndSegmentation}
 \end{figure}
-
-\clearpage
 
 It is visible in this figure that the second generated slice does not clearly represent the IRF region, as it appears slightly blurred and a large portion of the information does not resemble any structure present in the training images. For this reason, the segmentation model predicts a small area of fluid as IRF in this slice. The predicted area is much smaller than the area of IRF in the surrounding slices. This indicates that the area segmented is not coherent with the information in the surrounding slices, leading to an incorrect predicted fluid volume. The same occurs in the first generated slice of the shown example, but only a smaller portion of the image is unintelligible. 
 \par
@@ -1872,7 +1869,7 @@ Figure \ref{fig:CirrusTrain012GenerationAndSegmentation} shows the segmentation 
 
 \begin{figure}[!ht]
 	\centering	\includegraphics[width=1.0\linewidth]{figures/CirrusTrain012GenerationAndSegmentation.png}
-	\caption{Example of SRF and PED segmentation in the enhanced volume TRAIN012.}
+	\caption{Example of SRF (green) and PED (blue) segmentation in the enhanced volume TRAIN012.}
 	\label{fig:CirrusTrain012GenerationAndSegmentation}
 \end{figure}
 

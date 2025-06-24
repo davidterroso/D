@@ -1,7 +1,7 @@
 \chapter{Impact of Random Initialization of the U-Net in Segmentation Performance} \label{ap1:SegmentationUNetVariability}
 
 \begin{table*}[!ht]
-	\caption{Dice scores for every vendor and fluid for multiple runs performed in the same conditions. ``Set 1'' resumes Run 1 to Run 5, all of which validated using fold 2. Meanwhile, ``Set 2'' resumes the Runs from 6 to 14, validated in fold 3. All the runs in each set were trained on the same conditions, for 100 epochs. The random transformations applied were horizontal flipping and maximum rotation of $10^{\circ}$ applied to it. This provides an insight of how the randomness of the U-Net affects the segmentation performance.}
+	\caption{Dice scores for every vendor and fluid from multiple runs performed in the same conditions. ``Set 1'' includes Runs 1 to 5, all validated on fold 2. Meanwhile, ``Set 2'' includes Runs 6 to 14, validated on fold 3. All runs in each set were trained under the same conditions for 100 epochs. The random transformations applied were horizontal flipping and a maximum rotation of $10^{\circ}$. This provides insight into how the inherent randomness of the U-Net affects the segmentation performance.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|ccc|ccc|ccc|c|c|c|c|}
 			\hline
@@ -39,7 +39,7 @@
 			
 			\hline
 			
-			\textbf{Set 1} & 2 & \multicolumn{1}{c|}{0.51} & \multicolumn{1}{c|}{0.79} & 0.65 & \multicolumn{1}{c|}{0.77} & \multicolumn{1}{c|}{0.83} & 0.82 & \multicolumn{1}{c|}{0.79} & \multicolumn{1}{c|}{0.89} & 0.81 & 0.65 & 0.83 & 0.73 & 0.66 \\
+			\textbf{Set 1} & 2 & \multicolumn{1}{c|}{0.509} & \multicolumn{1}{c|}{0.791} & 0.647 & \multicolumn{1}{c|}{0.768} & \multicolumn{1}{c|}{0.833} & 0.822 & \multicolumn{1}{c|}{0.786} & \multicolumn{1}{c|}{0.890} & 0.810 & 0.650 & 0.832 & 0.734 & 0.657 \\
 			
 			\hline
 			\hline
@@ -64,7 +64,7 @@
 			
 			\hline
 			
-			\textbf{Set 2} & 3 & \multicolumn{1}{c|}{0.66} & \multicolumn{1}{c|}{0.76} & 0.61 & \multicolumn{1}{c|}{0.63} & \multicolumn{1}{c|}{0.83} & 0.74 & \multicolumn{1}{c|}{0.80} & \multicolumn{1}{c|}{0.85} & 0.76 & 0.71 & 0.81 & 0.69 & 0.66 \\
+			\textbf{Set 2} & 3 & \multicolumn{1}{c|}{0.662} & \multicolumn{1}{c|}{0.764} & 0.608 & \multicolumn{1}{c|}{0.625} & \multicolumn{1}{c|}{0.831} & 0.742 & \multicolumn{1}{c|}{0.804} & \multicolumn{1}{c|}{0.851} & 0.759 & 0.708 & 0.808 & 0.687 & 0.663 \\
 			
 			\hline
 			
