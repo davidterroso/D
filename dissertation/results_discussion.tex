@@ -796,7 +796,7 @@ When comparing the results across all slices between these binary segmentation m
 This increased number of background pixels is further compounded by the lack of inter-class competition. This inter-class competition is particularly helpful for segmenting other ambiguous regions, such as other fluids, which are not contested by other classes, in binary segmentation. Without this competiton, the model lacks motivation to learn the anatomical characteristics of the retina that are essential for identifying the region corresponding to each fluid type, often leading to over-segmentation. 
 \par
 This translates to a decrease in the IRF segmentation model's performance, particularly in the slices that do not present this fluid, with two examples shown in Figure \ref{fig:Experiment2IRFSegmentation}. The same performance decrease is also observed in SRF and PED, as shown later, due to the same reasons.
-\begin{figure}[b]
+\begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.7\linewidth]{figures/Experiment2IRFSegmentation.png}
 	\caption{Predictions (right) made by the binary IRF segmentation model and their respective GT (left). The prediction represented in the top shows an example of an accurate IRF segmentation, represented in red, while the bottom prediction reveals an oversegmentation in a slice that does not contain fluid.}
@@ -1399,7 +1399,7 @@ The worst performing fluid segmented in this dataset is the PED. In the binary m
 
 The segmentation of SRF was the most consistent in this dataset. While the Dice coefficients are lower than those obtained in the RETOUCH dataset, this drop in performance was expected in the CHUSJ dataset, given its diversity of images and the different segmentation criteria compared to those applied in RETOUCH. In Figure \ref{fig:CHUSJSRFSegmentation}, the segmentation of a B-scan with SRF is shown. While the segmentation by the model correctly identifies the SRF region, a slight oversegmentation occurs. This is seen across multiple B-scans, influenced by the data in which it was trained, resulting in a worse Dice score on the slices with fluid.
 
-\begin{figure}[b]
+\begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.60\linewidth]{figures/CHUSJSRFSegmentation.png}
 	\caption{SRF (green) and PED (blue) segmentations (right) in a B-scan from CHUSJ, compared to its GT (left). This shows the model's tendency to oversegmentation.}
@@ -1417,7 +1417,7 @@ Similar to SRF, the IRF segmentation is also adequate in the slices that contain
 
 However, the main reason behind the poor Dice coefficients when considering all the slices is the fluid detection. In slices where the fluids are not present, particularly IRF and PED, they are still predicted outside the retina, usually in the choroid. While this is already visible in Figure \ref{fig:CHUSJIRFSegmentation}, where all the fluids are segmented in the choroid, more examples are shown in Figure \ref{fig:CHUSJChoroidSegmentation}.
 
-\begin{figure}[b]
+\begin{figure}[!ht]
 	\centering	\includegraphics[width=1.0\linewidth]{figures/CHUSJChoroidSegmentation.png}
 	\caption{Segmentation of multiple fluids in the choroid region of the B-scans. It is a common problem and significantly reduces the Dice coefficients, as reported in Table \ref{tab:CHUSJSegmentationResults}. IRF is represented in red, SRF in green, and PED in blue.}
 	\label{fig:CHUSJChoroidSegmentation}
@@ -1531,8 +1531,8 @@ The comparison between these metrics and other articles in the literature is not
 
 In Experiment 3, a GAN was trained with the objective of generating the intermediate slice between a pair of two known and consecutive slices. In Table \ref{tab:Experiment1Metrics}, the PSNR and SSIM are shown for each fold in which the network was trained.
 
-\begin{table*}[!ht]
-	\caption{PSNR and SSIM in every device, for the generated slices in every validation fold.}
+\begin{table*}[b]
+	\caption{PSNR and SSIM values in every device, based on the generated slices in each validation fold.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|cccc|c|cccc|c|}
 		\hline
@@ -1578,7 +1578,7 @@ The generated slices capture the rough idea of the image, especially the retinal
 
 The differences in performance exhibited in this image regarding the representation of details are related with the inter-slice distance of the OCT volumes. In Cirrus, where the inter-slice distance is smaller than in Spectralis, the differences between the surrounding slices and the middle slice are smaller. Therefore, it is easier for the model to predict the content in the middle slice of a Cirrus volume than it is in Spectralis. Figure \ref{fig:TransitionBetweenConsecutiveBScansCirrusVsSpectralis} shows the surrounding slices of the B-scans generated in Figure \ref{fig:GeneratedSlicesCirrusVsSpectralis}. It becomes evident the difference in the transitions between the surrounding slices and the intermediate slices. For example, in the choroid region, where the generative model output was blurred, the structures that appear in the previous slice are significantly different in the following slice. In the same region, the Cirrus B-scans present a much smoother transition, which results in an improved and more realistic output.
 
-\begin{figure}[!ht]
+\begin{figure}
 	\centering	\includegraphics[width=1.0\linewidth]{figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png}
 	\caption{Surrounding slices of the B-scans generated in Figure \ref{fig:GeneratedSlicesCirrusVsSpectralis}.}
 	\label{fig:TransitionBetweenConsecutiveBScansCirrusVsSpectralis}
@@ -1590,9 +1590,9 @@ An accurate segmentation of fluid in generated B-scans is mainly dependent on th
 \par
 Similar to what was seen in other structures such as the choroid and the retinal layers, the quality of the generated fluid regions is dependent on the distance between scans more than the contrast and levels of noise in the image. However, the characteristics of each fluid also influence its generation, mainly because of their progression between consecutive slices. For example, the SRF usually appears in a more homogeneous and continuous shape, making it easier to predict its characteristics given the information of the surrounding slices. Contrasting, the IRF usually appears in small and irregular shapes, commonly separated by small retinal tissue. In consecutive slices, the small IRF regions quickly change its shape and may even merge together, which makes it harder to predict. The PED fluid can appear both as small inconsistent fluid like the IRF, but most commonly as a large and predictable region, similar to SRF.
 \par
-An example of each generated fluid is seen in Figure \ref{fig:GeneratedSlicesWithFluid}, where the generation of IRF confuses the model while the fake SRF and PED appear similar to its GT. The characteristics of these generated fluids is particularly important to understand the consequences that slice generation has in fluid volume estimation.
+An example of each generated fluid is seen in Figure \ref{fig:GeneratedSlicesWithFluid}, where the generation of IRF confuses the model while the fake SRF and PED appear similar to its GT. The characteristics of these generated fluids are particularly important to understand the consequences that slice generation has in fluid volume estimation.
 
-\begin{figure}[!ht]
+\begin{figure}
 	\centering	\includegraphics[width=1.0\linewidth]{figures/GeneratedSlicesWithFluid.png}
 	\caption{Examples of generated B-scans with fluid.}
 	\label{fig:GeneratedSlicesWithFluid}
@@ -1602,7 +1602,7 @@ In this figure, it becomes evident that the generation of SRF and PED, seen in T
 \par
 The generation of IRF, however, appears more troublesome, particularly in Spectralis. In this last device, while in the GT the fluid regions appear individually separated by small retinal tissue, in the generated images the structures surrounding the fluid appear deformed, making it hard to understand which region is fluid and which is retina. It is interesting to note that the SRF shape stays consistent, highlighting that this fluid changes much slower as the slices progress than IRF. In Cirrus, the model preserves the IRF structures accurately, apart from the small and thin sections of retinal tissue which separate the fluid regions, where some merging occurs. This small details occur due to the target slice being located between one slice that contains this small tissues and another that does not. Nevertheless, the characteristics of this fluid are much more similar to the GT than in Spectralis, emphasizing the impact that the inter-slice distance has in slice generation.
 \par
-The poor generation of IRF is also partially related with the loss used to train the GAN. Since this network was adapted from a video frame interpolation application, the method is not prepared for datasets that contain as much noise as OCT does. In the video use case, it makes sense to use a loss function that primarily evaluates the images at a pixel level, while being complimented by a perception component, which is the adversarial loss, that corresponds to the capability of a fake image fooling the discriminator. However, in OCT, the speckle that corrupts the image makes it considerably more difficult to optimize a network to generate images that are similar at a pixel level, since this noise is impossible to predict. Therefore, as the network attempts to reproduce the noise that occupies most of the B-scans, it does not apply as much attention to the fluid as it should, particularly in IRF that needs it more. Ultimately, this results in visually similar images in the matters of noise and retinal layers, but worse in the generation of fluids.
+The poor generation of IRF is also partially related with the loss used to train the GAN. Since this network was adapted from a video frame interpolation application, the method is not prepared for datasets that contain as much noise as OCT does. In the video use case, it makes sense to use a loss function that primarily evaluates the images at a pixel level, while being complemented by a perceptual component, which is the adversarial loss, that corresponds to the capability of a fake image to fool the discriminator. However, in OCT, the speckle that corrupts the image makes it considerably more difficult to optimize a network to generate images that are similar at a pixel level, since this noise is impossible to predict. Therefore, as the network attempts to reproduce the noise that occupies most of the B-scans, it does not apply as much attention to the fluid as it should, particularly in IRF that needs it more. Ultimately, this results in visually similar images in the matters of noise and retinal layers, but worse in the generation of fluids.
 \par
 The model trained on Run 3 was selected for generating intermediate slices in Experiment 6, as it achieved the best PSNR performance in three of the four devices utilized to acquire the B-scans. Additionally, its SSIM performance was comparable to those obtained in other runs.
 
@@ -1612,7 +1612,7 @@ The second experiment in the scope of generating intermediate slices was perform
 
 \begin{figure}[!ht]
 	\centering	\includegraphics[width=1.0\linewidth]{figures/GenerativeUNetResults.png}
-	\caption{B-scans generated using the U-Net. The images on the left show the original B-scan while those on the left are the corresponding generated slices.}
+	\caption{OCT B-scans generated using the U-Net. The images on the top row show the original B-scans while those on the bottom row are the corresponding generated slices.}
 	\label{fig:GenerativeUNetResults}
 \end{figure}
 
@@ -1791,7 +1791,7 @@ It is interesting to note that of the three biggest differences in IRF between t
 \par
 In Table \ref{tab:Experiment6DiceInGeneratedDataset}, the Dice coefficients is calculated for the predicted masks in the generated dataset. These predicted fluid masks are compared to the real GT masks of the equivalent slices. The information shown in this table helps the understanding of which fluids' segmentation and which vendors are the most affected by generating intermediate slices and how these slices are understood by the model.
 
-\begin{table*}[!ht]
+\begin{table*}
 	\caption{Comparison in Dice scores for every vendor and fluid in the reserved fold (fold 1), using the best segmentation model to segment the original B-scans and their generated equivalent.}
 	\centering
 	\resizebox{\textwidth}{!}{\begin{tabular}{|c|c|c|ccc|ccc|ccc|c|c|c|c|}

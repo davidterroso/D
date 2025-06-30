@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  24 JUN 2025 21:20
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  24 JUN 2025 23:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1005,8 +1005,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 21--22
  []
 
 
-Underfull \hbox (badness 6047) in paragraph at lines 29--29
-[]\T1/ptm/m/n/10.95 Developed a seg-men-ta-tion model
+Underfull \hbox (badness 4144) in paragraph at lines 27--27
+\T1/ptm/m/n/10.95 es-ti-ma-tion pipeline that in-te-grates
  []
 
 
@@ -1438,15 +1438,16 @@ File: figures/Experiment2IRFSegmentation.png Graphic file (type png)
 Package pdftex.def Info: figures/Experiment2IRFSegmentation.png  used on input 
 line 801.
 (pdftex.def)             Requested size: 298.75264pt x 291.38367pt.
- [60] [61]
-<figures/Experiment2PEDSegmentation.png, id=1404, 487.713pt x 473.478pt>
+ [60 <./figures/Experiment2IRFSegmentation.png>]
+[61] [62]
+<figures/Experiment2PEDSegmentation.png, id=1409, 487.713pt x 473.478pt>
 File: figures/Experiment2PEDSegmentation.png Graphic file (type png)
 <use figures/Experiment2PEDSegmentation.png>
 Package pdftex.def Info: figures/Experiment2PEDSegmentation.png  used on input 
 line 952.
 (pdftex.def)             Requested size: 298.75264pt x 290.04211pt.
- [62]
-<figures/ProbabilityVsPrioritySegmentation.png, id=1411, 642.60075pt x 349.305p
+ [63 <./figures/Experiment2PEDSegmentation.png>]
+<figures/ProbabilityVsPrioritySegmentation.png, id=1417, 642.60075pt x 349.305p
 t>
 File: figures/ProbabilityVsPrioritySegmentation.png Graphic file (type png)
 <use figures/ProbabilityVsPrioritySegmentation.png>
@@ -1473,8 +1474,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 1022--1022
 \T1/ptm/b/n/10.95 based
  []
 
-[63]
-<figures/Experiment2FinalModelPredictionsCirrus.png, id=1421, 644.517pt x 525.8
+[64 <./figures/ProbabilityVsPrioritySegmentation.png>] [65]
+<figures/Experiment2FinalModelPredictionsCirrus.png, id=1432, 644.517pt x 525.8
 19pt>
 File: figures/Experiment2FinalModelPredictionsCirrus.png Graphic file (type png
 )
@@ -1482,7 +1483,7 @@ File: figures/Experiment2FinalModelPredictionsCirrus.png Graphic file (type png
 Package pdftex.def Info: figures/Experiment2FinalModelPredictionsCirrus.png  us
 ed on input line 1042.
 (pdftex.def)             Requested size: 298.75264pt x 243.73306pt.
-<figures/Experiment2FinalModelPredictionsSpectralis.png, id=1422, 621.96pt x 52
+<figures/Experiment2FinalModelPredictionsSpectralis.png, id=1433, 621.96pt x 52
 1.439pt>
 File: figures/Experiment2FinalModelPredictionsSpectralis.png Graphic file (type
  png)
@@ -1490,7 +1491,7 @@ File: figures/Experiment2FinalModelPredictionsSpectralis.png Graphic file (type
 Package pdftex.def Info: figures/Experiment2FinalModelPredictionsSpectralis.png
   used on input line 1049.
 (pdftex.def)             Requested size: 298.75264pt x 250.47087pt.
-<figures/Experiment2FinalModelPredictionsTopcon.png, id=1423, 624.807pt x 542.0
+<figures/Experiment2FinalModelPredictionsTopcon.png, id=1434, 624.807pt x 542.0
 25pt>
 File: figures/Experiment2FinalModelPredictionsTopcon.png Graphic file (type png
 )
@@ -1498,79 +1499,89 @@ File: figures/Experiment2FinalModelPredictionsTopcon.png Graphic file (type png
 Package pdftex.def Info: figures/Experiment2FinalModelPredictionsTopcon.png  us
 ed on input line 1056.
 (pdftex.def)             Requested size: 298.75264pt x 259.17656pt.
- [64] [65]
-<figures/BCESegmentationError.png, id=1437, 773.07pt x 464.28pt>
+ [66 <./figures/Experiment2FinalModelPredictionsCirrus.png>]
+
+LaTeX Warning: Text page 67 contains only floats.
+
+[67 <./figures/Experiment2FinalModelPredictionsSpectralis.png> <./figures/Exper
+iment2FinalModelPredictionsTopcon.png>] [68]
+<figures/BCESegmentationError.png, id=1456, 773.07pt x 464.28pt>
 File: figures/BCESegmentationError.png Graphic file (type png)
 <use figures/BCESegmentationError.png>
 Package pdftex.def Info: figures/BCESegmentationError.png  used on input line 1
 130.
 (pdftex.def)             Requested size: 341.43437pt x 205.04893pt.
-<figures/BCESegmentationDecent.png, id=1438, 742.848pt x 337.917pt>
+<figures/BCESegmentationDecent.png, id=1457, 742.848pt x 337.917pt>
 File: figures/BCESegmentationDecent.png Graphic file (type png)
 <use figures/BCESegmentationDecent.png>
 Package pdftex.def Info: figures/BCESegmentationDecent.png  used on input line 
 1137.
 (pdftex.def)             Requested size: 341.43437pt x 155.3148pt.
- [66] [67] [68] [69]
-<figures/CHUSJProblematicImages.png, id=1484, 962.724pt x 301.563pt>
+ [69 <./figures/BCESegmentationError.png> <./figures/BCESegmentationDecent.png>
+] [70] [71] [72] [73]
+<figures/CHUSJProblematicImages.png, id=1509, 962.724pt x 301.563pt>
 File: figures/CHUSJProblematicImages.png Graphic file (type png)
 <use figures/CHUSJProblematicImages.png>
 Package pdftex.def Info: figures/CHUSJProblematicImages.png  used on input line
  1368.
 (pdftex.def)             Requested size: 426.79135pt x 133.68665pt.
- [70]
-<figures/RETOUCHSegmentationDifferences.png, id=1491, 745.5855pt x 130.086pt>
+ [74 <./figures/CHUSJProblematicImages.png>]
+<figures/RETOUCHSegmentationDifferences.png, id=1517, 745.5855pt x 130.086pt>
 File: figures/RETOUCHSegmentationDifferences.png Graphic file (type png)
 <use figures/RETOUCHSegmentationDifferences.png>
 Package pdftex.def Info: figures/RETOUCHSegmentationDifferences.png  used on in
 put line 1379.
 (pdftex.def)             Requested size: 426.79135pt x 74.46538pt.
-<figures/RETOUCHvsCHUSJSegmentationCriteria.png, id=1494, 884.322pt x 408.873pt
+<figures/RETOUCHvsCHUSJSegmentationCriteria.png, id=1520, 884.322pt x 408.873pt
 >
 File: figures/RETOUCHvsCHUSJSegmentationCriteria.png Graphic file (type png)
 <use figures/RETOUCHvsCHUSJSegmentationCriteria.png>
 Package pdftex.def Info: figures/RETOUCHvsCHUSJSegmentationCriteria.png  used o
 n input line 1386.
 (pdftex.def)             Requested size: 426.79135pt x 197.3299pt.
-<figures/CHUSJPEDSegmentation.png, id=1496, 456.396pt x 515.745pt>
+ [75 <./figures/RETOUCHSegmentationDifferences.png> <./figures/RETOUCHvsCHUSJSe
+gmentationCriteria.png>]
+<figures/CHUSJPEDSegmentation.png, id=1528, 456.396pt x 516.183pt>
 File: figures/CHUSJPEDSegmentation.png Graphic file (type png)
 <use figures/CHUSJPEDSegmentation.png>
 Package pdftex.def Info: figures/CHUSJPEDSegmentation.png  used on input line 1
 395.
-(pdftex.def)             Requested size: 277.41176pt x 313.49437pt.
-<figures/CHUSJSRFSegmentation.png, id=1498, 792.561pt x 382.812pt>
+(pdftex.def)             Requested size: 277.41176pt x 313.7606pt.
+<figures/CHUSJSRFSegmentation.png, id=1530, 792.561pt x 382.812pt>
 File: figures/CHUSJSRFSegmentation.png Graphic file (type png)
 <use figures/CHUSJSRFSegmentation.png>
 Package pdftex.def Info: figures/CHUSJSRFSegmentation.png  used on input line 1
 404.
 (pdftex.def)             Requested size: 256.07741pt x 123.68811pt.
-<figures/CHUSJIRFSegmentation.png, id=1500, 794.313pt x 375.585pt>
+<figures/CHUSJIRFSegmentation.png, id=1532, 794.313pt x 375.585pt>
 File: figures/CHUSJIRFSegmentation.png Graphic file (type png)
 <use figures/CHUSJIRFSegmentation.png>
 Package pdftex.def Info: figures/CHUSJIRFSegmentation.png  used on input line 1
 413.
 (pdftex.def)             Requested size: 256.07741pt x 121.08368pt.
-<figures/CHUSJChoroidSegmentation.png, id=1503, 850.815pt x 517.935pt>
+<figures/CHUSJChoroidSegmentation.png, id=1535, 850.815pt x 517.935pt>
 File: figures/CHUSJChoroidSegmentation.png Graphic file (type png)
 <use figures/CHUSJChoroidSegmentation.png>
 Package pdftex.def Info: figures/CHUSJChoroidSegmentation.png  used on input li
 ne 1421.
 (pdftex.def)             Requested size: 426.79135pt x 259.80457pt.
- [71]
-<figures/CHUSJSegmentationOnNoisyScans.png, id=1512, 558.888pt x 519.906pt>
+ [76 <./figures/CHUSJPEDSegmentation.png>] [77 <./figures/CHUSJSRFSegmentation.
+png> <./figures/CHUSJIRFSegmentation.png>]
+<figures/CHUSJSegmentationOnNoisyScans.png, id=1551, 558.888pt x 519.906pt>
 File: figures/CHUSJSegmentationOnNoisyScans.png Graphic file (type png)
 <use figures/CHUSJSegmentationOnNoisyScans.png>
 Package pdftex.def Info: figures/CHUSJSegmentationOnNoisyScans.png  used on inp
 ut line 1433.
 (pdftex.def)             Requested size: 320.0935pt x 297.76953pt.
- [72]
-<figures/CHUSJSegmentationAfterProcessing.png, id=1524, 839.865pt x 562.173pt>
+ [78 <./figures/CHUSJChoroidSegmentation.png>] [79 <./figures/CHUSJSegmentation
+OnNoisyScans.png>]
+<figures/CHUSJSegmentationAfterProcessing.png, id=1569, 839.865pt x 562.173pt>
 File: figures/CHUSJSegmentationAfterProcessing.png Graphic file (type png)
 <use figures/CHUSJSegmentationAfterProcessing.png>
 Package pdftex.def Info: figures/CHUSJSegmentationAfterProcessing.png  used on 
 input line 1509.
 (pdftex.def)             Requested size: 426.79135pt x 285.68364pt.
-<figures/CHUSJSegmentationAfterProcessingNoisyScans.png, id=1529, 635.538pt x 4
+<figures/CHUSJSegmentationAfterProcessingNoisyScans.png, id=1574, 635.538pt x 4
 64.499pt>
 File: figures/CHUSJSegmentationAfterProcessingNoisyScans.png Graphic file (type
  png)
@@ -1578,14 +1589,16 @@ File: figures/CHUSJSegmentationAfterProcessingNoisyScans.png Graphic file (type
 Package pdftex.def Info: figures/CHUSJSegmentationAfterProcessingNoisyScans.png
   used on input line 1515.
 (pdftex.def)             Requested size: 426.79135pt x 311.92856pt.
- [73] [74]
-<figures/GeneratedSlicesCirrusVsSpectralis.png, id=1544, 490.998pt x 466.47pt>
+ [80] [81 <./figures/CHUSJSegmentationAfterProcessing.png>] [82 <./figures/CHUS
+JSegmentationAfterProcessingNoisyScans.png>]
+<figures/GeneratedSlicesCirrusVsSpectralis.png, id=1595, 490.998pt x 466.47pt>
 File: figures/GeneratedSlicesCirrusVsSpectralis.png Graphic file (type png)
 <use figures/GeneratedSlicesCirrusVsSpectralis.png>
 Package pdftex.def Info: figures/GeneratedSlicesCirrusVsSpectralis.png  used on
  input line 1574.
 (pdftex.def)             Requested size: 320.0935pt x 304.12009pt.
-<figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png, id=1547, 729
+[83 <./figures/GeneratedSlicesCirrusVsSpectralis.png>]
+<figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png, id=1603, 729
 .051pt x 468.441pt>
 File: figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png Graphic 
 file (type png)
@@ -1593,48 +1606,50 @@ file (type png)
 Package pdftex.def Info: figures/TransitionBetweenConsecutiveBScansCirrusVsSpec
 tralis.png  used on input line 1582.
 (pdftex.def)             Requested size: 426.79135pt x 274.23343pt.
-<figures/GeneratedSlicesWithFluid.png, id=1551, 721.386pt x 478.296pt>
+ [84 <./figures/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png>]
+<figures/GeneratedSlicesWithFluid.png, id=1613, 721.386pt x 478.296pt>
 File: figures/GeneratedSlicesWithFluid.png Graphic file (type png)
 <use figures/GeneratedSlicesWithFluid.png>
 Package pdftex.def Info: figures/GeneratedSlicesWithFluid.png  used on input li
 ne 1596.
 (pdftex.def)             Requested size: 426.79135pt x 282.9731pt.
- [75]
-<figures/GenerativeUNetResults.png, id=1557, 523.41pt x 310.104pt>
+ [85 <./figures/GeneratedSlicesWithFluid.png>]
+<figures/GenerativeUNetResults.png, id=1620, 523.41pt x 310.104pt>
 File: figures/GenerativeUNetResults.png Graphic file (type png)
 <use figures/GenerativeUNetResults.png>
 Package pdftex.def Info: figures/GenerativeUNetResults.png  used on input line 
 1614.
 (pdftex.def)             Requested size: 426.79135pt x 252.85791pt.
- [76] [77]
-<figures/FluidVolumeScatterExperiment5.png, id=1571, 292.146pt x 294.117pt>
+ [86 <./figures/GenerativeUNetResults.png>] [87]
+<figures/FluidVolumeScatterExperiment5.png, id=1635, 292.146pt x 294.117pt>
 File: figures/FluidVolumeScatterExperiment5.png Graphic file (type png)
 <use figures/FluidVolumeScatterExperiment5.png>
 Package pdftex.def Info: figures/FluidVolumeScatterExperiment5.png  used on inp
 ut line 1680.
 (pdftex.def)             Requested size: 281.68385pt x 283.60121pt.
-
-[78] [79]
-<figures/Experiment6GTvsAll.png, id=1592, 603.783pt x 588.672pt>
+ [88] [89]
+[90 <./figures/FluidVolumeScatterExperiment5.png>]
+<figures/Experiment6GTvsAll.png, id=1661, 603.783pt x 588.672pt>
 File: figures/Experiment6GTvsAll.png Graphic file (type png)
 <use figures/Experiment6GTvsAll.png>
 Package pdftex.def Info: figures/Experiment6GTvsAll.png  used on input line 175
 7.
 (pdftex.def)             Requested size: 426.79135pt x 416.10966pt.
-<figures/Experiment6PredictedVsAll.png, id=1593, 596.994pt x 293.898pt>
+<figures/Experiment6PredictedVsAll.png, id=1662, 596.994pt x 293.898pt>
 File: figures/Experiment6PredictedVsAll.png Graphic file (type png)
 <use figures/Experiment6PredictedVsAll.png>
 Package pdftex.def Info: figures/Experiment6PredictedVsAll.png  used on input l
 ine 1763.
 (pdftex.def)             Requested size: 426.79135pt x 210.11304pt.
-<figures/Experiment6GeneratedVsEnhanced.png, id=1594, 291.27pt x 294.336pt>
+<figures/Experiment6GeneratedVsEnhanced.png, id=1663, 291.27pt x 294.336pt>
 File: figures/Experiment6GeneratedVsEnhanced.png Graphic file (type png)
 <use figures/Experiment6GeneratedVsEnhanced.png>
 Package pdftex.def Info: figures/Experiment6GeneratedVsEnhanced.png  used on in
 put line 1769.
 (pdftex.def)             Requested size: 213.39568pt x 215.64046pt.
- [80] [81] [82]
-<figures/SpectralisTrain039GenerationAndSegmentation.png, id=1615, 965.571pt x 
+ [91] [92 <./figures/Experiment6GTvsAll.png>] [93 <./figures/Experiment6Predict
+edVsAll.png> <./figures/Experiment6GeneratedVsEnhanced.png>] [94]
+<figures/SpectralisTrain039GenerationAndSegmentation.png, id=1691, 965.571pt x 
 558.888pt>
 File: figures/SpectralisTrain039GenerationAndSegmentation.png Graphic file (typ
 e png)
@@ -1646,8 +1661,8 @@ g  used on input line 1859.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[83]
-<figures/CirrusTrain012GenerationAndSegmentation.png, id=1622, 965.352pt x 558.
+[95]
+<figures/CirrusTrain012GenerationAndSegmentation.png, id=1698, 965.352pt x 558.
 888pt>
 File: figures/CirrusTrain012GenerationAndSegmentation.png Graphic file (type pn
 g)
@@ -1655,34 +1670,18 @@ g)
 Package pdftex.def Info: figures/CirrusTrain012GenerationAndSegmentation.png  u
 sed on input line 1873.
 (pdftex.def)             Requested size: 426.79135pt x 247.08833pt.
-) [84] [85 <./figures/Experiment2IRFSegmentation.png>] [86 <./figures/Experimen
-t2PEDSegmentation.png> <./figures/ProbabilityVsPrioritySegmentation.png>]
-[87 <./figures/Experiment2FinalModelPredictionsCirrus.png> <./figures/Experimen
-t2FinalModelPredictionsSpectralis.png>] [88 <./figures/Experiment2FinalModelPre
-dictionsTopcon.png> <./figures/BCESegmentationError.png>] [89 <./figures/BCESeg
-mentationDecent.png> <./figures/CHUSJProblematicImages.png> <./figures/RETOUCHS
-egmentationDifferences.png>] [90 <./figures/RETOUCHvsCHUSJSegmentationCriteria.
-png> <./figures/CHUSJPEDSegmentation.png>] [91 <./figures/CHUSJSRFSegmentation.
-png> <./figures/CHUSJIRFSegmentation.png> <./figures/CHUSJChoroidSegmentation.p
-ng>] [92 <./figures/CHUSJSegmentationOnNoisyScans.png>] [93 <./figures/CHUSJSeg
-mentationAfterProcessing.png>] [94 <./figures/CHUSJSegmentationAfterProcessingN
-oisyScans.png>] [95 <./figures/GeneratedSlicesCirrusVsSpectralis.png> <./figure
-s/TransitionBetweenConsecutiveBScansCirrusVsSpectralis.png>] [96 <./figures/Gen
-eratedSlicesWithFluid.png> <./figures/GenerativeUNetResults.png>] [97 <./figure
-s/FluidVolumeScatterExperiment5.png>] [98 <./figures/Experiment6GTvsAll.png>]
-[99 <./figures/Experiment6PredictedVsAll.png> <./figures/Experiment6GeneratedVs
-Enhanced.png>] [100 <./figures/SpectralisTrain039GenerationAndSegmentation.png>
- <./figures/CirrusTrain012GenerationAndSegmentation.png>]
+ [96 <./figures/SpectralisTrain039GenerationAndSegmentation.png>]) [97 <./figur
+es/CirrusTrain012GenerationAndSegmentation.png>]
 \openout2 = `conclusion.aux'.
 
  (conclusion.tex
 Chapter 6.
-[101
+[98
 
 
 
 
-] [102] [103] [104] [105] [106] [107] [108]) [109]
+] [99] [100] [101] [102] [103] [104] [105]) [106]
 LaTeX Font Info:    Trying to load font information for T1+pcrs on input line 6
 6.
 
@@ -1699,7 +1698,7 @@ Overfull \hbox (0.69101pt too wide) in paragraph at lines 66--66
 
  []
 
-[110
+[107
 
 
 
@@ -1710,25 +1709,25 @@ Overfull \hbox (0.44347pt too wide) in paragraph at lines 66--66
 ransformer for en-hanced mac-u-lar edema
  []
 
-[111] [112]
+[108] [109]
 Overfull \hbox (19.33269pt too wide) in paragraph at lines 66--66
 \T1/ptm/m/n/10.95 Sys-tem-atic Re-view of Re-cent De-vel-op-ments and Chal-leng
 es,^^Q \T1/ptm/m/it/10.95 arXiv e-prints\T1/ptm/m/n/10.95 , arXiv:2407.00116,
  []
 
-[113] [114]
+[110] [111]
 Overfull \hbox (10.93967pt too wide) in paragraph at lines 66--66
 \T1/ptm/m/n/10.95 ^^P  Gen-er-a-tive Ad-ver-sar-ial Net-works: An Overview,^^Q 
 \T1/ptm/m/it/10.95 IEEE Sig-nal Pro-cess-ing Mag-a-zine\T1/ptm/m/n/10.95 , vol.
  35,
  []
 
-[115] [116]
+[112] [113]
 \openout2 = `appendix1.aux'.
 
  (appendix1.tex
 Appendix A.
-) [117
+) [114
 
 
 ] (thesis.aux (abstract.aux) (un-sdg.aux) (acknowledgements.aux)
@@ -1742,13 +1741,13 @@ Package logreq Info: Writing requests to 'thesis.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 24075 strings out of 476339
- 447523 string characters out of 5788120
- 1950340 words of memory out of 5000000
+ 24072 strings out of 476339
+ 447499 string characters out of 5788120
+ 1936340 words of memory out of 5000000
  43604 multiletter control sequences out of 15000+600000
  596425 words of font info for 139 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 78i,18n,82p,1408b,3232s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 78i,18n,82p,1408b,3236s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}<C:
 /Users/david/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex1
 0.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts
@@ -1764,9 +1763,9 @@ X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (136 pages, 163870146 bytes).
+Output written on thesis.pdf (133 pages, 163872423 bytes).
 PDF statistics:
- 2042 PDF objects out of 2073 (max. 8388607)
- 396 named destinations out of 1000 (max. 500000)
+ 2030 PDF objects out of 2073 (max. 8388607)
+ 393 named destinations out of 1000 (max. 500000)
  725 words of extra memory for PDF output out of 10000 (max. 10000000)
 

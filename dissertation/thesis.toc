@@ -38,17 +38,17 @@
 \contentsline {subsubsection}{\numberline {5.1.1.3}Experiment 1.3 - Vertical Patch Extraction}{46}{subsubsection.5.1.1.3}%
 \contentsline {subsection}{\numberline {5.1.2}Experiment 2 - Multi-class Fluid Segmentation using Three Separate U-Net models}{57}{subsection.5.1.2}%
 \contentsline {subsubsection}{\numberline {5.1.2.1}Experiment 2.1 - Multi-class Segmentation Loss}{57}{subsubsection.5.1.2.1}%
-\contentsline {subsubsection}{\numberline {5.1.2.2}Experiment 2.2 - Balanced Cross-entropy Loss}{64}{subsubsection.5.1.2.2}%
-\contentsline {subsection}{\numberline {5.1.3}Experiment 1 vs Experiment 2: Comparison in the RETOUCH Dataset}{66}{subsection.5.1.3}%
-\contentsline {subsection}{\numberline {5.1.4}Experiment 1 vs Experiment 2: Comparison in the CHUSJ Dataset}{69}{subsection.5.1.4}%
-\contentsline {section}{\numberline {5.2}Intermediate Slice Synthesis}{73}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Experiment 3 - Intermediate Slices Synthesis Using a GAN}{74}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Experiment 4 - Intermediate Slices Synthesis Using a U-Net}{76}{subsection.5.2.2}%
-\contentsline {section}{\numberline {5.3}Fluid Volume Estimation}{78}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Experiment 5 - Fluid Volume Estimation Using Predicted Masks in Real OCT Volumes}{78}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Experiment 6 - Fluid Volume Estimation Using Predicted Masks in Generated and Super-resolved OCT Volumes}{80}{subsection.5.3.2}%
-\contentsline {chapter}{\numberline {6}Conclusion}{101}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Limitations}{106}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Future Research}{107}{section.6.2}%
-\contentsline {chapter}{References}{110}{section*.104}%
-\contentsline {chapter}{\numberline {A}Impact of Random Initialization of the U-Net in Segmentation Performance}{117}{appendix.A}%
+\contentsline {subsubsection}{\numberline {5.1.2.2}Experiment 2.2 - Balanced Cross-entropy Loss}{66}{subsubsection.5.1.2.2}%
+\contentsline {subsection}{\numberline {5.1.3}Experiment 1 vs Experiment 2: Comparison in the RETOUCH Dataset}{69}{subsection.5.1.3}%
+\contentsline {subsection}{\numberline {5.1.4}Experiment 1 vs Experiment 2: Comparison in the CHUSJ Dataset}{73}{subsection.5.1.4}%
+\contentsline {section}{\numberline {5.2}Intermediate Slice Synthesis}{80}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Experiment 3 - Intermediate Slices Synthesis Using a GAN}{81}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Experiment 4 - Intermediate Slices Synthesis Using a U-Net}{86}{subsection.5.2.2}%
+\contentsline {section}{\numberline {5.3}Fluid Volume Estimation}{88}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Experiment 5 - Fluid Volume Estimation Using Predicted Masks in Real OCT Volumes}{88}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Experiment 6 - Fluid Volume Estimation Using Predicted Masks in Generated and Super-resolved OCT Volumes}{90}{subsection.5.3.2}%
+\contentsline {chapter}{\numberline {6}Conclusion}{98}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Limitations}{103}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Future Research}{105}{section.6.2}%
+\contentsline {chapter}{References}{107}{section*.104}%
+\contentsline {chapter}{\numberline {A}Impact of Random Initialization of the U-Net in Segmentation Performance}{114}{appendix.A}%
