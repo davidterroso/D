@@ -6,7 +6,3 @@ lmdb/
 # The paths.py file is being ignored so that 
 # it does not update when using a different device
 paths.py 
-# PDF is not being tracked because it takes 
-# too much space and I was starting to run out 
-# of it
-*.pdf
