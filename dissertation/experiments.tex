@@ -73,7 +73,7 @@ In Experiment 1.1, the patches, of size 256 $\times$ 128, were extracted randoml
 The model was trained for 100 epochs with a batch size of 32, with no early stopping. The input patches were transformed by a rotation between 0 and 10 degrees, and horizontal flipping. 
 
 \subsection{Experiment 1.2 - Large Patch Extraction}
-In this experiment, the patch size was changed from the 256 $\times$ 128 pixels used in Experiment 1.1 to 496 $\times$ 512 pixels and was no longer extracted vertically. By using these dimensions, the model receives a larger context of the B-scan as input, allowing it to learn the anatomical references that characterize and limit the fluids.
+In this experiment, the patch size was changed from the 256 $\times$ 128 pixels used in Experiment 1.1 to 496 $\times$ 512 pixels and was no longer extracted randomly. By using these dimensions, the model receives a larger context of the B-scan as input, allowing it to learn the anatomical references that characterize and limit the fluids.
 \par
 Since larger images were loaded to the model, the batch size had to be changed from the usual 32 to 16, due to memory constrains. Nevertheless, the model was trained for 100 epochs while using the same transformations as in Experiment 1.1.
 
@@ -144,7 +144,7 @@ Table \ref{tab:ExperimentsSummary} provides a summary of the experiments perform
 		\textbf{Experiment 3 - Synthesis of Intermediate Slices using a GAN} &
 		\textbf{3} – Trained a GAN to generate a fake B-scan between a pair of two known B-scans. \\
 		\hline
-		\textbf{Experiment 3 - Synthesis of Intermediate Slices using a U-Net} &
+		\textbf{Experiment 4 - Synthesis of Intermediate Slices using a U-Net} &
 		\textbf{4} – Trained a U-Net to generate a fake B-scan between a pair of two known B-scans. \\
 		\hline
 		\textbf{Experiment 5 - Fluid Volume Estimation in Real OCT Volumes} &

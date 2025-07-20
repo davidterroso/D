@@ -172,7 +172,7 @@ Furthermore, Figure \ref{fig:BigPatchesSegmentationCirrus} shows that the model 
 \par
 Lastly, it is important to note that the IRF did not improve as much as the other fluids. This happens because the training patches in Experiment 1.1 were already centered on the retina, providing sufficient anatomical context for IRF segmentation. By training the model with larger patches, its attention to the finer details may be reduced, resulting in less precise segmentations of small fluid regions.
 \par
-In Figure \ref{fig:BigPatchesSegmentationTopcon}, the model confuses the choroid with the retina, labeling parts of it as IRF and PED. The likely cause for this confusion is that the patches used for training are often cropped in the middle of the retinal layer (as illustrated in Figure \ref{fig:BigPatchExtraction}), preventing the model from fully the choroid's position relative to the retina. The inaccurate segmentation of IRF and PED in this region is probably due to the visual similarities between the structures observed in the choroid and the fluid regions in the retina. This indicates that the model does not correctly recognize the anatomical location of the choroid.
+In Figure \ref{fig:BigPatchesSegmentationTopcon}, the model confuses the choroid with the retina, labeling parts of it as IRF and PED. The likely cause for this confusion is that the patches used for training are often cropped in the middle of the retinal layer (as illustrated in Figure \ref{fig:BigPatchExtraction}), preventing the model from fully understanding the choroid's position relative to the retina. The inaccurate segmentation of IRF and PED in this region is probably due to the visual similarities between the structures observed in the choroid and the fluid regions in the retina. This indicates that the model does not correctly recognize the anatomical location of the choroid.
 
 \begin{figure}[!ht]
 	\centering
@@ -273,7 +273,7 @@ Despite performance variability observed in Table \ref{tab:Experiment1.3FourPatc
 \par
 This overall increment can be attributed to two main changes: training on vertical patches and resizing the images. Training with vertical patches enables the model to focus on finer details within each region. This is important because the retinal fluid segmentation relies heavily on the structural features of the retina, a region that occupies only a small portion of the entire image. Although the patch size in this experiment is smaller than in Experiment 1.2, the patches were still able to capture the transitions between the retina and the surrounding regions such as choroid and background. A smaller patch size also requires less memory, therefore allowing an increase in the batch size, leading to faster and more stable convergence during training. Meanwhile, resizing the input images makes them more homogeneous across different vendors. This results in the same anatomical structures being represented with consistent shapes and sizes across OCT B-scans from different vendors, simplifying the learning process considerably.
 \par
-As observed in Figure \ref{fig:BigPatchesSegmentationTopcon}, the model previously predicted fluid masks in the choroid region. However, in Figure \ref{fig:VerticalPatchesSegmentationTopcon}, the models trained on vertical patches no longer make such predictions, even when applying to the same B-scan. This suggest that, by using vertical patches, the model learns not to segment below the retina. This behavior was not observed when larger patches were used, since those often failed to simultaneously capture both the retinal layer and the choroid in the same patch, restraining the model from learning their spatial relationship, which led to incorrect fluid predictions in the choroid region.
+As observed in Figure \ref{fig:BigPatchesSegmentationTopcon}, the model previously predicted fluid masks in the choroid region. However, in Figure \ref{fig:VerticalPatchesSegmentationTopcon}, the models trained on vertical patches no longer make such predictions, even when applying to the same B-scan. This suggests that, by using vertical patches, the model learns not to segment below the retina. This behavior was not observed when larger patches were used, since those often failed to simultaneously capture both the retinal layer and the choroid in the same patch, restraining the model from learning their spatial relationship, which led to incorrect fluid predictions in the choroid region.
 
 \begin{figure}
 	\centering
@@ -717,10 +717,10 @@ The performance of this model on the reserved test fold was subsequently compare
 \end{figure}
 
 \subsection{Experiment 2 - Multi-class Fluid Segmentation using Three Separate U-Net models}
-The results presented in this subsection correspond to the use of three separate U-Net models, one for each fluid, to perform multi-class fluid segmentation. In Experiment 2.1, the loss function was the same type as in Experiment 1, while in Experiment 2.2, the loss function was changed to the weighted cross-entropy. The results from these experiments were compared with each other.
+The results presented in this subsection correspond to the use of three separate U-Net models, one for each fluid, to perform multi-class fluid segmentation. In Experiment 2.1, the loss function was the same as in Experiment 1, while in Experiment 2.2, the loss function was changed to the weighted cross-entropy. The results from these experiments were compared with each other.
 
 \subsubsection{Experiment 2.1 - Multi-class Segmentation Loss}
-In this experiment, eight models were trainedfor each fluid type: one model per fold in the multi-class 5-fold split, and one model per fold in a fluid-specific 5-fold split.
+In this experiment, eight models were trained for each fluid type: one model per fold in the multi-class 5-fold split, and one model per fold in a fluid-specific 5-fold split.
 \par
 Table \ref{tab:Experiment2IRF} illustrates the performance of the models trained to segment IRF, with the upper block corresponding to the models trained on the multi-class split, while the second block shows the performance of models trained on the IRF-specific split.
 
@@ -1031,7 +1031,7 @@ It is important to note that the ``Fluid'' column does not change between mergin
 \par
 The overall segmentation performance is comparable to the values obtained during training on the validation folds. For IRF, the model trained in Run 42 performed better on the unseen fold than on the fold where it was originally validated. This improvement holds when considering all slices, only those with IRF, and those without IRF, indicating good generalization by the model.
 \par
-In contrast, the SRF segmentation model did not perform as well on the unseen fold. While fluid detection improved, - evident from the higher Dice coefficient when considering all slices compared to just those with fluid - this contrasts with its performance during validation in Run 52, where performance dropped in that scenario. However, the segmentation worsened significantly in slices containing SRF, with the Dice coefficient dropping from 0.819 in  validation to 0.627 in the unseen fold. Nonetheless, when considering all slices, the Dice coefficients are still comparable, largely due to the improved performances on slices without SRF.
+In contrast, the SRF segmentation model did not perform as well on the unseen fold. While fluid detection improved - evident from the higher Dice coefficient when considering all slices compared to just those with fluid - this contrasts with its performance during validation in Run 52, where performance dropped in that scenario. However, the segmentation worsened significantly in slices containing SRF, with the Dice coefficient dropping from 0.819 in  validation to 0.627 in the unseen fold. Nonetheless, when considering all slices, the Dice coefficients are still comparable, largely due to the improved performances on slices without SRF.
 \par
 For IRF and SRF, the models benefited from a good generalization in the fluid detection task, outperforming their validation results. However, in the case of PED, where the models were most sensitive, the performance declined. PED is the only fluid for which the Dice coefficient is lower when considering all slices than when considering only slices with the fluid. This drop in performance is directly related to the model selected for PED segmentation. As seen in Table \ref{tab:Experiment2PED}, the model trained in Run 59 already shows a subpar performance in fluid detection, as indicated by the decrease in Dice coefficient when considering all slices instead of only those that contain PED. Therefore, the poor detection in unseen images is not unexpected. It is worth noting that the selected model performs worse in the Spectralis volumes, which mirrors what was observed during validation. Similarly, the vendor in which the best performance is attained is the Topcon, where the model also achieved the highest scores during validation. Moreover, all PED segmentation models were expected to generalize poorly on the unseen fold in the fluid detection task, due to the previously discussed reasons that explain the lack of robustness in these models, such as the uneven distribution of PED in OCT volumes.
 \par
@@ -1393,7 +1393,7 @@ The worst performing fluid segmented in this dataset is the PED. In the binary m
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.65\linewidth]{figures/CHUSJPEDSegmentation.png}
-	\caption{SRF and PED segmentation in two OCT B-scans from CHUSJ. The regions segmented by the model as PED were not considered in the GT, but present characteristics similar to regions segmented as PED in the RETOUCH dataset (used for training).}
+	\caption{SRF (green) and PED (blue) segmentation in two OCT B-scans from CHUSJ. The regions segmented by the model as PED were not considered in the GT, but present characteristics similar to regions segmented as PED in the RETOUCH dataset (used for training).}
 	\label{fig:CHUSJPEDSegmentation}
 \end{figure}
 
@@ -1554,7 +1554,7 @@ In Experiment 3, a GAN was trained with the objective of generating the intermed
 	\label{tab:Experiment1Metrics}
 \end{table*}
 
-One of the trends that becomes evident when looking at this table is the difference in results between devices, which is constant across independent of the fold in which it was trained.
+One of the trends that becomes evident when looking at this table is the difference in results between devices, which is constant independently of the fold in which it was trained.
 \par
 In every fold, the scans generated with the Spectralis device show better values both in PSNR and SSIM, while those obtained with Cirrus are significantly worse. This is tied to the characteristics of the images obtained with each device. In Spectralis, the inter-slice distance is larger than in Cirrus, but this is compensated by the better B-scan quality, contrast, and reduced levels of noise. The opposite happens in Cirrus, as the B-scans are noisier and with a decent contrast, but separated by a smaller distance. In Topcon, the distance is similar to the Cirrus, but presents less noise with worse contrast. 
 \par
@@ -1638,7 +1638,7 @@ The experiments discussed in this section relate to the estimation of fluid volu
 \par
 This fold had not been seen by any segmentation or generative model and the GT fluid masks are available for all OCT scans.
 \par
-The discussion of these experiments aim to understand the applicability of enhancing the resolution of an OCT volume and how that affects the total fluid volume estimated, among other aspects such as the perception of the generated slices by the segmentation model.
+The discussion of these experiments aims to understand the applicability of enhancing the resolution of an OCT volume and how that affects the total fluid volume estimated, among other aspects such as the perception of the generated slices by the segmentation model.
 \par
 The results are shown in tables where for each considered OCT volume, the fluid volume estimated for each fluid type (IRF, SRF, and PED) is presented in mm$^{3}$. At the end of each table, the MAE is shown to resume the differences between the GT fluid volumes and the prediction.
 \par
@@ -1647,7 +1647,7 @@ In Experiment 6, the Dice coefficient for the predict segmentation masks in full
 Lastly, scatter plots are shown for each comparison between predictions, where the each of the fluids' volumes calculated for each OCT scan are compared with each other, providing an intuitive and visual representation of the differences associated with the used data.
 
 \subsection{Experiment 5 - Fluid Volume Estimation Using Predicted Masks in Real OCT Volumes}
-In Experiment 5, the fluid volume was calculated for each type of fluid in the OCT volumes from the reserved fold, using the previously described in \ref{Methods} Materials and Methods. The volume of each fluid, for each OCT volume in the reserved fold, is shown in Table \ref{tab:FluidVolumesExperiment5}, in mm$^{3}$. In Figure \ref{fig:FluidVolumeScatterExperiment5}, the comparison between the values calculated using the GT masks and the masks predicted by the segmentation model is shown, using the values present in this table.
+In Experiment 5, the fluid volume was calculated for each type of fluid in the OCT volumes from the reserved fold, using the equation previously described in \ref{Methods} Materials and Methods. The volume of each fluid, for each OCT volume in the reserved fold, is shown in Table \ref{tab:FluidVolumesExperiment5}, in mm$^{3}$. In Figure \ref{fig:FluidVolumeScatterExperiment5}, the comparison between the values calculated using the GT masks and the masks predicted by the segmentation model is shown, using the values present in this table.
 
 \begin{table*}[!ht]
 	\centering
@@ -1692,11 +1692,11 @@ Overall, the volumes predicted in scans with considerable quantities of fluid te
 \par
 Nonetheless, the fluid prediction in slices with little to no fluid tends to be accurate, highlighting the good specificity and segmentation of small fluids previously seen in the segmentation model.
 \par
-Regarding the performances per vendor, there is no significant differences to note, as most of the differences in noticeable in these results are related to the different characteristics of the patients in each OCT.
+Regarding the performances per vendor, there is no significant differences to note, as most of the differences noticeable in these results are related to the different characteristics of the patients in each OCT.
 \par
 It is interesting to note that in discrepancies between the real volume and the predicted volume, the segmentation model tends to overpredict fluid, which is associated with the oversegmentation trend seen in the predictions performed by this model. This is an important aspect to note, as it is rooted to the segmentation criteria used in the training data, the RETOUCH dataset. This trend further justifies the oversegmentations seen by the model in the CHUSJ dataset.
 \par
-In the following subsection, the results shown in Table \ref{tab:FluidVolumesExperiment5} will be compared with the estimated fluid volumes obtained using only generated slices and in an enhanced volume, where between every known slice another slice is generated.
+In the following subsection, the results shown in Table \ref{tab:FluidVolumesExperiment5} will be compared with the estimated fluid volumes obtained using only generated slices and in enhanced volumes, where between every known slice another slice is generated.
 
 \subsection{Experiment 6 - Fluid Volume Estimation Using Predicted Masks in Generated and Super-resolved OCT Volumes}
 
@@ -1775,7 +1775,7 @@ Considering the information exposed in the previous table and figures, many conc
 \par
 The SRF presents the smallest differences between columns, as the MAE in this fluid are smaller than in any other fluid. The fluid estimation of SRF benefits from the accurate representation of this fluid in the generated slices, due to its uniform, homogeneous, and predictable characteristics, as seen in Experiment 3. Contrary to IRF, the segmentation model performs exceptionally well in the segmentation of SRF, when compared to the other fluids. Therefore, an accurate representation of the SRF masks is obtained, leading to an accurate fluid estimation.
 \par
-The estimation of the PED volume appears as an intermediate performance between the other two fluids. The segmentation of this fluid is better than IRF, but worse than PED, while its representation in generated slices is accurate when presented in large regions, but not so good when appearing in small regions. This translates to a smaller deviation between columns when comparing to IRF, but not as good as SRF.
+The estimation of the PED volume appears as an intermediate performance between the other two fluids. The segmentation of this fluid is better than IRF, but worse than SRF, while its representation in generated slices is accurate when presented in large regions, but not so good when appearing in small regions. This translates to a smaller deviation between columns when comparing to IRF, but not as good as SRF.
 \par
 The differences between the columns ``GT'' and ``P'' are inherent to the capability of the segmentation model. This model's capabilities also limit the accuracy of the estimated volumes in the generated and enhanced datasets, as the masks predicted in the generated slices are obtained using this model. Therefore, to understand the effect that generating slices has in total fluid volume estimation, it is important to observe the differences between the ``P'', ``G'', and ``E'' columns. 
 \par
@@ -1785,7 +1785,7 @@ In fact, the largest relative errors shown in this table occur mainly in cases w
 \par
 To isolate the impact of the generated slices in the fluid estimation, it is more important to look at the differences between the fluids estimated in columns ``P'' and ``G'', as well as Figures \ref{fig:Experiment6PredictedVsAll} and \ref{fig:Experiment6GeneratedVsEnhanced}. By observing this data, it becomes evident the similarity between performances in these datasets. In the SRF fluid estimation, the values are particularly similar, as well as in most cases of PED. However, it is in IRF where the largest differences appear, where the predictions of IRF by the segmentation model are of less quantity in the generated dataset.
 \par
-As seen in Experiment 3, IRF is the most difficult fluid to generate and attempts to recreate this fluid in intermediate slice, originate structures that do not resemble the IRF fluid. As a result, the segmentation models do not perceive this generated regions as IRF and do not segment them. This trend also seen in Figure \ref{fig:Experiment6PredictedVsAll} in the comparison between the original dataset and the enhanced dataset, where the largest differences appear in the segmentation of IRF, as the segmentation model predicts less fluid in the generated slices. However, since these B-scans are also mixed with original B-scans to form the OCT volume, the resulting differences are less significant.
+As seen in Experiment 3, IRF is the most difficult fluid to generate and attempts to recreate this fluid in intermediate slice, originating structures that do not resemble the IRF fluid. As a result, the segmentation models do not perceive this generated regions as IRF and do not segment them. This trend also seen in Figure \ref{fig:Experiment6PredictedVsAll} in the comparison between the original dataset and the enhanced dataset, where the largest differences appear in the segmentation of IRF, as the segmentation model predicts less fluid in the generated slices. However, since these B-scans are also mixed with original B-scans to form the OCT volume, the resulting differences are less significant.
 \par
 It is interesting to note that of the three biggest differences in IRF between the columns ``P'' and ``E'', TRAIN016, TRAIN039, and TRAIN048, which are highlighted in Figure \ref{fig:Experiment6PredictedVsAll} as the furthest points from the gray line, are in OCT volumes obtained with the Spectralis device. This trend is related with the larger inter-slice distance in Spectralis than in any other device, which makes it harder to create accurate IRF regions, which is amplified by this fluid's characteristics.
 \par
@@ -1877,6 +1877,6 @@ Figure \ref{fig:CirrusTrain012GenerationAndSegmentation} shows the segmentation 
 
 In the shown generated images, the overall structure of the SRF and PED fluids is easier to accurately represent in the intermediate slices. Not only the transitions are smoother due to the smaller inter-slice distance in the Cirrus volumes, but also because of their homogeneous and regular shapes. Small artifacts that are seen in the GT slices are not represented in the intermediate slice, as they are unpredictable.
 \par
-As the generated fluid regions show the appearance that is characteristics of the true fluid regions in the original scans that compose the RETOUCH dataset, its segmentation is visually similar to the segmentation performed in the surrounding slices, which resemble the GT masks of the surrounding slices. 
+As the generated fluid regions show the appearance that is characteristic of the true fluid regions in the original scans that compose the RETOUCH dataset, its segmentation is visually similar to the segmentation performed in the surrounding slices, which resemble the GT masks of the surrounding slices. 
 \par
 This example shows an accurate segmentation and generation of an enhanced OCT volume. This is a sample of segmentation and generation in the TRAIN012 volume, but most slices are segmented and generated as accurately as the shown example. This results in predicted fluid volumes that are similar to those estimated with the GT masks and with the predicted masks in the unchanged OCT volume.

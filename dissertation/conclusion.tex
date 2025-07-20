@@ -94,7 +94,7 @@ In RETOUCH, a benchmark dataset in the segmentation of retinal fluid, the images
 \par
 The generation of slices using the GAN also lacked attention to finer details. The networks were driven to optimize the accurate representation of speckle noise more than the accurate representation of retinal structures, including retinal fluids.
 \par
-The network was motivated to generate similar images at a pixel level because its loss was mainly composed of parts that compare the real and generated images at this level. In fact, only the adversarial loss function as a perceptual loss. Ultimately, this resulted in generated images where speckle noise was accurately represented, but the finer details were poorly by the observer. This led to a poor generation of IRF, the fluid that appears in smaller and more irregular regions, which requires, therefore, more attention to be accurately synthesized. 
+The network was motivated to generate similar images at a pixel level because its loss was mainly composed of parts that compare the real and generated images at this level. In fact, only the adversarial loss function was a perceptual loss. Ultimately, this resulted in generated images where speckle noise was accurately represented, but the finer retinal details were poorly perceived by the observer. This led to a poor generation of IRF, the fluid that appears in smaller and more irregular regions, which requires, therefore, more attention to be accurately synthesized. 
 \par
 The segmentation of these regions was affected by the low quality of generated images, as the segmentation model also struggled to interpret the characteristics depicted in the generated scans.
 \par

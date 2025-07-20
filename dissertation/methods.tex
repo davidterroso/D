@@ -171,13 +171,13 @@ In the first segmentation experiment, a single U-Net was utilized to perform mul
 One of the main problems with multi-class segmentation performed by separate binary models is the merging of the multiple masks. In this context, multiple fluid classes can be predicted for the same pixel, although only one of those can be correct. In this experiment, two alternatives were explored: 
 
 \begin{itemize}
-	\item order of priority, where the merging of the fluid masks follows a predefined hierarchy that determines which fluid takes precedence
+	\item order of priority, where the merging of the fluid masks follows a predefined hierarchy that determines which fluid takes precedence;
 	\item highest probability, where the assigned class is the one predicted with the highest probability by its model.
 \end{itemize} 
 
 Two different losses were used for training the models. Initially, the same loss as the one used in multi-class experiment was applied, using only two classes (background and the fluid that would be segmented). Later, a weighted cross-entropy loss was used, with weights balancing the larger proportion of background voxels. This second loss is described in Equation \ref{eq:SegmentationCE}, with $N=2$.
 \par
-After selecting the best segmentation model, the inference in CHUSJ required the support of a retinal layer segmentation model, developed by \textcite{Melo2023}, to ensure anatomically consistent predictions. This necessity comes from the differences in image quality between the CHUSJ and the RETOUCH dataset, on which the model was trained. For instance, in the RETOUCH, the Spectralis B-scans present the choroid region blurred, while in the CHUSJ, this region appears with much greater quality and definition. This discrepancy confuses the segmentation model, which often misinterprets the well-defined choroid region as IRF, leading to incorrect the segmentations.
+After selecting the best segmentation model, the inference in CHUSJ required the support of a retinal layer segmentation model, developed by \textcite{Melo2023}, to ensure anatomically consistent predictions. This necessity comes from the differences in image quality between the CHUSJ and the RETOUCH dataset, on which the model was trained. For instance, in the RETOUCH, the Spectralis B-scans present the choroid region blurred, while in the CHUSJ, this region appears with much greater quality and definition. This discrepancy confuses the segmentation model, which often misinterprets the well-defined choroid region as IRF, leading to incorrect segmentations.
 \par
 The retinal layer segmentation model was used exclusively to post-process the masks predicted by the segmentation model, removing any fluid that appeared outside the retina, as a way to mitigate the oversegmentations that occurred in the choroid region.
 

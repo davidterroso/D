@@ -135,7 +135,7 @@ All the networks are trained on downsampled CT volumes. After the first interpol
 	\label{fig:FangArchitecture}
 \end{figure}
 
-\textcite{Nimitha2024} also perform intra-slice and inter-slice resolution enhancement. However, instead of improving both resolutions simultaneously as seen in \textcite{Zhang2024, Fang2022}, the enhancement is done sequentially. The pipeline starts with a low-resolution (LR), in which axial slices are firstly enhanced to becoming high-resolution (HR). Based on these HR axial slices, an intermediate slice is generated between each pair of consecutive axial slices.
+\textcite{Nimitha2024} also perform intra-slice and inter-slice resolution enhancement. However, instead of improving both resolutions simultaneously as seen in \textcite{Zhang2024, Fang2022}, the enhancement is done sequentially. The pipeline starts with a low-resolution (LR) volume, in which axial slices are firstly enhanced to becoming high-resolution (HR). Based on these HR axial slices, an intermediate slice is generated between each pair of consecutive axial slices.
 \par
 The network used in the enhancement of intra-slice resolution is a GAN. The generator starts with an in-plane and out-of-plane attention modules that extract features from the MRI slices adjacent to the target one. These extracted features are then passed through a U-shaped network that reconstructs the intermediate image. However, the number of upsampling blocks is higher than the number of downsampling blocks to ensure that the output has higher spatial resolution than the input.
 \par
@@ -172,7 +172,7 @@ Both networks learn based on a loss function that has three components: a photom
 
 \textcite{Tran2020} present an alternative framework to the video frame interpolation. Instead of relying on contextual or optical flow to model pixel changes, two GANs are used for predicting the intermediate frame. The first generator receives as input the previous and following slice of the one desired to segment. The resulting slice is evaluated using the generator loss, which is composed of four components. This loss assesses how accurately the image is reconstructed and evaluates how well it fools the discriminator.
 \par
-The image resulting from the generator is given as input to the discriminator, which receives real and fake images as input and is responsible for correctly classifying it. The discriminator's prediction is compared to the true image's label, and the resulting loss is used in the adjustment of the discriminator weights.
+The image resulting from the generator is given as input to the discriminator, which receives real and fake images as input and is responsible for correctly classifying it. The discriminator's prediction is compared to the true image's label, and the resulting loss is used in the adjustment of the generator weights.
 \par
 After training the first GAN, the second one is trained, which is a pix2pix \parencite{Isola2017}. Similar to what is seen in the work of \textcite{Gambini2024, Huang2022}, where a second network is used in the refinement of the output of the first one, this GAN is responsible for making the image output from the first GAN more similar to the original image. Contrasting with the previous examples where both the generative and refining networks are trained at the same time, the refining network is trained independently, after the training of the first network. The pipeline that describes this framework is shown in Figure \ref{fig:VideoGANFramework}.
 

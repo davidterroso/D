@@ -1,0 +1,58 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edg/132.0.0.0" version="26.0.4">
+  <diagram name="ArticlesSelection" id="jamtwrOvTJwfkREujlh_">
+    <mxGraphModel dx="1282" dy="565" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-2" value="2D Fluid Segmentation&lt;br&gt;&lt;div&gt;(20)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fillColor=#f5f5f5;gradientColor=#b3b3b3;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="361" y="40" width="106" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-4" value="Binary Fluid Segmentation&lt;div&gt;(6)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;glass=0;shadow=0;gradientColor=#7ea6e0;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="219" y="140" width="106" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-5" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.annotation_2;align=left;labelPosition=right;pointerEvents=1;rotation=90;" parent="1" vertex="1">
+          <mxGeometry x="389" y="-24.75" width="50" height="281.5" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-6" value="Multi-class Fluid Segmentation&lt;div&gt;(14)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;gradientColor=#ea6b66;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="501" y="140" width="106" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-7" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.annotation_2;align=left;labelPosition=right;pointerEvents=1;rotation=90;" parent="1" vertex="1">
+          <mxGeometry x="247" y="146" width="50" height="141.5" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-8" value="CNN (5)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;glass=0;shadow=0;gradientColor=#97d077;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="148" y="237.5" width="106" height="32.5" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-9" value="Transformer (1)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcd28;strokeColor=#d79b00;glass=0;shadow=0;gradientColor=#ffa500;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="290" y="237.5" width="106" height="32.5" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-10" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.annotation_2;align=left;labelPosition=right;pointerEvents=1;rotation=90;" parent="1" vertex="1">
+          <mxGeometry x="529" y="146" width="50" height="141.5" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-11" value="CNN (12)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;glass=0;shadow=0;gradientColor=#97d077;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="430" y="237.5" width="106" height="32.5" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-12" value="Transformer&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;(2)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcd28;strokeColor=#d79b00;glass=0;shadow=0;gradientColor=#ffa500;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="572" y="237.5" width="106" height="32.5" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-13" value="Retinal Delimitation (1)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6d0de;strokeColor=#996185;glass=0;shadow=0;gradientColor=#d5739d;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="148" y="300" width="106" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-15" value="Retinal Delimitation&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;(7)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6d0de;strokeColor=#996185;glass=0;shadow=0;gradientColor=#d5739d;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="430" y="300" width="106" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-16" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1;" parent="1" source="6lrZ7uDYgWv-Zom-KdMy-8" target="6lrZ7uDYgWv-Zom-KdMy-13" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="390" y="240" as="sourcePoint" />
+            <mxPoint x="440" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="6lrZ7uDYgWv-Zom-KdMy-17" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="482.5" y="270" as="sourcePoint" />
+            <mxPoint x="482.5" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
