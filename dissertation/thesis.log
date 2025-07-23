@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  20 JUL 2025 22:38
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 23.1) (preloaded format=pdflatex 2023.3.8)  22 JUL 2025 11:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -930,7 +930,7 @@ Package hyperref Info: Link coloring ON on input line 18.
 <figures//uporto-feup.pdf, id=195, 338.26375pt x 126.4725pt>
 File: figures//uporto-feup.pdf Graphic file (type pdf)
 <use figures//uporto-feup.pdf>
-Package pdftex.def Info: figures//uporto-feup.pdf  used on input line 39.
+Package pdftex.def Info: figures//uporto-feup.pdf  used on input line 38.
 (pdftex.def)             Requested size: 204.85983pt x 76.59618pt.
  [-3
 
@@ -938,7 +938,7 @@ Package pdftex.def Info: figures//uporto-feup.pdf  used on input line 39.
 {C:/Users/david/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map} <./figures//u
 porto-feup.pdf>]
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 3
-9.
+8.
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
@@ -1683,16 +1683,16 @@ Chapter 6.
 
 ] [99] [100] [101] [102] [103] [104] [105]) [106]
 LaTeX Font Info:    Trying to load font information for T1+pcrs on input line 6
-6.
+5.
 
 (C:\Users\david\AppData\Local\Programs\MiKTeX\tex/latex/courier-scaled\t1pcrs.f
 d
 File: t1pcrs.fd 2004/07/09 scalable font definitions for T1/pcrs.
 )
 LaTeX Font Info:    Font shape `T1/pcrs/m/n' will be
-(Font)              scaled to size 10.40245pt on input line 66.
+(Font)              scaled to size 10.40245pt on input line 65.
 
-Overfull \hbox (0.69101pt too wide) in paragraph at lines 66--66
+Overfull \hbox (0.69101pt too wide) in paragraph at lines 65--65
 \T1/ptm/m/n/10.95 op-ti-cal co-her-ence to-mog-ra-phy (OCT): A com-pre-hen-sive
  sur-vey,^^Q \T1/ptm/m/it/10.95 Neu-ro-com-put-ing\T1/ptm/m/n/10.95 , vol. 507,
 
@@ -1704,19 +1704,19 @@ Overfull \hbox (0.69101pt too wide) in paragraph at lines 66--66
 
 
 ]
-Overfull \hbox (0.44347pt too wide) in paragraph at lines 66--66
+Overfull \hbox (0.44347pt too wide) in paragraph at lines 65--65
 []\T1/ptm/m/n/10.95 H. Liu et al., ^^P  Se-man-tic un-cer-tainty Guided Cross-T
 ransformer for en-hanced mac-u-lar edema
  []
 
 [108] [109]
-Overfull \hbox (19.33269pt too wide) in paragraph at lines 66--66
+Overfull \hbox (19.33269pt too wide) in paragraph at lines 65--65
 \T1/ptm/m/n/10.95 Sys-tem-atic Re-view of Re-cent De-vel-op-ments and Chal-leng
 es,^^Q \T1/ptm/m/it/10.95 arXiv e-prints\T1/ptm/m/n/10.95 , arXiv:2407.00116,
  []
 
 [110] [111]
-Overfull \hbox (10.93967pt too wide) in paragraph at lines 66--66
+Overfull \hbox (10.93967pt too wide) in paragraph at lines 65--65
 \T1/ptm/m/n/10.95 ^^P  Gen-er-a-tive Ad-ver-sar-ial Net-works: An Overview,^^Q 
 \T1/ptm/m/it/10.95 IEEE Sig-nal Pro-cess-ing Mag-a-zine\T1/ptm/m/n/10.95 , vol.
  35,
@@ -1763,7 +1763,7 @@ X/fonts/type1/urw/symbol/usyr.pfb><C:/Users/david/AppData/Local/Programs/MiKTeX
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmr8a.pfb><C:/Users/david/AppData/Local/Programs/MiKTe
 X/fonts/type1/urw/times/utmri8a.pfb>
-Output written on thesis.pdf (133 pages, 163872433 bytes).
+Output written on thesis.pdf (133 pages, 163872438 bytes).
 PDF statistics:
  2030 PDF objects out of 2073 (max. 8388607)
  393 named destinations out of 1000 (max. 500000)
