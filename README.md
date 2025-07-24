@@ -1,5 +1,5 @@
 # Introduction
-This repository contains all the code and work done throughout my dissertation, entitled "Characterization of Retinal Fluid in Optical Coherence Tomography". For more informations regarding this theme and its state-of-the-art, please read the full-sized PDF. All the experiments that took place during the dissertation, using this code is also there explained. Some code here used is inspired by the work of Tennakoon et al., 2018 [1]. To understand the code that was implemented, please check the [documentation](documentation.md). To follow the implementation, please consider understanding the [pipeline file](pipeline.ipynb).
+This repository contains all the code and work done throughout my dissertation, entitled "Characterization of Retinal Fluid in Optical Coherence Tomography". For more informations regarding this theme and its state-of-the-art, please read the full-sized [PDF](dissertation/thesis.pdf). All the experiments that took place during the dissertation, using this code is also there explained. Some code here used is inspired by the work of Tennakoon et al., 2018 [1]. To understand the code that was implemented, please check the [documentation](documentation.md). To follow the implementation, please consider understanding the [pipeline file](pipeline.ipynb).
 
 # Tensorflow Installation
 The code here implemented was ran in a Windows device, requiring some caution with the installation of Tensorflow. This installation was done following the [Tensorflow installation guide](https://www.tensorflow.org/install/pip?hl=en#windows-native_1). This is only required to run the code using the device GPU, since the use of the CPU only requires the base Tensorflow.
@@ -87,25 +87,6 @@ Another environment was created to support PyTorch. Since the required versions 
 - The packages I used in this code and their respective versions are described in [requirements.txt](environment/requirements.txt). To install them, please run the following command, with the conda environment activated: ```pip install -r environment/requirements.txt```
 - More information on the packages used as a consequence of those installed, you can see: [requirements_full_torch.txt](environment/requirements_full_torch.txt). The environment specifications are available at [environment_torch.yml](environment/environment_torch.yml).
 
-# Storage Requirements
-The dataset used for the experiments here described was the RETOUCH dataset. This is a dataset that is composed of OCT volumes with segmented retinal fluid (IRF, SRF, and PED). The training folder includes the segmentation masks while the testing folder does not. The training folder comprises 70 OCT volumes: 24 obtained with Cirrus, 24 obtained with Spectralis, and 22 obtained with Topcon (2 with the T-1000 and 20 with the T-2000 device). 
-
-The Cirrus volume has 128 slices with a size of 512 x 1024 (height x width) pixels, while each Spectralis volume has 49 slices with a size of 512 x 885 pixels. The volumes obtained with the T-1000 devices produce volumes with 64 slices that have a size of 512 x 650 (h x w) pixels, while those obtained with the T-2000 can have 128 or 64 slices with a size of 512 x 885 pixels. 
-
-The Cirrus and Topcon image's pixels are stored in uint8. The Cirrus volumes occupy 64MB, $1024*512*128 = 67 108 864$ binary bytes ($64$ MB in the decimal scale) and so does their respective masks. The Topcon T-2000 volumes occupy 55.3MB, $512*885*128 = 57 999 360$ binary bytes. The volumes obtained with Topcon T-1000 can occupy 40.6MB when containing 128 slices, $512*650*128 = 42 598 400$ binary bytes or 27.6MB ($512*650*64 = 21 299 200$ binary bytes) when containing 64 slices. The metaheader files in the Topcon folders occupy. The Spectralis volumes have 49 slices with 512 x 496 pixels, stored in uint16. Therefore, the space occupied by each volume is $49*512*496*16/8=24 887 296$ binary bytes or 23.7MB in decimal binary. The space occupied by the metaheader files is significantly smaller than those in the images and therefore will not be taken into account in further calculations.
-
-In the training set, there are 12 volumes obtained with the T-1000, 2 of which have 64 slices. The remaining 10 were obtained with the T-2000. Therefore, the total storage required for the training set of the RETOUCH dataset is $(67 108 864*24 + 57 999 360*10 + 42 598 400*10 + 21 299 200*2)*2 + 24*24 887 296 + 24*24 887 296/2 = 6.1$ GiB ou $5.8$ GB.
-
-For each OCT volume, the constituting slices will be saved both in int32 and uint8. The reason int32 is being saved is because it will allow more precise calculations when handling the images. Meanwhile, the uint8 images will be saved to allow a visualization in the folders. This will be done not only for the OCT volumes, but also for the respective segmentation masks and ROI saved. The space occupied by all this images will be:
-- $67 108 864*24*(5 + 4) = 14 495 514 624$ bytes or $13.5$ GB  in Cirrus
-- $(57 999 360*10 + 42 598 400*10 + 21 299 200*2)*(5 + 4) = 9 437 184 000$ bytes or $8.8$ GB in Topcon
-- $(49*512*496*24)*(5 + 4) = 2 687 827 968$ bytes or $2.5$ GB in Spectralis
-
-In case the patches are saved previously to the training, 12 patches per image with size 256 x 128 in uint8 will be saved. The total number of patches saved would be $(24*128+24*49+20*128+2*64)*12*256*128*3 = 8 182 038 528$ bytes or $7.6$ GB.
-
-For 2.5D segmentation, it would be the triple since three patches (from the previous, the current, and the following slices) per slice are being used. Therefore, the total space would be $(24*128+24*49+20*128+2*64)*12*256*128*3*3 = 24 546 115 584$ bytes or $22.86$ GB.
-
-For the intermediate slice generation, the whole RETOUCH dataset is going to be used. There are 14 Cirrus volumes, 14 Spectralis volumes, and 14 Topcon volumes (10 obtained with the T-2000 and 4 obtained with the T-1000). The T-1000 device resulted in scans with varying dimensions: 512 x 650 (in two volumes) and 512 x 480 (in two volumes). The storage required for these volumes can be calculated as $14*1024*512*128 + 14*496*512*49 + 10*885*512*128 + 2*650*512*128 + 2*480*512*128 = 1 841 840 128$ bytes or $1.7$ GB. Each slice is then saved as an individual image in uint8, which requires the same storage capacity ($1.7$ GB).
-
 # References
 [1] R. Tennakoon, A. K. Gostar, R. Hoseinnezhad, and A. Bab-Hadiashar, “Retinal fluid segmentation in OCT images using adversarial loss based convolutional neural networks,” in *2018 IEEE 15th International Symposium on Biomedical Imaging (ISBI 2018)*, pp. 1436–1440, 2018.
+[2] Tran, Q. N., & Yang, S. H. (2020). Efficient video frame interpolation using generative adversarial networks. Applied Sciences, 10(18), 6245.
